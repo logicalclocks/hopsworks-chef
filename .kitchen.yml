@@ -1,0 +1,60 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 9000
+    natdnshostresolver1: "on"
+    natdnsproxy1: "on"
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: centos-6.5
+  - name: ubuntu-12.04
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+
+suites:
+  - name: default
+    run_list:
+      - recipe[kagent::install]
+      - recipe[ndb::install]
+      - recipe[hopshub::install]
+      - recipe[collectd::install]
+      - recipe[kagent::default]
+      - recipe[collectd::server]
+      - recipe[ndb::mgmd]
+      - recipe[ndb::ndbd]
+      - recipe[ndb::mysqld]
+      - recipe[ndb::memcached]
+      - recipe[hopshub::default]
+      - recipe[collectd::mysqld]
+
+    attributes:
+         collectd:
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         kagent:
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         hopshub:
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         ndb:
+            mgmd:
+               private_ips: ["10.0.2.15"]
+            ndbd:
+               private_ips: ["10.0.2.15"]
+            mysqld:
+               private_ips: ["10.0.2.15"]
+            memcached:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+            enabled: "true"
+         private_ips: ["10.0.2.15"]
+         public_ips: ["10.0.2.15"]
+         vagrant: "enabled"
