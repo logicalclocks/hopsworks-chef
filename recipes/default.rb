@@ -326,6 +326,11 @@ command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  cr
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
+# email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
+# --port #{node[:hopshub][:smtp][:port]} 
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp][:server]} --mailuser #{node[:hopshub][:smtp][:username]}  --fromaddress #{node[:hopshub][:smtp][:username]} --secure #{node[:hopshub][:smtp][:secure]} jndi/mail"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-mail.smtp.auth=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-mail.smtp.starttls.enable=true"
 
 Chef::Log.info(command_string.join("\t"))
 # See http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-auth-realm.htm

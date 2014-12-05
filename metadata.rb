@@ -14,16 +14,34 @@ depends 'glassfish'
 depends 'ndb'
 depends 'collectd'
 depends 'kagent'
-#depends 'runit'
 
-attribute "hopshub/private_ips",
-:display_name => "HopsHub private IP addresses",
-:description => "List of private IP addresses of HopsHub",
-:type => 'array',
-:default => ""
+attribute "hopshub/smtp/server",
+:display_name => "Smtp server address for sending emails",
+:description => "Smtp server address for sending emails",
+:type => 'string',
+:default => "smtp.gmail.com"
 
-attribute "hopshub/public_ips",
-:display_name => "HopsHub public IP addresses",
-:description => "List of public IP addresses of HopsHub",
-:type => 'array',
-:default => ""
+attribute "hopshub/smtp/port",
+:display_name => "Smtp server port for sending emails",
+:description => "Smtp server port for sending emails",
+:type => 'integer',
+:default => 465
+
+attribute "hopshub/smtp/secure",
+:display_name => "Use SSL to Smtp server",
+:description => "Use SSL to Smtp server",
+:type => 'string',
+:default => "true"
+
+attribute "hopshub/smtp/username",
+:display_name => "Email account username",
+:description =>  "Email account username",
+:type => 'string',
+:default => "sodugling@gmail.com"
+
+attribute "hopshub/smtp/password",
+:display_name => "Email account password",
+:description =>  "Email account password",
+:type => 'string',
+:default => "admin"
+

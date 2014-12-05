@@ -77,3 +77,10 @@ default[:hopshub][:public_key]            = ""
 
 default[:hopshub][:public_ips]            = ['10.0.2.15']
 default[:hopshub][:private_ips]           = ['10.0.2.15']
+
+default[:hopshub][:smtp][:username]       = "sodugling@gmail.com"
+default[:hopshub][:smtp][:password]       = "admin"
+default[:hopshub][:smtp][:server]         = "smtp.gmail.com"
+default[:hopshub][:smtp][:port]           = 465
+default[:hopshub][:smtp][:secure]         = "true"
+
