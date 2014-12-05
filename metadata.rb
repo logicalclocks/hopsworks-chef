@@ -24,8 +24,8 @@ attribute "hopshub/smtp/server",
 attribute "hopshub/smtp/port",
 :display_name => "Smtp server port for sending emails",
 :description => "Smtp server port for sending emails",
-:type => 'integer',
-:default => 465
+:type => 'string',
+:default => "465"
 
 attribute "hopshub/smtp/secure",
 :display_name => "Use SSL to Smtp server",
