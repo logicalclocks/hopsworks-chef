@@ -328,9 +328,10 @@ command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  se
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
 # email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
 # --port #{node[:hopshub][:smtp][:port]} 
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp][:server]} --mailuser #{node[:hopshub][:smtp][:username]}  --fromaddress #{node[:hopshub][:smtp][:username]} --secure #{node[:hopshub][:smtp][:secure]} jndi/mail"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-mail.smtp.auth=true"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-mail.smtp.starttls.enable=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp][:server]} --mailuser #{node[:hopshub][:smtp][:username]}  --fromaddress #{node[:hopshub][:smtp][:username]} --transprotocol smtp --enabled=true --secure false --property mail-smtp.user=hadoop@hops.io:mail-smtp.port=25:mail-smtp.password=fake:mail-smtp.auth=false mail/BBCMail"
+# #{node[:hopshub][:smtp][:secure]} jndi/mail"
+
+#asadmin --interactive=false create-javamail-resource --mailhost=smtp.gmail.com --mailuser=cejug.classifieds --fromaddress=cejug.classifieds@gmail.com --enabled=true --description="e-Mail account used to confirm the registration of the Cejug-Classifieds users" --storeprotocol=imap --storeprotocolclass=com.sun.mail.imap.IMAPStore --transprotocol smtp --transprotocolclass com.sun.mail.smtp.SMTPSSLTransport --property mail-smtp.user=cejug.classifieds@gmail.com:mail-smtp.port=465:mail-smtp.password=fake:mail-smtp.auth=true:mail-smtp.socketFactory.fallback=false:mail-smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory:mail-smtp.socketFactory.port=465:mail-smtp.starttls.enable=true mail/classifieds
 
 Chef::Log.info(command_string.join("\t"))
 # See http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-auth-realm.htm
