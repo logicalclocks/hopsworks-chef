@@ -20,7 +20,10 @@
    <config name="%%%CONFIG_MODEL_NAME%%%">
       <http-service>
         <access-log/>
-        <virtual-server id="server" network-listeners="http-listener-1,http-listener-2"/>
+        <virtual-server id="server" network-listeners="http-listener-1,http-listener-2">
+            <property name="sso-enabled" value="true"/> 
+            <property name="allow-linking" value="true"/> 
+        </virtual-server>
         <virtual-server id="__asadmin" network-listeners="admin-listener"/>
       </http-service>
       <iiop-service>
