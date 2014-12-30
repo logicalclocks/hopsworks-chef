@@ -22,9 +22,9 @@ default[:glassfish][:user]                = "glassfish"
 default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
-
+default[:glassfish][:version]             = '4.0'
 default[:hopshub][:admin][:user]          = "admin"
-default[:hopshub][:admin][:password]      = "admin"
+default[:hopshub][:admin][:password]      = "adminhops"
 default[:glassfish][:cert][:password]     = "changeit"
 default[:hopshub][:cert][:password]       = "changeit"
 
@@ -49,7 +49,7 @@ default[:caramel][:cert][:password]       = "hopsan"
 
 default[:caramel][:master][:password]     = "hopsan"
 
-version                                   = "3.1.2.2"
+version                                   = node[:glassfish][:version]
 #default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
 default[:glassfish][:base_dir]            = "/usr/local/glassfish-#{version}"

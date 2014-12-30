@@ -36,6 +36,8 @@ end
 
 package 'unzip'
 
+majorVersion = node['glassfish']['version'].each_char.first
+
 bash 'unpack_glassfish' do
     code <<-EOF
 
@@ -44,7 +46,7 @@ mkdir /tmp/glassfish
 cd /tmp/glassfish
 unzip -qq #{cached_package_filename}
 mkdir -p #{File.dirname(node['glassfish']['base_dir'])}
-mv glassfish3 #{node['glassfish']['base_dir']}
+mv glassfish#{majorVersion} #{node['glassfish']['base_dir']}
 chown -R #{node['glassfish']['user']} #{node['glassfish']['base_dir']}
 chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
 chmod -R 0770 #{node['glassfish']['base_dir']}/bin/
@@ -53,6 +55,13 @@ rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
 test -d #{node['glassfish']['base_dir']}
 EOF
   not_if { ::File.exists?( node['glassfish']['base_dir'] ) }
+end
+
+directory "#{node['glassfish']['base_dir']}/glassfish/lib/templates" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0644
+  action :create
 end
 
 cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.xml" do

@@ -21,6 +21,7 @@
       <http-service>
         <access-log/>
         <virtual-server id="server" network-listeners="http-listener-1,http-listener-2">
+<!-- Enabling single signon, symlinks. See https://docs.oracle.com/cd/E19776-01/820-4507/abhfg/index.html -->
             <property name="sso-enabled" value="true"/> 
             <property name="allow-linking" value="true"/> 
         </virtual-server>
