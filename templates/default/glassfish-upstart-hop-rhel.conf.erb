@@ -24,7 +24,7 @@ script
 # su -c will change both the effective user id and group id to that of the glassfish user.
 # http://upstart.ubuntu.com/cookbook/#run-a-job-as-a-different-user
 #exec su -s /bin/sh -c 'exec "$0" "$@"' <%= node[:glassfish][:user] %> --  
-#exec su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --_dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command"  <%= node[:glassfish][:user] %>
+#exec su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command"  <%= node[:glassfish][:user] %>
 #exec su -c "perl -pi -e \"s/\\n/ /g\" <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command" <%= node[:glassfish][:user] %> 
 #command=`cat <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command`
 chdir <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config

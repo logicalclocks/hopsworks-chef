@@ -9,7 +9,7 @@ notifying_action :generate do
     group node[:glassfish][:group]
     code <<-EOF
    cd #{node[:glassfish][:base_dir]}/glassfish/bin
-   ./asadmin --user #{node[:hopshub][:admin][:user]} --passwordfile #{admin_pwd} --terse start-domain --_dry-run > start-domain.java_command
+   ./asadmin --user #{node[:hopshub][:admin][:user]} --passwordfile #{admin_pwd} --terse start-domain --dry-run > start-domain.java_command
 #  -i updates the file inplace. Replace all new-lines with spaces.
 #   sed -i ':a;N;$!ba;s/\\n/ /g' start-domain.java_command
    perl -pi -e "s/\\n/ /g" start-domain.java_command

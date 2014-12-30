@@ -141,14 +141,12 @@ bash "create_glassfish_certs" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
    code <<-EOF
-#    cd #{config_dir}
-
    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
  # Generate two new certs with same alias as original certs
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
    #Add two new certs to cacerts.jks
    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
@@ -292,9 +290,9 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #     initctl stop glassfish-#{domain_name}
 #     expect -c 'spawn #{asadmin} change-master-password --savemasterpassword=true
 #     expect "Please enter the new master password> "
-#     send "#{node[:caramel][:master][:password]}\r"
+#     send "#{node[:karamel][:master][:password]}\r"
 #     expect "Please enter the new master password again> "
-#     send "#{node[:caramel][:master][:password]}\r"
+#     send "#{node[:karamel][:master][:password]}\r"
 #     expect eof'
 #   EOF
 #   not_if { ::File.exists?( "#{password_file}")}
