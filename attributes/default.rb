@@ -22,12 +22,12 @@ default[:glassfish][:user]                = "glassfish"
 default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
-default[:glassfish][:version]             = '4.0'
+default[:glassfish][:version]             = '4.1'
 default[:hopshub][:admin][:user]          = "admin"
 default[:hopshub][:admin][:password]      = "changeit"
 default[:glassfish][:cert][:password]     = node[:hopshub][:admin][:password]
 
-default[:hopshub][:twofactor_auth]        = "true"
+default[:hopshub][:twofactor_auth]        = "false"
 
 default[:glassfish][:max_mem]             = 4000
 default[:glassfish][:min_mem]             = 2500
