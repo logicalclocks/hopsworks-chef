@@ -28,7 +28,7 @@ default[:hopshub][:admin][:password]      = "admin"
 default[:glassfish][:cert][:password]     = "changeit"
 default[:hopshub][:cert][:password]       = "changeit"
 
-default[:hopshub][:twofactor_auth]        = "true"
+default[:hopshub][:twofactor_auth]        = "false"
 
 default[:glassfish][:max_mem]             = 4000
 default[:glassfish][:min_mem]             = 2500

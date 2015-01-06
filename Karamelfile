@@ -7,4 +7,5 @@ dependencies:
       - hopshub::install
     global:  
       - ndb::mysqld
-
+      - hadoop::nn
+      - hadoop::dn
