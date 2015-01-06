@@ -31,7 +31,7 @@ suites:
       - recipe[ndb::mysqld]
       - recipe[ndb::memcached]
       - recipe[hopshub::default]
-      - recipe[collectd::mysqld]
+#      - recipe[collectd::mysqld]
 
     attributes:
          collectd:

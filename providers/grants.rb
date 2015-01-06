@@ -5,7 +5,7 @@ notifying_action :grants do
   bash 'grants_kthfs' do
     user "root"
     code <<-EOF
-      #{exec} kthfs -e \"source #{new_resource.grants_path}\"
+      #{exec} -e \"source #{new_resource.grants_path}\"
     EOF
   end
   not_if "#{exec} kthfs -e \"SELECT user FROM mysql.user;\"  | grep #{node[:mysql][:user]}"
@@ -17,6 +17,7 @@ notifying_action :kthfs do
   bash 'populate_kthfs_tables' do
     user "root"
     code <<-EOF
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs\"
       #{exec} kthfs -e \"source #{new_resource.kthfs_path}\"
     EOF
     not_if "#{exec} kthfs < \"show tables;\" | grep Hosts"
