@@ -22,6 +22,7 @@ user node['glassfish']['user'] do
   home node['glassfish']['base_dir']
   shell '/bin/bash'
   system true
+  only_if "getent passwd newuser"
 end
 
 package_url = node['glassfish']['package_url']
