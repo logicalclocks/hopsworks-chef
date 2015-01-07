@@ -87,3 +87,4 @@ default[:hopshub][:smtp][:port]           = "25"
 #default[:hopshub][:smtp][:secure]         = "true"
 default[:hopshub][:smtp][:secure]         = "false"
 
+default[:kagent][:enabled]                = "false"

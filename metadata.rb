@@ -45,3 +45,8 @@ attribute "hopshub/smtp/password",
 :type => 'string',
 :default => "admin"
 
+attribute "kagent/enabled",
+:display_name => "Install kagent",
+:description =>  "Install kagent",
+:type => 'string',
+:default => "false"

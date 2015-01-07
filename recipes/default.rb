@@ -435,6 +435,8 @@ end
 # end
 
 
-kagent_kagent "restart_agent_to_register" do
-  action :restart
+if node[:kagent][:enabled] == "true"
+ kagent_kagent "restart_agent_to_register" do
+   action :restart
+ end
 end
