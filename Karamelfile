@@ -1,5 +1,5 @@
 dependencies: 
-  - recipe: hopshub::install,
+  - recipe: hopshub::install
     local:  
       - ndb::install
   - recipe: hopshub
