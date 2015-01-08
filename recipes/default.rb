@@ -326,6 +326,7 @@ command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  cr
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
 # email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
 # --port #{node[:hopshub][:smtp][:port]} 
@@ -420,7 +421,8 @@ if "#{node[:ndb][:enabled]}" == "true"
        group node['mysql']['root_group']
        mode "0600"
        action :create
-       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+#       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+       notifies "hopshub_restart[switchToNdb]", :immediately
      end 
    end
 end
