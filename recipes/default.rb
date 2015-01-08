@@ -422,7 +422,6 @@ if "#{node[:ndb][:enabled]}" == "true"
        mode "0600"
        action :create
 #       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
-       notifies "hopshub_restart[switchToNdb]", :immediately
      end 
    end
 end
