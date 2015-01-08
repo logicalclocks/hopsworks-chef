@@ -1,4 +1,9 @@
 dependencies: 
+  - recipe: hadoop::nn
+    local:  
+      - hadhoop::install
+    global:  
+      - hopshub
   - recipe: hopshub
     local:  
       - hopshub::install
