@@ -1,10 +1,11 @@
 notifying_action :grants do
 
-    Chef::Log.info("Grants file is here: #{new_resource.grants_path}")
+  Chef::Log.info("Grants file is here: #{new_resource.grants_path}")
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
   bash 'grants_kthfs' do
     user "root"
     code <<-EOF
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs"
       #{exec} -e \"source #{new_resource.grants_path}\"
     EOF
   end
