@@ -5,7 +5,7 @@ notifying_action :grants do
   bash 'grants_kthfs' do
     user "root"
     code <<-EOF
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs\"
       #{exec} -e \"source #{new_resource.grants_path}\"
     EOF
   end
