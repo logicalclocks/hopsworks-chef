@@ -12,23 +12,8 @@
 
 private_ip=my_private_ip()
 
-creds_path = "#{Chef::Config[:file_cache_path]}/credentials.sql"
-
-hopshub_grants "creds"  do
-  creds_path  "#{creds_path}"
-end 
-
-Chef::Log.info("Could not find previously defined #{creds_path} resource")
-template "#{creds_path}" do
-  source "credentials.sql.erb"
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
-  mode 0755 
-  action :create
-  variables({
-              :private_ip => private_ip
-            })
-  notifies :creds, "hopshub_grants[creds]", :immediately
+hopshub_grants "create_kthfs_db"  do
+  action :create_db
 end 
 
 kthfs_path = "#{Chef::Config[:file_cache_path]}/kthfs.sql"
@@ -50,41 +35,41 @@ rescue
     variables({
                 :private_ip => private_ip
               })
-    notifies :kthfs, "hopshub_grants[kthfs]", :immediately
+    notifies :populate_db, "hopshub_grants[kthfs]", :immediately
   end 
 end
 
 
 
-template "#{Chef::Config[:file_cache_path]}/graphs.sql" do
-  source "graphs.sql.erb"
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
-  mode 0755
-  action :create
-end
+# template "#{Chef::Config[:file_cache_path]}/graphs.sql" do
+#   source "graphs.sql.erb"
+#   owner node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#   mode 0755
+#   action :create
+# end
 
 
-graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"
+# graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"
 
-hopshub_grants "graphs"  do
-  graphs_path  "#{graphs_path}"
-  action :nothing
-end 
+# hopshub_grants "graphs"  do
+#   graphs_path  "#{graphs_path}"
+#   action :nothing
+# end 
 
-begin
-  t = resources("template[#{graphs_path}]")
-rescue
-  Chef::Log.info("Could not find previously defined #{graphs_path} resource")
-  t = template graphs_path do
-    source File.basename("#{graphs_path}") + ".erb"
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
-    mode "0660"
-    action :create
-    notifies :graphs, "hopshub_grants[graphs]", :immediately
-  end
-end
+# begin
+#   t = resources("template[#{graphs_path}]")
+# rescue
+#   Chef::Log.info("Could not find previously defined #{graphs_path} resource")
+#   t = template graphs_path do
+#     source File.basename("#{graphs_path}") + ".erb"
+#     owner node[:glassfish][:user]
+#     group node[:glassfish][:group]
+#     mode "0660"
+#     action :create
+#     notifies :graphs, "hopshub_grants[graphs]", :immediately
+#   end
+# end
 
 
 
@@ -132,42 +117,40 @@ if node[:java][:java_home].to_s == ''
  end
 end
 
-# bash "delete_invalid_certs" do
-#   user node[:glassfish][:user]
-#   group node[:glassfish][:group]
-#    code <<-EOF
-#    cd #{config_dir}
-# # This cert has expired, blocks startup of glassfish
-#    #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#    #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#    EOF
-#    only_if "#{node[:java][:java_home]}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
-# end
+bash "delete_invalid_certs" do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+   code <<-EOF
+# This cert has expired, blocks startup of glassfish
+   {keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   {keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   EOF
+   only_if "#{node[:java][:java_home]}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+end
 
-# bash "create_glassfish_certs" do
-#   user node[:glassfish][:user]
-#   group node[:glassfish][:group]
-#    code <<-EOF
-# #    cd #{config_dir}
+bash "create_glassfish_certs" do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+   code <<-EOF
 
-#    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
-#  # Generate two new certs with same alias as original certs
-#    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-#    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+ # Generate two new certs with same alias as original certs
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
-#    #Add two new certs to cacerts.jks
-#    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+   #Add two new certs to cacerts.jks
+   #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+   #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
   
-#    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
   
-#    touch #{node[:glassfish][:base_dir]}/.certs_generated
-#    EOF
-#    not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
-# end
+   touch #{node[:glassfish][:base_dir]}/.certs_generated
+   EOF
+   not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
+end
 
 admin_pwd="#{node[:glassfish][:domains_dir]}/#{domain_name}_admin_passwd"
 
