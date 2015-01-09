@@ -5,11 +5,10 @@ notifying_action :grants do
   bash 'grants_kthfs' do
     user "root"
     code <<-EOF
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs\"
       #{exec} -e \"source #{new_resource.grants_path}\"
     EOF
   end
-  not_if "#{exec} kthfs -e \"SELECT user FROM mysql.user;\"  | grep #{node[:mysql][:user]}"
+  not_if "#{exec} -e \"SELECT user FROM mysql.user;\"  | grep #{node[:mysql][:user]}"
 end
 
 notifying_action :kthfs do
