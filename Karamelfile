@@ -2,6 +2,5 @@ dependencies:
   - recipe: hopshub
     local:  
       - hopshub::install
-      - ndb::install
     global:  
       - ndb::mysqld
