@@ -1,7 +1,5 @@
 dependencies: 
   - recipe: hopshub::install
-    local:  
-      - hadoop::install
   - recipe: hopshub
     local:  
       - hopshub::install
