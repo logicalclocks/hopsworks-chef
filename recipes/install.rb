@@ -3,7 +3,6 @@ node.default['java']['install_flavor'] = "openjdk"
 
 include_recipe 'java'
 include_recipe "openssh"
-# include_recipe "runit"
 
 bash 'fix_java_path_for_glassfish_cookbook' do
 user "root"
@@ -39,7 +38,6 @@ package 'unzip'
 
 bash 'unpack_glassfish' do
     code <<-EOF
-
 rm -rf /tmp/glassfish
 mkdir /tmp/glassfish
 cd /tmp/glassfish
