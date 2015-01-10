@@ -1,4 +1,4 @@
-:dependencies: 
+dependencies: 
   - recipe: hopshub::install
   - recipe: hopshub
     local:  
