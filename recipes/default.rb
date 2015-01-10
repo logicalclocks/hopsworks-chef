@@ -206,10 +206,9 @@ else
     user "root"
     code <<-EOF
     initctl stop glassfish-#{domain_name} || true
-    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
+#    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
     sleep 5
     initctl start glassfish-#{domain_name} 
-
     EOF
   end
 
