@@ -137,8 +137,8 @@ bash "create_glassfish_certs" do
    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
  # Generate two new certs with same alias as original certs
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname \"CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}\" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname \"CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}\" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
    #Add two new certs to cacerts.jks
    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
