@@ -22,7 +22,7 @@ user node['glassfish']['user'] do
   home node['glassfish']['base_dir']
   shell '/bin/bash'
   system true
-  only_if "getent passwd #{node['glassfish']['user']}"
+  not_if "getent passwd #{node['glassfish']['user']}"
 end
 
 package_url = node['glassfish']['package_url']
