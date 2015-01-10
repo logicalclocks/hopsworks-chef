@@ -416,15 +416,6 @@ if "#{node[:ndb][:enabled]}" == "true"
 end
 
 
-# bash "stop_glassfish_before_certs" do
-#    user "root"
-#    code <<-EOF
-#     initctl stop glassfish-#{domain_name} || true
-#     ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
-#    EOF
-# end
-
-
 if node[:kagent][:enabled] == "true"
  kagent_kagent "restart_agent_to_register" do
    action :restart
