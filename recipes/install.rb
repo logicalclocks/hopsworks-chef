@@ -15,11 +15,13 @@ end
 group node['glassfish']['group'] do
 end
 
+
 user node['glassfish']['user'] do
   comment 'GlassFish Application Server'
   gid node['glassfish']['group']
   home node['glassfish']['base_dir']
   shell '/bin/bash'
+  action :create
   system true
   not_if "getent passwd #{node['glassfish']['user']}"
 end
