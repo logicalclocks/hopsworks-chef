@@ -16,7 +16,7 @@ group node[:glassfish][:group] do
 end
 
 user node['glassfish']['user'] do
-  comment 'GlassFish Application Server'
+  supports :manage_home => true
   home "/home/#{node['glassfish']['user']}"
   shell '/bin/bash'
   action :create
