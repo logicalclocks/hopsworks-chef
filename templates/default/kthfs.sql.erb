@@ -16,6 +16,24 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `ANATOMICAL_PARTS`
+--
+
+DROP TABLE IF EXISTS `ANATOMICAL_PARTS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ANATOMICAL_PARTS` (
+  `id` int(16) NOT NULL AUTO_INCREMENT,
+  `ontology_name` varchar(255) DEFAULT NULL,
+  `ontology_version` varchar(255) DEFAULT NULL,
+  `ontology_code` varchar(255) DEFAULT NULL,
+  `ontology_description` varchar(2000) DEFAULT NULL,
+  `explanation` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Address`
 --
 
@@ -37,32 +55,20 @@ CREATE TABLE `Address` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `COLLECTION_TYPES`
+-- Table structure for table `DISEASES`
 --
 
-DROP TABLE IF EXISTS `COLLECTION_TYPES`;
+DROP TABLE IF EXISTS `DISEASES`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `COLLECTION_TYPES` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `definition` varchar(2000) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Env_vars`
---
-
-DROP TABLE IF EXISTS `Env_vars`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Env_vars` (
-  `name` varchar(128) NOT NULL,
-  `value` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`name`)
+CREATE TABLE `DISEASES` (
+  `id` int(16) NOT NULL AUTO_INCREMENT,
+  `ontology_name` varchar(255) DEFAULT NULL,
+  `ontology_version` varchar(255) DEFAULT NULL,
+  `ontology_code` varchar(255) DEFAULT NULL,
+  `ontology_description` varchar(2000) DEFAULT NULL,
+  `explanation` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -102,9 +108,76 @@ CREATE TABLE `Inodes` (
   KEY `pid_2` (`pid`,`isDir`),
   KEY `name` (`name`),
   CONSTRAINT `Inodes_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `Inodes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=419 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=440 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `Login`
+--
+
+DROP TABLE IF EXISTS `Login`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Login` (
+  `loginid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `People_uid` int(10) DEFAULT NULL,
+  `last_login` timestamp NULL DEFAULT NULL,
+  `last_ip` varchar(45) DEFAULT NULL,
+  `os_platform` int(11) DEFAULT NULL,
+  `logout` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`loginid`),
+  KEY `fk_login_people` (`People_uid`),
+  CONSTRAINT `FK_Login_People_uid` FOREIGN KEY (`People_uid`) REFERENCES `People` (`uid`),
+  CONSTRAINT `fk_login_people` FOREIGN KEY (`People_uid`) REFERENCES `People` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `People`
+--
+
+DROP TABLE IF EXISTS `People`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `People` (
+  `uid` int(10) NOT NULL DEFAULT '1000',
+  `username` varchar(10) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  `fname` varchar(30) DEFAULT NULL,
+  `lname` varchar(30) DEFAULT NULL,
+  `activated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `home_org` varchar(100) DEFAULT NULL,
+  `title` varchar(10) DEFAULT NULL,
+  `mobile` varchar(20) DEFAULT NULL,
+  `orcid` varchar(20) DEFAULT NULL,
+  `false_login` int(11) NOT NULL DEFAULT '0',
+  `active` int(11) NOT NULL DEFAULT '-1',
+  `isonline` int(11) NOT NULL DEFAULT '-1',
+  `secret` varchar(20) DEFAULT NULL,
+  `security_question` varchar(20) DEFAULT NULL,
+  `security_answer` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `People_Group`
+--
+
+DROP TABLE IF EXISTS `People_Group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `People_Group` (
+  `uid` int(10) NOT NULL,
+  `gid` int(10) NOT NULL,
+  PRIMARY KEY (`uid`,`gid`),
+  KEY `fk_people_has_group_group1` (`gid`),
+  KEY `fk_people_has_groups_people` (`uid`),
+  CONSTRAINT `FK_People_Group_uid` FOREIGN KEY (`uid`) REFERENCES `People` (`uid`),
+  CONSTRAINT `fk_group` FOREIGN KEY (`gid`) REFERENCES `Group` (`gid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_people` FOREIGN KEY (`uid`) REFERENCES `People` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,6 +202,110 @@ CREATE TABLE `Roles` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `SAMPLECOLLECTIONS`
+--
+
+DROP TABLE IF EXISTS `SAMPLECOLLECTIONS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAMPLECOLLECTIONS` (
+  `id` varchar(255) NOT NULL,
+  `acronym` varchar(1024) NOT NULL,
+  `name` varchar(1024) NOT NULL,
+  `description` varchar(2000) DEFAULT NULL,
+  `contact` varchar(255) NOT NULL,
+  `study` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contact` (`contact`),
+  KEY `study` (`study`),
+  CONSTRAINT `SAMPLECOLLECTIONS_ibfk_1` FOREIGN KEY (`contact`) REFERENCES `USERS` (`EMAIL`),
+  CONSTRAINT `SAMPLECOLLECTIONS_ibfk_2` FOREIGN KEY (`study`) REFERENCES `study` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAMPLECOLLECTION_DISEASE`
+--
+
+DROP TABLE IF EXISTS `SAMPLECOLLECTION_DISEASE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAMPLECOLLECTION_DISEASE` (
+  `collection_id` varchar(255) NOT NULL DEFAULT '',
+  `disease_id` int(16) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`collection_id`,`disease_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAMPLECOLLECTION_TYPE`
+--
+
+DROP TABLE IF EXISTS `SAMPLECOLLECTION_TYPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAMPLECOLLECTION_TYPE` (
+  `collection_id` varchar(255) NOT NULL,
+  `type` varchar(128) NOT NULL,
+  PRIMARY KEY (`collection_id`,`type`),
+  CONSTRAINT `SAMPLECOLLECTION_TYPE_ibfk_1` FOREIGN KEY (`collection_id`) REFERENCES `SAMPLECOLLECTIONS` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAMPLES`
+--
+
+DROP TABLE IF EXISTS `SAMPLES`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAMPLES` (
+  `samplecollection_id` varchar(255) NOT NULL,
+  `id` varchar(255) NOT NULL,
+  `parent_id` varchar(255) DEFAULT NULL,
+  `sampled_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `anatomical_site` int(16) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `samplecollection_id` (`samplecollection_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `anatomical_site` (`anatomical_site`),
+  CONSTRAINT `SAMPLES_ibfk_1` FOREIGN KEY (`samplecollection_id`) REFERENCES `SAMPLECOLLECTIONS` (`id`),
+  CONSTRAINT `SAMPLES_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `SAMPLES` (`id`),
+  CONSTRAINT `SAMPLES_ibfk_3` FOREIGN KEY (`anatomical_site`) REFERENCES `ANATOMICAL_PARTS` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `SAMPLE_MATERIAL`
+--
+
+DROP TABLE IF EXISTS `SAMPLE_MATERIAL`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `SAMPLE_MATERIAL` (
+  `sample_id` varchar(255) NOT NULL,
+  `type` varchar(128) NOT NULL,
+  PRIMARY KEY (`sample_id`,`type`),
+  CONSTRAINT `SAMPLE_MATERIAL_ibfk_1` FOREIGN KEY (`sample_id`) REFERENCES `SAMPLES` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `STUDY_DESIGN`
+--
+
+DROP TABLE IF EXISTS `STUDY_DESIGN`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `STUDY_DESIGN` (
+  `study_id` varchar(128) DEFAULT NULL,
+  `design` varchar(128) DEFAULT NULL,
+  KEY `study_id` (`study_id`),
+  CONSTRAINT `STUDY_DESIGN_ibfk_1` FOREIGN KEY (`study_id`) REFERENCES `STUDY_META` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `STUDY_GROUPS`
 --
 
@@ -139,6 +316,38 @@ CREATE TABLE `STUDY_GROUPS` (
   `email` varchar(255) NOT NULL,
   `groupname` varchar(64) NOT NULL,
   PRIMARY KEY (`email`,`groupname`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `STUDY_INCLUSION_CRITERIA`
+--
+
+DROP TABLE IF EXISTS `STUDY_INCLUSION_CRITERIA`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `STUDY_INCLUSION_CRITERIA` (
+  `study_id` varchar(128) NOT NULL DEFAULT '',
+  `criterium` varchar(128) NOT NULL,
+  PRIMARY KEY (`study_id`,`criterium`),
+  CONSTRAINT `STUDY_INCLUSION_CRITERIA_ibfk_1` FOREIGN KEY (`study_id`) REFERENCES `STUDY_META` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `STUDY_META`
+--
+
+DROP TABLE IF EXISTS `STUDY_META`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `STUDY_META` (
+  `id` varchar(128) NOT NULL,
+  `studyname` varchar(128) NOT NULL,
+  `description` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`studyname`),
+  UNIQUE KEY `id` (`id`),
+  CONSTRAINT `STUDY_META_ibfk_1` FOREIGN KEY (`studyname`) REFERENCES `study` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,6 +435,32 @@ CREATE TABLE `USERS_GROUPS` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `Yubikey`
+--
+
+DROP TABLE IF EXISTS `Yubikey`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Yubikey` (
+  `yubidnum` varchar(45) NOT NULL,
+  `serial` varchar(10) DEFAULT NULL,
+  `version` varchar(15) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `notes` varchar(100) DEFAULT NULL,
+  `counter` int(11) DEFAULT NULL,
+  `low` int(11) DEFAULT NULL,
+  `high` int(11) DEFAULT NULL,
+  `session_use` int(11) DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `aes_secret` varchar(100) DEFAULT NULL,
+  `public_id` varchar(40) DEFAULT NULL,
+  `People_uid` int(10) DEFAULT NULL,
+  PRIMARY KEY (`yubidnum`),
+  KEY `fk_Yubikey_People_idx` (`People_uid`),
+  CONSTRAINT `fk_Yubikey_People1` FOREIGN KEY (`People_uid`) REFERENCES `People` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `activity`
@@ -242,7 +477,7 @@ CREATE TABLE `activity` (
   `flag` enum('DATA','STUDY','TEAM','USERS') DEFAULT NULL,
   `activity_on` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=383 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,11 +506,9 @@ DROP TABLE IF EXISTS `collection_type`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `collection_type` (
   `collection_id` varchar(255) NOT NULL DEFAULT '',
-  `type_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`collection_id`,`type_id`),
-  KEY `type_id` (`type_id`),
-  CONSTRAINT `collection_type_ibfk_1` FOREIGN KEY (`collection_id`) REFERENCES `samplecollection` (`id`),
-  CONSTRAINT `collection_type_ibfk_2` FOREIGN KEY (`type_id`) REFERENCES `COLLECTION_TYPES` (`id`)
+  `type` varchar(128) NOT NULL,
+  PRIMARY KEY (`collection_id`,`type`),
+  CONSTRAINT `collection_type_ibfk_1` FOREIGN KEY (`collection_id`) REFERENCES `SAMPLECOLLECTIONS` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -348,29 +581,10 @@ CREATE TABLE `jobhistory` (
   `type` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
-  KEY `study` (`study`),
   KEY `user` (`user`),
-  CONSTRAINT `jobhistory_ibfk_1` FOREIGN KEY (`study`) REFERENCES `study` (`name`),
-  CONSTRAINT `jobhistory_ibfk_2` FOREIGN KEY (`user`) REFERENCES `USERS` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `samplecollection`
---
-
-DROP TABLE IF EXISTS `samplecollection`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `samplecollection` (
-  `id` varchar(255) NOT NULL,
-  `acronym` varchar(1024) NOT NULL,
-  `name` varchar(1024) NOT NULL,
-  `description` varchar(2000) DEFAULT NULL,
-  `contact` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `contact` (`contact`),
-  CONSTRAINT `samplecollection_ibfk_1` FOREIGN KEY (`contact`) REFERENCES `USERS` (`EMAIL`)
+  KEY `study` (`study`),
+  CONSTRAINT `jobhistory_ibfk_2` FOREIGN KEY (`user`) REFERENCES `USERS` (`EMAIL`),
+  CONSTRAINT `jobhistory_ibfk_3` FOREIGN KEY (`study`) REFERENCES `study` (`name`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -426,21 +640,25 @@ CREATE TABLE `study_services` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Temporary view structure for view `v_People_Group`
+--
 
+DROP TABLE IF EXISTS `v_People_Group`;
+/*!50001 DROP VIEW IF EXISTS `v_People_Group`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `v_People_Group` AS SELECT 
+ 1 AS `username`,
+ 1 AS `password`,
+ 1 AS `secret`,
+ 1 AS `email`,
+ 1 AS `group_name`*/;
+SET character_set_client = @saved_cs_client;
 
-LOCK TABLES `USERS` WRITE;
-/*!40000 ALTER TABLE `USERS` DISABLE KEYS */;
-INSERT INTO `USERS` VALUES ('admin','33','Administrator','61646D696E','2013-09-26 12:51:52','xx','admin');
-/*!40000 ALTER TABLE `USERS` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-LOCK TABLES `USERS_GROUPS` WRITE;
-/*!40000 ALTER TABLE `USERS_GROUPS` DISABLE KEYS */;
-INSERT INTO `USERS_GROUPS` VALUES ('admin','ADMIN');
-/*!40000 ALTER TABLE `USERS_GROUPS` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+--
+-- Final view structure for view `StudyDetails`
+--
 
 /*!50001 DROP VIEW IF EXISTS `StudyDetails`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
@@ -474,5 +692,31 @@ UNLOCK TABLES;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
+--
+-- Final view structure for view `v_People_Group`
+--
 
--- Dump completed on 2015-01-07 14:15:59
+/*!50001 DROP VIEW IF EXISTS `v_People_Group`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_People_Group` AS select `u`.`username` AS `username`,`u`.`password` AS `password`,`u`.`secret` AS `secret`,`u`.`email` AS `email`,`g`.`group_name` AS `group_name` from ((`People_Group` `ug` join `People` `u` on((`u`.`uid` = `ug`.`uid`))) join `Group` `g` on((`g`.`gid` = `ug`.`gid`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-01-09 19:36:24
