@@ -17,8 +17,6 @@
 
 
 
--- REPLACE INTO `Hosts` (hostId, HOSTNAME_, privateIp, registered) VALUES ('<%= node['hop']['hostid'] %>', 'vagrant', '<%= node['hop']['ip'] %>', 0);
-
 LOCK TABLES `USERS` WRITE;
 /*!40000 ALTER TABLE `USERS` DISABLE KEYS */;
 INSERT INTO `USERS` VALUES ('admin','33','Administrator','61646D696E','2013-09-26 12:51:52','xx','admin');
