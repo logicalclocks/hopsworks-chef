@@ -12,19 +12,24 @@ test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java
 EOF
 end
 
-group node['glassfish']['group'] do
+group node[:glassfish][:group] do
 end
-
 
 user node['glassfish']['user'] do
   comment 'GlassFish Application Server'
-  gid node['glassfish']['group']
-  home node['glassfish']['base_dir']
+  home "/home/#{node['glassfish']['user']}"
   shell '/bin/bash'
   action :create
   system true
   not_if "getent passwd #{node['glassfish']['user']}"
 end
+
+group node[:glassfish][:group] do
+  action :modify
+  members node[:glassfish][:user] 
+  append true
+end
+
 
 package_url = node['glassfish']['package_url']
 base_package_filename = File.basename(package_url)
