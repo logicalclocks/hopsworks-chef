@@ -26,7 +26,7 @@ hopshub_grants "kthfs"  do
 end 
 
  template "#{rows_path}" do
-   source "#{rows_path}.erb"
+   source File.basename("#{rows_path}") + ".erb"
    owner node[:glassfish][:user]
    group node[:glassfish][:group]
    mode 0755
