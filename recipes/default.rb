@@ -16,19 +16,29 @@ hopshub_grants "create_kthfs_db"  do
   action :create_db
 end 
 
-kthfs_path = "#{Chef::Config[:file_cache_path]}/kthfs.sql"
+tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
+rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
 hopshub_grants "kthfs"  do
-  kthfs_path  "#{kthfs_path}"
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
   action :nothing
 end 
 
+ template "#{rows_path}" do
+   source "#{rows_path}.erb"
+   owner node[:glassfish][:user]
+   group node[:glassfish][:group]
+   mode 0755
+   action :create
+ end
+
 begin
-  t = resources("template[#{kthfs_path}]")
+  t = resources("template[#{tables_path}]")
 rescue
-  Chef::Log.info("Could not find previously defined #{kthfs_path} resource")
-  t = template kthfs_path do
-    source File.basename("#{kthfs_path}") + ".erb"
+  Chef::Log.info("Could not find previously defined #{tables_path} resource")
+  t = template tables_path do
+    source File.basename("#{tables_path}") + ".erb"
     owner "root" 
     mode "0600"
     action :create
@@ -38,16 +48,6 @@ rescue
     notifies :populate_db, "hopshub_grants[kthfs]", :immediately
   end 
 end
-
-
-
-# template "#{Chef::Config[:file_cache_path]}/graphs.sql" do
-#   source "graphs.sql.erb"
-#   owner node[:glassfish][:user]
-#   group node[:glassfish][:group]
-#   mode 0755
-#   action :create
-# end
 
 
 # graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"

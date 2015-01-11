@@ -15,12 +15,23 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Dumping data for table `Hosts`
---
 
 
-REPLACE INTO `Hosts` (hostId, HOSTNAME_, privateIp, registered) VALUES ('<%= node['hop']['hostid'] %>', 'vagrant', '<%= node['hop']['ip'] %>', 0);
+-- REPLACE INTO `Hosts` (hostId, HOSTNAME_, privateIp, registered) VALUES ('<%= node['hop']['hostid'] %>', 'vagrant', '<%= node['hop']['ip'] %>', 0);
+
+LOCK TABLES `USERS` WRITE;
+/*!40000 ALTER TABLE `USERS` DISABLE KEYS */;
+INSERT INTO `USERS` VALUES ('admin','33','Administrator','61646D696E','2013-09-26 12:51:52','xx','admin');
+/*!40000 ALTER TABLE `USERS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+LOCK TABLES `USERS_GROUPS` WRITE;
+/*!40000 ALTER TABLE `USERS_GROUPS` DISABLE KEYS */;
+INSERT INTO `USERS_GROUPS` VALUES ('admin','ADMIN');
+/*!40000 ALTER TABLE `USERS_GROUPS` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 
 -- Dump completed on 2012-10-29 22:03:39
