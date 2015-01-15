@@ -12,7 +12,6 @@ end
 
 depends 'glassfish'
 depends 'ndb'
-depends 'collectd'
 depends 'kagent'
 
 attribute "hopshub/smtp/server",
