@@ -2,7 +2,7 @@ source "https://api.berkshelf.com"
 
 metadata
 
-cookbook 'kagent', github: 'karamelize/kagent-chef', branch: "master"
+cookbook 'kagent', github: 'karamelchef/kagent-chef', branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 
 cookbook 'python', "~> 1.4.4"
