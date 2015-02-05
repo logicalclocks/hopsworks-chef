@@ -3,7 +3,6 @@ node.default['java']['install_flavor'] = "openjdk"
 
 include_recipe 'java'
 include_recipe "openssh"
-# include_recipe "runit"
 
 bash 'fix_java_path_for_glassfish_cookbook' do
 user "root"
@@ -13,16 +12,24 @@ test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java
 EOF
 end
 
-group node['glassfish']['group'] do
+group node[:glassfish][:group] do
 end
 
 user node['glassfish']['user'] do
-  comment 'GlassFish Application Server'
-  gid node['glassfish']['group']
-  home node['glassfish']['base_dir']
+  supports :manage_home => true
+  home "/home/#{node['glassfish']['user']}"
   shell '/bin/bash'
+  action :create
   system true
+  not_if "getent passwd #{node['glassfish']['user']}"
 end
+
+group node[:glassfish][:group] do
+  action :modify
+  members node[:glassfish][:user] 
+  append true
+end
+
 
 package_url = node['glassfish']['package_url']
 base_package_filename = File.basename(package_url)
@@ -40,7 +47,6 @@ majorVersion = node['glassfish']['version'].each_char.first
 
 bash 'unpack_glassfish' do
     code <<-EOF
-
 rm -rf /tmp/glassfish
 mkdir /tmp/glassfish
 cd /tmp/glassfish

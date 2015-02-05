@@ -12,79 +12,64 @@
 
 private_ip=my_private_ip()
 
-creds_path = "#{Chef::Config[:file_cache_path]}/credentials.sql"
-
-hopshub_grants "creds"  do
-  creds_path  "#{creds_path}"
+hopshub_grants "create_kthfs_db"  do
+  action :create_db
 end 
 
-Chef::Log.info("Could not find previously defined #{creds_path} resource")
-template "#{creds_path}" do
-  source "credentials.sql.erb"
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
-  mode 0755 
-  action :create
-  variables({
-              :private_ip => private_ip
-            })
-  notifies :creds, "hopshub_grants[creds]", :immediately
-end 
-
-kthfs_path = "#{Chef::Config[:file_cache_path]}/kthfs.sql"
+tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
+rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
 hopshub_grants "kthfs"  do
-  kthfs_path  "#{kthfs_path}"
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
   action :nothing
 end 
 
+ template "#{rows_path}" do
+   source File.basename("#{rows_path}") + ".erb"
+   owner node[:glassfish][:user]
+   group node[:glassfish][:group]
+   mode 0755
+   action :create
+ end
+
 begin
-  t = resources("template[#{kthfs_path}]")
+  t = resources("template[#{tables_path}]")
 rescue
-  Chef::Log.info("Could not find previously defined #{kthfs_path} resource")
-  t = template kthfs_path do
-    source File.basename("#{kthfs_path}") + ".erb"
+  Chef::Log.info("Could not find previously defined #{tables_path} resource")
+  t = template tables_path do
+    source File.basename("#{tables_path}") + ".erb"
     owner "root" 
     mode "0600"
     action :create
     variables({
                 :private_ip => private_ip
               })
-    notifies :kthfs, "hopshub_grants[kthfs]", :immediately
+    notifies :populate_db, "hopshub_grants[kthfs]", :immediately
   end 
 end
 
 
+# graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"
 
-template "#{Chef::Config[:file_cache_path]}/graphs.sql" do
-  source "graphs.sql.erb"
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
-  mode 0755
-  action :create
-end
+# hopshub_grants "graphs"  do
+#   graphs_path  "#{graphs_path}"
+#   action :nothing
+# end 
 
-
-graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"
-
-hopshub_grants "graphs"  do
-  graphs_path  "#{graphs_path}"
-  action :nothing
-end 
-
-begin
-  t = resources("template[#{graphs_path}]")
-rescue
-  Chef::Log.info("Could not find previously defined #{graphs_path} resource")
-  t = template graphs_path do
-    source File.basename("#{graphs_path}") + ".erb"
-    owner node[:glassfish][:user]
-    group node[:glassfish][:group]
-    mode "0660"
-    action :create
-    notifies :graphs, "hopshub_grants[graphs]", :immediately
-  end
-end
+# begin
+#   t = resources("template[#{graphs_path}]")
+# rescue
+#   Chef::Log.info("Could not find previously defined #{graphs_path} resource")
+#   t = template graphs_path do
+#     source File.basename("#{graphs_path}") + ".erb"
+#     owner node[:glassfish][:user]
+#     group node[:glassfish][:group]
+#     mode "0660"
+#     action :create
+#     notifies :graphs, "hopshub_grants[graphs]", :immediately
+#   end
+# end
 
 
 
@@ -124,18 +109,24 @@ end
 
 keytool_path="#{node[:java][:java_home]}/bin"
 
+if node[:java][:java_home].to_s == ''
+ if ENV['JAVA_HOME'].to_s != ''
+   keytool_path="#{ENV['JAVA_HOME']}/bin"
+ else
+   keytool_path="/usr/bin"
+ end
+end
+
 bash "delete_invalid_certs" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
    code <<-EOF
-   cd #{config_dir}
 # This cert has expired, blocks startup of glassfish
-   #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   {keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   {keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
    EOF
    only_if "#{node[:java][:java_home]}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
 end
-
 
 bash "create_glassfish_certs" do
   user node[:glassfish][:user]
@@ -147,6 +138,7 @@ bash "create_glassfish_certs" do
  # Generate two new certs with same alias as original certs
    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+
 
    #Add two new certs to cacerts.jks
    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
@@ -214,10 +206,9 @@ else
     user "root"
     code <<-EOF
     initctl stop glassfish-#{domain_name} || true
-    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
+#    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
     sleep 5
     initctl start glassfish-#{domain_name} 
-
     EOF
   end
 
@@ -323,6 +314,8 @@ command_string = []
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=USERS_GROUPS:user-table=USERS:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
 # email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
 # --port #{node[:hopshub][:smtp][:port]} 
@@ -417,21 +410,14 @@ if "#{node[:ndb][:enabled]}" == "true"
        group node['mysql']['root_group']
        mode "0600"
        action :create
-       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+#       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
      end 
    end
 end
 
 
-# bash "stop_glassfish_before_certs" do
-#    user "root"
-#    code <<-EOF
-#     initctl stop glassfish-#{domain_name} || true
-#     ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
-#    EOF
-# end
-
-
-kagent_kagent "restart_agent_to_register" do
-  action :restart
+if node[:kagent][:enabled] == "true"
+ kagent_kagent "restart_agent_to_register" do
+   action :restart
+ end
 end

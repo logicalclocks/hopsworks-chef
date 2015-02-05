@@ -1,50 +1,26 @@
-notifying_action :grants do
-
-    Chef::Log.info("Grants file is here: #{new_resource.grants_path}")
+notifying_action :create_db do
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
   bash 'grants_kthfs' do
     user "root"
     code <<-EOF
-      #{exec} kthfs -e \"source #{new_resource.grants_path}\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS kthfs\"
     EOF
   end
-  not_if "#{exec} kthfs -e \"SELECT user FROM mysql.user;\"  | grep #{node[:mysql][:user]}"
 end
 
-notifying_action :kthfs do
-    Chef::Log.info("Kthfs file is here: #{new_resource.kthfs_path}")
+notifying_action :populate_db do
+
+  Chef::Log.info("Tables.sql is here: #{new_resource.tables_path}")
+  Chef::Log.info("Rows.sql is here: #{new_resource.tables_path}")
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
   bash 'populate_kthfs_tables' do
     user "root"
     code <<-EOF
-      #{exec} kthfs -e \"source #{new_resource.kthfs_path}\"
+      #{exec} kthfs -e \"source #{new_resource.tables_path}\"
+      #{exec} kthfs -e \"source #{new_resource.rows_path}\"
     EOF
     not_if "#{exec} kthfs < \"show tables;\" | grep Hosts"
   end
-end
-
-notifying_action :creds do
-
-  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
-  bash 'populate_creds_tables' do
-    user "root"
-    code <<-EOF
-      #{exec} kthfs -e \"source #{new_resource.creds_path}\"
-    EOF
-  end
-
-end
-
-notifying_action :graphs do
-
-  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
-  bash 'populate_graphs_tables' do
-    user "root"
-    code <<-EOF
-      #{exec} kthfs -e \"source #{new_resource.graphs_path}\"
-    EOF
-  end
-
 end
 
 notifying_action :sshkeys do

@@ -52,12 +52,12 @@ default[:karamel][:master][:password]     = "changeit"
 version                                   = node[:glassfish][:version]
 #default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
-default[:glassfish][:base_dir]            = "/usr/local/glassfish-#{version}"
-default[:glassfish][:install_dir]         = "/usr/local/glassfish-#{version}"
-default[:glassfish][:domains_dir]         = "/usr/local/glassfish-#{version}/glassfish/domains"
+node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish-#{version}"
+node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
+node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/glassfish/domains"
 
 #default[:glassfish][:mysql_connector]         = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.29.tar.gz"
-default[:glassfish][:mysql_connector]     = "#{node[:download_url]}/mysql-connector-java-5.1.29.tar.gz"
+node.normal[:glassfish][:mysql_connector] = "#{node[:download_url]}/mysql-connector-java-5.1.29.tar.gz"
 case node[:hopshub][:twofactor_auth]
  when "true"
    default[:kthfs][:mgr]                  = "#{node[:download_url]}/hop-dashboard-2pc.war"
@@ -88,3 +88,4 @@ default[:hopshub][:smtp][:port]           = "25"
 #default[:hopshub][:smtp][:secure]         = "true"
 default[:hopshub][:smtp][:secure]         = "false"
 
+default[:kagent][:enabled]                = "false"

@@ -1,8 +1,0 @@
-CREATE DATABASE IF NOT EXISTS kthfs;
-
-GRANT ALL PRIVILEGES on *.* TO '<%= node['mysql']['user'] %>'@'localhost' IDENTIFIED BY '<%= node['mysql']['user_password'] %>';
-GRANT ALL PRIVILEGES on *.* TO '<%= node['mysql']['user'] %>'@<%= node[:dashboard][:private_ip] %>' IDENTIFIED BY '<%= node['mysql']['user_password'] %>';
-GRANT ALL PRIVILEGES on *.* TO '<%= node['mysql']['user'] %>'@'%' IDENTIFIED BY '<%= node['mysql']['user_password'] %>';
-
-
-
