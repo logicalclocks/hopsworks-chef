@@ -122,10 +122,10 @@ bash "delete_invalid_certs" do
   group node[:glassfish][:group]
    code <<-EOF
 # This cert has expired, blocks startup of glassfish
-   {keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   {keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
    EOF
-   only_if "#{node[:java][:java_home]}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+   only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
 end
 
 bash "create_glassfish_certs" do
