@@ -52,6 +52,7 @@ default[:karamel][:master][:password]     = "changeit"
 version                                   = node[:glassfish][:version]
 #default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
+default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-grizzly-all.jar"
 node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish-#{version}"
 node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
 node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/glassfish/domains"

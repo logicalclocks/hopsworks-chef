@@ -35,7 +35,7 @@ suites:
 #      - recipe[collectd::mysqld]
 
     attributes:
-         download_url: "http://192.168.1.125/hops"
+#         download_url: "http://192.168.1.125/hops"
          collectd:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]

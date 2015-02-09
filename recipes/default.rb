@@ -349,21 +349,29 @@ remote_file cached_kthfsmgr_filename do
 end
 
 
-bash "set_long_timeouts_for_ssh_ops" do
+bash "set_long_timeouts_for_ssh_ops_fix_cdi_bug" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
  code <<-EOF
    cd #{node[:glassfish][:base_dir]}/glassfish/bin   
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-1.http.request-timeout-seconds=7200
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=7200
+  
+   # http://www.eclipse.org/forums/index.php/t/490794/
+   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
  EOF
 end
 
 
 Chef::Log.info "Installing HopsHub "
 command_string = []
-#  --verify=true
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --createtables=true --enabled=true --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
+# Some dependencies, such as guice and jclouds use JSR 330 annotation, which means we have to switch off CDI.
+# We need to specify the beans explicitly
+#  --verify=true --createtables=true 
+# https://blogs.oracle.com/theaquarium/entry/default_cdi_enablement_in_java
+# asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+# http://www.eclipse.org/forums/index.php/t/490794/
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --property implicitCdiEnabled=false --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
 Chef::Log.info(command_string.join("\t"))
 bash "installing_dashboard" do
   user node[:glassfish][:user]

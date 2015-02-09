@@ -59,6 +59,10 @@ chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
 chmod -R 0770 #{node['glassfish']['base_dir']}/bin/
 chmod -R 0770 #{node['glassfish']['base_dir']}/glassfish/bin/
 rm -rf #{node['glassfish']['base_dir']}/glassfish/domains/domain1
+#Bugfix http://stackoverflow.com/questions/26723273/timeoutexception-on-remote-glassfish-v4-1-deployment
+rm #{node['glassfish']['base_dir']}/glassfish/modules/nucleus-grizzly-all.jar
+cd #{node['glassfish']['base_dir']}/glassfish/modules
+wget #{node[:grizzly][:jar_url]}
 test -d #{node['glassfish']['base_dir']}
 EOF
   not_if { ::File.exists?( node['glassfish']['base_dir'] ) }
