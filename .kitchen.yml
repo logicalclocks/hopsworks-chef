@@ -10,9 +10,10 @@ provisioner:
   name: chef_solo
 
 platforms:
-  - name: ubuntu-12.04
+
+#  - name: ubuntu-12.04
   - name: ubuntu-14.04
-  - name: centos-6.5
+#  - name: centos-6.5
 
 suites:
   - name: default
@@ -34,6 +35,7 @@ suites:
 #      - recipe[collectd::mysqld]
 
     attributes:
+#         download_url: "http://192.168.1.125/hops"
          collectd:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]

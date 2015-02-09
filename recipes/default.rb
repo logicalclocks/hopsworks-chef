@@ -122,23 +122,23 @@ bash "delete_invalid_certs" do
   group node[:glassfish][:group]
    code <<-EOF
 # This cert has expired, blocks startup of glassfish
-   {keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   {keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+   #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
    EOF
-   only_if "#{node[:java][:java_home]}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+   only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
 end
 
 bash "create_glassfish_certs" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
    code <<-EOF
-
    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
  # Generate two new certs with same alias as original certs
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname \"CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}\" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname \"CN=#{node[:caramel][:cert][:cn]},O=#{node[:caramel][:cert][:o]},OU=#{node[:caramel][:cert][:ou]},L=#{node[:caramel][:cert][:l]},S=#{node[:caramel][:cert][:s]},C=#{node[:caramel][:cert][:c]}\" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+
 
    #Add two new certs to cacerts.jks
    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
@@ -281,9 +281,9 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #     initctl stop glassfish-#{domain_name}
 #     expect -c 'spawn #{asadmin} change-master-password --savemasterpassword=true
 #     expect "Please enter the new master password> "
-#     send "#{node[:caramel][:master][:password]}\r"
+#     send "#{node[:karamel][:master][:password]}\r"
 #     expect "Please enter the new master password again> "
-#     send "#{node[:caramel][:master][:password]}\r"
+#     send "#{node[:karamel][:master][:password]}\r"
 #     expect eof'
 #   EOF
 #   not_if { ::File.exists?( "#{password_file}")}
@@ -349,21 +349,29 @@ remote_file cached_kthfsmgr_filename do
 end
 
 
-bash "set_long_timeouts_for_ssh_ops" do
+bash "set_long_timeouts_for_ssh_ops_fix_cdi_bug" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
  code <<-EOF
    cd #{node[:glassfish][:base_dir]}/glassfish/bin   
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-1.http.request-timeout-seconds=7200
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=7200
+  
+   # http://www.eclipse.org/forums/index.php/t/490794/
+   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
  EOF
 end
 
 
 Chef::Log.info "Installing HopsHub "
 command_string = []
-#  --verify=true
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --createtables=true --enabled=true --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
+# Some dependencies, such as guice and jclouds use JSR 330 annotation, which means we have to switch off CDI.
+# We need to specify the beans explicitly
+#  --verify=true --createtables=true 
+# https://blogs.oracle.com/theaquarium/entry/default_cdi_enablement_in_java
+# asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+# http://www.eclipse.org/forums/index.php/t/490794/
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --property implicitCdiEnabled=false --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
 Chef::Log.info(command_string.join("\t"))
 bash "installing_dashboard" do
   user node[:glassfish][:user]

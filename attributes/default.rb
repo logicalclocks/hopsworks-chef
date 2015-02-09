@@ -22,11 +22,10 @@ default[:glassfish][:user]                = "glassfish"
 default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
-
+default[:glassfish][:version]             = '4.1'
 default[:hopshub][:admin][:user]          = "admin"
-default[:hopshub][:admin][:password]      = "admin"
-default[:glassfish][:cert][:password]     = "changeit"
-default[:hopshub][:cert][:password]       = "changeit"
+default[:hopshub][:admin][:password]      = "changeit"
+default[:glassfish][:cert][:password]     = node[:hopshub][:admin][:password]
 
 default[:hopshub][:twofactor_auth]        = "false"
 
@@ -39,20 +38,23 @@ default[:glassfish][:max_perm_size]       = 1024
 default[:mysql][:mysql_bin]               = "#{node[:mysql][:base_dir]}/bin/mysql"
 default[:mysql][:mysql_cnf]               = "#{node[:ndb][:base_dir]}/my.cnf"
 
-default[:caramel][:cert][:cn]             = "hops.kth.se"
-default[:caramel][:cert][:o]              = "kth"
-default[:caramel][:cert][:ou]             = "ict"
-default[:caramel][:cert][:l]              = "kista"
-default[:caramel][:cert][:s]              = "stockholm"
-default[:caramel][:cert][:c]              = "se"
-default[:caramel][:cert][:password]       = "hopsan"
+default[:karamel][:cert][:cn]             = "hops.kth.se"
+default[:karamel][:cert][:o]              = "kth"
+default[:karamel][:cert][:ou]             = "ict"
+default[:karamel][:cert][:l]              = "kista"
+default[:karamel][:cert][:s]              = "stockholm"
+default[:karamel][:cert][:c]              = "se"
 
-default[:caramel][:master][:password]     = "hopsan"
+default[:hopshub][:cert][:password]       = "changeit"
 
-version                                   = "3.1.2.2"
+default[:karamel][:master][:password]     = "changeit"
+
+version                                   = node[:glassfish][:version]
 #default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
+default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-grizzly-all.jar"
 node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish-#{version}"
+node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
 node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/glassfish/domains"
 
 #default[:glassfish][:mysql_connector]         = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.29.tar.gz"
