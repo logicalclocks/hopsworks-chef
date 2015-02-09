@@ -73,6 +73,7 @@ directory "#{node['glassfish']['base_dir']}/glassfish/lib/templates" do
   group node['glassfish']['group']
   mode 0644
   action :create
+  recursive true
 end
 
 cookbook_file "#{node['glassfish']['base_dir']}/glassfish/lib/templates/domain.xml" do

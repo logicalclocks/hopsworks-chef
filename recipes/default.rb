@@ -117,40 +117,40 @@ if node[:java][:java_home].to_s == ''
  end
 end
 
-bash "delete_invalid_certs" do
-  user node[:glassfish][:user]
-  group node[:glassfish][:group]
-   code <<-EOF
-# This cert has expired, blocks startup of glassfish
-   #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   EOF
-   only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
-end
+# bash "delete_invalid_certs" do
+#   user node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#    code <<-EOF
+# # This cert has expired, blocks startup of glassfish
+#    #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    EOF
+#    only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+# end
 
-bash "create_glassfish_certs" do
-  user node[:glassfish][:user]
-  group node[:glassfish][:group]
-   code <<-EOF
-   #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-   #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+# bash "create_glassfish_certs" do
+#   user node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#    code <<-EOF
+#    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
- # Generate two new certs with same alias as original certs
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-   #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+#  # Generate two new certs with same alias as original certs
+#    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+#    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
 
-   #Add two new certs to cacerts.jks
-   #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-   #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #Add two new certs to cacerts.jks
+#    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
   
-   #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-   #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
   
-   touch #{node[:glassfish][:base_dir]}/.certs_generated
-   EOF
-   not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
-end
+#    touch #{node[:glassfish][:base_dir]}/.certs_generated
+#    EOF
+#    not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
+# end
 
 admin_pwd="#{node[:glassfish][:domains_dir]}/#{domain_name}_admin_passwd"
 
@@ -232,7 +232,8 @@ bash "unpack_mysql_connector" do
     code <<-EOF
    tar -xzf #{path_mysql_tgz} -C #{Chef::Config[:file_cache_path]}
    # copy mysql-connector jar file to lib/ dir of domain1.
-   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib
+   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases
+   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish][:base_dir]}/glassfish/lib
    touch #{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded
 EOF
   not_if { ::File.exists?( "#{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded")}
@@ -252,28 +253,8 @@ end
 
 Chef::Log.info "JDBC Connection: #{mysql_ips}"
 
-# glassfish_jdbc_connection_pool "#{domain_name}-jdbc-connection-pool" do
-#   username username
-#   password_file "#{node[:glassfish]['domains_dir']}/#{domain_name}_admin_passwd"
-#   admin_port admin_port
-#   secure secure 
-#   echo true
-#   terse false
-#   datasourceclassname "com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource"
-#   driverclassname ""
-#   restype "javax.sql.DataSource"
-#   nontransactionalconnections false
-#   creationretryattempts 1
-#   creationretryinterval 2
-#   validationmethod "auto-commit"
-#   isconnectvalidatereq true
-#   isolationlevel "read-committed"
-#   action :create
-# end
-
 # package "expect" do
 # end                                                                                                                                                                            
-
 # bash "change_master_passwd" do
 #    user node[:glassfish][:user]
 #    group node[:glassfish][:group]
@@ -289,25 +270,15 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #   not_if { ::File.exists?( "#{password_file}")}
 # end
 
-#--nontransactionalconnections=true 
-# command_string = []
-# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --isolationlevel=read-committed --property ServerName=#{mysql_ips}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{kthfs_db}\" #{kthfs_db}"
-# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{kthfs_db} --enabled=true jdbc/#{kthfs_db}"
-# command_string << "touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed"
-#Chef::Log.info(command_string.join("\t"))
-
 bash "install_jdbc" do
    user node[:glassfish][:user]
    group node[:glassfish][:group]
-#   code command_string.join("\n")
-# --isolationlevel=read-committed 
  code <<-EOF
 #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{kthfs_db}" #{kthfs_db}
 #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{kthfs_db} --enabled=true jdbc/#{kthfs_db}
 touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed
 EOF
   not_if { ::File.exists?( "#{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed") }
-# not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep -i #{kthfs_db}"
  end
 
 command_string = []
@@ -317,6 +288,7 @@ command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  se
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
+
 # email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
 # --port #{node[:hopshub][:smtp][:port]} 
 #command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp][:server]} --mailuser #{node[:hopshub][:smtp][:username]}  --fromaddress #{node[:hopshub][:smtp][:username]} --transprotocol smtp --enabled=true --secure false --property mail-smtp.user=hadoop@hops.io:mail-smtp.port=25:mail-smtp.password=fake:mail-smtp.auth=false mail/BBCMail"
