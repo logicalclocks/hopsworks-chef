@@ -330,7 +330,7 @@ bash "set_long_timeouts_for_ssh_ops_fix_cdi_bug" do
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=7200
   
    # http://www.eclipse.org/forums/index.php/t/490794/
-#   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
  EOF
 end
 
