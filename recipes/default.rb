@@ -330,7 +330,7 @@ bash "set_long_timeouts_for_ssh_ops_fix_cdi_bug" do
    #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds=7200
   
    # http://www.eclipse.org/forums/index.php/t/490794/
-   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+#   #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set configs.config.server-config.cdi-service.enable-implicit-cdi=false
  EOF
 end
 
@@ -341,9 +341,9 @@ command_string = []
 # We need to specify the beans explicitly
 #  --verify=true --createtables=true 
 # https://blogs.oracle.com/theaquarium/entry/default_cdi_enablement_in_java
-# asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false
+# asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false  
 # http://www.eclipse.org/forums/index.php/t/490794/
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --property implicitCdiEnabled=false --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
 Chef::Log.info(command_string.join("\t"))
 bash "installing_dashboard" do
   user node[:glassfish][:user]
