@@ -90,3 +90,10 @@ default[:hopshub][:smtp][:port]           = "25"
 default[:hopshub][:smtp][:secure]         = "false"
 
 default[:kagent][:enabled]                = "false"
+
+
+
+default[:hopshub][:smtp]                  = "smtp.gmail.com"
+default[:hopshub][:email_address]         = "yourusername@gmail.com"
+default[:hopshub][:smtp_password]         = "enterpasswordhere"
+

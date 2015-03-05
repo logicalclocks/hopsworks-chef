@@ -16,6 +16,7 @@ setgid <%= node[:glassfish][:group] %>
 respawn limit 15 5
 kill signal HUP
 umask 0022
+expect fork
 
 pre-start script
   test -f <%= node['glassfish']['base_dir'] %>/glassfish/modules/glassfish.jar || { stop; exit 0; }
