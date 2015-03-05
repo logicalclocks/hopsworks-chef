@@ -6,7 +6,6 @@
 # http://computingat40s.wordpress.com/how-to-create-a-custom-realm-in-glassfish-3-1-2-2/
 
 
-
 # Check if it is an AWS or Openstack - if yes, store the AWS/Openstack credentials
 #if "#{node[:hopshub][:public_key]}".empty? == false && "#{node[:provider][:name]}".empty? == false && "#{node[:provider][:access_key]}".empty? == false && "#{node[:provider][:account_id]}".empty? == false
 
@@ -239,6 +238,7 @@ EOF
   not_if { ::File.exists?( "#{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded")}
 end
 kthfs_db = "kthfs"
+hops_db = "hops"
 
 mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
@@ -276,6 +276,8 @@ bash "install_jdbc" do
  code <<-EOF
 #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{kthfs_db}" #{kthfs_db}
 #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{kthfs_db} --enabled=true jdbc/#{kthfs_db}
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{hops_db}" #{hops_db}
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hops_db} --enabled=true jdbc/#{hops_db}
 touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed
 EOF
   not_if { ::File.exists?( "#{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed") }
@@ -285,6 +287,7 @@ command_string = []
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=USERS_GROUPS:user-table=USERS:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
