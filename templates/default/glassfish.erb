@@ -24,11 +24,12 @@ start() {
 <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
 perl -pi -e "s/\\n/ /g" <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
 echo '#!/bin/sh'  > <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
-echo "cd <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config"                                    >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
-JAVA_COMMAND=`cat <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command`
-echo "nohup $JAVA_COMMAND &> #{node[:glassfish][:base_dir]}/glassfish/domains/#{domain_name}/logs/server.log &" >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-echo "PID=$!"                                                                                                   >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-echo "cat $PID > <%= node[:glassfish][:base_dir] %>/glassfish/domains/#{domain_name}/config/glassfish.pid"      >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
+echo "cd <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config"                                     >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
+echo "JAVA_COMMAND=\"`cat <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command`\""           >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
+echo "nohup \${JAVA_COMMAND} &> #{node[:glassfish][:base_dir]}/glassfish/domains/#{domain_name}/logs/server.log &" >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
+echo "PID=\$!"                                                                                                   >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
+echo "cat \$PID > <%= node[:glassfish][:base_dir] %>/glassfish/domains/#{domain_name}/config/glassfish.pid"      >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
+chown <%= node[:glassfish][:user] %> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
 chmod +x <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
 <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
   <% @listen_ports.sort.each do |listen_port| %>
@@ -54,8 +55,8 @@ stop() {
 
 restart() {
   echo "Restarting"
-  stop()
-  start()
+  stop
+  start
   return $?
 }
 
