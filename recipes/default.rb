@@ -177,7 +177,7 @@ end
 
 template "/etc/init.d/glassfish" do
   source "glassfish.erb"
-  mode "0644"
+  mode "0751"
   variables(:domain_name => "#{domain_name}", :username => "#{username}", :password_file => "#{admin_pwd}", :listen_ports => [node[:glassfish][:port], node[:glassfish][:admin][:port]],
   :command => "#{node[:glassfish][:base_dir]}/glassfish/bin/start-domain.java_command")
 end
@@ -241,11 +241,12 @@ bash "unpack_mysql_connector" do
     code <<-EOF
    tar -xzf #{path_mysql_tgz} -C #{Chef::Config[:file_cache_path]}
    # copy mysql-connector jar file to lib/ dir of domain1.
+   chown #{node[:glassfish][:user]} #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar
    cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases
    cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish][:base_dir]}/glassfish/lib
    touch #{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded
 EOF
-  not_if { ::File.exists?( "#{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded")}
+  not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/.#{mysql_base}_downloaded")}
 end
 kthfs_db = "kthfs"
 hops_db = "hops"
