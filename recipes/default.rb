@@ -175,43 +175,53 @@ glassfish_secure_admin domain_name do
   action :enable
 end
 
+template "/etc/init.d/glassfish" do
+  source "glassfish.erb"
+  mode "0644"
+  variables(:domain_name => "#{domain_name}", :username => "#{username}", :password_file => "#{admin_pwd}", :listen_ports => [node[:glassfish][:port], node[:glassfish][:admin][:port]],
+  :command => "#{node[:glassfish][:base_dir]}/glassfish/bin/start-domain.java_command")
+end
+
+
 bash "stop_#{domain_name}_after_enable_security" do
   user "root"
   code <<-EOF
-    initctl stop glassfish-#{domain_name} || true
+#    service glassfish-#{domain_name} start || true
+    service glassfish start || true
  EOF
 end
 
-hopshub_upstart "domain1" do
-  admin_pwd "#{admin_pwd}"
-  username "#{username}"
-  action :generate
+# hopshub_upstart "domain1" do
+#   admin_pwd "#{admin_pwd}"
+#   username "#{username}"
+#   action :generate
+# end
+
+#if platform_family?("debian")
+
+bash "start_#{domain_name}_after_enable_security" do
+ user "root"
+ code <<-EOF
+   sleep 5
+#   service start glassfish-#{domain_name} || true
+   service glassfish start || true
+  EOF
 end
 
-if platform_family?("debian")
+# else
 
-   bash "start_#{domain_name}_after_enable_security" do
-    user "root"
-    code <<-EOF
-    sleep 5
-    initctl start glassfish-#{domain_name} || true
-   EOF
-   end
+#   # Need to restart to apply new secure SSL connection when connecting to admin console
+#   bash "restart_#{domain_name}_after_enable_security" do
+#     user "root"
+#     code <<-EOF
+#     initctl stop glassfish-#{domain_name} || true
+# #    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
+#     sleep 5
+#     initctl start glassfish-#{domain_name} 
+#     EOF
+#   end
 
-else
-
-  # Need to restart to apply new secure SSL connection when connecting to admin console
-  bash "restart_#{domain_name}_after_enable_security" do
-    user "root"
-    code <<-EOF
-    initctl stop glassfish-#{domain_name} || true
-#    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
-    sleep 5
-    initctl start glassfish-#{domain_name} 
-    EOF
-  end
-
-end
+# end
 
 mysql_tgz = File.basename(node[:glassfish]['mysql_connector'])
 mysql_base = File.basename(node[:glassfish]['mysql_connector'], ".tar.gz") 

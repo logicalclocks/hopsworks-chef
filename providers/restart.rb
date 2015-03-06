@@ -7,10 +7,12 @@ bash "restart_domain1" do
    code <<-EOF
 # This command below is killing other java processes
 #   ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 
-   /sbin/stop glassfish-domain1
+#   /sbin/stop glassfish-domain1
+   service glassfish stop 
    sleep 5
 #  #{node[:glassfish][:base_dir]}/glassfish/bin/asadmin --user admin --passwordfile #{node[:glassfish][:domains_dir]}/domain1_admin_passwd start-domain domain1
-   /sbin/start glassfish-domain1
+#   /sbin/start glassfish-domain1
+   service glassfish start
   EOF
 end
 
