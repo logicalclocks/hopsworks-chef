@@ -3,6 +3,8 @@
 #
 # glassfish - Glassfish Application Server
 #
+# Reference: http://grimoire.ca/devops/glassfish-and-upstart
+#
 description     "Glassfish Application Server - <%= @domain_name %> Domain"
 
 start on filesystem or runlevel [2345]
@@ -16,22 +18,31 @@ setgid <%= node[:glassfish][:group] %>
 respawn limit 15 5
 kill signal HUP
 umask 0022
-expect fork
+expect fork 
+
+
 
 pre-start script
   test -f <%= node['glassfish']['base_dir'] %>/glassfish/modules/glassfish.jar || { stop; exit 0; }
+  <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
+  perl -pi -e "s/\\n/ /g" <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
+echo '#!/bin/sh'  > <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
+echo "cd <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config" >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
+cat <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.s
+echo "&> #{node[:glassfish][:base_dir]}/glassfish/domains/#{domain_name}/logs/server.log &"
+chmod +x <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
+
+# With asadmin start-domain, the "user.dir" property is always the config directory of the domain. With java -jar, it is the cwd at the time java was run. 
+# We are using 'java -jar' to start glassfish
+#chdir <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config
+
 end script
 
-script
-<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
-perl -pi -e "s/\\n/ /g" <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
-echo '#!/bin/sh
-    ' > <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-cat <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-chmod +x <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-chdir <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config
+#script
+# See notes on starting glassfish in upstart here:
+# https://java.net/projects/glassfish/lists/dev/archive/2012-02/message/15
+
 exec <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh
-end script
 
 # Uglies to wait until the broker is actually up before completion of the 'start'
 post-start script
@@ -48,6 +59,8 @@ post-start script
   done
   <% end %>
 end script
+
+pre-stop exec <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>
 
 # Uglies to wait until the broker is actually up before completion of the 'stop'
 post-stop script

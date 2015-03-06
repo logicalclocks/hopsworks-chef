@@ -17,6 +17,7 @@ notifying_action :generate do
     echo -e \n
     ' > upstart-exec.sh
    cat start-domain.java_command >> upstart-exec.sh
+   echo "&> #{node[:glassfish][:base_dir]}/glassfish/domains/#{domain_name}/logs/server.log &"
    chmod +x upstart-exec.sh
    EOF
   not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/glassfish/bin/start-domain.java_command")}
