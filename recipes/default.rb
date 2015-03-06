@@ -243,7 +243,9 @@ bash "unpack_mysql_connector" do
    # copy mysql-connector jar file to lib/ dir of domain1.
    chown #{node[:glassfish][:user]} #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar
    cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases
+   chown #{node[:glassfish][:user]} #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases/*
    cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish][:base_dir]}/glassfish/lib
+   chown #{node[:glassfish][:user]} #{node[:glassfish][:base_dir]}/glassfish/lib/*
    touch #{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded
 EOF
   not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/.#{mysql_base}_downloaded")}
