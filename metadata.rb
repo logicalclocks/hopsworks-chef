@@ -15,7 +15,9 @@ depends 'ndb'
 depends 'kagent'
 
 recipe  "hopshub::install", "Installs HopsHub/Glassfish"
-recipe  "hopshub::default", "{Click here to launch hopshub in your browser, https://hostname:8181/hop-dashboard} Installs HopsHub war file, starts glassfish+application."
+
+#link:Click {here,https://$host:8181/hop-dashboard} to launch hopshub in your browser
+recipe  "hopshub::default", "Installs HopsHub war file, starts glassfish+application."
 
 attribute "hopshub/smtp/server",
 :display_name => "Smtp server address for sending emails",
