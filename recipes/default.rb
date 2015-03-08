@@ -183,13 +183,13 @@ template "/etc/init.d/glassfish" do
 end
 
 
-# bash "restart_#{domain_name}_after_enable_security" do
-#  user "root"
-#  code <<-EOF
-#    sleep 5
-#    service glassfish restart || true
-#   EOF
-# end
+ bash "restart_#{domain_name}_after_enable_security" do
+  user "root"
+  code <<-EOF
+    sleep 5
+    service glassfish restart || true
+   EOF
+ end
 
 mysql_tgz = File.basename(node[:glassfish]['mysql_connector'])
 mysql_base = File.basename(node[:glassfish]['mysql_connector'], ".tar.gz") 
