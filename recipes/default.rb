@@ -116,40 +116,40 @@ if node[:java][:java_home].to_s == ''
  end
 end
 
-#  bash "delete_invalid_certs" do
-#    user node[:glassfish][:user]
-#    group node[:glassfish][:group]
-#     code <<-EOF
+ bash "delete_invalid_certs" do
+   user node[:glassfish][:user]
+   group node[:glassfish][:group]
+    code <<-EOF
 #  # This cert has expired, blocks startup of glassfish
-#     #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     EOF
-#     only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
-#  end
+    #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    EOF
+    only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+ end
 
-#  bash "create_glassfish_certs" do
-#    user node[:glassfish][:user]
-#    group node[:glassfish][:group]
-#     code <<-EOF
+ bash "create_glassfish_certs" do
+   user node[:glassfish][:user]
+   group node[:glassfish][:group]
+    code <<-EOF
 #     #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
-# #  # Generate two new certs with same alias as original certs
-#     #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-#     #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+#  # Generate two new certs with same alias as original certs
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
 
-#     #Add two new certs to cacerts.jks
-#     #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #Add two new certs to cacerts.jks
+    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
   
-#     #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
   
-#     touch #{node[:glassfish][:base_dir]}/.certs_generated
-#     EOF
-#     not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
-#  end
+    touch #{node[:glassfish][:base_dir]}/.certs_generated
+    EOF
+    not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
+ end
 
 admin_pwd="#{node[:glassfish][:domains_dir]}/#{domain_name}_admin_passwd"
 
@@ -183,44 +183,12 @@ template "/etc/init.d/glassfish" do
 end
 
 
-bash "stop_#{domain_name}_after_enable_security" do
-  user "root"
-  code <<-EOF
-#    service glassfish-#{domain_name} start || true
-    service glassfish start || true
- EOF
-end
-
-# hopshub_upstart "domain1" do
-#   admin_pwd "#{admin_pwd}"
-#   username "#{username}"
-#   action :generate
-# end
-
-#if platform_family?("debian")
-
-bash "start_#{domain_name}_after_enable_security" do
- user "root"
- code <<-EOF
-   sleep 5
-#   service start glassfish-#{domain_name} || true
-   service glassfish start || true
-  EOF
-end
-
-# else
-
-#   # Need to restart to apply new secure SSL connection when connecting to admin console
-#   bash "restart_#{domain_name}_after_enable_security" do
-#     user "root"
-#     code <<-EOF
-#     initctl stop glassfish-#{domain_name} || true
-# #    ps -ef | grep glassfish | grep -v grep | awk '{print $2}' | xargs kill -9 || true
-#     sleep 5
-#     initctl start glassfish-#{domain_name} 
-#     EOF
-#   end
-
+# bash "restart_#{domain_name}_after_enable_security" do
+#  user "root"
+#  code <<-EOF
+#    sleep 5
+#    service glassfish restart || true
+#   EOF
 # end
 
 mysql_tgz = File.basename(node[:glassfish]['mysql_connector'])
@@ -241,15 +209,16 @@ bash "unpack_mysql_connector" do
     code <<-EOF
    tar -xzf #{path_mysql_tgz} -C #{Chef::Config[:file_cache_path]}
    # copy mysql-connector jar file to lib/ dir of domain1.
-   chown #{node[:glassfish][:user]} #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar
-   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases
-   chown #{node[:glassfish][:user]} #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/databases/*
-   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish][:base_dir]}/glassfish/lib
-   chown #{node[:glassfish][:user]} #{node[:glassfish][:base_dir]}/glassfish/lib/*
-   touch #{Chef::Config[:file_cache_path]}/.mysqlconnector_downloaded
+   chown #{node[:glassfish][:user]}:#{node[:glassfish][:group]} #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar
+   chmod 755 #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar
+   cp #{Chef::Config[:file_cache_path]}/#{mysql_base}/#{mysql_base}-bin.jar #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/
+   chown #{node[:glassfish][:user]}:#{node[:glassfish][:group]} #{node[:glassfish]['domains_dir']}/#{domain_name}/lib/#{mysql_base}-bin.jar
+   touch #{Chef::Config[:file_cache_path]}/.#{mysql_base}_downloaded
 EOF
   not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/.#{mysql_base}_downloaded")}
 end
+
+
 kthfs_db = "kthfs"
 hops_db = "hops"
 
@@ -272,7 +241,7 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #    user node[:glassfish][:user]
 #    group node[:glassfish][:group]
 #    code <<-EOF
-#     initctl stop glassfish-#{domain_name}
+#     service glassfish stop
 #     expect -c 'spawn #{asadmin} change-master-password --savemasterpassword=true
 #     expect "Please enter the new master password> "
 #     send "#{node[:karamel][:master][:password]}\r"
@@ -322,6 +291,16 @@ Chef::Log.info(command_string.join("\t"))
  end
 
 
+bash "restart_#{domain_name}_after_jdbc_installed" do
+ user "root"
+ code <<-EOF
+   sleep 5
+   service glassfish restart || true
+  EOF
+end
+
+
+
 kthfsmgr_url = node['kthfs']['mgr']
 kthfsmgr_filename = File.basename(kthfsmgr_url)
 cached_kthfsmgr_filename = "#{Chef::Config[:file_cache_path]}/#{kthfsmgr_filename}"
@@ -359,9 +338,6 @@ bash "enable_mail_connector" do
  EOF
    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-javamail-resources | grep -i BBCMail"
 end
-
-
-
 
 Chef::Log.info "Installing HopsHub "
 command_string = []
