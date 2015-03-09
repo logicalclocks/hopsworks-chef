@@ -5,8 +5,8 @@ dependencies:
   - recipe: hopshub::default
     local:  
       - hopshub::install
-    global:  
       - ndb::mysqld
+    global:  
       - hadoop::dn
       - hadoop::nn
       - hops::dn
