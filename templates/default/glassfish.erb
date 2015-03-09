@@ -28,7 +28,12 @@ return $?
 
 stop() {
 su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node[:glassfish][:user] %> 
-  return $?
+res=$?
+if [ `ps -ef | grep ASMain` != "" ] ; then
+  ps -ef | awk '/ASMain/{print $2}' | xargs kill 2> /dev/null
+  res=$?
+fi
+  return $res
 }
 
 restart() {
