@@ -16,8 +16,8 @@ depends 'kagent'
 
 recipe  "hopshub::install", "Installs HopsHub/Glassfish"
 
-#link:Click {here,https://%host%:8181/hop-dashboard} to launch hopshub in your browser
-#link:Visit Karamel {here,www.hops.io}
+#link:Click <a target='_blank' href='https://%host%:8181/hop-dashboard'>here</a> to launch hopshub in your browser
+#link:Visit <a target='_blank' href='http://www.karamel.io/'>Hop's Website</a>
 recipe  "hopshub", "Installs HopsHub war file, starts glassfish+application."
 
 attribute "hopshub/smtp/server",
