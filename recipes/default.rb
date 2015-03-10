@@ -1,4 +1,4 @@
-##############################################################################
+##########################################################################
 # Create databases to be used by web application and hop and populate them.
 ###############################################################################
 
@@ -9,7 +9,14 @@
 # Check if it is an AWS or Openstack - if yes, store the AWS/Openstack credentials
 #if "#{node[:hopshub][:public_key]}".empty? == false && "#{node[:provider][:name]}".empty? == false && "#{node[:provider][:access_key]}".empty? == false && "#{node[:provider][:account_id]}".empty? == false
 
+#require 'nokogiri'
+
 private_ip=my_private_ip()
+kthfs_db = "kthfs"
+hops_db = "hops"
+mysql_user=node[:mysql][:user]
+mysql_pwd=node[:mysql][:password]
+
 
 hopshub_grants "create_kthfs_db"  do
   action :create_db
@@ -166,6 +173,43 @@ template "#{admin_pwd}" do
   variables(:password => password, :master_password => master_password)
 end
 
+login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"
+file "#{login_cnf}" do
+   action :delete
+end
+template "#{login_cnf}" do
+  cookbook 'hopshub'
+  source "login.conf.erb"
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "0600"
+end
+
+cauth = File.basename(node[:glassfish][:cauth_url])
+
+remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+  source node[:glassfish][:cauth_url]
+  mode 0755
+  action :create_if_missing
+end
+
+
+# read and parse the old file
+#file = File.read("#{node[:glassfish][:domains_dir]}/#{domain_name}/config/domain.xml")
+#xml = Nokogiri::XML(file)
+
+# replace \n and any additional whitespace with a space
+#xml.xpath("//SUPPLIER").each do |node|
+#  node.content = node.content.gsub(/\n\s+/, " ")
+#end
+
+# save the output into a new file
+#File.open("new.xml", "w") do |f|
+#  file.write xml.to_xml
+#end
+
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file password_file 
@@ -174,6 +218,7 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
+
 
 template "/etc/init.d/glassfish" do
   source "glassfish.erb"
@@ -190,6 +235,21 @@ end
     service glassfish restart || true
    EOF
  end
+
+glassfish_auth_realm "cauth" do
+ domain_name domain_name
+ realm_name "cauthRealm"
+ username username
+ password_file password_file
+ secure true
+ classname "se.kth.bbc.crealm.CustomAuthRealm"
+ jaas_context "cauthRealm"
+#  target
+# assign_groups
+  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "USERS_GROUPS", 'user-table' => "USERS", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "Yubikey")
+ action :create
+end
+
 
 mysql_tgz = File.basename(node[:glassfish]['mysql_connector'])
 mysql_base = File.basename(node[:glassfish]['mysql_connector'], ".tar.gz") 
@@ -218,12 +278,6 @@ EOF
   not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/.#{mysql_base}_downloaded")}
 end
 
-
-kthfs_db = "kthfs"
-hops_db = "hops"
-
-mysql_user=node[:mysql][:user]
-mysql_pwd=node[:mysql][:password]
 
 if node[:ndb][:mysqld][:private_ips].length == 1
 #  mysql_ips = node[:ndb][:mysqld][:private_ips].at(0) + "\\:" + node[:ndb][:mysql_port].to_s

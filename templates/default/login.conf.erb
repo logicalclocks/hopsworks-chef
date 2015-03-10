@@ -1,0 +1,30 @@
+
+
+fileRealm {
+    com.sun.enterprise.security.auth.login.FileLoginModule required ;
+};
+
+jdbcDigestRealm {
+    com.sun.enterprise.security.auth.login.JDBCDigestLoginModule required ;
+};
+
+jdbcRealm {
+    com.sun.enterprise.security.auth.login.JDBCLoginModule required ;
+};
+
+ldapRealm {
+    com.sun.enterprise.security.auth.login.LDAPLoginModule required ;
+};
+
+pamRealm {
+    com.sun.enterprise.security.auth.login.PamLoginModule required ;
+};
+
+solarisRealm {
+    com.sun.enterprise.security.auth.login.SolarisLoginModule required ;
+};
+
+
+cauthRealm{
+    se.kth.bbc.crealm.CustomAuthLoginModule required;
+};
