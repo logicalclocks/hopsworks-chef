@@ -447,7 +447,7 @@ if "#{node[:ndb][:enabled]}" == "true"
        group node['mysql']['root_group']
        mode "0600"
        action :create
-#       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
      end 
    end
 end
