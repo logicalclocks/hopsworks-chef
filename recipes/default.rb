@@ -236,7 +236,7 @@ end
    EOF
  end
 
-glassfish_auth_realm "cauth" do
+glassfish_auth_realm "cauthRealm" do
  domain_name domain_name
  realm_name "cauthRealm"
  username username
