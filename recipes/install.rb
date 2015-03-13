@@ -114,3 +114,18 @@ hopshub_grants "set_public_key_attribute" do
 end
 
 Chef::Log.info("Public key: #{node[:hopshub][:public_key]}")
+
+
+if platform_family?("debian")
+  # Add the following lines to /etc/security/limits.conf to increase the maximum number of open files for the user that Glassfish will run as:
+  bash 'increase_limits_glassfish' do
+    user "root"
+    code <<-EOF
+  glassfish soft nofile 32768
+  glassfish hard nofile 65536
+  echo "session required pam_limits.so" >> /etc/pam.d/su
+  touch #{node['glassfish']['base_dir']}/.limits_increased
+  EOF
+    not_if { ::File.exists?( "#{node['glassfish']['base_dir']}/.limits_increased" ) }
+  end
+end

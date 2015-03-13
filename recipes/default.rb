@@ -1,4 +1,4 @@
-##############################################################################
+##########################################################################
 # Create databases to be used by web application and hop and populate them.
 ###############################################################################
 
@@ -9,7 +9,14 @@
 # Check if it is an AWS or Openstack - if yes, store the AWS/Openstack credentials
 #if "#{node[:hopshub][:public_key]}".empty? == false && "#{node[:provider][:name]}".empty? == false && "#{node[:provider][:access_key]}".empty? == false && "#{node[:provider][:account_id]}".empty? == false
 
+#require 'nokogiri'
+
 private_ip=my_private_ip()
+kthfs_db = "kthfs"
+hops_db = "hops"
+mysql_user=node[:mysql][:user]
+mysql_pwd=node[:mysql][:password]
+
 
 hopshub_grants "create_kthfs_db"  do
   action :create_db
@@ -116,40 +123,40 @@ if node[:java][:java_home].to_s == ''
  end
 end
 
-#  bash "delete_invalid_certs" do
-#    user node[:glassfish][:user]
-#    group node[:glassfish][:group]
-#     code <<-EOF
-# #  # This cert has expired, blocks startup of glassfish
-#     #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     EOF
-#     only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
-#  end
+  bash "delete_invalid_certs" do
+    user node[:glassfish][:user]
+   group node[:glassfish][:group]
+    code <<-EOF
+ #  # This cert has expired, blocks startup of glassfish
+    #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    EOF
+    only_if "#{keytool_path}/bin/keytool -keystore #{config_dir}/cacerts.jks -storepass #{master_password} -list | grep -i gtecybertrustglobalca"
+ end
 
-#  bash "create_glassfish_certs" do
-#    user node[:glassfish][:user]
-#    group node[:glassfish][:group]
-#     code <<-EOF
-# #     #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+ bash "create_glassfish_certs" do
+   user node[:glassfish][:user]
+   group node[:glassfish][:group]
+    code <<-EOF
+ #     #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
-# #  # Generate two new certs with same alias as original certs
-#     #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-#     #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+  # Generate two new certs with same alias as original certs
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
 
-#     #Add two new certs to cacerts.jks
-#     #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #Add two new certs to cacerts.jks
+    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
   
-#     #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-#     #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
   
-#     touch #{node[:glassfish][:base_dir]}/.certs_generated
-#     EOF
-#     not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
-#  end
+    touch #{node[:glassfish][:base_dir]}/.certs_generated
+    EOF
+    not_if "test -f #{node[:glassfish][:base_dir]}/.certs_generated"
+ end
 
 admin_pwd="#{node[:glassfish][:domains_dir]}/#{domain_name}_admin_passwd"
 
@@ -166,6 +173,43 @@ template "#{admin_pwd}" do
   variables(:password => password, :master_password => master_password)
 end
 
+login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"
+file "#{login_cnf}" do
+   action :delete
+end
+template "#{login_cnf}" do
+  cookbook 'hopshub'
+  source "login.conf.erb"
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "0600"
+end
+
+cauth = File.basename(node[:glassfish][:cauth_url])
+
+remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+  source node[:glassfish][:cauth_url]
+  mode 0755
+  action :create_if_missing
+end
+
+
+# read and parse the old file
+#file = File.read("#{node[:glassfish][:domains_dir]}/#{domain_name}/config/domain.xml")
+#xml = Nokogiri::XML(file)
+
+# replace \n and any additional whitespace with a space
+#xml.xpath("//SUPPLIER").each do |node|
+#  node.content = node.content.gsub(/\n\s+/, " ")
+#end
+
+# save the output into a new file
+#File.open("new.xml", "w") do |f|
+#  file.write xml.to_xml
+#end
+
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file password_file 
@@ -174,6 +218,7 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
+
 
 template "/etc/init.d/glassfish" do
   source "glassfish.erb"
@@ -190,6 +235,20 @@ end
     service glassfish restart || true
    EOF
  end
+
+glassfish_auth_realm "cauthRealm" do
+ domain_name domain_name
+ realm_name "cauthRealm"
+ username username
+ password_file password_file
+ secure true
+ classname "se.kth.bbc.crealm.CustomAuthRealm"
+ jaas_context "cauthRealm"
+#  target
+# assign_groups
+  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "USERS_GROUPS", 'user-table' => "USERS", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "Yubikey")
+ action :create
+end
 
 mysql_tgz = File.basename(node[:glassfish]['mysql_connector'])
 mysql_base = File.basename(node[:glassfish]['mysql_connector'], ".tar.gz") 
@@ -218,12 +277,6 @@ EOF
   not_if { ::File.exists?( "#{node[:glassfish][:base_dir]}/.#{mysql_base}_downloaded")}
 end
 
-
-kthfs_db = "kthfs"
-hops_db = "hops"
-
-mysql_user=node[:mysql][:user]
-mysql_pwd=node[:mysql][:password]
 
 if node[:ndb][:mysqld][:private_ips].length == 1
 #  mysql_ips = node[:ndb][:mysqld][:private_ips].at(0) + "\\:" + node[:ndb][:mysql_port].to_s
@@ -267,7 +320,7 @@ EOF
 
 command_string = []
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=USERS_GROUPS:user-table=USERS:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=DBRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
@@ -394,7 +447,7 @@ if "#{node[:ndb][:enabled]}" == "true"
        group node['mysql']['root_group']
        mode "0600"
        action :create
-#       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
      end 
    end
 end
