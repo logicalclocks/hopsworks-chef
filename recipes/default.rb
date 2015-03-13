@@ -228,20 +228,21 @@ template "/etc/init.d/glassfish" do
 end
 
 
- bash "restart_#{domain_name}_after_enable_security" do
-  user "root"
-  code <<-EOF
-    sleep 5
-    service glassfish restart || true
-   EOF
- end
+
+ # bash "restart_#{domain_name}_after_enable_security" do
+ #  user "root"
+ #  code <<-EOF
+ #    sleep 5
+ #    service glassfish restart || true
+ #   EOF
+ # end
 
 glassfish_auth_realm "cauthRealm" do
  domain_name domain_name
  realm_name "cauthRealm"
  username username
  password_file password_file
- secure true
+ secure false
  classname "se.kth.bbc.crealm.CustomAuthRealm"
  jaas_context "cauthRealm"
 #  target
@@ -431,25 +432,25 @@ end
 
 
 if "#{node[:ndb][:enabled]}" == "true"
-   alter_table_path = "#{Chef::Config[:file_cache_path]}/alter-table-ndb.sql"
+  #  alter_table_path = "#{Chef::Config[:file_cache_path]}/alter-table-ndb.sql"
 
-  hopshub_restart "switchToNdb" do
-    alter_path alter_table_path
-  end
+  # hopshub_restart "switchToNdb" do
+  #   alter_path alter_table_path
+  # end
 
-   begin
-     t = resources("template[#{alter_table_path}]")
-   rescue
-     Chef::Log.info("Could not find previously defined #{alter_table_path} resource")
-     t = template alter_table_path do
-       source File.basename("#{alter_table_path}") + ".erb"
-       owner "root"
-       group node['mysql']['root_group']
-       mode "0600"
-       action :create
-       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
-     end 
-   end
+  #  begin
+  #    t = resources("template[#{alter_table_path}]")
+  #  rescue
+  #    Chef::Log.info("Could not find previously defined #{alter_table_path} resource")
+  #    t = template alter_table_path do
+  #      source File.basename("#{alter_table_path}") + ".erb"
+  #      owner "root"
+  #      group node['mysql']['root_group']
+  #      mode "0600"
+  #      action :create
+  #      notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+  #    end 
+  #  end
 end
 
 
