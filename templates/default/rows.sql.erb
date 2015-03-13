@@ -10,8 +10,8 @@ INSERT INTO `BBCGroup` VALUES
 
 /* 
     To create admin account 
-    username: admin@biobankcloud.com
-    password: adminamdin
+    username: admin
+    password: admin
  */;
 insert into USERS (uid, username, password, email, fname, lname, activated, status, secret, security_question, security_answer, yubikey_user)
 values ('10000', 'meb10000', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','admin','Admin','Admin',
@@ -25,4 +25,4 @@ insert into People_Group (uid,gid) values (10000,1005);
 /*
     adding a new address entry for admin user
 */
-insert into Address (uid) values (10000);   
+insert into Address (uid) values (10000);
