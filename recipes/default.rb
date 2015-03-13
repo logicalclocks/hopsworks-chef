@@ -229,20 +229,19 @@ end
 
 
 
- # bash "restart_#{domain_name}_after_enable_security" do
- #  user "root"
- #  code <<-EOF
- #    sleep 5
- #    service glassfish restart || true
- #   EOF
- # end
+ bash "restart_#{domain_name}_after_enable_security" do
+  user "root"
+  code <<-EOF
+    service glassfish restart || true
+   EOF
+ end
 
 glassfish_auth_realm "cauthRealm" do
  domain_name domain_name
  realm_name "cauthRealm"
  username username
  password_file password_file
- secure false
+ secure true
  classname "se.kth.bbc.crealm.CustomAuthRealm"
  jaas_context "cauthRealm"
 #  target
