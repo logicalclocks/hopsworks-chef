@@ -6,11 +6,6 @@
 # http://computingat40s.wordpress.com/how-to-create-a-custom-realm-in-glassfish-3-1-2-2/
 
 
-# Check if it is an AWS or Openstack - if yes, store the AWS/Openstack credentials
-#if "#{node[:hopshub][:public_key]}".empty? == false && "#{node[:provider][:name]}".empty? == false && "#{node[:provider][:access_key]}".empty? == false && "#{node[:provider][:account_id]}".empty? == false
-
-#require 'nokogiri'
-
 private_ip=my_private_ip()
 kthfs_db = "kthfs"
 hops_db = "hops"
@@ -54,29 +49,6 @@ rescue
     notifies :populate_db, "hopshub_grants[kthfs]", :immediately
   end 
 end
-
-
-# graphs_path = "#{Chef::Config[:file_cache_path]}/graphs.sql"
-
-# hopshub_grants "graphs"  do
-#   graphs_path  "#{graphs_path}"
-#   action :nothing
-# end 
-
-# begin
-#   t = resources("template[#{graphs_path}]")
-# rescue
-#   Chef::Log.info("Could not find previously defined #{graphs_path} resource")
-#   t = template graphs_path do
-#     source File.basename("#{graphs_path}") + ".erb"
-#     owner node[:glassfish][:user]
-#     group node[:glassfish][:group]
-#     mode "0660"
-#     action :create
-#     notifies :graphs, "hopshub_grants[graphs]", :immediately
-#   end
-# end
-
 
 
 ###############################################################################
@@ -127,7 +99,7 @@ end
     user node[:glassfish][:user]
    group node[:glassfish][:group]
     code <<-EOF
- #  # This cert has expired, blocks startup of glassfish
+ # This cert has expired, blocks startup of glassfish
     #{keytool_path}/keytool -delete -alias gtecybertrust5ca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
     #{keytool_path}/keytool -delete -alias gtecybertrustglobalca -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
     EOF
@@ -196,20 +168,6 @@ remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
 end
 
 
-# read and parse the old file
-#file = File.read("#{node[:glassfish][:domains_dir]}/#{domain_name}/config/domain.xml")
-#xml = Nokogiri::XML(file)
-
-# replace \n and any additional whitespace with a space
-#xml.xpath("//SUPPLIER").each do |node|
-#  node.content = node.content.gsub(/\n\s+/, " ")
-#end
-
-# save the output into a new file
-#File.open("new.xml", "w") do |f|
-#  file.write xml.to_xml
-#end
-
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file password_file 
@@ -244,9 +202,7 @@ glassfish_auth_realm "cauthRealm" do
  secure true
  classname "se.kth.bbc.crealm.CustomAuthRealm"
  jaas_context "cauthRealm"
-#  target
-# assign_groups
-  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "USERS_GROUPS", 'user-table' => "USERS", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "Yubikey")
+  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "users_groups", 'user-table' => "users", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "yubikey") # 
  action :create
 end
 
@@ -279,7 +235,6 @@ end
 
 
 if node[:ndb][:mysqld][:private_ips].length == 1
-#  mysql_ips = node[:ndb][:mysqld][:private_ips].at(0) + "\\:" + node[:ndb][:mysql_port].to_s
   mysql_ips = private_recipe_ip("ndb","mysqld")
 else
   mysql_ips = node[:ndb][:mysqld][:private_ips].join("\\:" + node[:ndb][:mysql_port].to_s + ",")
@@ -319,7 +274,7 @@ EOF
  end
 
 command_string = []
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=USERS_GROUPS:user-table=USERS:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=users_groups:user-table=users:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
@@ -327,12 +282,8 @@ command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
 
-# email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
-# --port #{node[:hopshub][:smtp][:port]} 
-#command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp][:server]} --mailuser #{node[:hopshub][:smtp][:username]}  --fromaddress #{node[:hopshub][:smtp][:username]} --transprotocol smtp --enabled=true --secure false --property mail-smtp.user=hadoop@hops.io:mail-smtp.port=25:mail-smtp.password=fake:mail-smtp.auth=false mail/BBCMail"
-# #{node[:hopshub][:smtp][:secure]} jndi/mail"
 
-#asadmin --interactive=false create-javamail-resource --mailhost=smtp.gmail.com --mailuser=cejug.classifieds --fromaddress=cejug.classifieds@gmail.com --enabled=true --description="e-Mail account used to confirm the registration of the Cejug-Classifieds users" --storeprotocol=imap --storeprotocolclass=com.sun.mail.imap.IMAPStore --transprotocol smtp --transprotocolclass com.sun.mail.smtp.SMTPSSLTransport --property mail-smtp.user=cejug.classifieds@gmail.com:mail-smtp.port=465:mail-smtp.password=fake:mail-smtp.auth=true:mail-smtp.socketFactory.fallback=false:mail-smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory:mail-smtp.socketFactory.port=465:mail-smtp.starttls.enable=true mail/classifieds
+
 
 Chef::Log.info(command_string.join("\t"))
 # See http://docs.oracle.com/cd/E26576_01/doc.312/e24938/create-auth-realm.htm
@@ -382,6 +333,7 @@ bash "set_long_timeouts_for_ssh_ops_fix_cdi_bug" do
  EOF
 end
 
+# email resources https://docs.oracle.com/cd/E18930_01/html/821-2416/giowr.html
 bash "enable_mail_connector" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
