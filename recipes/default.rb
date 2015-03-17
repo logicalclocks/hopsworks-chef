@@ -100,6 +100,7 @@ glassfish_domain "#{domain_name}" do
   username username
   password password
   password_file username ? "#{node[:glassfish]['domains_dir']}/#{domain_name}_admin_passwd" : nil
+  master_password master_password
   port port 
   admin_port admin_port
   secure secure 
@@ -138,7 +139,7 @@ end
    user node[:glassfish][:user]
    group node[:glassfish][:group]
     code <<-EOF
- #     #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
     #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
   # Generate two new certs with same alias as original certs
@@ -301,6 +302,7 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #     expect "Please enter the new master password again> "
 #     send "#{node[:karamel][:master][:password]}\r"
 #     expect eof'
+#     service glassfish start
 #   EOF
 #   not_if { ::File.exists?( "#{password_file}")}
 # end
