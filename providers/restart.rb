@@ -33,7 +33,7 @@ bash "alter_table_to_ndb" do
 
    #{exec} kthfs -e \"source #{new_resource.alter_path}\"
   EOF
-    not_if "#{exec} kthfs \"show create table USERS;\" | grep -i ndbcluster"
+    not_if "#{exec} kthfs \"show create table users;\" | grep -i ndbcluster"
 end
 
 
