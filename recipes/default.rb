@@ -60,7 +60,7 @@ Chef::Log.info "Admin user: #{node.default[:hopshub][:admin][:user]}"
 domain_name="domain1"
 admin_port=node[:glassfish][:admin][:port] 
 port=node[:glassfish][:port]
-secure=true
+secure=false
 username="#{node[:hopshub][:admin][:user]}"
 password="#{node[:hopshub][:admin][:password]}"
 master_password="#{node[:glassfish][:cert][:password]}"
@@ -200,7 +200,7 @@ glassfish_auth_realm "cauthRealm" do
  realm_name "cauthRealm"
  username username
  password_file password_file
- secure true
+ secure false
  classname "se.kth.bbc.crealm.CustomAuthRealm"
  jaas_context "cauthRealm"
   properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "users_groups", 'user-table' => "users", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "yubikey") # 

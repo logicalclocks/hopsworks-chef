@@ -47,12 +47,12 @@ suites:
             public_ips: ["10.0.2.15"]
          hopshub:
             admin:
-                password: "jimdowling"
+#                password: "jimdowling"
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          glassfish:
             cert:
-               password: "jamesdowling"
+#               password: "jamesdowling"
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
