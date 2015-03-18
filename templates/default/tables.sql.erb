@@ -477,7 +477,6 @@ CREATE TABLE `yubikey` (
   UNIQUE KEY `uid_UNIQUE` (`uid`),
   UNIQUE KEY `serial_UNIQUE` (`serial`),
   UNIQUE KEY `public_id_UNIQUE` (`public_id`)
---,  CONSTRAINT `fk_yubikey_users` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=NDBCLUSTER  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -602,8 +601,6 @@ CREATE TABLE `jobhistory` (
   UNIQUE KEY `id` (`id`),
   KEY `FK_jobhistory_user` (`user`),
   KEY `FK_jobhistory_study` (`study`)
--- , CONSTRAINT `FK_jobhistory_user` FOREIGN KEY (`user`) REFERENCES `users` (`email`),
---  CONSTRAINT `jobhistory_ibfk_3` FOREIGN KEY (`study`) REFERENCES `study` (`name`) ON DELETE CASCADE
 ) ENGINE=NDBCLUSTER DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -621,7 +618,6 @@ CREATE TABLE `study` (
   PRIMARY KEY (`name`),
   UNIQUE KEY `name` (`name`),
   KEY `fk_study_users` (`username`)
--- , CONSTRAINT `fk_study_users` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE CASCADE
 ) ENGINE=NDBCLUSTER DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -639,7 +635,6 @@ CREATE TABLE `study_group_members` (
   `added_by` varchar(255) NOT NULL,
   `team_role` enum('Master','Researcher','Guest') NOT NULL,
   PRIMARY KEY (`studyname`,`username`)
--- ,  CONSTRAINT `FK_study_group_members_studyname` FOREIGN KEY (`studyname`) REFERENCES `study` (`name`)
 ) ENGINE=NDBCLUSTER DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
