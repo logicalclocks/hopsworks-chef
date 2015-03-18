@@ -26,6 +26,7 @@
 -- ALTER TABLE study_meta ENGINE=NDBCLUSTER;
 -- ALTER TABLE study_design ENGINE=NDBCLUSTER;
 
+
 -- ALTER TABLE study_groups ADD FOREIGN KEY `study_groups_ibfk_1` (`email`) REFERENCES `users` (`email`) ON DELETE CASCADE;
 -- ALTER TABLE study_team ADD FOREIGN KEY `fk_study_team_users` (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE;
 -- ALTER TABLE study_team ADD FOREIGN KEY `fk_study_study_team` (`name`) REFERENCES `study` (`name`) ON DELETE CASCADE;
@@ -35,13 +36,8 @@
 -- ALTER TABLE study_meta ADD FOREIGN KEY `study_meta_ibfk_1` (`studyname`) REFERENCES `study` (`name`) ON DELETE CASCADE;
 
 
-
-
-
 -- ALTER TABLE inodes DROP FOREIGN KEY inodes_ibfk_1;
 -- ALTER TABLE ADD FOREIGN KEY `` (``) REFERENCES `` (``) ON DELETE CASCADE;
-
 -- ALTER TABLE inodes ENGINE=NDBCLUSTER;
-
 -- ALTER TABLE inodes ADD FOREIGN KEY `inodes_ibfk_1` (`pid`) REFERENCES `inodes` (`id`) ON DELETE CASCADE;
 -- ALTER TABLE ADD FOREIGN KEY `` (``) REFERENCES `` (``) ON DELETE CASCADE;
