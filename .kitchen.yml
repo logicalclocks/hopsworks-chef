@@ -13,15 +13,14 @@ driver:
   - ["forwarded_port", {guest: 50070, host: 50070}]
   - ["forwarded_port", {guest: 50075, host: 50075}]
 
-
 provisioner:
   name: chef_solo
 
 platforms:
 
 #  - name: ubuntu-12.04
-#  - name: ubuntu-14.04
-  - name: centos-6.5
+  - name: ubuntu-14.04
+#  - name: centos-6.5
 
 suites:
   - name: default
@@ -31,14 +30,21 @@ suites:
     run_list:
       - recipe[kagent::install]
       - recipe[ndb::install]
+      - recipe[hops::install]
       - recipe[hopshub::install]
 #      - recipe[collectd::install]
-      - recipe[kagent::default]
+#      - recipe[kagent::default]
 #      - recipe[collectd::server]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
       - recipe[ndb::memcached]
+      - recipe[hops::ndb]
+      - recipe[hops::nn]
+      - recipe[hops::dn]
+      - recipe[hops::rm]
+      - recipe[hops::nm]
+      - recipe[hops::jhs]
       - recipe[hopshub::default]
 #      - recipe[collectd::mysqld]
 
@@ -73,6 +79,28 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             enabled: "true"
+         hops:
+            nn:
+               private_ips: ["10.0.2.15"]
+            dn:
+               private_ips: ["10.0.2.15"]
+            rm:
+               private_ips: ["10.0.2.15"]
+            nm:
+               private_ips: ["10.0.2.15"]
+            jhs:
+               private_ips: ["10.0.2.15"]
+         hadoop:
+            nn:
+               private_ips: ["10.0.2.15"]
+            dn:
+               private_ips: ["10.0.2.15"]
+            rm:
+               private_ips: ["10.0.2.15"]
+            nm:
+               private_ips: ["10.0.2.15"]
+            jhs:
+               private_ips: ["10.0.2.15"]
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "enabled"

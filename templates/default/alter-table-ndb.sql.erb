@@ -1,30 +1,31 @@
-ALTER TABLE study_groups DROP FOREIGN KEY study_groups_ibfk_1;
+-- ALTER TABLE study_groups DROP FOREIGN KEY study_groups_ibfk_1;
 -- ALTER TABLE study_team DROP FOREIGN KEY fk_study_study_team;
 -- ALTER TABLE study_group_members DROP FOREIGN KEY FK_study_group_members_studyname;
-ALTER TABLE study_services DROP FOREIGN KEY study_services_ibfk_1;
-ALTER TABLE study_design DROP FOREIGN KEY study_design_ibfk_1;
-ALTER TABLE study_meta DROP FOREIGN KEY study_meta_ibfk_1;
-ALTER TABLE study DROP FOREIGN KEY fk_study_users;
-ALTER TABLE samplecollections DROP FOREIGN KEY samplecollections_ibfk_1;
-ALTER TABLE samplecollections DROP FOREIGN KEY samplecollections_ibfk_2;
+-- ALTER TABLE study_services DROP FOREIGN KEY study_services_ibfk_1;
+-- ALTER TABLE study_design DROP FOREIGN KEY study_design_ibfk_1;
+-- ALTER TABLE study_meta DROP FOREIGN KEY study_meta_ibfk_1;
+-- ALTER TABLE study DROP FOREIGN KEY fk_study_users;
+-- ALTER TABLE samplecollections DROP FOREIGN KEY samplecollections_ibfk_1;
+-- ALTER TABLE samplecollections DROP FOREIGN KEY samplecollections_ibfk_2;
 -- ALTER TABLE jobhistory DROP FOREIGN KEY FK_jobhistory_user;
 -- ALTER TABLE jobhistory DROP FOREIGN KEY jobhistory_ibfk_3;
 -- ALTER TABLE study_team DROP FOREIGN KEY fk_study_team_users;
-ALTER TABLE study_inclusion_criteria DROP FOREIGN KEY study_inclusion_criteria_ibfk_1;
+-- ALTER TABLE study_inclusion_criteria DROP FOREIGN KEY study_inclusion_criteria_ibfk_1;
 
 
-ALTER TABLE users ENGINE=NDBCLUSTER;
-ALTER TABLE bbc_group ENGINE=NDBCLUSTER;
-ALTER TABLE people_group ENGINE=NDBCLUSTER;
-ALTER TABLE roles ENGINE=NDBCLUSTER;
-ALTER TABLE study_groups ENGINE=NDBCLUSTER;
-ALTER TABLE study_roles ENGINE=NDBCLUSTER;
-ALTER TABLE study_team ENGINE=NDBCLUSTER;
-ALTER TABLE study ENGINE=NDBCLUSTER;
-ALTER TABLE study_group_members ENGINE=NDBCLUSTER;
-ALTER TABLE study_services ENGINE=NDBCLUSTER;
-ALTER TABLE study_meta ENGINE=NDBCLUSTER;
-ALTER TABLE study_design ENGINE=NDBCLUSTER;
+-- ALTER TABLE users ENGINE=NDBCLUSTER;
+-- ALTER TABLE bbc_group ENGINE=NDBCLUSTER;
+-- ALTER TABLE people_group ENGINE=NDBCLUSTER;
+-- ALTER TABLE roles ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_groups ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_roles ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_team ENGINE=NDBCLUSTER;
+-- ALTER TABLE study ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_group_members ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_services ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_meta ENGINE=NDBCLUSTER;
+-- ALTER TABLE study_design ENGINE=NDBCLUSTER;
+
 
 -- ALTER TABLE study_groups ADD FOREIGN KEY `study_groups_ibfk_1` (`email`) REFERENCES `users` (`email`) ON DELETE CASCADE;
 -- ALTER TABLE study_team ADD FOREIGN KEY `fk_study_team_users` (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE;
@@ -35,13 +36,8 @@ ALTER TABLE study_design ENGINE=NDBCLUSTER;
 -- ALTER TABLE study_meta ADD FOREIGN KEY `study_meta_ibfk_1` (`studyname`) REFERENCES `study` (`name`) ON DELETE CASCADE;
 
 
-
-
-
 -- ALTER TABLE inodes DROP FOREIGN KEY inodes_ibfk_1;
 -- ALTER TABLE ADD FOREIGN KEY `` (``) REFERENCES `` (``) ON DELETE CASCADE;
-
 -- ALTER TABLE inodes ENGINE=NDBCLUSTER;
-
 -- ALTER TABLE inodes ADD FOREIGN KEY `inodes_ibfk_1` (`pid`) REFERENCES `inodes` (`id`) ON DELETE CASCADE;
 -- ALTER TABLE ADD FOREIGN KEY `` (``) REFERENCES `` (``) ON DELETE CASCADE;
