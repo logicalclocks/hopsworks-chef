@@ -5,6 +5,14 @@ driver:
     memory: 9000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
+    nictype1: "virtio"
+  network:
+  - ["forwarded_port", {guest: 8080, host: 8888}]
+  - ["forwarded_port", {guest: 9191, host: 9999}]
+  - ["forwarded_port", {guest: 4848, host: 4444}]
+  - ["forwarded_port", {guest: 50070, host: 50070}]
+  - ["forwarded_port", {guest: 50075, host: 50075}]
+
 
 provisioner:
   name: chef_solo
