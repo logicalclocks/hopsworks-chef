@@ -21,7 +21,7 @@
 RETVAL=0
 
 start() {
-<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
+<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
 if [ $? -ne 0 ] ; then 
   exit 2
 fi
@@ -59,7 +59,7 @@ return $?
 }
 
 stop() {
-su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node[:glassfish][:user] %> 
+su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node[:glassfish][:user] %> 
   return $?
 }
 

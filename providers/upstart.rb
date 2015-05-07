@@ -9,7 +9,7 @@ notifying_action :generate do
     group node[:glassfish][:group]
     code <<-EOF
    cd #{node[:glassfish][:base_dir]}/glassfish/bin
-   ./asadmin --user #{node[:hopshub][:admin][:user]} --passwordfile #{admin_pwd} --terse start-domain --dry-run > start-domain.java_command
+   ./asadmin --user #{node[:hopsworks][:admin][:user]} --passwordfile #{admin_pwd} --terse start-domain --dry-run > start-domain.java_command
 #  -i updates the file inplace. Replace all new-lines with spaces.
 #   sed -i ':a;N;$!ba;s/\\n/ /g' start-domain.java_command
    perl -pi -e "s/\\n/ /g" start-domain.java_command
@@ -41,7 +41,7 @@ template "/etc/init/glassfish-#{domain_name}.conf" do
     fail RuntimeError("I don't know how to install chef-server packages for platform family '#{node["platform_family"]}'!")
   end
   mode "0644"
-  cookbook 'hopshub'
+  cookbook 'hopsworks'
   variables(:domain_name => "#{domain_name}", :username => "#{username}", :password_file => "#{admin_pwd}", :listen_ports => [node[:glassfish][:port], node[:glassfish][:admin][:port]],
   :command => "#{node[:glassfish][:base_dir]}/glassfish/bin/start-domain.java_command")
 end

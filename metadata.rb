@@ -1,4 +1,4 @@
-name             'hopshub'
+name             'hopsworks'
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
@@ -13,45 +13,46 @@ end
 depends 'glassfish'
 depends 'ndb'
 depends 'kagent'
+depends 'hops'
 
-recipe  "hopshub::install", "Installs HopsHub/Glassfish"
+recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 
-#link:Visit <a target='_blank' href='http://www.hops.io/'>Hop's Website</a> or <a target='_blank' href='http://www.karamel.io/'>Karamel's Website</a>
-#link:Click <a target='_blank' href='https://%host%:8181/hop-dashboard'>here</a> to launch hopshub in your browser
-recipe  "hopshub", "Installs HopsHub war file, starts glassfish+application."
+#link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
+#link:Click <a target='_blank' href='https://%host%:8181/hopsworks'>here</a> to launch hopsworks in your browser (https)
+recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 
 #
 # Required Attributes
 #
-attribute "hopshub/smtp/server",
+attribute "hopsworks/smtp/server",
           :display_name => "Smtp server address for sending emails",
           :description => "Smtp server address for sending emails",
           :type => 'string',
           :required => "required",
           :default => "smtp.gmail.com"
 
-attribute "hopshub/smtp/port",
+attribute "hopsworks/smtp/port",
           :display_name => "Smtp server port for sending emails",
           :description => "Smtp server port for sending emails",
           :type => 'string',
           :required => "required",
           :default => "465"
 
-attribute "hopshub/smtp/secure",
+attribute "hopsworks/smtp/secure",
           :display_name => "Use SSL to Smtp server",
           :description => "Use SSL to Smtp server",
           :type => 'string',
           :required => "required",
           :default => "true"
 
-attribute "hopshub/smtp/username",
+attribute "hopsworks/smtp/username",
           :display_name => "Email account username",
           :description =>  "Email account username",
           :type => 'string',
           :required => "required",
           :default => "sodugling@gmail.com"
 
-attribute "hopshub/smtp/password",
+attribute "hopsworks/smtp/password",
           :display_name => "Email account password",
           :description =>  "Email account password",
           :type => 'string',
@@ -62,13 +63,13 @@ attribute "hopshub/smtp/password",
 # Optional Attributes
 #
 
-attribute "hopshub/admin/user",
+attribute "hopsworks/admin/user",
           :description => "Username for Hops Admin account",
           :type => 'string',
           :default => "admin"
 
-attribute "hopshub/admin/password",
-          :description => "hopshub/admin/password",
+attribute "hopsworks/admin/password",
+          :description => "hopsworks/admin/password",
           :type => 'string',
           :default => "changeit"
 
@@ -77,13 +78,13 @@ attribute "karamel/master/password",
           :type => 'string',
           :default => "changeit"
 
-attribute "hopshub/cert/password",
-          :description => "hopshub/cert/password",
+attribute "hopsworks/cert/password",
+          :description => "hopsworks/cert/password",
           :type => 'string',
           :default => "changeit"
 
-attribute "hopshub/twofactor_auth",
-          :description => "hopshub/twofactor_auth",
+attribute "hopsworks/twofactor_auth",
+          :description => "hopsworks/twofactor_auth",
           :type => 'string',
           :default => "false"
 

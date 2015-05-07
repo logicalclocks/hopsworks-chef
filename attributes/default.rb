@@ -23,11 +23,11 @@ default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
 default[:glassfish][:version]             = '4.1'
-default[:hopshub][:admin][:user]          = "admin"
-default[:hopshub][:admin][:password]      = "changeit"
-default[:glassfish][:cert][:password]     = node[:hopshub][:admin][:password]
+default[:hopsworks][:admin][:user]          = "admin"
+default[:hopsworks][:admin][:password]      = "changeit"
+default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
-default[:hopshub][:twofactor_auth]        = "false"
+default[:hopsworks][:twofactor_auth]        = "false"
 
 default[:glassfish][:max_mem]             = 4000
 default[:glassfish][:min_mem]             = 2500
@@ -45,7 +45,7 @@ default[:karamel][:cert][:l]              = "kista"
 default[:karamel][:cert][:s]              = "stockholm"
 default[:karamel][:cert][:c]              = "se"
 
-default[:hopshub][:cert][:password]       = "changeit"
+default[:hopsworks][:cert][:password]       = "changeit"
 
 default[:karamel][:master][:password]     = "changeit"
 
@@ -62,7 +62,7 @@ node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/gla
 
 #default[:glassfish][:mysql_connector]         = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.29.tar.gz"
 node.normal[:glassfish][:mysql_connector] = "#{node[:download_url]}/mysql-connector-java-5.1.29.tar.gz"
-case node[:hopshub][:twofactor_auth]
+case node[:hopsworks][:twofactor_auth]
  when "true"
    default[:kthfs][:mgr]                  = "#{node[:download_url]}/hop-dashboard-2pc.war"
  else
@@ -78,25 +78,25 @@ default[:provider][:access_key]           = ""
 default[:provider][:account_id]           = ""
 # openstack-specific param
 default[:provider][:keystone_url]         = ""
-default[:hopshub][:public_key]            = ""
+default[:hopsworks][:public_key]            = ""
 
-default[:hopshub][:public_ips]            = ['10.0.2.15']
-default[:hopshub][:private_ips]           = ['10.0.2.15']
+default[:hopsworks][:public_ips]            = ['10.0.2.15']
+default[:hopsworks][:private_ips]           = ['10.0.2.15']
 
-default[:hopshub][:smtp][:username]       = "hadoop@hops.io"
-default[:hopshub][:smtp][:password]       = "admin"
-default[:hopshub][:smtp][:server]         = "localhost"
-#default[:hopshub][:smtp][:server]         = "smtp.gmail.com"
-#default[:hopshub][:smtp][:port]           = "465"
-default[:hopshub][:smtp][:port]           = "25"
-#default[:hopshub][:smtp][:secure]         = "true"
-default[:hopshub][:smtp][:secure]         = "false"
+default[:hopsworks][:smtp][:username]       = "hadoop@hops.io"
+default[:hopsworks][:smtp][:password]       = "admin"
+default[:hopsworks][:smtp][:server]         = "localhost"
+#default[:hopsworks][:smtp][:server]         = "smtp.gmail.com"
+#default[:hopsworks][:smtp][:port]           = "465"
+default[:hopsworks][:smtp][:port]           = "25"
+#default[:hopsworks][:smtp][:secure]         = "true"
+default[:hopsworks][:smtp][:secure]         = "false"
 
 default[:kagent][:enabled]                = "false"
 
 
 
-default[:hopshub][:smtp]                  = "smtp.gmail.com"
-default[:hopshub][:email_address]         = "yourusername@gmail.com"
-default[:hopshub][:smtp_password]         = "enterpasswordhere"
+default[:hopsworks][:smtp]                  = "smtp.gmail.com"
+default[:hopsworks][:email_address]         = "yourusername@gmail.com"
+default[:hopsworks][:smtp_password]         = "enterpasswordhere"
 

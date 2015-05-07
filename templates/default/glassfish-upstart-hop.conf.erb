@@ -24,7 +24,7 @@ expect fork
 
 pre-start script
   test -f <%= node['glassfish']['base_dir'] %>/glassfish/modules/glassfish.jar || { stop; exit 0; }
-  <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
+  <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> --terse start-domain --dry-run > <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
   perl -pi -e "s/\\n/ /g" <%= node['glassfish']['base_dir'] %>/glassfish/bin/start-domain.java_command
 echo '#!/bin/sh'  > <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
 echo "cd <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/config" >> <%= node[:glassfish][:base_dir] %>/glassfish/bin/upstart-exec.sh 
@@ -60,7 +60,7 @@ post-start script
   <% end %>
 end script
 
-pre-stop exec <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopshub][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>
+pre-stop exec <%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>
 
 # Uglies to wait until the broker is actually up before completion of the 'stop'
 post-stop script

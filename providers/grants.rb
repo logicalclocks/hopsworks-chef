@@ -26,5 +26,5 @@ end
 notifying_action :sshkeys do
   # Set attribute for dashboard's public_key to the ssh public key
   key=IO.readlines("#{node['glassfish']['base_dir']}/.ssh/id_rsa.pub").first
-  node.normal[:hopshub][:public_key]=key.gsub("\n","")
+  node.normal[:hopsworks][:public_key]=key.gsub("\n","")
 end

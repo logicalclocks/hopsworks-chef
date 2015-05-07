@@ -109,11 +109,11 @@ EOF
   not_if { ::File.exists?( "#{node['glassfish']['base_dir']}/.ssh/id_rsa" ) }
 end
 
-hopshub_grants "set_public_key_attribute" do
+hopsworks_grants "set_public_key_attribute" do
   action :sshkeys
 end
 
-Chef::Log.info("Public key: #{node[:hopshub][:public_key]}")
+Chef::Log.info("Public key: #{node[:hopsworks][:public_key]}")
 
 
 if platform_family?("debian")

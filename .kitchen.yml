@@ -31,7 +31,7 @@ suites:
       - recipe[kagent::install]
       - recipe[ndb::install]
       - recipe[hops::install]
-      - recipe[hopshub::install]
+      - recipe[hopsworks::install]
 #      - recipe[collectd::install]
 #      - recipe[kagent::default]
 #      - recipe[collectd::server]
@@ -45,7 +45,7 @@ suites:
       - recipe[hops::rm]
       - recipe[hops::nm]
       - recipe[hops::jhs]
-      - recipe[hopshub::default]
+      - recipe[hopsworks::default]
 #      - recipe[collectd::mysqld]
 
     attributes:
@@ -59,7 +59,7 @@ suites:
          kmon:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-         hopshub:
+         hopsworks:
             admin:
 #                password: "jimdowling"
             private_ips: ["10.0.2.15"]

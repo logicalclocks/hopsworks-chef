@@ -13,14 +13,14 @@ mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
 
-hopshub_grants "create_kthfs_db"  do
+hopsworks_grants "create_kthfs_db"  do
   action :create_db
 end 
 
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
-hopshub_grants "kthfs"  do
+hopsworks_grants "kthfs"  do
   tables_path  "#{tables_path}"
   rows_path  "#{rows_path}"
   action :nothing
@@ -46,7 +46,7 @@ rescue
     variables({
                 :private_ip => private_ip
               })
-    notifies :populate_db, "hopshub_grants[kthfs]", :immediately
+    notifies :populate_db, "hopsworks_grants[kthfs]", :immediately
   end 
 end
 
@@ -55,14 +55,14 @@ end
 # config glassfish
 ###############################################################################
 
-Chef::Log.info "Admin user: #{node.default[:hopshub][:admin][:user]}"
+Chef::Log.info "Admin user: #{node.default[:hopsworks][:admin][:user]}"
 
 domain_name="domain1"
 admin_port=node[:glassfish][:admin][:port] 
 port=node[:glassfish][:port]
 secure=false
-username="#{node[:hopshub][:admin][:user]}"
-password="#{node[:hopshub][:admin][:password]}"
+username="#{node[:hopsworks][:admin][:user]}"
+password="#{node[:hopsworks][:admin][:password]}"
 master_password="#{node[:glassfish][:cert][:password]}"
 password_file="#{node[:glassfish]['domains_dir']}/#{domain_name}_admin_passwd"
 config_dir="#{node[:glassfish][:domains_dir]}/#{domain_name}/config"
@@ -115,8 +115,8 @@ end
     #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
   # Generate two new certs with same alias as original certs
-    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopshub][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
 
     #Add two new certs to cacerts.jks
@@ -138,7 +138,7 @@ file "#{admin_pwd}" do
 end
 
 template "#{admin_pwd}" do
-  cookbook 'hopshub'
+  cookbook 'hopsworks'
   source "password.erb"
   owner node[:glassfish][:user]
   group node[:glassfish][:group]
@@ -151,7 +151,7 @@ file "#{login_cnf}" do
    action :delete
 end
 template "#{login_cnf}" do
-  cookbook 'hopshub'
+  cookbook 'hopsworks'
   source "login.conf.erb"
   owner node[:glassfish][:user]
   group node[:glassfish][:group]
@@ -343,7 +343,7 @@ bash "enable_mail_connector" do
   group node[:glassfish][:group]
  code <<-EOF
    cd #{node[:glassfish][:base_dir]}/glassfish/bin   
-   #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopshub][:smtp]}  --mailuser #{node[:hopshub][:email_address]} --fromaddress #{node[:hopshub][:email_address]} --storeprotocol imap --storeprotocolclass com.sun.mail.imapIMAPStore --transprotocol=smtp --transprotocolclass=com.sun.mail.smtp.SMTPTransport --debug=false --enabled=true --property "smtp.starttls.enable=true:smtp.socketFactory.fallback=false:smtp.socketFactory.port=465:smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory: smtp.password=#{node[:hopshub][:smtp_password]}#:smtp.port=465:smtp.user=#{node[:hopshub][:email_address]}:mail-smtp.auth=true" mail/BBCMail
+   #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-javamail-resource --mailhost #{node[:hopsworks][:smtp]}  --mailuser #{node[:hopsworks][:email_address]} --fromaddress #{node[:hopsworks][:email_address]} --storeprotocol imap --storeprotocolclass com.sun.mail.imapIMAPStore --transprotocol=smtp --transprotocolclass=com.sun.mail.smtp.SMTPTransport --debug=false --enabled=true --property "smtp.starttls.enable=true:smtp.socketFactory.fallback=false:smtp.socketFactory.port=465:smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory: smtp.password=#{node[:hopsworks][:smtp_password]}#:smtp.port=465:smtp.user=#{node[:hopsworks][:email_address]}:mail-smtp.auth=true" mail/BBCMail
  EOF
    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-javamail-resources | grep -i BBCMail"
 end
@@ -389,7 +389,7 @@ end
 if "#{node[:ndb][:enabled]}" == "true"
    alter_table_path = "#{Chef::Config[:file_cache_path]}/alter-table-ndb.sql"
 
-  hopshub_restart "switchToNdb" do
+  hopsworks_restart "switchToNdb" do
     alter_path alter_table_path
   end
 
@@ -403,7 +403,7 @@ if "#{node[:ndb][:enabled]}" == "true"
        group node['mysql']['root_group']
        mode "0600"
        action :create
-       notifies :alter_tables, "hopshub_restart[switchToNdb]", :immediately
+       notifies :alter_tables, "hopsworks_restart[switchToNdb]", :immediately
      end 
    end
 end
