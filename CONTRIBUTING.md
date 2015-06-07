@@ -5,7 +5,7 @@ If you want to help make the cookbook better, by adding new features, fixing bug
  * Fork hadoop_cookbook into your own GitHub repository
  * Create a topic branch with an appropriate name
  * Work on your favorite feature to your content
- * Once you are satisifed, create a pull request by going to the caskdata/hadoop_cookbook project.
+ * Once you are satisifed, create a pull request by going to the hopshadoop/hopsworks-chef project.
  * Address all the review comments
  * Once addressed, the changes will be committed to the hopshadoop/hopsworks-chef repo.
 
