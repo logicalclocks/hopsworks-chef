@@ -90,7 +90,13 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
+         hdfs:
+            user: glassfish
          hadoop:
+            yarn: 
+               user: glassfish
+            mr: 
+               user: glassfish
             nn:
                private_ips: ["10.0.2.15"]
             dn:
