@@ -2,7 +2,7 @@ node.default['java']['jdk_version'] = 7
 node.default['java']['install_flavor'] = "openjdk"
 
 include_recipe 'java'
-include_recipe "openssh"
+#include_recipe "openssh"
 
 bash 'fix_java_path_for_glassfish_cookbook' do
 user "root"

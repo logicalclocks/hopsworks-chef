@@ -9,7 +9,7 @@ cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "master"
 
 cookbook 'python', "~> 1.4.4"
-cookbook 'openssh', "~> 1.3.4"
+#cookbook 'openssh', "~> 1.3.4"
 cookbook 'openssl', "~> 1.1.0"
 #cookbook 'glassfish', "~> 0.5.30"
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master" 
