@@ -129,3 +129,15 @@ if platform_family?("debian")
     not_if { ::File.exists?( "#{node['glassfish']['base_dir']}/.limits_increased" ) }
   end
 end
+
+
+ark "zeppelin" do
+  url node[:zeppelin][:url]
+  version node[:zeppelin][:version]
+  path node[:zeppelin][:home]
+  home_dir "#{node[:zeppelin][:dir]}/zeppelin"
+  append_env_path true
+  owner "#{node[:zeppelin][:user]}"
+  action :install
+end
+

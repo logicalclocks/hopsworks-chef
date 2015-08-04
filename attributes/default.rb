@@ -23,8 +23,8 @@ default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
 default[:glassfish][:version]             = '4.1'
-default[:hopsworks][:admin][:user]          = "admin"
-default[:hopsworks][:admin][:password]      = "changeit"
+default[:hopsworks][:admin][:user]        = "admin"
+default[:hopsworks][:admin][:password]    = "changeit"
 default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
 default[:hopsworks][:twofactor_auth]        = "false"
@@ -45,7 +45,7 @@ default[:karamel][:cert][:l]              = "kista"
 default[:karamel][:cert][:s]              = "stockholm"
 default[:karamel][:cert][:c]              = "se"
 
-default[:hopsworks][:cert][:password]       = "changeit"
+default[:hopsworks][:cert][:password]     = "changeit"
 
 default[:karamel][:master][:password]     = "changeit"
 
@@ -71,6 +71,14 @@ end
 
 default[:bind_address]                    = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 
+
+default[:zeppelin][:version]              = "0.5.0-incubating"
+default[:zeppelin][:spark_version]        = "1.3.1"
+default[:zeppelin][:hadoop_version]       = "2.3"
+default[:zeppelin][:url]                  = "http://apache.mirrors.spacedump.net/incubator/zeppelin/#{node[:zeppelin][:version]}/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
+default[:zeppelin][:user]                 = "#{node[:glassfish][:user]}"
+default[:zeppelin][:dir]                  = node[:hadoop][:dir]
+
 # obligatory provider params
 default[:provider][:email]                = ""
 default[:provider][:name]                 = ""
@@ -78,25 +86,25 @@ default[:provider][:access_key]           = ""
 default[:provider][:account_id]           = ""
 # openstack-specific param
 default[:provider][:keystone_url]         = ""
-default[:hopsworks][:public_key]            = ""
+default[:hopsworks][:public_key]          = ""
 
-default[:hopsworks][:public_ips]            = ['10.0.2.15']
-default[:hopsworks][:private_ips]           = ['10.0.2.15']
+default[:hopsworks][:public_ips]          = ['10.0.2.15']
+default[:hopsworks][:private_ips]         = ['10.0.2.15']
 
-default[:hopsworks][:smtp][:username]       = "hadoop@hops.io"
-default[:hopsworks][:smtp][:password]       = "admin"
-default[:hopsworks][:smtp][:server]         = "localhost"
-#default[:hopsworks][:smtp][:server]         = "smtp.gmail.com"
-#default[:hopsworks][:smtp][:port]           = "465"
-default[:hopsworks][:smtp][:port]           = "25"
-#default[:hopsworks][:smtp][:secure]         = "true"
-default[:hopsworks][:smtp][:secure]         = "false"
+default[:hopsworks][:smtp][:username]     = "hadoop@hops.io"
+default[:hopsworks][:smtp][:password]     = "admin"
+default[:hopsworks][:smtp][:server]       = "localhost"
+#default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
+#default[:hopsworks][:smtp][:port]         = "465"
+default[:hopsworks][:smtp][:port]         = "25"
+#default[:hopsworks][:smtp][:secure]       = "true"
+default[:hopsworks][:smtp][:secure]       = "false"
 
 default[:kagent][:enabled]                = "false"
 
 
 
-default[:hopsworks][:smtp]                  = "smtp.gmail.com"
-default[:hopsworks][:email_address]         = "yourusername@gmail.com"
-default[:hopsworks][:smtp_password]         = "enterpasswordhere"
+default[:hopsworks][:smtp]                = "smtp.gmail.com"
+default[:hopsworks][:email_address]       = "yourusername@gmail.com"
+default[:hopsworks][:smtp_password]       = "enterpasswordhere"
 

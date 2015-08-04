@@ -7,11 +7,11 @@ driver:
     natdnsproxy1: "on"
     nictype1: "virtio"
   network:
-  - ["forwarded_port", {guest: 8080, host: 8888}]
-  - ["forwarded_port", {guest: 9191, host: 9999}]
-  - ["forwarded_port", {guest: 4848, host: 4444}]
-  - ["forwarded_port", {guest: 50070, host: 50070}]
-  - ["forwarded_port", {guest: 50075, host: 50075}]
+  - ["forwarded_port", {guest: 8080, host: 8088}]
+  - ["forwarded_port", {guest: 9191, host: 9099}]
+  - ["forwarded_port", {guest: 4848, host: 4044}]
+  - ["forwarded_port", {guest: 50070, host: 51070}]
+  - ["forwarded_port", {guest: 50075, host: 51075}]
 
 provisioner:
   name: chef_solo
@@ -32,9 +32,6 @@ suites:
       - recipe[ndb::install]
       - recipe[hops::install]
       - recipe[hopsworks::install]
-#      - recipe[collectd::install]
-#      - recipe[kagent::default]
-#      - recipe[collectd::server]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -45,8 +42,7 @@ suites:
       - recipe[hops::rm]
       - recipe[hops::nm]
       - recipe[hops::jhs]
-      - recipe[hopsworks::default]
-#      - recipe[collectd::mysqld]
+      - recipe[hopsworks]
 
     attributes:
 #         download_url: "http://192.168.1.125/hops"
