@@ -75,7 +75,8 @@ default[:bind_address]                    = attribute?('cloud') ? cloud['local_i
 default[:zeppelin][:version]              = "0.5.0-incubating"
 default[:zeppelin][:spark_version]        = "1.3.1"
 default[:zeppelin][:hadoop_version]       = "2.3"
-default[:zeppelin][:url]                  = "http://apache.mirrors.spacedump.net/incubator/zeppelin/#{node[:zeppelin][:version]}/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
+#default[:zeppelin][:url]                  = "http://apache.mirrors.spacedump.net/incubator/zeppelin/#{node[:zeppelin][:version]}/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
+default[:zeppelin][:url]                  = "http://snurran.sics.se/hops/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
 default[:zeppelin][:user]                 = "#{node[:glassfish][:user]}"
 default[:zeppelin][:dir]                  = node[:hadoop][:dir]
 
