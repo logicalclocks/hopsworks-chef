@@ -79,6 +79,7 @@ default[:zeppelin][:hadoop_version]       = "2.3"
 default[:zeppelin][:url]                  = "http://snurran.sics.se/hops/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
 default[:zeppelin][:user]                 = "#{node[:glassfish][:user]}"
 default[:zeppelin][:dir]                  = node[:hadoop][:dir]
+default[:zeppelin][:home]                 = "#{node[:zeppelin][:dir]}/zeppelin"
 
 # obligatory provider params
 default[:provider][:email]                = ""
