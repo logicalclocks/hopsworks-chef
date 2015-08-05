@@ -348,7 +348,7 @@ bash "enable_mail_connector" do
    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-javamail-resources | grep -i BBCMail"
 end
 
-Chef::Log.info "Installing HopsHub "
+Chef::Log.info "Installing HopsWorks"
 command_string = []
 # Some dependencies, such as guice and jclouds use JSR 330 annotation, which means we have to switch off CDI.
 # We need to specify the beans explicitly
@@ -356,13 +356,13 @@ command_string = []
 # https://blogs.oracle.com/theaquarium/entry/default_cdi_enablement_in_java
 # asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false  
 # http://www.eclipse.org/forums/index.php/t/490794/
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --upload=true --availabilityenabled=true --force=true --name HopsHub #{cached_kthfsmgr_filename}"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --upload=true --availabilityenabled=true --force=true --name hopsworks #{cached_kthfsmgr_filename}"
 Chef::Log.info(command_string.join("\t"))
 bash "installing_dashboard" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
    code command_string.join("\n")
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'HopsHub'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
 end
 
 
