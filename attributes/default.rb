@@ -66,7 +66,7 @@ case node[:hopsworks][:twofactor_auth]
  when "true"
    default[:kthfs][:mgr]                  = "#{node[:download_url]}/hop-dashboard-2pc.war"
  else
-   default[:kthfs][:mgr]                  = "#{node[:download_url]}/hop-dashboard.war"
+   default[:kthfs][:mgr]                  = "#{node[:download_url]}/hopsworks.war"
 end
 
 default[:bind_address]                    = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress

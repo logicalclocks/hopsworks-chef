@@ -15,7 +15,7 @@ end
 notifying_action :alter_tables do
 
 exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
-cached_kthfsmgr_filename = "#{Chef::Config[:file_cache_path]}/hop-dashboard.war"
+cached_kthfsmgr_filename = "#{Chef::Config[:file_cache_path]}/hopsworks.war"
 
 bash "redeploy_app_to_create_tables" do
   user node[:glassfish][:user]
