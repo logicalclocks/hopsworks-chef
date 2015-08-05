@@ -7,8 +7,8 @@ driver:
     natdnsproxy1: "on"
     nictype1: "virtio"
   network:
-  - ["forwarded_port", {guest: 8080, host: 8088}]
-  - ["forwarded_port", {guest: 9191, host: 9099}]
+  - ["forwarded_port", {guest: 8080, host: 8080}]
+  - ["forwarded_port", {guest: 9191, host: 9191}]
   - ["forwarded_port", {guest: 4848, host: 4044}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
