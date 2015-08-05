@@ -21,8 +21,8 @@ bash "redeploy_app_to_create_tables" do
   user node[:glassfish][:user]
   group node[:glassfish][:group]
    code <<-EOF
-   #{node[:glassfish][:base_dir]}/glassfish/bin/asadmin --user admin --passwordfile #{node[:glassfish][:domains_dir]}/domain1_admin_passwd undeploy HopsHub 
-   #{node[:glassfish][:base_dir]}/glassfish/bin/asadmin --user admin --passwordfile #{node[:glassfish][:domains_dir]}/domain1_admin_passwd deploy --enabled=true --upload=true --availabilityenabled=true --verify=true --force=true --name HopsHub #{cached_kthfsmgr_filename}
+   #{node[:glassfish][:base_dir]}/glassfish/bin/asadmin --user admin --passwordfile #{node[:glassfish][:domains_dir]}/domain1_admin_passwd undeploy hopsworks 
+   #{node[:glassfish][:base_dir]}/glassfish/bin/asadmin --user admin --passwordfile #{node[:glassfish][:domains_dir]}/domain1_admin_passwd deploy --enabled=true --upload=true --availabilityenabled=true --verify=true --force=true --name hopsworks #{cached_kthfsmgr_filename}
   EOF
     not_if "#{exec} kthfs \"show tables\" | grep -i Alerts"
 end

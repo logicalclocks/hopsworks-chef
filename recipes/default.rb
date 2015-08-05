@@ -111,20 +111,20 @@ end
    user node[:glassfish][:user]
    group node[:glassfish][:group]
     code <<-EOF
-    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -delete -alias s1as -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -delete -alias glassfish-instance -keystore #{config_dir}/keystore.jks -storepass #{master_password}
 
   # Generate two new certs with same alias as original certs
-    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
-    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+#    #{keytool_path}/keytool -keysize 2048 -genkey -alias s1as -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
+#    #{keytool_path}/keytool -keysize 2048 -genkey -alias glassfish-instance -keyalg RSA -dname "CN=#{node[:karamel][:cert][:cn]},O=#{node[:karamel][:cert][:o]},OU=#{node[:karamel][:cert][:ou]},L=#{node[:karamel][:cert][:l]},S=#{node[:karamel][:cert][:s]},C=#{node[:karamel][:cert][:c]}" -validity 3650 -keypass #{node[:hopsworks][:cert][:password]} -storepass #{master_password} -keystore #{config_dir}/keystore.jks
 
 
     #Add two new certs to cacerts.jks
-    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
-    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -export -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/keystore.jks -storepass #{master_password}
   
-    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
-    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -import -noprompt -alias s1as -file #{config_dir}/s1as.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
+#    #{keytool_path}/keytool -import -noprompt -alias glassfish-instance -file #{config_dir}/glassfish-instance.cert -keystore #{config_dir}/cacerts.jks -storepass #{master_password}
   
     touch #{node[:glassfish][:base_dir]}/.certs_generated
     EOF
