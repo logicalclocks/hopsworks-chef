@@ -86,6 +86,10 @@ glassfish_domain "#{domain_name}" do
 end
 
 
+# SSL problems
+# http://blog.jankowalski.pl/jax-ws-jaxb/untrusted-certs-to-appserv
+# https://www.nabisoft.com/tutorials/glassfish/installing-glassfish-41-on-ubuntu
+
 keytool_path="#{node[:java][:java_home]}/bin"
 
 if node[:java][:java_home].to_s == ''
