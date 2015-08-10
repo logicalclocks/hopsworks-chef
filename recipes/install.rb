@@ -53,7 +53,7 @@ cd /tmp/glassfish
 unzip -qq #{cached_package_filename}
 mkdir -p #{File.dirname(node['glassfish']['base_dir'])}
 mkdir -p #{File.dirname(node['glassfish']['install_dir'])}
-mv glassfish#{majorVersion} #{node['glassfish']['base_dir']}
+mv glassfish* #{node['glassfish']['base_dir']}
 chown -R #{node['glassfish']['user']} #{node['glassfish']['base_dir']}
 chgrp -R #{node['glassfish']['group']} #{node['glassfish']['base_dir']}
 chmod -R 0770 #{node['glassfish']['base_dir']}/bin/

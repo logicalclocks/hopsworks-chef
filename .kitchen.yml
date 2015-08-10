@@ -8,8 +8,8 @@ driver:
     nictype1: "virtio"
   network:
   - ["forwarded_port", {guest: 8080, host: 8080}]
-  - ["forwarded_port", {guest: 9191, host: 9191}]
-  - ["forwarded_port", {guest: 4848, host: 4044}]
+  - ["forwarded_port", {guest: 8181, host: 8181}]
+  - ["forwarded_port", {guest: 4848, host: 4848}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
 
@@ -55,6 +55,9 @@ suites:
          hopsworks:
             admin:
 #                password: "jimdowling"
+            default:
+                private_ips: ["10.0.2.15"]
+                public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          glassfish:
