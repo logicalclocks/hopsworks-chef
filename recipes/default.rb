@@ -7,13 +7,13 @@
 
 
 private_ip=my_private_ip()
-kthfs_db = "kthfs"
-hops_db = "hops"
+hopsworks_db = "hopsworks"
+# hops_db = "hops"
 mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
 
-hopsworks_grants "create_kthfs_db"  do
+hopsworks_grants "create_hopsworks_db"  do
   action :create_db
 end 
 
@@ -207,7 +207,7 @@ glassfish_auth_realm "cauthRealm" do
  secure false
  classname "se.kth.bbc.crealm.CustomAuthRealm"
  jaas_context "cauthRealm"
-  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{kthfs_db}", 'group-table' => "users_groups", 'user-table' => "users", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "yubikey") # 
+  properties('encoding' => "hex", 'password-column' => "password", 'datasource-jndi' => "jdbc/#{hopsworks_db}", 'group-table' => "users_groups", 'user-table' => "users", 'charset' => "UTF-8", 'group-name-column' => "group_name", 'user-name-column' => "email", 'otp-secret-column' => "secret", 'user-status-column' => "status", 'group-table-user-name-column' => "email", 'yubikey-table' => "yubikey") # 
  action :create
 end
 
@@ -266,27 +266,29 @@ Chef::Log.info "JDBC Connection: #{mysql_ips}"
 #   not_if { ::File.exists?( "#{password_file}")}
 # end
 
+# #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{hops_db}" #{hops_db}
+# #{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hops_db} --enabled=true jdbc/#{hops_db}
+
+
 bash "install_jdbc" do
    user node[:glassfish][:user]
    group node[:glassfish][:group]
  code <<-EOF
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{kthfs_db}" #{kthfs_db}
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{kthfs_db} --enabled=true jdbc/#{kthfs_db}
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}:DatabaseName=#{hops_db}" #{hops_db}
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hops_db} --enabled=true jdbc/#{hops_db}
-touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}" #{hopsworks_db}
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hopsworks_db} --enabled=true jdbc/#{hopsworks_db}
+touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{hopsworks_db}_jdbc_installed
 EOF
-  not_if { ::File.exists?( "#{node[:glassfish][:domains_dir]}/#{domain_name}/.#{kthfs_db}_jdbc_installed") }
+  not_if { ::File.exists?( "#{node[:glassfish][:domains_dir]}/#{domain_name}/.#{hopsworks_db}_jdbc_installed") }
  end
 
 command_string = []
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{kthfs_db}:group-table=users_groups:user-table=users:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:assign-groups=ADMIN,USER,AGENT:group-table-user-name-column=EMAIL:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:group-table-user-name-column=email:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{kthfs_db}.is-connection-validation-required=true"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hopsworks_db}.is-connection-validation-required=true"
+# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
-command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINEST"
+command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINE"
 
 
 
@@ -311,14 +313,14 @@ end
 
 
 
-kthfsmgr_url = node['kthfs']['mgr']
-kthfsmgr_filename = File.basename(kthfsmgr_url)
-cached_kthfsmgr_filename = "#{Chef::Config[:file_cache_path]}/#{kthfsmgr_filename}"
+hopsworksapp_url = node['kthfs']['mgr']
+hopsworksapp_filename = File.basename(hopsworksapp_url)
+cached_hopsworksapp_filename = "#{Chef::Config[:file_cache_path]}/#{hopsworksapp_filename}"
 
-Chef::Log.info "Downloading #{cached_kthfsmgr_filename} from #{kthfsmgr_url} "
+Chef::Log.info "Downloading #{cached_hopsworksapp_filename} from #{hopsworksapp_url} "
 
-remote_file cached_kthfsmgr_filename do
-    source kthfsmgr_url
+remote_file cached_hopsworksapp_filename do
+    source hopsworksapp_url
     mode 0755
     owner node[:glassfish][:user]
     group node[:glassfish][:group]
@@ -360,7 +362,7 @@ command_string = []
 # https://blogs.oracle.com/theaquarium/entry/default_cdi_enablement_in_java
 # asadmin set configs.config.server-config.cdi-service.enable-implicit-cdi=false  
 # http://www.eclipse.org/forums/index.php/t/490794/
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --upload=true --availabilityenabled=true --force=true --name hopsworks #{cached_kthfsmgr_filename}"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} deploy --enabled=true --upload=true --availabilityenabled=true --force=true --name hopsworks #{cached_hopsworksapp_filename}"
 Chef::Log.info(command_string.join("\t"))
 bash "installing_dashboard" do
   user node[:glassfish][:user]
