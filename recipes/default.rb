@@ -20,7 +20,7 @@ end
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
-hopsworks_grants "kthfs"  do
+hopsworks_grants "hopsworks"  do
   tables_path  "#{tables_path}"
   rows_path  "#{rows_path}"
   action :nothing
@@ -46,7 +46,7 @@ rescue
     variables({
                 :private_ip => private_ip
               })
-    notifies :populate_db, "hopsworks_grants[kthfs]", :immediately
+    notifies :populate_db, "hopsworks_grants[hopsworks]", :immediately
   end 
 end
 
@@ -313,7 +313,7 @@ end
 
 
 
-hopsworksapp_url = node['kthfs']['mgr']
+hopsworksapp_url = node['hopsworks']['mgr']
 hopsworksapp_filename = File.basename(hopsworksapp_url)
 cached_hopsworksapp_filename = "#{Chef::Config[:file_cache_path]}/#{hopsworksapp_filename}"
 
