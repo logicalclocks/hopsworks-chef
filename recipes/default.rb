@@ -282,8 +282,9 @@ EOF
  end
 
 command_string = []
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=GROUPNAME:digest-algorithm=none:user-name-column=EMAIL:encoding=Hex:password-column=PASSWORD:group-table-user-name-column=email:digestrealm-password-enc-algorithm= :db-user=#{mysql_user}:db-password=#{mysql_pwd}\" DBRealm"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=group_name:digest-algorithm=none:user-name-column=email:encoding=Hex:password-column=password:group-table-user-name-column=email:digestrealm-password-enc-algorithm=SHA-256:db-user=#{mysql_user}:db-password=#{mysql_pwd}\" jdbcRealm"
+# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=jdbcRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hopsworks_db}.is-connection-validation-required=true"
 # command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
@@ -299,7 +300,7 @@ Chef::Log.info(command_string.join("\t"))
    user node[:glassfish][:user]
    group node[:glassfish][:group]
    code command_string.join("\n")
-   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-auth-realms | grep -i DBRealm"
+   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-auth-realms | grep -i jdbcRealm"
  end
 
 
