@@ -20,7 +20,7 @@ end
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
-hopsworks_grants "hopsworks"  do
+hopsworks_grants "kthfs"  do
   tables_path  "#{tables_path}"
   rows_path  "#{rows_path}"
   action :nothing
@@ -46,7 +46,7 @@ rescue
     variables({
                 :private_ip => private_ip
               })
-    notifies :populate_db, "hopsworks_grants[hopsworks]", :immediately
+    notifies :populate_db, "hopsworks_grants[kthfs]", :immediately
   end 
 end
 
@@ -185,7 +185,7 @@ end
 
 template "/etc/init.d/glassfish" do
   source "glassfish.erb"
-  mode "0751"
+  mode "0755"
   variables(:domain_name => "#{domain_name}", :username => "#{username}", :password_file => "#{admin_pwd}", :listen_ports => [node[:glassfish][:port], node[:glassfish][:admin][:port]],
   :command => "#{node[:glassfish][:base_dir]}/glassfish/bin/start-domain.java_command")
 end
@@ -282,7 +282,7 @@ EOF
  end
 
 command_string = []
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=group_name:digest-algorithm=none:user-name-column=email:encoding=Hex:password-column=password:group-table-user-name-column=email:digestrealm-password-enc-algorithm=SHA-256:db-user=#{mysql_user}:db-password=#{mysql_pwd}\" jdbcRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=group_name:digest-algorithm=SHA-256:user-name-column=email:encoding=Hex:password-column=password:group-table-user-name-column=email:digestrealm-password-enc-algorithm=SHA-256:db-user=#{mysql_user}:db-password=#{mysql_pwd}\" jdbcRealm"
 # command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=jdbcRealm"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hopsworks_db}.is-connection-validation-required=true"
