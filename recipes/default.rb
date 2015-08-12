@@ -8,7 +8,7 @@
 
 private_ip=my_private_ip()
 hopsworks_db = "hopsworks"
-# hops_db = "hops"
+realm="kthfsRealm"
 mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
@@ -274,19 +274,17 @@ bash "install_jdbc" do
    user node[:glassfish][:user]
    group node[:glassfish][:group]
  code <<-EOF
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}" #{hopsworks_db}
-#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hopsworks_db} --enabled=true jdbc/#{hopsworks_db}
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-connection-pool  --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource --restype javax.sql.DataSource --creationretryattempts=1 --creationretryinterval=2 --validationmethod=auto-commit --isconnectvalidatereq=true --property "ServerName=#{mysql_ips}:Port=#{node[:ndb][:mysql_port]}:User=#{mysql_user}:Password=#{mysql_pwd}" #{hopsworks_db}Pool
+#{asadmin} --user #{username} --passwordfile #{admin_pwd} create-jdbc-resource --connectionpoolid #{hopsworks_db}Pool --enabled=true jdbc/#{hopsworks_db}
 touch #{node[:glassfish][:domains_dir]}/#{domain_name}/.#{hopsworks_db}_jdbc_installed
 EOF
   not_if { ::File.exists?( "#{node[:glassfish][:domains_dir]}/#{domain_name}/.#{hopsworks_db}_jdbc_installed") }
  end
 
 command_string = []
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=group_name:digest-algorithm=SHA-256:user-name-column=email:encoding=Hex:password-column=password:group-table-user-name-column=email:digestrealm-password-enc-algorithm=SHA-256:db-user=#{mysql_user}:db-password=#{mysql_pwd}\" jdbcRealm"
-# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=cauthRealm"
-command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=jdbcRealm"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  create-auth-realm --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm --property \"jaas-context=jdbcRealm:datasource-jndi=jdbc/#{hopsworks_db}:group-table=users_groups:user-table=users:group-name-column=group_name:digest-algorithm=SHA-256:user-name-column=email:encoding=Hex:password-column=password:group-table-user-name-column=email:digestrealm-password-enc-algorithm=SHA-256:db-user=#{mysql_user}:db-password=#{mysql_pwd}\" #{realm}"
+command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set server-config.security-service.default-realm=#{realm}"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hopsworks_db}.is-connection-validation-required=true"
-# command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  set domain.resources.jdbc-connection-pool.#{hops_db}.is-connection-validation-required=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} set server-config.network-config.protocols.protocol.admin-listener.security-enabled=true"
 command_string << "#{asadmin} --user #{username} --passwordfile #{admin_pwd} enable-secure-admin"
 command_string << "# #{asadmin} --user #{username} --passwordfile #{admin_pwd}  set-log-level javax.enterprise.system.core.security=FINE"
@@ -300,7 +298,7 @@ Chef::Log.info(command_string.join("\t"))
    user node[:glassfish][:user]
    group node[:glassfish][:group]
    code command_string.join("\n")
-   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-auth-realms | grep -i jdbcRealm"
+   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-auth-realms | grep -i #{realm}"
  end
 
 
