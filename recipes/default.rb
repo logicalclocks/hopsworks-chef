@@ -9,23 +9,70 @@ test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java
 EOF
 end
 
-group node[:glassfish][:group] do
+
+private_ip=my_private_ip()
+hopsworks_db = "hopsworks"
+realm="kthfsRealm"
+mysql_user=node[:mysql][:user]
+mysql_pwd=node[:mysql][:password]
+
+
+hopsworks_grants "create_hopsworks_db"  do
+  action :create_db
+end 
+
+tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
+rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
+
+hopsworks_grants "creds"  do
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
+  action :nothing
+end 
+
+template "#{rows_path}" do
+   source File.basename("#{rows_path}") + ".erb"
+   owner node[:glassfish][:user]
+   mode 0755
+   action :create
 end
 
-user node['glassfish']['user'] do
-  supports :manage_home => true
-  home "/home/#{node['glassfish']['user']}"
-  shell '/bin/bash'
-  action :create
-  system true
-  not_if "getent passwd #{node['glassfish']['user']}"
-end
+  Chef::Log.info("Could not find previously defined #{tables_path} resource")
+ template tables_path do
+    source File.basename("#{tables_path}") + ".erb"
+    owner node[:glassfish][:user]
+    mode 0750
+    action :create
+    variables({
+                :private_ip => private_ip
+              })
+    notifies :populate_db, 'hopsworks_grants[creds]', :immediately
+  end 
 
-group node[:glassfish][:group] do
-  action :modify
-  members node[:glassfish][:user] 
-  append true
-end
+
+###############################################################################
+# config glassfish
+###############################################################################
+
+
+
+# group node[:glassfish][:group] do
+# end
+
+# user node['glassfish']['user'] do
+#   supports :manage_home => true
+#   home "/home/#{node['glassfish']['user']}"
+#   shell '/bin/bash'
+#   action :create
+#   system true
+#   not_if "getent passwd #{node['glassfish']['user']}"
+# end
+
+# group node[:glassfish][:group] do
+#   action :modify
+#   members node[:glassfish][:user] 
+#   append true
+# end
 
 username="adminuser"
 password="adminpw"
@@ -170,3 +217,27 @@ glassfish_deployable "hopsworks" do
   availability_enabled true
   action :deploy
 end
+
+props =  { 
+  'datasource-jndi' => 'jdbc/hopsworks',
+  'password-column' => 'password',
+  'group-table' => 'users_groups',
+  'encoding' => 'hex',
+  'user-table' => 'users',
+  'group-name-column' => 'group_name',
+  'user-name-column' => 'email',
+  'group-table-user-name-column' => 'email',
+  'digest-algorithm' => 'SHA-256'
+}
+
+glassfish_auth_realm "kthfsRealm" do 
+  realm_name "kthfsRealm"
+  jaas_context "jdbcrealm"
+  properties props
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
