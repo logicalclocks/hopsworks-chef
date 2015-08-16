@@ -110,3 +110,6 @@ default[:hopsworks][:smtp]                = "smtp.gmail.com"
 default[:hopsworks][:email_address]       = "yourusername@gmail.com"
 default[:hopsworks][:smtp_password]       = "enterpasswordhere"
 
+node.normal[:hadoop][:user_envs]          = "false"
+
+
