@@ -25,6 +25,7 @@ tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
 hopsworks_grants "creds"  do
+  resource_name "creds"
   tables_path  "#{tables_path}"
   rows_path  "#{rows_path}"
   action :nothing
@@ -187,7 +188,13 @@ node.override = {
               }
             }
           }
-        }
+        },
+        'deployables' => {
+          'hopsworks' => {
+            'url' => 'http://snurran.sics.se/hops/hopsworks.war',
+            'context_root' => '/'
+          }
+        },
       }
     }
   }
@@ -205,39 +212,41 @@ glassfish_secure_admin domain_name do
   action :enable
 end
 
-glassfish_deployable "hopsworks" do
-  component_name "hopsworks"
-  url "http://snurran.sics.se/hops/hopsworks.war"
-  context_root "/"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  availability_enabled true
-  action :deploy
-end
+# glassfish_deployable "hopsworks" do
+#   component_name "hopsworks"
+#   url "http://snurran.sics.se/hops/hopsworks.war"
+#   context_root "/"
+#   domain_name domain_name
+#   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#   username username
+#   admin_port admin_port
+#   secure false
+#   availability_enabled true
+#   action :deploy
+# end
 
 props =  { 
   'datasource-jndi' => 'jdbc/hopsworks',
   'password-column' => 'password',
   'group-table' => 'users_groups',
-  'encoding' => 'hex',
   'user-table' => 'users',
   'group-name-column' => 'group_name',
   'user-name-column' => 'email',
   'group-table-user-name-column' => 'email',
+  'encoding' => 'hex',
   'digest-algorithm' => 'SHA-256'
 }
 
-glassfish_auth_realm "kthfsRealm" do 
-  realm_name "kthfsRealm"
-  jaas_context "jdbcrealm"
-  properties props
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
+ glassfish_auth_realm "kthfsRealm" do 
+   realm_name "kthfsRealm"
+   jaas_context "jdbcrealm"
+   properties props
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+   classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
+#   classname "com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm"
+ end
 
