@@ -1,27 +1,32 @@
-notifying_action :create_db do
+use_inline_resources
+
+notifying_action :create_tables do
+  Chef::Log.info("Tables.sql is here: #{new_resource.tables_path}")
+  db="hopsworks"
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
-  bash 'grants_hopsworks' do
+
+  bash 'create_hopsworks_tables' do
     user "root"
     code <<-EOF
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks\"
-    EOF
-  end
-end
-
-notifying_action :populate_db do
-
-  db=hopsworks
-  
-  Chef::Log.info("Tables.sql is here: #{new_resource.tables_path}")
-  Chef::Log.info("Rows.sql is here: #{new_resource.tables_path}")
-  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
-  bash 'populate_hopsworks_tables' do
-    user "root"
-    code <<-EOF
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
-      #{exec} #{db} -e \"source #{new_resource.rows_path}\"
     EOF
     not_if "#{exec} #{db} < \"show tables;\" | grep users"
+  end
+
+end
+
+notifying_action :insert_rows do
+
+  Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
+  db="hopsworks"
+  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
+
+  bash 'insert_hopsworks_rows' do
+    user "root"
+    code <<-EOF
+      #{exec} #{db} -e \"source #{new_resource.rows_path}\"
+    EOF
   end
 end
 

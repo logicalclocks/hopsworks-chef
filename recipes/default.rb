@@ -17,28 +17,21 @@ mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
 
-hopsworks_grants "create_hopsworks_db"  do
-  action :create_db
-end 
+# hopsworks_grants "create_hopsworks_db"  do
+#   action :create_db
+# end 
 
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
-hopsworks_grants "creds"  do
-  resource_name "creds"
+
+hopsworks_grants "creds" do
   tables_path  "#{tables_path}"
   rows_path  "#{rows_path}"
   action :nothing
 end 
 
-template "#{rows_path}" do
-   source File.basename("#{rows_path}") + ".erb"
-   owner node[:glassfish][:user]
-   mode 0755
-   action :create
-end
-
-  Chef::Log.info("Could not find previously defined #{tables_path} resource")
+ Chef::Log.info("Could not find previously defined #{tables_path} resource")
  template tables_path do
     source File.basename("#{tables_path}") + ".erb"
     owner node[:glassfish][:user]
@@ -47,8 +40,19 @@ end
     variables({
                 :private_ip => private_ip
               })
-    notifies :populate_db, 'hopsworks_grants[creds]', :immediately
+    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
   end 
+
+
+
+template "#{rows_path}" do
+   source File.basename("#{rows_path}") + ".erb"
+   owner node[:glassfish][:user]
+   mode 0755
+   action :create
+   notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
+end
+
 
 
 ###############################################################################
