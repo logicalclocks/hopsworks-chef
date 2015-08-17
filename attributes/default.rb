@@ -112,4 +112,3 @@ default[:hopsworks][:smtp_password]       = "enterpasswordhere"
 
 node.normal[:hadoop][:user_envs]          = "false"
 
-
