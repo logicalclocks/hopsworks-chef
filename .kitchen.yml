@@ -8,7 +8,6 @@ driver:
     nictype1: "virtio"
   network:
   - ["forwarded_port", {guest: 8080, host: 9191}]
-  - ["forwarded_port", {guest: 7070, host: 8080}]
   - ["forwarded_port", {guest: 8181, host: 8181}]
   - ["forwarded_port", {guest: 9191, host: 9191}]
   - ["forwarded_port", {guest: 4848, host: 4848}]
@@ -88,6 +87,7 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
+            use_hopsworks: "true"
          hdfs:
             user: glassfish
          hadoop:
@@ -105,7 +105,7 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
-            user_envs: "false"
+#            user_envs: "false"
          hopsworks:
             default:
                private_ips: ["10.0.2.15"]
