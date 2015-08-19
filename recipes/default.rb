@@ -12,7 +12,7 @@ end
 
 private_ip=my_private_ip()
 hopsworks_db = "hopsworks"
-realm="kthfsRealm"
+realmname="kthfsrealm"
 mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
@@ -148,29 +148,6 @@ node.override = {
             'securityenabled' => false
           }
         },
-        'context_services' => {
-          'concurrent/MyAppContextService' => {
-            'description' => 'My Apps ContextService'
-          }
-        },
-        'managed_thread_factories' => {
-          'concurrent/myThreadFactory' => {
-            'threadpriority' => 12,
-            'description' => 'My Thread Factory'
-          }
-        },
-        'managed_executor_services' => {
-          'concurrent/myExecutorService' => {
-            'threadpriority' => 12,
-            'description' => 'My Executor Service'
-          }
-        },
-        'managed_scheduled_executor_services' => {
-          'concurrent/myScheduledExecutorService' => {
-            'corepoolsize' => 12,
-            'description' => 'My Executor Service'
-          }
-        },
         'jdbc_connection_pools' => {
           'hopsworksPool' => {
             'config' => {
@@ -194,7 +171,7 @@ node.override = {
           }
         },
         'deployables' => {
-          'hopsworks' => {
+          'HopsWorks' => {
             'url' => 'http://snurran.sics.se/hops/hopsworks.war',
             'context_root' => '/hopsworks'
           }
@@ -232,18 +209,19 @@ end
 props =  { 
   'datasource-jndi' => 'jdbc/hopsworks',
   'password-column' => 'password',
-  'group-table' => 'users_groups',
-  'user-table' => 'users',
+  'group-table' => 'hopsworks.users_groups',
+  'user-table' => 'hopsworks.users',
   'group-name-column' => 'group_name',
   'user-name-column' => 'email',
   'group-table-user-name-column' => 'email',
   'encoding' => 'hex',
+  'digestrealm-password-enc-algorithm' => 'SHA-256',
   'digest-algorithm' => 'SHA-256'
 }
 
- glassfish_auth_realm "kthfsRealm" do 
-   realm_name "kthfsRealm"
-   jaas_context "jdbcrealm"
+ glassfish_auth_realm "#{realmname}" do 
+   realm_name "#{realmname}"
+   jaas_context "jdbcRealm"
    properties props
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"

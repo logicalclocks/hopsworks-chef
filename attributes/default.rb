@@ -50,8 +50,8 @@ default[:hopsworks][:cert][:password]     = "changeit"
 default[:karamel][:master][:password]     = "changeit"
 
 version                                   = node[:glassfish][:version]
-#default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
-default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
+default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
+#default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
 default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-grizzly-all.jar"
 
 default[:glassfish][:cauth_url]           = "#{node[:download_url]}/otp-auth-1.0.jar"
