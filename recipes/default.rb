@@ -107,7 +107,7 @@ node.override = {
           'min_memory' => 1024,
           'max_memory' => 1024,
           'max_perm_size' => 256,
-          'port' => 7070,
+          'port' => 8080,
           'admin_port' => admin_port,
           'username' => username,
           'password' => password,
@@ -196,7 +196,7 @@ node.override = {
         'deployables' => {
           'hopsworks' => {
             'url' => 'http://snurran.sics.se/hops/hopsworks.war',
-            'context_root' => '/'
+            'context_root' => '/hopsworks'
           }
         },
       }
@@ -251,6 +251,42 @@ props =  {
    admin_port admin_port
    secure false
    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
-#   classname "com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm"
+ end
+
+# Avoid empty property values - glassfish will crash otherwise
+if node[:hopsworks][:gmail][:email].empty?
+  node.default[:hopsworks][:gmail][:email]="none"
+end
+
+if node[:hopsworks][:gmail][:password].empty?
+  node.default[:hopsworks][:gmail][:password]="empty"
+end
+
+
+gmailProps = {
+  'mail-smtp-host' => 'smtp.gmail.com',
+  'mail-smtp-user' => "#{node[:hopsworks][:gmail][:email]}",
+  'mail-smtp-password' => "#{node[:hopsworks][:gmail][:password]}",
+  'mail-smtp-auth' => 'true',
+  'mail-smtp-port' => '587',
+  'mail-smtp-socketFactory-port' => '465',
+  'mail-smtp-socketFactory-class' => 'javax.net.ssl.SSLSocketFactory',
+  'mail-smtp-starttls-enable' => 'true',
+  'mail.smtp.ssl.enable' => 'false',
+  'mail-smtp-socketFactory-fallback' => 'false'
+}
+
+ glassfish_javamail_resource "gmail" do 
+   jndi_name "mail/BBCMail"
+   mailuser node[:hopsworks][:gmail][:email]
+   mailhost "smtp.gmail.com"
+   fromaddress node[:hopsworks][:gmail][:email]
+   properties gmailProps
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+   action :create
  end
 

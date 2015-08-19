@@ -50,8 +50,8 @@ default[:hopsworks][:cert][:password]     = "changeit"
 default[:karamel][:master][:password]     = "changeit"
 
 version                                   = node[:glassfish][:version]
-default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
-#default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
+#default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
+default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
 default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-grizzly-all.jar"
 
 default[:glassfish][:cauth_url]           = "#{node[:download_url]}/otp-auth-1.0.jar"
@@ -95,10 +95,10 @@ default[:hopsworks][:private_ips]         = ['10.0.2.15']
 
 default[:hopsworks][:smtp][:username]     = "hadoop@hops.io"
 default[:hopsworks][:smtp][:password]     = "admin"
-default[:hopsworks][:smtp][:server]       = "localhost"
-#default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
-#default[:hopsworks][:smtp][:port]         = "465"
-default[:hopsworks][:smtp][:port]         = "25"
+#default[:hopsworks][:smtp][:server]       = "localhost"
+default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
+default[:hopsworks][:smtp][:port]         = "465"
+#default[:hopsworks][:smtp][:port]         = "25"
 #default[:hopsworks][:smtp][:secure]       = "true"
 default[:hopsworks][:smtp][:secure]       = "false"
 
@@ -107,8 +107,8 @@ default[:kagent][:enabled]                = "false"
 
 
 default[:hopsworks][:smtp]                = "smtp.gmail.com"
-default[:hopsworks][:email_address]       = "yourusername@gmail.com"
-default[:hopsworks][:smtp_password]       = "enterpasswordhere"
+default[:hopsworks][:gmail][:email]       = "hopsworks@gmail.com"
+default[:hopsworks][:gmail][:password]    = "password"
 
 node.normal[:hadoop][:user_envs]          = "false"
 

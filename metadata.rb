@@ -169,3 +169,10 @@ attribute "kagent/enabled",
           :type => 'string',
           :default => "false"
 
+attribute "hopsworks/gmail/email",
+          :description => "Email address for gmail account",
+          :type => 'string'
+
+attribute "hopsworks/gmail/password",
+          :description => "Password for gmail account",
+          :type => 'string'
