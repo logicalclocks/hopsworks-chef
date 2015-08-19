@@ -228,7 +228,7 @@ props =  {
    username username
    admin_port admin_port
    secure false
-   classname "com.sun.enterprise.security.ee.auth.realm.jdbc.JDBCRealm"
+   classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
  end
 
 # Avoid empty property values - glassfish will crash otherwise
