@@ -156,7 +156,7 @@ node.override = {
               'isconnectvalidatereq' => 'true',
               'validationmethod' => 'auto-commit',
               'ping' => 'true',
-              'description' => 'App Pool',
+              'description' => 'Hopsworks Connection Pool',
               'properties' => {
                 'Url' => "jdbc:mysql://#{mysql_host}:3306/",
                 'User' => mysql_user,
@@ -165,7 +165,7 @@ node.override = {
             },
             'resources' => {
               'jdbc/hopsworks' => {
-                'description' => 'Resource for App Pool',
+                'description' => 'Resource for Hopsworks Pool',
               }
             }
           }
@@ -214,7 +214,7 @@ props =  {
   'group-name-column' => 'group_name',
   'user-name-column' => 'email',
   'group-table-user-name-column' => 'email',
-  'encoding' => 'hex',
+  'encoding' => 'Hex',
   'digestrealm-password-enc-algorithm' => 'SHA-256',
   'digest-algorithm' => 'SHA-256'
 }
