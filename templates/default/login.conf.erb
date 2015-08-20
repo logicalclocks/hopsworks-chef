@@ -5,11 +5,11 @@ fileRealm {
 };
 
 jdbcDigestRealm {
-    com.sun.enterprise.security.auth.login.JDBCDigestLoginModule required ;
+    com.sun.enterprise.security.ee.auth.login.JDBCDigestLoginModule required;
 };
 
 jdbcRealm {
-    com.sun.enterprise.security.auth.login.JDBCLoginModule required ;
+    com.sun.enterprise.security.ee.auth.login.JDBCLoginModule required;
 };
 
 ldapRealm {
@@ -23,7 +23,6 @@ pamRealm {
 solarisRealm {
     com.sun.enterprise.security.auth.login.SolarisLoginModule required ;
 };
-
 
 cauthRealm{
     se.kth.bbc.crealm.CustomAuthLoginModule required;
