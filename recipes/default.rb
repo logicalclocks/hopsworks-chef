@@ -184,6 +184,20 @@ node.override = {
 include_recipe 'glassfish::default'
 include_recipe 'glassfish::attribute_driven_domain'
 
+login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"
+file "#{login_cnf}" do
+   action :delete
+end
+template "#{login_cnf}" do
+  cookbook 'hopsworks'
+  source "login.conf.erb"
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "0600"
+end
+
+
+
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
