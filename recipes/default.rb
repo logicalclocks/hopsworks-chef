@@ -245,6 +245,16 @@ props =  {
    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
  end
 
+
+# asadmin set server-config.security-service.default-realm=kthfsrealm
+glassfish_asadmin "set server-config.security-service.default-realm=#{realmname}" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
 # Avoid empty property values - glassfish will crash otherwise
 if node[:hopsworks][:gmail][:email].empty?
   node.default[:hopsworks][:gmail][:email]="none"
