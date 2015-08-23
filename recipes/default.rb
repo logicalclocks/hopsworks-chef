@@ -17,10 +17,6 @@ mysql_user=node[:mysql][:user]
 mysql_pwd=node[:mysql][:password]
 
 
-# hopsworks_grants "create_hopsworks_db"  do
-#   action :create_db
-# end 
-
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
 rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
 
@@ -59,14 +55,12 @@ end
 # config glassfish
 ###############################################################################
 
-username="adminuser"
-password="adminpw"
+username=node[:hopsworks][:admin][:user]
+password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
 domains_dir = '/usr/local/glassfish/glassfish/domains'
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
-mysql_user = "kthfs"
-mysql_password = "kthfs"
 
 
 login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"

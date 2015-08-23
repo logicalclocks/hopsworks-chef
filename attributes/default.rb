@@ -23,8 +23,8 @@ default[:glassfish][:group]               = "glassfish-admin"
 default[:glassfish][:admin][:port]        = 4848
 default[:glassfish][:port]                = 8080
 default[:glassfish][:version]             = '4.1'
-default[:hopsworks][:admin][:user]        = "admin"
-default[:hopsworks][:admin][:password]    = "changeit"
+default[:hopsworks][:admin][:user]        = "adminuser"
+default[:hopsworks][:admin][:password]    = "adminpw"
 default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
 default[:hopsworks][:twofactor_auth]        = "false"
@@ -95,11 +95,8 @@ default[:hopsworks][:private_ips]         = ['10.0.2.15']
 
 default[:hopsworks][:smtp][:username]     = "hadoop@hops.io"
 default[:hopsworks][:smtp][:password]     = "admin"
-#default[:hopsworks][:smtp][:server]       = "localhost"
 default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
 default[:hopsworks][:smtp][:port]         = "465"
-#default[:hopsworks][:smtp][:port]         = "25"
-#default[:hopsworks][:smtp][:secure]       = "true"
 default[:hopsworks][:smtp][:secure]       = "false"
 
 default[:kagent][:enabled]                = "false"

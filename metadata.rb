@@ -66,12 +66,12 @@ attribute "hopsworks/smtp/password",
 attribute "hopsworks/admin/user",
           :description => "Username for Hops Admin account",
           :type => 'string',
-          :default => "admin"
+          :required => "required"
 
 attribute "hopsworks/admin/password",
           :description => "hopsworks/admin/password",
           :type => 'string',
-          :default => "changeit"
+          :required => "required"
 
 attribute "karamel/master/password",
           :description => "karamel/master/password",
