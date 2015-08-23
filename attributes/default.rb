@@ -93,11 +93,11 @@ default[:hopsworks][:public_key]          = ""
 default[:hopsworks][:public_ips]          = ['10.0.2.15']
 default[:hopsworks][:private_ips]         = ['10.0.2.15']
 
-default[:hopsworks][:smtp][:username]     = "hadoop@hops.io"
-default[:hopsworks][:smtp][:password]     = "admin"
-default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
-default[:hopsworks][:smtp][:port]         = "465"
-default[:hopsworks][:smtp][:secure]       = "false"
+# default[:hopsworks][:smtp][:username]     = "hadoop@hops.io"
+# default[:hopsworks][:smtp][:password]     = "admin"
+# default[:hopsworks][:smtp][:server]       = "smtp.gmail.com"
+# default[:hopsworks][:smtp][:port]         = "465"
+# default[:hopsworks][:smtp][:secure]       = "false"
 
 default[:kagent][:enabled]                = "false"
 

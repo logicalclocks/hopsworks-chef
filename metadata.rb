@@ -21,47 +21,6 @@ recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 #link:Click <a target='_blank' href='https://%host%:8181/hopsworks'>here</a> to launch hopsworks in your browser (https)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 
-#
-# Required Attributes
-#
-attribute "hopsworks/smtp/server",
-          :display_name => "Smtp server address for sending emails",
-          :description => "Smtp server address for sending emails",
-          :type => 'string',
-          :required => "required",
-          :default => "smtp.gmail.com"
-
-attribute "hopsworks/smtp/port",
-          :display_name => "Smtp server port for sending emails",
-          :description => "Smtp server port for sending emails",
-          :type => 'string',
-          :required => "required",
-          :default => "465"
-
-attribute "hopsworks/smtp/secure",
-          :display_name => "Use SSL to Smtp server",
-          :description => "Use SSL to Smtp server",
-          :type => 'string',
-          :required => "required",
-          :default => "true"
-
-attribute "hopsworks/smtp/username",
-          :display_name => "Email account username",
-          :description =>  "Email account username",
-          :type => 'string',
-          :required => "required",
-          :default => "sodugling@gmail.com"
-
-attribute "hopsworks/smtp/password",
-          :display_name => "Email account password",
-          :description =>  "Email account password",
-          :type => 'string',
-          :required => "required",
-          :default => "admin"
-
-#
-# Optional Attributes
-#
 
 attribute "hopsworks/admin/user",
           :description => "Username for Hops Admin account",
@@ -164,15 +123,16 @@ attribute "glassfish/max_perm_size",
           :default => 1024
 
 attribute "kagent/enabled",
-          :display_name => "Install kagent",
           :description =>  "Install kagent",
           :type => 'string',
           :default => "false"
 
 attribute "hopsworks/gmail/email",
           :description => "Email address for gmail account",
+          :required => "required",
           :type => 'string'
 
 attribute "hopsworks/gmail/password",
           :description => "Password for gmail account",
+          :required => "required",
           :type => 'string'
