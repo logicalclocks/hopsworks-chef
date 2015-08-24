@@ -1,3 +1,4 @@
+
 name             'hopsworks'
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
@@ -14,6 +15,7 @@ depends 'glassfish'
 depends 'ndb'
 depends 'kagent'
 depends 'hops'
+depends 'ark'
 
 recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 
@@ -23,24 +25,36 @@ recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application.
 
 
 attribute "hopsworks/admin/user",
-          :description => "Username for Hops Admin account",
+          :description => "Username for the Administration account on the Web Application Server",
           :type => 'string',
           :required => "required"
 
 attribute "hopsworks/admin/password",
-          :description => "hopsworks/admin/password",
+          :description => "Password for the Administration account on the Web Application Server",
           :type => 'string',
           :required => "required"
 
-attribute "karamel/master/password",
-          :description => "karamel/master/password",
+attribute "hopsworks/master/password",
+          :description => "Web Application Server master password",
           :type => 'string',
-          :default => "changeit"
+          :required => "required"
 
-attribute "hopsworks/cert/password",
-          :description => "hopsworks/cert/password",
+
+attribute "mysql/user",
+          :description => "Username for the MySQL Server Accounts",
           :type => 'string',
-          :default => "changeit"
+          :required => "required"
+
+attribute "mysql/password",
+          :description => "Password for the MySQL Server Accounts",
+          :type => 'string',
+          :required => "required"
+
+
+# attribute "hopsworks/cert/password",
+#           :description => "hopsworks/cert/password",
+#           :type => 'string',
+#           :default => "changeit"
 
 attribute "hopsworks/twofactor_auth",
           :description => "hopsworks/twofactor_auth",

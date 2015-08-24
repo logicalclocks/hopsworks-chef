@@ -29,8 +29,8 @@ default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
 default[:hopsworks][:twofactor_auth]        = "false"
 
-default[:glassfish][:max_mem]             = 4000
-default[:glassfish][:min_mem]             = 2500
+default[:glassfish][:max_mem]             = 1024
+default[:glassfish][:min_mem]             = 1024
 default[:glassfish][:max_stack_size]      = 512
 default[:glassfish][:max_perm_size]       = 1024
 
@@ -47,10 +47,10 @@ default[:karamel][:cert][:c]              = "se"
 
 default[:hopsworks][:cert][:password]     = "changeit"
 
-default[:karamel][:master][:password]     = "changeit"
+default[:hopsworks][:master][:password]   = node[:hopsworks][:admin][:password]
 
 version                                   = node[:glassfish][:version]
-default[:glassfish][:package_url]             = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
+default[:glassfish][:package_url]         = "http://download.java.net/glassfish/#{version}/release/glassfish-#{version}.zip"
 #default[:glassfish][:package_url]         = "#{node[:download_url]}/glassfish-#{version}.zip"
 default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-grizzly-all.jar"
 
@@ -60,8 +60,6 @@ node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish-#{version}"
 node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
 node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/glassfish/domains"
 
-#default[:glassfish][:mysql_connector]         = "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.29.tar.gz"
-node.normal[:glassfish][:mysql_connector] = "#{node[:download_url]}/mysql-connector-java-5.1.29.tar.gz"
 case node[:hopsworks][:twofactor_auth]
  when "true"
    default[:hopsworks][:mgr]                  = "#{node[:download_url]}/hop-dashboard-2pc.war"
@@ -75,8 +73,8 @@ default[:bind_address]                    = attribute?('cloud') ? cloud['local_i
 default[:zeppelin][:version]              = "0.5.0-incubating"
 default[:zeppelin][:spark_version]        = "1.3.1"
 default[:zeppelin][:hadoop_version]       = "2.3"
-#default[:zeppelin][:url]                  = "http://apache.mirrors.spacedump.net/incubator/zeppelin/#{node[:zeppelin][:version]}/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
-default[:zeppelin][:url]                  = "http://snurran.sics.se/hops/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
+default[:zeppelin][:url]                  = "http://apache.mirrors.spacedump.net/incubator/zeppelin/#{node[:zeppelin][:version]}/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
+#default[:zeppelin][:url]                  = "http://snurran.sics.se/hops/zeppelin-#{node[:zeppelin][:version]}-bin-spark-#{node[:zeppelin][:spark_version]}_hadoop-#{node[:zeppelin][:hadoop_version]}.tgz"
 default[:zeppelin][:user]                 = "#{node[:glassfish][:user]}"
 default[:zeppelin][:dir]                  = node[:hadoop][:dir]
 default[:zeppelin][:home]                 = "#{node[:zeppelin][:dir]}/zeppelin"

@@ -1,3 +1,4 @@
+
 require 'json'
 
 
@@ -61,7 +62,7 @@ domain_name="domain1"
 domains_dir = '/usr/local/glassfish/glassfish/domains'
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
-
+jndiDB = "jdbc/hopsworks"
 
 login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"
 file "#{login_cnf}" do
@@ -76,8 +77,6 @@ template "#{login_cnf}" do
   mode "0600"
 end
 
-
-
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -87,8 +86,9 @@ glassfish_secure_admin domain_name do
   action :enable
 end
 
+
 props =  { 
-  'datasource-jndi' => 'jdbc/hopsworks',
+  'datasource-jndi' => jndiDB,
   'password-column' => 'password',
   'group-table' => 'hopsworks.users_groups',
   'user-table' => 'hopsworks.users',
@@ -113,7 +113,6 @@ props =  {
  end
 
 
-# asadmin set server-config.security-service.default-realm=kthfsrealm
 glassfish_asadmin "set server-config.security-service.default-realm=#{realmname}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -121,6 +120,17 @@ glassfish_asadmin "set server-config.security-service.default-realm=#{realmname}
    admin_port admin_port
    secure false
 end
+
+
+# Jobs in Hopsworks use the Timer service
+glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/ejbTimers" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
 
 # Avoid empty property values - glassfish will crash otherwise
 if node[:hopsworks][:gmail][:email].empty?
@@ -168,6 +178,5 @@ glassfish_deployable "hopsworks" do
   username username
   admin_port admin_port
   secure false
-#  availability_enabled false
   action :deploy
 end

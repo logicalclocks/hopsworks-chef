@@ -1,11 +1,12 @@
-username="adminuser"
-password="adminpw"
+username=node[:hopsworks][:admin][:user]
+password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
-domains_dir = '/usr/local/glassfish/glassfish/domains'
-admin_port = 4848
+domains_dir = "/usr/local/glassfish/glassfish/domains"
+admin_port = node[:glassfish][:admin][:port]
+web_port = node[:glassfish][:port]
+mysql_user=node[:mysql][:user]
+mysql_password=node[:mysql][:password]
 mysql_host = private_recipe_ip("ndb","mysqld")
-mysql_user = "kthfs"
-mysql_password = "kthfs"
 
 
 node.override = {
@@ -23,14 +24,14 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
-          'min_memory' => 1024,
-          'max_memory' => 1024,
-          'max_perm_size' => 256,
-          'port' => 8080,
+          'min_memory' => node[:glassfish][:min_mem],
+          'max_memory' => node[:glassfish][:max_mem],
+          'max_perm_size' => node[:glassfish][:max_perm_size],
+          'port' => web_port,
           'admin_port' => admin_port,
           'username' => username,
           'password' => password,
-          'master_password' => 'mykeystorepassword',
+          'master_password' => node[:hopsworks][:master][:password],
           'remote_access' => false,
           'jvm_options' => ['-DMYAPP_CONFIG_DIR=/usr/local/myapp/config', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
           'secure' => false
@@ -87,13 +88,32 @@ node.override = {
                 'description' => 'Resource for Hopsworks Pool',
               }
             }
+          },
+          'ejbTimerPool' => {
+            'config' => {
+              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'restype' => 'javax.sql.DataSource',
+              'isconnectvalidatereq' => 'true',
+              'validationmethod' => 'auto-commit',
+              'ping' => 'true',
+              'description' => 'Hopsworks Connection Pool',
+              'properties' => {
+                'Url' => "jdbc:mysql://#{mysql_host}:3306/glassfish_timers",
+                'User' => mysql_user,
+                'Password' => mysql_password
+              }
+            },
+            'resources' => {
+              'jdbc/ejbTimers' => {
+                'description' => 'Resource for Hopsworks EJB Timers Pool',
+              }
+            }
           }
         }
       }
     }
   }
 }
-
 include_recipe 'glassfish::default'
 include_recipe 'glassfish::attribute_driven_domain'
 

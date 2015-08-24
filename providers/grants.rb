@@ -9,6 +9,7 @@ notifying_action :create_tables do
     user "root"
     code <<-EOF
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers\"
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
     EOF
     not_if "#{exec} #{db} < \"show tables;\" | grep users"
@@ -17,7 +18,6 @@ notifying_action :create_tables do
 end
 
 notifying_action :insert_rows do
-
   Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
   db="hopsworks"
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
@@ -26,6 +26,7 @@ notifying_action :insert_rows do
     user "root"
     code <<-EOF
       #{exec} #{db} -e \"source #{new_resource.rows_path}\"
+      #{exec} glassfish_timers -e \"source /usr/local/glassfish/versions/current/glssfish/lib/install/databases/ejbtimer_mysql.sql\"
     EOF
   end
 end
