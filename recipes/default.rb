@@ -123,7 +123,7 @@ end
 
 
 # Jobs in Hopsworks use the Timer service
-glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/ejbTimers" do
+glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/hopsworks" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
