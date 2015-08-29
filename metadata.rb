@@ -16,6 +16,7 @@ depends 'ndb'
 depends 'kagent'
 depends 'hops'
 depends 'ark'
+depends 'sudo'
 
 recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 
@@ -149,4 +150,8 @@ attribute "hopsworks/gmail/email",
 attribute "hopsworks/gmail/password",
           :description => "Password for gmail account",
           :required => "required",
+          :type => 'string'
+
+attribute "hopsworks/reinstall",
+          :description => "Enter 'true' if this is a reinstallation",
           :type => 'string'

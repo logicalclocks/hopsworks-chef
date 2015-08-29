@@ -45,7 +45,11 @@ suites:
       - recipe[hopsworks]
 
     attributes:
-#         download_url: "http://192.168.1.125/hops"
+         authorization:
+            sudo:
+              users: ['vagrant']
+              passwordless: true
+              include_sudoers_d: true
          collectd:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
@@ -53,16 +57,11 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          hopsworks:
-            admin:
-#                password: "jimdowling"
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-         glassfish:
-            cert:
-#               password: "jamesdowling"
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]

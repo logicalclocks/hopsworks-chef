@@ -114,6 +114,37 @@ node.override = {
     }
   }
 }
-include_recipe 'glassfish::default'
-include_recipe 'glassfish::attribute_driven_domain'
+installed = "#{node[:glassfish][:base_dir]}/.installed"
+if ::File.exists?( "#{installed}" ) == false || "#{node[:hopsworks][:reinstall]}" == "true" 
 
+if "#{node[:hopsworks][:reinstall]}" == "true" 
+   directory node[:glassfish][:base_dir] do
+     action :delete
+     recursive true
+   end
+end
+
+  include_recipe 'glassfish::default'
+  include_recipe 'glassfish::attribute_driven_domain'
+
+# Mark that glassfish is installed
+  file "#{installed}" do
+    owner node[:glassfish][:user]
+  end
+end
+
+node.default['authorization']['sudo']['include_sudoers_d'] = true
+node.default['authorization']['sudo']['passwordless'] = true
+
+include_recipe 'sudo'
+
+# sudo 'sysadmin' do
+#   group '%sysadmin'
+#   nopasswd false
+# end
+
+sudo 'glassfish' do
+  user    node[:glassfish][:user]
+  commands  ['/usr/sbin/useradd', '/usr/sbin/userdel']
+  nopasswd   true
+end

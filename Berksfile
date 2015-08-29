@@ -15,3 +15,5 @@ cookbook 'openssl', "~> 1.1.0"
 #cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master" 
 cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master" 
 cookbook 'ark'
+cookbook 'sudo'
+

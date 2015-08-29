@@ -1,6 +1,6 @@
-
 require 'json'
 
+include_recipe 'glassfish::default'
 
 bash 'fix_java_path_for_glassfish_cookbook' do
 user "root"
@@ -59,12 +59,17 @@ end
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
-domains_dir = '/usr/local/glassfish/glassfish/domains'
+domains_dir = "/usr/local/glassfish/glassfish/domains"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 jndiDB = "jdbc/hopsworks"
 
-login_cnf="#{node[:glassfish][:domains_dir]}/#{domain_name}/config/login.conf"
+asadmin="/usr/local/glassfish/glassfish/bin/asadmin"
+admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
+
+
+
+login_cnf="#{domains_dir}/#{domain_name}/config/login.conf"
 file "#{login_cnf}" do
    action :delete
 end
@@ -155,6 +160,8 @@ gmailProps = {
   'mail-smtp-socketFactory-fallback' => 'false'
 }
 
+
+
  glassfish_javamail_resource "gmail" do 
    jndi_name "mail/BBCMail"
    mailuser node[:hopsworks][:gmail][:email]
@@ -162,7 +169,7 @@ gmailProps = {
    fromaddress node[:hopsworks][:gmail][:email]
    properties gmailProps
    domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   password_file admin_pwd
    username username
    admin_port admin_port
    secure false
@@ -179,4 +186,5 @@ glassfish_deployable "hopsworks" do
   admin_port admin_port
   secure false
   action :deploy
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
 end

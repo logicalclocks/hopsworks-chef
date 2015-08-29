@@ -27,7 +27,10 @@ default[:hopsworks][:admin][:user]        = "adminuser"
 default[:hopsworks][:admin][:password]    = "adminpw"
 default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
-default[:hopsworks][:twofactor_auth]        = "false"
+default[:hopsworks][:default][:user]      = "admin@kth.se"
+default[:hopsworks][:default][:password]  = "admin"
+
+default[:hopsworks][:twofactor_auth]      = "false"
 
 default[:glassfish][:max_mem]             = 1024
 default[:glassfish][:min_mem]             = 1024
@@ -56,9 +59,10 @@ default[:grizzly][:jar_url]               = "#{node[:download_url]}/nucleus-griz
 
 default[:glassfish][:cauth_url]           = "#{node[:download_url]}/otp-auth-1.0.jar"
 
-node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish-#{version}"
-node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
-node.normal[:glassfish][:domains_dir]     = "/usr/local/glassfish-#{version}/glassfish/domains"
+node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish"
+#node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish-#{version}"
+node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish"
+node.normal[:glassfish][:domains_dir]     = "#{node[:glassfish][:base_dir]}/glassfish/domains"
 
 case node[:hopsworks][:twofactor_auth]
  when "true"
@@ -107,3 +111,4 @@ default[:hopsworks][:gmail][:password]    = "password"
 
 node.normal[:hadoop][:user_envs]          = "false"
 
+default[:hopsworks][:reinstall]           = "false"
