@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [ $# -ne 2 ] ; then
+ echo "Usage: <prog> username ssh_public_keys.\n"
+ exit 1
+fi
+
+/usr/sbin/adduser --home /srv/users/$1 --shell /bin/bash --gecos "" --disabled-password $1
+
+if [ $? -ne 0 ] ; then
+ echo "Problem creating the user $1.\n"
+ exit 2
+fi
+
+mkdir /srv/users/${1}/.ssh
+
+if [ $? -ne 0 ] ; then
+ echo "Problem creating .ssh directory for user $1\n"
+ exit 2
+fi
+
+echo "$2" > /srv/users/${1}/.ssh/authorized_keys
+if [ $? -ne 0 ] ; then
+ echo "Problem adding ssh keys to authorized_keys file.\n"
+ exit 3
+fi
+
+chown -R $1 /srv/users/${1}
+if [ $? -ne 0 ] ; then
+ echo "Problem changing ownership of the authorized_keys file.\n"
+ exit 4
+fi
+
+chmod 700 /srv/users/${1}/.ssh
+
+chmod 600 /srv/users/${1}/.ssh/authorized_keys
+
+exit 0

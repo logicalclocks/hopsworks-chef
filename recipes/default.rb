@@ -200,7 +200,12 @@ end
 
 
 template "/srv/mkuser.sh" do
-  source "mkuser.sh.erb"
+case node['platform']
+when 'debian', 'ubuntu'
+    source "mkuser.sh.erb"
+when 'redhat', 'centos', 'fedora'
+    source "mkuser.redhat.sh.erb"
+end
   owner node[:glassfish][:user]
   mode 0750
   action :create
