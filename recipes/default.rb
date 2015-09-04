@@ -188,3 +188,20 @@ glassfish_deployable "hopsworks" do
   action :deploy
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
 end
+
+
+directory "/srv/users" do
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
+
+template "/srv/mkuser.sh" do
+  source "mkuser.sh.erb"
+  owner node[:glassfish][:user]
+  mode 0750
+  action :create
+end 

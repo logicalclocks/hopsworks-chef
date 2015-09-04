@@ -138,13 +138,8 @@ node.default['authorization']['sudo']['passwordless'] = true
 
 include_recipe 'sudo'
 
-# sudo 'sysadmin' do
-#   group '%sysadmin'
-#   nopasswd false
-# end
-
 sudo 'glassfish' do
   user    node[:glassfish][:user]
-  commands  ['/usr/sbin/useradd', '/usr/sbin/userdel']
+  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser']
   nopasswd   true
 end
