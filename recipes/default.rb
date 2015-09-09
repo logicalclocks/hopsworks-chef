@@ -63,6 +63,7 @@ domains_dir = "/usr/local/glassfish/glassfish/domains"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 jndiDB = "jdbc/hopsworks"
+timerDB = "jdbc/hopsworksTimers"
 
 asadmin="/usr/local/glassfish/glassfish/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
@@ -128,7 +129,7 @@ end
 
 
 # Jobs in Hopsworks use the Timer service
-glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/hopsworks" do
+glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=#{timerDB}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
