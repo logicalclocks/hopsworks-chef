@@ -21,12 +21,21 @@ notifying_action :insert_rows do
   Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
   db="hopsworks"
   exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
+  timerTable = "ejbtimer_mysql.sql"
+  timerTablePath = "#{Chef::Config[:file_cache_path]}/#{timerTable}"
+
+ template timerTablePath do
+    source "#{timerTable}.erb"
+    owner node[:glassfish][:user]
+    mode 0750
+    action :create
+  end 
 
   bash 'insert_hopsworks_rows' do
     user "root"
     code <<-EOF
       #{exec} #{db} -e \"source #{new_resource.rows_path}\"
-      #{exec} glassfish_timers -e \"source /usr/local/glassfish/versions/current/glssfish/lib/install/databases/ejbtimer_mysql.sql\"
+      #{exec} glassfish_timers -e \"source #{timerTablePath}"
     EOF
   end
 end
