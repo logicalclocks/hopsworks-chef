@@ -104,7 +104,7 @@ node.override = {
               }
             },
             'resources' => {
-              'jdbc/ejbTimers' => {
+              'jdbc/hopsworksTimers' => {
                 'description' => 'Resource for Hopsworks EJB Timers Pool',
               }
             }
