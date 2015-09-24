@@ -12,7 +12,7 @@ notifying_action :create_tables do
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers\"
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
     EOF
-    not_if "#{exec} #{db} < \"show tables;\" | grep users"
+    not_if "#{exec} #{db} < \"show tables;\" | grep bbc_group"
   end
 
 end
