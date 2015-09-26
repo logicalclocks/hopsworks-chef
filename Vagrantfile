@@ -1,20 +1,33 @@
+require 'vagrant-omnibus'
+
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant::Config.run do |config|
 
- config.vm.box = "14.04" 
- config.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
+config.omnibus.chef_version = :latest
+
+
  config.vm.customize ["modifyvm", :id, "--memory", 9000]
  config.vm.customize ["modifyvm", :id, "--cpus", "1"]
+ 
+# change the network card hardware for better performance
+ config.vm.customize ["modifyvm", :id, "--nictype1", "virtio" ]
+# config.vm.customize ["modifyvm", :id, "--nictype2", "virtio" ]
+
+ # suggested fix for slow network performance
+ # see https://github.com/mitchellh/vagrant/issues/1807
+ config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+ config.vm.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+ config.vm.box = "bento_14.04" 
+ config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
  config.vm.network :bridged
- config.vm.forward_port 22, 1022
  config.vm.forward_port 3306, 4306
  config.vm.forward_port 8080, 9090
  config.vm.forward_port 8181, 9181
  config.vm.forward_port 4848, 5848
  config.vm.forward_port 50070, 52070
  config.vm.forward_port 50075, 52075
-
 
    config.vm.provision :chef_solo, :log_level => :debug do |chef|
      chef.log_level = :debug
@@ -43,6 +56,16 @@ Vagrant::Config.run do |config|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
           "user_envs" => "false"
+     },
+     "zeppelin" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
+     "elastic" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
      },
      "hdfs" => {
 	  "user" => "glassfish"
@@ -91,7 +114,13 @@ Vagrant::Config.run do |config|
                  },
       },
      "spark" => {
-	  "user" => "glassfish"
+	  "user" => "glassfish",
+	  "master" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          },
+	  "slave" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          },
      },
 
      }
@@ -100,8 +129,9 @@ Vagrant::Config.run do |config|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hopsworks::install"
-#      chef.add_recipe "spark::install"
-#      chef.add_recipe "zeppelin::install"
+      chef.add_recipe "spark::install"
+      chef.add_recipe "zeppelin::install"
+      chef.add_recipe "elastic::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -110,9 +140,9 @@ Vagrant::Config.run do |config|
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
       chef.add_recipe "hops::jhs"
-#      chef.add_recipe "zeppelin::default"
-#      chef.add_recipe "spark::master"
-#      chef.add_recipe "spark::slave"
+      chef.add_recipe "zeppelin::default"
+      chef.add_recipe "spark::master"
+      chef.add_recipe "spark::slave"
+#      chef.add_recipe "elastic::default"
   end 
-
 end
