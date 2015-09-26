@@ -1,36 +1,32 @@
 require 'vagrant-omnibus'
 
-VAGRANTFILE_API_VERSION = "2"
+#VAGRANTFILE_API_VERSION = "2"
+#config.omnibus.chef_version = :latest
 
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |c|
+  c.omnibus.chef_version = :latest
+  c.vm.box = "opscode-ubuntu-14.04"
+  c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
+  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4444})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>51070})
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>51075})
+  #c.vm.synced_folder ".", "/vagrant", disabled: true
+#  c.ssh.username = 'root'
+#  c.ssh.password = 'vagrant'
+  c.ssh.insert_key = false
 
-config.omnibus.chef_version = :latest
+  c.vm.provider :virtualbox do |p|
+    p.customize ["modifyvm", :id, "--memory", "9000"]
+    p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    p.customize ["modifyvm", :id, "--nictype1", "virtio"]
+  end
 
 
- config.vm.customize ["modifyvm", :id, "--memory", 9000]
- config.vm.customize ["modifyvm", :id, "--cpus", "1"]
- 
-# change the network card hardware for better performance
- config.vm.customize ["modifyvm", :id, "--nictype1", "virtio" ]
-# config.vm.customize ["modifyvm", :id, "--nictype2", "virtio" ]
-
- # suggested fix for slow network performance
- # see https://github.com/mitchellh/vagrant/issues/1807
- config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
- config.vm.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-
- config.vm.box = "bento_14.04" 
- config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
- config.vm.network :bridged
- config.vm.forward_port 3306, 4306
- config.vm.forward_port 8080, 9090
- config.vm.forward_port 8181, 9181
- config.vm.forward_port 4848, 5848
- config.vm.forward_port 50070, 52070
- config.vm.forward_port 50075, 52075
-
-   config.vm.provision :chef_solo, :log_level => :debug do |chef|
-     chef.log_level = :debug
+   c.vm.provision :chef_solo do |chef|
      chef.cookbooks_path = "cookbooks"
      chef.json = {
      "vagrant" => "true",
@@ -143,6 +139,6 @@ config.omnibus.chef_version = :latest
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "spark::master"
       chef.add_recipe "spark::slave"
-#      chef.add_recipe "elastic::default"
+      chef.add_recipe "elastic::default"
   end 
 end
