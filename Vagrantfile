@@ -1,21 +1,20 @@
 require 'vagrant-omnibus'
 
-#VAGRANTFILE_API_VERSION = "2"
-#config.omnibus.chef_version = :latest
-
 Vagrant.configure("2") do |c|
+#  c.vm.provision :shell, :path => "bootstrap.sh"
+
   c.omnibus.chef_version = :latest
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
+#  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
+#  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
   c.vm.network(:forwarded_port, {:guest=>4848, :host=>4444})
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>51070})
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>51075})
   #c.vm.synced_folder ".", "/vagrant", disabled: true
-#  c.ssh.username = 'root'
-#  c.ssh.password = 'vagrant'
+ # c.ssh.username = 'root'
+ # c.ssh.password = 'vagrant'
   c.ssh.insert_key = false
 
   c.vm.provider :virtualbox do |p|
