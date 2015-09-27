@@ -1,7 +1,6 @@
 require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
-#  c.vm.provision :shell, :path => "bootstrap.sh"
 
   c.omnibus.chef_version = :latest
   c.vm.box = "opscode-ubuntu-14.04"
@@ -130,6 +129,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
+      chef.add_recipe "hops::ndb"
       chef.add_recipe "hops::nn"
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
@@ -140,4 +140,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "spark::slave"
       chef.add_recipe "elastic::default"
   end 
+
+
+  c.vm.provision :shell, :path => "bootstrap.sh"
 end

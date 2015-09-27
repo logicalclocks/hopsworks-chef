@@ -35,7 +35,6 @@ suites:
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
-      - recipe[ndb::memcached]
       - recipe[hops::ndb]
       - recipe[hops::nn]
       - recipe[hops::dn]
