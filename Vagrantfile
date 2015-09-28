@@ -142,5 +142,5 @@ Vagrant.configure("2") do |c|
   end 
 
 
-  c.vm.provision :shell, :path => "bootstrap.sh"
+#  c.vm.provision :shell, :path => "bootstrap.sh"
 end
