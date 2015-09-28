@@ -15,10 +15,13 @@ if [ $? -ne 0 ] ; then
 fi
 
 if [ -d "${targetdir}" ]; then
- rm -rf cookboooks
+ rm -rf ${targetdir}
 fi
-test -d ${targetdir} 
 berks vendor ${targetdir}
+if [ $? -ne 0 ] ; then
+  echo "Problem running berkshelf vendor command"
+  exit 3
+fi
 
 vagrant up 
 exit $?
