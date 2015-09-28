@@ -137,7 +137,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::jhs"
       chef.add_recipe "spark::master"
       chef.add_recipe "spark::slave"
-      chef.add_recipe "elastic::default"
+      #chef.add_recipe "elastic::default"
       #chef.add_recipe "zeppelin::default"
   end 
 
