@@ -4,10 +4,11 @@ Vagrant.configure("2") do |c|
 
   c.omnibus.chef_version = :latest
   c.vm.box = "opscode-ubuntu-14.04"
-  c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
+#  c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
+  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
-#  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
-#  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
   c.vm.network(:forwarded_port, {:guest=>4848, :host=>4444})
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>51070})
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>51075})
@@ -57,12 +58,14 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "elastic" => {
+	  "user" =>  "vagrant",
+	  "group" =>  "vagrant",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "hdfs" => {
-	  "user" => "glassfish"
+	  "user" => "vagrant"
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -84,10 +87,10 @@ Vagrant.configure("2") do |c|
        	  	      "private_ips" => ["10.0.2.15"]
                  },
      "yarn" => {
-	  "user" => "glassfish"
+	  "user" => "vagrant"
      },
      "mr" => {
-	  "user" => "glassfish"
+	  "user" => "vagrant"
      },
       },
      "hadoop"  =>    {
@@ -108,7 +111,7 @@ Vagrant.configure("2") do |c|
                  },
       },
      "spark" => {
-	  "user" => "glassfish",
+	  "user" => "vagrant",
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
@@ -137,10 +140,10 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::jhs"
       chef.add_recipe "spark::master"
       chef.add_recipe "spark::slave"
-      #chef.add_recipe "elastic::default"
+      chef.add_recipe "elastic::default"
       #chef.add_recipe "zeppelin::default"
   end 
 
 
-  c.vm.provision :shell, :path => "bootstrap.sh"
+#  c.vm.provision :shell, :path => "bootstrap.sh"
 end
