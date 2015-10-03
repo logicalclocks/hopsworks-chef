@@ -7,12 +7,12 @@ driver:
     natdnsproxy1: "on"
     nictype1: "virtio"
   network:
-  - ["forwarded_port", {guest: 8080, host: 8888}]
+  - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8181, host: 8333}]
   - ["forwarded_port", {guest: 4848, host: 4444}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
-  - ["forwarded_port", {guest: 9200, host: 9191}]
+  - ["forwarded_port", {guest: 9200, host: 9200}]
 
 provisioner:
   name: chef_solo
@@ -34,6 +34,8 @@ suites:
       - recipe[hops::install]
       - recipe[hopsworks::install]
       - recipe[elastic::install]
+      - recipe[zeppelin::install]
+      - recipe[spark::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -45,6 +47,9 @@ suites:
       - recipe[hops::jhs]
       - recipe[hopsworks]
       - recipe[elastic::default]
+      - recipe[zeppelin::default]
+#      - recipe[spark::master]
+#      - recipe[spark::slave]
     attributes:
          authorization:
             sudo:
@@ -111,6 +116,17 @@ suites:
             jhs:
                private_ips: ["10.0.2.15"]
 #            user_envs: "false"
+         zeppelin:
+            default:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         spark:
+            slave:
+               private_ips: ["10.0.2.15"]
+            master:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
          hopsworks:
             default:
                private_ips: ["10.0.2.15"]

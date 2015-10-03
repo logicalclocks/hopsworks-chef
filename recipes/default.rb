@@ -41,7 +41,7 @@ end
   end 
 
 
-elastic_ip = private_recipe_ip("elastic","default")
+elastic_addr = private_recipe_ip("elastic","default")
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
@@ -49,7 +49,7 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
-                :elastic_ip => elastic_ip
+                :elastic_addr => elastic_addr
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
