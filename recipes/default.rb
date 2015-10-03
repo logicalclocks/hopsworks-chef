@@ -41,12 +41,16 @@ end
   end 
 
 
+elastic_ip = private_recipe_ip("elastic","default")
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node[:glassfish][:user]
    mode 0755
    action :create
+    variables({
+                :elastic_ip => elastic_ip
+              })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
 
@@ -62,6 +66,8 @@ domain_name="domain1"
 domains_dir = "/usr/local/glassfish/glassfish/domains"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
+
+
 jndiDB = "jdbc/hopsworks"
 timerDB = "jdbc/hopsworksTimers"
 
