@@ -36,6 +36,7 @@ suites:
       - recipe[elastic::install]
       - recipe[zeppelin::install]
       - recipe[spark::install]
+      - recipe[flink::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -50,6 +51,8 @@ suites:
       - recipe[zeppelin::default]
       - recipe[spark::master]
       - recipe[spark::slave]
+      - recipe[flink::jobmanager]
+      - recipe[flink::taskmanager]
     attributes:
          authorization:
             sudo:
@@ -122,11 +125,18 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          spark:
+            user: glassfish
             slave:
                private_ips: ["10.0.2.15"]
             master:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
+         flink:
+            user: glassfish
+            jobmanager:
+               private_ips: ["10.0.2.15"]
+            taskmanager:
+               private_ips: ["10.0.2.15"]
          hopsworks:
             default:
                private_ips: ["10.0.2.15"]

@@ -10,6 +10,7 @@ cookbook 'hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'spark', github: "hopshadoop/spark-chef", branch: "master"
+cookbook 'flink', github: "hopshadoop/flink-chef", branch: "hops"
 
 cookbook 'python', "~> 1.4.4"
 #cookbook 'openssh', "~> 1.3.4"
