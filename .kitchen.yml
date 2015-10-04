@@ -48,8 +48,8 @@ suites:
       - recipe[hopsworks]
       - recipe[elastic::default]
       - recipe[zeppelin::default]
-#      - recipe[spark::master]
-#      - recipe[spark::slave]
+      - recipe[spark::master]
+      - recipe[spark::slave]
     attributes:
          authorization:
             sudo:
