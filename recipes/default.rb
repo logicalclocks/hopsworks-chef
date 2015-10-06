@@ -49,7 +49,8 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
-                :elastic_ip => elastic_ip
+                :elastic_ip => elastic_ip,
+                :spark_user => node[:spark][:user]
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
