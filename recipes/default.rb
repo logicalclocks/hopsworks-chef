@@ -41,7 +41,7 @@ end
   end 
 
 
-elastic_ip = private_recipe_ip("elastic","default")
+elastic_addr = private_recipe_ip("elastic","default")
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"

@@ -7,12 +7,15 @@ driver:
     natdnsproxy1: "on"
     nictype1: "virtio"
   network:
-  - ["forwarded_port", {guest: 8080, host: 8888}]
   - ["forwarded_port", {guest: 8181, host: 8333}]
+  - ["forwarded_port", {guest: 8080, host: 8080}]
+  - ["forwarded_port", {guest: 8088, host: 8088}]
+  - ["forwarded_port", {guest: 8081, host: 8081}]
+  - ["forwarded_port", {guest: 9088, host: 9088}]
   - ["forwarded_port", {guest: 4848, host: 4444}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
-  - ["forwarded_port", {guest: 9200, host: 9191}]
+  - ["forwarded_port", {guest: 9200, host: 9200}]
 
 provisioner:
   name: chef_solo
@@ -25,15 +28,15 @@ platforms:
 
 suites:
   - name: default
-
-suites:
-  - name: default
     run_list:
       - recipe[kagent::install]
       - recipe[ndb::install]
       - recipe[hops::install]
       - recipe[hopsworks::install]
       - recipe[elastic::install]
+      - recipe[zeppelin::install]
+      - recipe[spark::install]
+      - recipe[flink::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -45,25 +48,24 @@ suites:
       - recipe[hops::jhs]
       - recipe[hopsworks]
       - recipe[elastic::default]
+#      - recipe[zeppelin::default]
+      - recipe[spark::master]
+      - recipe[spark::slave]
+      - recipe[flink::jobmanager]
+      - recipe[flink::taskmanager]
     attributes:
-         authorization:
-            sudo:
-              users: ['vagrant']
-              passwordless: true
-              include_sudoers_d: true
-         collectd:
-            private_ips: ["10.0.2.15"]
-            public_ips: ["10.0.2.15"]
+         # authorization:
+         #    sudo:
+         #      users: ['vagrant']
+         #      passwordless: true
+         #      include_sudoers_d: true
+         # collectd:
+         #    private_ips: ["10.0.2.15"]
+         #    public_ips: ["10.0.2.15"]
          kagent:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          elastic:
-            default:
-                private_ips: ["10.0.2.15"]
-                public_ips: ["10.0.2.15"]
-            private_ips: ["10.0.2.15"]
-            public_ips: ["10.0.2.15"]
-         hopsworks:
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
@@ -111,6 +113,25 @@ suites:
             jhs:
                private_ips: ["10.0.2.15"]
 #            user_envs: "false"
+         zeppelin:
+            default:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+         spark:
+            user: glassfish
+            slave:
+               private_ips: ["10.0.2.15"]
+            master:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
+         flink:
+# This doesnt work
+#            user: glassfish
+            jobmanager:
+               private_ips: ["10.0.2.15"]
+            taskmanager:
+               private_ips: ["10.0.2.15"]
          hopsworks:
             default:
                private_ips: ["10.0.2.15"]
