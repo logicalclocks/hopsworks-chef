@@ -71,14 +71,12 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "elastic" => {
-	  "user" =>  "vagrant",
-	  "group" =>  "vagrant",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "hdfs" => {
-	  "user" => "vagrant"
+	  "user" => "glassfish"
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -100,10 +98,10 @@ Vagrant.configure("2") do |c|
        	  	      "private_ips" => ["10.0.2.15"]
                  },
      "yarn" => {
-	  "user" => "vagrant"
+	  "user" => "glassfish"
      },
      "mr" => {
-	  "user" => "vagrant"
+	  "user" => "glassfish"
      },
       },
      "hadoop"  =>    {
@@ -124,7 +122,7 @@ Vagrant.configure("2") do |c|
                  },
       },
      "spark" => {
-	  "user" => "vagrant",
+	  "user" => "glassfish",
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },

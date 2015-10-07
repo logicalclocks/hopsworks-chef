@@ -49,7 +49,6 @@ suites:
       - recipe[hops::jhs]
       - recipe[hopsworks]
       - recipe[elastic::default]
-#      - recipe[zeppelin::default]
       - recipe[spark::master]
       - recipe[spark::slave]
       - recipe[flink::jobmanager]
