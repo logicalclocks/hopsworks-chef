@@ -37,6 +37,7 @@ suites:
       - recipe[zeppelin::install]
       - recipe[spark::install]
       - recipe[flink::install]
+#      - recipe[hiway::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -53,6 +54,10 @@ suites:
       - recipe[spark::slave]
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
+#      - recipe[hiway::hiway_client]
+#      - recipe[hiway::hiway_worker]
+#      - recipe[hiway::cuneiform_client]
+#      - recipe[hiway::cuneiform_worker]
     attributes:
          # authorization:
          #    sudo:
@@ -138,6 +143,10 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
+         hiway:
+            user: "hiway"
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "true"

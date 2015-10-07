@@ -2,20 +2,33 @@ require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
+  if Vagrant.has_plugin?("vagrant-cachier")
+    c.cache.auto_detect = false
+    c.cache.enable :apt
+  end
+  c.omnibus.cache_packages = false
+
   c.omnibus.chef_version = :latest
   c.vm.box = "opscode-ubuntu-14.04"
-#  c.vm.box_url = "https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>9191})
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8888})
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4444})
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>51070})
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>51075})
-  #c.vm.synced_folder ".", "/vagrant", disabled: true
- # c.ssh.username = 'root'
- # c.ssh.password = 'vagrant'
-  c.ssh.insert_key = false
+
+# HTTP webserver
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
+# HTTPS webserver
+  c.vm.network(:forwarded_port, {:guest=>8081, :host=>8081})
+# Glassfish webserver
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
+# HDFS webserver
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
+# 
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
+# YARN webserver
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
+# Elasticsearch rpc port
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
+# Flink webserver
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "9000"]

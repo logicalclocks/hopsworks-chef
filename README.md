@@ -1,30 +1,36 @@
-hop-dashboard-chef
+HopsWorks
 ==================
 
-Chef cookbook to install Hop Dashboard
+Chef cookbook to install HopsWorks, Hadoop for Humans.
 
 
 Vagrant Installation
 ==================
+
+Requirements: Vagrant, Virtualbox, Min 9 GB of main memory
+
 Install the omnibus plugin, if needed:
 ````
 vagrant plugin install vagrant-omnibus
 ````
 
-Start vagrant:
+
+Clone this repo, then run:
 ````
-cd <base-dir for hopsworks-chef>
+cd hopsworks-chef
 berks vendor cookbooks
 vagrant up
 ````
-Access hopsworks from your browser, with the username and password below:
 
+After hopsworks has installed, access hopsworks from your browser, with the username and password below:
 ````
-http://localhost:9090/hopsworks
+http://localhost:8080/hopsworks
 ````
-(`user: admin@kth.se`)
-(`password: admin`)
-
+# Default credentials:
+````
+user: admin@kth.se
+password: admin
+````
 
 
 ## Contributing
