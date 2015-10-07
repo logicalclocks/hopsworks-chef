@@ -1,20 +1,28 @@
-hop-dashboard-chef
+HopsWorks
 ==================
 
-Chef cookbook to install Hop Dashboard
+Chef cookbook to install HopsWorks, Hadoop for Humans.
 
 
 Vagrant Installation
 ==================
-cd <base-dir for hopsworks-chef>
+
+Minimum Requirements: 9 GB of main memory
+
+````
+cd hopsworks-chef
 berks vendor cookbooks
 vagrant up
+````
 
-Access hopsworks from:
-http://localhost:9090/hopsworks
+After hopsworks has installed, you can access hopsworks from a web browser at:
+````
+http://localhost:8080/hopsworks
 
+# Enter the following account credentials:
 user: admin@kth.se
 password: admin
+````
 
 
 
