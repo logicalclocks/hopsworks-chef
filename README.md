@@ -6,11 +6,19 @@ Chef cookbook to install Hop Dashboard
 
 Vagrant Installation
 ==================
+Install the omnibus plugin, if needed:
+````
+vagrant plugin install vagrant-omnibus
+````
+
+Start vagrant:
+````
 cd <base-dir for hopsworks-chef>
 berks vendor cookbooks
 vagrant up
+````
+Access hopsworks from your browser, with the username and password below:
 
-Access hopsworks from:
 http://localhost:9090/hopsworks
 
 user: admin@kth.se
