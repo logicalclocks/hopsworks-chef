@@ -18,6 +18,8 @@ vagrant plugin install vagrant-omnibus
 Clone this repo, then run:
 ````
 cd hopsworks-chef
+# remove any old berkshelf cookbooks/cache
+rm -rf cookbooks Berksfile.lock
 berks vendor cookbooks
 vagrant up
 ````
