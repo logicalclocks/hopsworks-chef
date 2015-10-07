@@ -7,8 +7,15 @@ Chef cookbook to install HopsWorks, Hadoop for Humans.
 Vagrant Installation
 ==================
 
-Minimum Requirements: 9 GB of main memory
+Requirements: Vagrant, Virtualbox, Min 9 GB of main memory
 
+Install the omnibus plugin, if needed:
+````
+vagrant plugin install vagrant-omnibus
+````
+
+
+Clone this repo, then run:
 ````
 cd hopsworks-chef
 berks vendor cookbooks
@@ -16,10 +23,12 @@ vagrant up
 ````
 
 After hopsworks has installed, you can access hopsworks from a web browser at:
+After hopsworks has installed, access hopsworks from your browser, with the username and password below:
 ````
 http://localhost:8080/hopsworks
-
-# Enter the following account credentials:
+````
+# Default credentials:
+````
 user: admin@kth.se
 password: admin
 ````
