@@ -19,10 +19,11 @@ vagrant up
 ````
 Access hopsworks from your browser, with the username and password below:
 
+````
 http://localhost:9090/hopsworks
-
-user: admin@kth.se
-password: admin
+````
+(`user: admin@kth.se`)
+(`password: admin`)
 
 
 
