@@ -133,8 +133,8 @@ end
   end
 end
 
-node.default['authorization']['sudo']['include_sudoers_d'] = true
-node.default['authorization']['sudo']['passwordless'] = true
+# node.default['authorization']['sudo']['include_sudoers_d'] = true
+# node.default['authorization']['sudo']['passwordless'] = true
 
 #include_recipe 'sudo'
 
