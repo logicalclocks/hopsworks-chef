@@ -96,15 +96,15 @@ Vagrant.configure("2") do |c|
                  },
 		 "jhs" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
-                 },
-     "yarn" => {
-	  "user" => "glassfish"
+                 }
      },
-     "mr" => {
-	  "user" => "glassfish"
-     },
-      },
      "hadoop"  =>    {
+     	        "yarn" => {
+		      "user" => "glassfish"
+		 },
+		 "mr" => {
+		      "user" => "glassfish"
+		 },
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
@@ -128,7 +128,7 @@ Vagrant.configure("2") do |c|
           },
 	  "slave" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
-          },
+          }
      },
 
      }
