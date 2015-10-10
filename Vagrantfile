@@ -8,7 +8,7 @@ Vagrant.configure("2") do |c|
   end
   c.omnibus.cache_packages = false
 
-  c.omnibus.chef_version = :latest
+  c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -138,6 +138,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::install"
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "spark::install"
+      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
       chef.add_recipe "ndb::mgmd"
@@ -148,11 +149,12 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-      chef.add_recipe "hops::jhs"
+      chef.add_recipe "elastic::default"
       chef.add_recipe "spark::master"
       chef.add_recipe "spark::slave"
-      chef.add_recipe "elastic::default"
-      #chef.add_recipe "zeppelin::default"
+      chef.add_recipe "flink::jobmanager"
+      chef.add_recipe "flink::taskmanager"
+      chef.add_recipe "hopsworks::default"
   end 
 
 

@@ -19,6 +19,7 @@ driver:
 
 provisioner:
   name: chef_solo
+  require_chef_omnibus: 12.4.3
 
 platforms:
 
@@ -32,11 +33,11 @@ suites:
       - recipe[kagent::install]
       - recipe[ndb::install]
       - recipe[hops::install]
-      - recipe[hopsworks::install]
       - recipe[elastic::install]
       - recipe[zeppelin::install]
       - recipe[spark::install]
       - recipe[flink::install]
+      - recipe[hopsworks::install]
 #      - recipe[hiway::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
@@ -47,12 +48,12 @@ suites:
       - recipe[hops::rm]
       - recipe[hops::nm]
       - recipe[hops::jhs]
-      - recipe[hopsworks]
       - recipe[elastic::default]
       - recipe[spark::master]
       - recipe[spark::slave]
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
+      - recipe[hopsworks]
 #      - recipe[hiway::hiway_client]
 #      - recipe[hiway::hiway_worker]
 #      - recipe[hiway::cuneiform_client]
