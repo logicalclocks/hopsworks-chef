@@ -38,7 +38,6 @@ suites:
       - recipe[spark::install]
       - recipe[flink::install]
       - recipe[hopsworks::install]
-#      - recipe[hiway::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -54,10 +53,6 @@ suites:
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
       - recipe[hopsworks]
-#      - recipe[hiway::hiway_client]
-#      - recipe[hiway::hiway_worker]
-#      - recipe[hiway::cuneiform_client]
-#      - recipe[hiway::cuneiform_worker]
     attributes:
          # authorization:
          #    sudo:
