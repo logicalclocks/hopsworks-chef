@@ -155,3 +155,7 @@ attribute "hopsworks/gmail/password",
 attribute "hopsworks/reinstall",
           :description => "Enter 'true' if this is a reinstallation",
           :type => 'string'
+
+attribute "hopsworks/war_url",
+          :description => "Url for the hopsworks war file",
+          :type => 'string'

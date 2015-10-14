@@ -1,7 +1,7 @@
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
-domains_dir = "/usr/local/glassfish/glassfish/domains"
+domains_dir = node[:glassfish][:domains_dir]
 admin_port = node[:glassfish][:admin][:port]
 web_port = node[:glassfish][:port]
 mysql_user=node[:mysql][:user]
@@ -18,8 +18,8 @@ node.override = {
     }
   },
   'glassfish' => {
-    'version' => '4.1',
-    'base_dir' => '/usr/local/glassfish',
+    'version' => node[:glassfish][:version],
+    'base_dir' => node[:glassfish][:base_dir],
     'domains_dir' => domains_dir,
     'domains' => {
       domain_name => {
@@ -33,13 +33,13 @@ node.override = {
           'password' => password,
           'master_password' => node[:hopsworks][:master][:password],
           'remote_access' => false,
-          'jvm_options' => ['-DMYAPP_CONFIG_DIR=/usr/local/myapp/config', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
+          'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
           'secure' => false
         },
         'extra_libraries' => {
           'jdbcdriver' => {
             'type' => 'common',
-            'url' => 'http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar'
+            'url' => node[:hopsworks][:mysql_connector_url]
           }
         },
         'threadpools' => {
@@ -61,13 +61,13 @@ node.override = {
             'maxqueuesize' => 256
           }
         },
-        'iiop_listeners' => {
-          'orb-listener-1' => {
-            'enabled' => true,
-            'iiopport' => 1072,
-            'securityenabled' => false
-          }
-        },
+        # 'iiop_listeners' => {
+        #   'orb-listener-1' => {
+        #     'enabled' => true,
+        #     'iiopport' => 1072,
+        #     'securityenabled' => false
+        #   }
+        # },
         'jdbc_connection_pools' => {
           'hopsworksPool' => {
             'config' => {
@@ -119,6 +119,8 @@ if ::File.exists?( "#{installed}" ) == false || "#{node[:hopsworks][:reinstall]}
 
 if "#{node[:hopsworks][:reinstall]}" == "true" 
    directory node[:glassfish][:base_dir] do
+     owner node[:glassfish][:user]
+     group node[:glassfish][:group]
      action :delete
      recursive true
    end
@@ -127,11 +129,14 @@ end
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
 
-# Mark that glassfish is installed
-  file "#{installed}" do
+  file "#{installed}" do # Mark that glassfish is installed
     owner node[:glassfish][:user]
   end
 end
+
+#
+# This code is to enable ssh access
+#
 
 # node.default['authorization']['sudo']['include_sudoers_d'] = true
 # node.default['authorization']['sudo']['passwordless'] = true

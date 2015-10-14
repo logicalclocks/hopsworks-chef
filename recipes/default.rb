@@ -72,7 +72,7 @@ end
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
-domains_dir = "/usr/local/glassfish/glassfish/domains"
+domains_dir = node[:glassfish][:domains_dir]
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 
@@ -80,7 +80,7 @@ mysql_host = private_recipe_ip("ndb","mysqld")
 jndiDB = "jdbc/hopsworks"
 timerDB = "jdbc/hopsworksTimers"
 
-asadmin="/usr/local/glassfish/glassfish/bin/asadmin"
+asadmin = "#{node[:glassfish][:base_dir]}/versions/current/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 
 
@@ -194,7 +194,7 @@ gmailProps = {
 
 glassfish_deployable "hopsworks" do
   component_name "hopsworks"
-  url "http://snurran.sics.se/hops/hopsworks.war"
+  url node[:hopsworks][:war_url]
   context_root "/hopsworks"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -206,23 +206,23 @@ glassfish_deployable "hopsworks" do
 end
 
 
-directory "/srv/users" do
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
-  mode "0755"
-  action :create
-  recursive true
-end
+# directory "/srv/users" do
+#   owner node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#   mode "0755"
+#   action :create
+#   recursive true
+# end
 
 
-template "/srv/mkuser.sh" do
-case node['platform']
-when 'debian', 'ubuntu'
-    source "mkuser.sh.erb"
-when 'redhat', 'centos', 'fedora'
-    source "mkuser.redhat.sh.erb"
-end
-  owner node[:glassfish][:user]
-  mode 0750
-  action :create
-end 
+# template "/srv/mkuser.sh" do
+# case node['platform']
+# when 'debian', 'ubuntu'
+#     source "mkuser.sh.erb"
+# when 'redhat', 'centos', 'fedora'
+#     source "mkuser.redhat.sh.erb"
+# end
+#   owner node[:glassfish][:user]
+#   mode 0750
+#   action :create
+# end 
