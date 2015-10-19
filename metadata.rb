@@ -21,7 +21,6 @@ depends 'ark'
 recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
-#link:Click <a target='_blank' href='https://%host%:8181/hopsworks'>here</a> to launch hopsworks in your browser (https)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 
 
