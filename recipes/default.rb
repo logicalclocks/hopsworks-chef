@@ -58,7 +58,13 @@ template "#{rows_path}" do
    action :create
     variables({
                 :elastic_ip => elastic_ip,
-                :spark_user => node[:spark][:user]
+                :spark_user => node[:spark][:user],
+                :spark_dir => node[:spark][:dir],
+                :flink_dir => node[:spark][:dir],
+                :zeppelin_dir => node[:spark][:dir],
+                :ndb_dir => node[:ndb][:dir],
+                :mysql_dir => node[:mysql][:dir],
+                :elastic_dir => node[:spark][:dir]
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
