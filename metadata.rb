@@ -17,6 +17,9 @@ depends 'kagent'
 depends 'hops'
 depends 'ark'
 depends 'elastic'
+depends 'spark'
+depends 'flink'
+depends 'zeppelin'
 #depends 'sudo'
 
 recipe  "hopsworks::install", "Installs HopsHub/Glassfish"

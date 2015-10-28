@@ -1,4 +1,8 @@
 include_attribute "ndb"
+include_attribute "spark"
+include_attribute "flink"
+include_attribute "elastic"
+include_attribute "zeppelin"
 include_attribute "glassfish"
 
 node.normal[:glassfish][:user]          = "glassfish"
