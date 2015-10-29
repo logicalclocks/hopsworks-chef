@@ -17,8 +17,8 @@ node.normal[:glassfish][:max_mem]       = 1024
 node.normal[:glassfish][:min_mem]       = 1024
 node.normal[:glassfish][:max_stack_size]= 512
 node.normal[:glassfish][:max_perm_size] = 1024
-node.normal[:glassfish][:package_url]   = "http://download.java.net/glassfish/#{node[:glassfish][:version]}/release/glassfish-#{node[:glassfish][:version]}.zip"
-
+#node.normal[:glassfish][:package_url]   = "http://download.java.net/glassfish/#{node[:glassfish][:version]}/release/glassfish-#{node[:glassfish][:version]}.zip"
+node.normal[:glassfish][:package_url]   = node[:download_url] + "/glassfish-#{node[:glassfish][:version]}.zip"
 default[:glassfish][:cauth_url]           = "#{node[:download_url]}/otp-auth-1.0.jar"
 
 default[:hopsworks][:admin][:user]        = "adminuser"

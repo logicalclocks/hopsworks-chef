@@ -198,6 +198,7 @@ gmailProps = {
    action :create
  end
 
+
 glassfish_deployable "hopsworks" do
   component_name "hopsworks"
   url node[:hopsworks][:war_url]
@@ -208,12 +209,14 @@ glassfish_deployable "hopsworks" do
   admin_port admin_port
   secure false
   action :deploy
+  async_replication false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
 end
 
 
 # directory "/srv/users" do
 #   owner node[:glassfish][:user]
+
 #   group node[:glassfish][:group]
 #   mode "0755"
 #   action :create
