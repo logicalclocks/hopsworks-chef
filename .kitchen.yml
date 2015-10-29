@@ -49,10 +49,10 @@ suites:
       - recipe[hops::jhs]
       - recipe[elastic::default]
       - recipe[spark::master]
-      - recipe[spark::worker]
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
       - recipe[hopsworks]
+      - recipe[spark::worker]
     attributes:
          # authorization:
          #    sudo:

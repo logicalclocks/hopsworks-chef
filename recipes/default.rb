@@ -59,12 +59,12 @@ template "#{rows_path}" do
     variables({
                 :elastic_ip => elastic_ip,
                 :spark_user => node[:spark][:user],
-                :spark_dir => node[:spark][:dir],
-                :flink_dir => node[:spark][:dir],
-                :zeppelin_dir => node[:spark][:dir],
-                :ndb_dir => node[:ndb][:dir],
-                :mysql_dir => node[:mysql][:dir],
-                :elastic_dir => node[:spark][:dir]
+                :spark_dir => node[:spark][:dir] + "/spark",
+                :flink_dir => node[:flink][:dir] + "/flink",
+                :zeppelin_dir => node[:zeppelin][:dir] + "/zeppelin",
+                :ndb_dir => node[:ndb][:dir] + "/mysql-cluster",
+                :mysql_dir => node[:mysql][:dir] + "/mysql",
+                :elastic_dir => node[:elastic][:dir] + "/elastic"
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
