@@ -49,11 +49,6 @@ INSERT INTO `people_group` (`uid`, `gid`) VALUES (10000, 1005);
 -- elastic search configuration data
 --
 
-INSERT INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>");
-INSERT INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>");
-INSERT INTO variables VALUES ("spark_dir", "<%= #{node[:spark][:dir]} %>");
-INSERT INTO variables VALUES ("flink_dir", "<%= #{node[:flink][:dir]} %>");
-INSERT INTO variables VALUES ("zeppelin_dir", "<%= #{node[:zeppelin][:dir]} %>");
-INSERT INTO variables VALUES ("elastic_dir", "<%= #{node[:elastic][:dir]} %>");
-INSERT INTO variables VALUES ("mysql_dir", "<%= #{node[:mysql][:dir]} %>");
-INSERT INTO variables VALUES ("ndb_dir", "<%= #{node[:ndb][:dir]} %>");
+INSERT INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= @spark_dir %>"),  ("flink_dir", "<%= @flink_dir %>"), ("zeppelin_dir", "<%= @zeppelin_dir %>"), ("elastic_dir", "<%= @elastic_dir %>"),  ("mysql_dir", "<%= @mysql_dir %>"), ("ndb_dir", "<%= @ndb_dir %>");
+
+
