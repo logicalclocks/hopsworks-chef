@@ -210,6 +210,7 @@ glassfish_deployable "hopsworks" do
   secure false
   action :deploy
   async_replication false
+  retries 2
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
 end
 
