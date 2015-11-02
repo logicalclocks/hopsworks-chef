@@ -126,7 +126,13 @@ Vagrant.configure("2") do |c|
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
-	  "slave" =>    { 
+	  "worker" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          }
+     },
+     "zeppelin" => {
+	  "user" => "glassfish",
+	  "default" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
@@ -150,8 +156,9 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
       chef.add_recipe "elastic::default"
+      chef.add_recipe "zeppelin::default"
       chef.add_recipe "spark::master"
-      chef.add_recipe "spark::slave"
+      chef.add_recipe "spark::worker"
       chef.add_recipe "flink::jobmanager"
       chef.add_recipe "flink::taskmanager"
       chef.add_recipe "hopsworks::default"
