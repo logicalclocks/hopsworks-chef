@@ -165,3 +165,7 @@ attribute "hopsworks/reinstall",
 attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
           :type => 'string'
+
+attribute "twofactor_auth",
+          :description => "Set to 'true' to enable two-factor authentication",
+          :type => 'string'

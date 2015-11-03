@@ -71,6 +71,7 @@ template "#{rows_path}" do
                 :ndb_dir => node[:ndb][:dir] + "/mysql-cluster",
                 :mysql_dir => node[:mysql][:dir] + "/mysql",
                 :elastic_dir => node[:elastic][:dir] + "/elastic",
+                :twofactor_auth => node[:twofactor_auth],
                 :elastic_user => node[:elastic][:user]
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
