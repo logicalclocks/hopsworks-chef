@@ -147,6 +147,46 @@ props =  {
  end
 
 
+cauth = File.basename(node[:glassfish][:cauth_url])
+
+remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+  source node[:glassfish][:cauth_url]
+  mode 0755
+  action :create_if_missing
+end
+
+ 
+ cProps = {
+     'datasource-jndi' => jndiDB,
+     'password-column' => 'password',
+     'encoding' => 'Hex',
+     'group-table' => 'hopsworks.users_groups',
+     'user-table' => 'hopsworks.users',
+     'group-name-column' => 'group_name',
+     'user-name-column' => 'email',
+     'group-table-user-name-column' => 'email',
+     'otp-secret-column' => 'secret',
+     'user-status-column' => 'status',
+     'yubikey-table' => 'yubikey',
+     'variables-table' => 'variables'
+ }
+ 
+ glassfish_auth_realm "cauthRealm" do 
+   realm_name "cauthRealm"
+   jaas_context "cauthRealm"
+   properties cProps
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+   classname "se.kth.bbc.crealm.CustomAuthRealm"
+ end
+
+ 
+
 glassfish_asadmin "set server-config.security-service.default-realm=#{realmname}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
