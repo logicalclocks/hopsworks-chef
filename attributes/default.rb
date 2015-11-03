@@ -68,3 +68,4 @@ node.normal[:hadoop][:user_envs]          = "false"
 
 default[:hopsworks][:reinstall]           = "false"
 
+default[:twofactor_auth]                  = "false"
