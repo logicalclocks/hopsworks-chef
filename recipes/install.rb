@@ -132,6 +132,19 @@ end
   file "#{installed}" do # Mark that glassfish is installed
     owner node[:glassfish][:user]
   end
+
+cauth = File.basename(node[:glassfish][:cauth_url])
+
+remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
+  user node[:glassfish][:user]
+  group node[:glassfish][:group]
+  source node[:glassfish][:cauth_url]
+  mode 0755
+  action :create_if_missing
+end
+
+
+
 end
 
 #

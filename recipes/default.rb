@@ -147,17 +147,6 @@ props =  {
    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
  end
 
-
-cauth = File.basename(node[:glassfish][:cauth_url])
-
-remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
-  user node[:glassfish][:user]
-  group node[:glassfish][:group]
-  source node[:glassfish][:cauth_url]
-  mode 0755
-  action :create_if_missing
-end
-
  
  cProps = {
      'datasource-jndi' => jndiDB,
