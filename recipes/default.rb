@@ -160,7 +160,7 @@ props =  {
      'otp-secret-column' => 'secret',
      'user-status-column' => 'status',
      'yubikey-table' => 'yubikey',
-     'variables-table' => 'variables'
+     'variables-table' => 'hopsworks.variables'
  }
  
  glassfish_auth_realm "cauthRealm" do 
