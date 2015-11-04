@@ -177,7 +177,7 @@ props =  {
 
  
 
-glassfish_asadmin "set server-config.security-service.default-realm=#{realmname}" do
+glassfish_asadmin "set server-config.security-service.default-realm=cauthRealm" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
