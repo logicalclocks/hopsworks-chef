@@ -45,3 +45,4 @@ notifying_action :sshkeys do
   key=IO.readlines("#{node['glassfish']['base_dir']}/.ssh/id_rsa.pub").first
   node.normal[:hopsworks][:public_key]=key.gsub("\n","")
 end
+

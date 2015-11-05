@@ -1,4 +1,6 @@
 require 'json'
+require 'base64'
+
 node.override = {
   'java' => {
     'install_flavor' => 'oracle',
@@ -196,44 +198,32 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
 end
 
 
-# Avoid empty property values - glassfish will crash otherwise
-if node[:hopsworks][:gmail][:email].empty?
-  node.default[:hopsworks][:gmail][:email]="none"
+if node[:hopsworks][:gmail][:password] .eql? "password"
+
+  bash 'gmail' do
+    user "root"
+    code <<-EOF
+      cd /tmp
+      rm -f /tmp/hopsworks.email 
+      wget #{node[:hopsworks][:gmail][:placeholder]} 
+      cat /tmp/hopsworks.email | base64 -d > /tmp/hopsworks.encoded
+      chmod 775 /tmp/hopsworks.encoded
+    EOF
+  end
+
 end
 
-if node[:hopsworks][:gmail][:password].empty?
-  node.default[:hopsworks][:gmail][:password]="empty"
-end
 
 
-gmailProps = {
-  'mail-smtp-host' => 'smtp.gmail.com',
-  'mail-smtp-user' => "#{node[:hopsworks][:gmail][:email]}",
-  'mail-smtp-password' => "#{node[:hopsworks][:gmail][:password]}",
-  'mail-smtp-auth' => 'true',
-  'mail-smtp-port' => '587',
-  'mail-smtp-socketFactory-port' => '465',
-  'mail-smtp-socketFactory-class' => 'javax.net.ssl.SSLSocketFactory',
-  'mail-smtp-starttls-enable' => 'true',
-  'mail.smtp.ssl.enable' => 'true',
-  'mail-smtp-socketFactory-fallback' => 'false'
-}
-
-
-
- glassfish_javamail_resource "gmail" do 
-   jndi_name "mail/BBCMail"
-   mailuser node[:hopsworks][:gmail][:email]
-   mailhost "smtp.gmail.com"
-   fromaddress node[:hopsworks][:gmail][:email]
-   properties gmailProps
+hopsworks_mail "gmail" do
    domain_name domain_name
-   password_file admin_pwd
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
    admin_port admin_port
-   secure false
-   action :create
- end
+   action :jndi
+end 
+
+
 
 
 glassfish_deployable "hopsworks" do
@@ -266,7 +256,7 @@ end
 # case node['platform']
 # when 'debian', 'ubuntu'
 #     source "mkuser.sh.erb"
-# when 'redhat', 'centos', 'fedora'
+p# when 'redhat', 'centos', 'fedora'
 #     source "mkuser.redhat.sh.erb"
 # end
 #   owner node[:glassfish][:user]

@@ -63,6 +63,7 @@ default[:kagent][:enabled]                = "false"
 default[:hopsworks][:smtp]                = "smtp.gmail.com"
 default[:hopsworks][:gmail][:email]       = "hopsworks@gmail.com"
 default[:hopsworks][:gmail][:password]    = "password"
+default[:hopsworks][:gmail][:placeholder] = "http://snurran.sics.se/hops/hopsworks.email"
 
 node.normal[:hadoop][:user_envs]          = "false"
 
