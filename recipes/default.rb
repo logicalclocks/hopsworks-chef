@@ -215,7 +215,7 @@ gmailProps = {
   'mail-smtp-socketFactory-port' => '465',
   'mail-smtp-socketFactory-class' => 'javax.net.ssl.SSLSocketFactory',
   'mail-smtp-starttls-enable' => 'true',
-  'mail.smtp.ssl.enable' => 'false',
+  'mail.smtp.ssl.enable' => 'true',
   'mail-smtp-socketFactory-fallback' => 'false'
 }
 

@@ -54,11 +54,6 @@ suites:
       - recipe[hopsworks]
       - recipe[spark::worker]
     attributes:
-         # authorization:
-         #    sudo:
-         #      users: ['vagrant']
-         #      passwordless: true
-         #      include_sudoers_d: true
          # collectd:
          #    private_ips: ["10.0.2.15"]
          #    public_ips: ["10.0.2.15"]
@@ -139,6 +134,8 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
+            gmail:
+                password: ""
          hiway:
             user: "hiway"
             private_ips: ["10.0.2.15"]

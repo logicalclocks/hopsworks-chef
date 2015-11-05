@@ -31,6 +31,15 @@ recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application.
 # Required Attributes
 #######################################################################################
 
+attribute "hopsworks/gmail/email",
+          :description => "Email address for gmail account",
+          :required => "required",
+          :type => 'string'
+
+attribute "hopsworks/gmail/password",
+          :description => "Password for gmail account",
+          :required => "required",
+          :type => 'string'
 
 attribute "hopsworks/default/user",
           :description => "Username for the first (default) HopsWorks account",
@@ -63,15 +72,6 @@ attribute "mysql/password",
           :required => "required"
 
 
-attribute "hopsworks/gmail/email",
-          :description => "Email address for gmail account",
-          :required => "required",
-          :type => 'string'
-
-attribute "hopsworks/gmail/password",
-          :description => "Password for gmail account",
-          :required => "required",
-          :type => 'string'
 
 
 #######################################################################################
