@@ -72,7 +72,8 @@ template "#{rows_path}" do
                 :mysql_dir => node[:mysql][:dir] + "/mysql",
                 :elastic_dir => node[:elastic][:dir] + "/elastic",
                 :twofactor_auth => node[:twofactor_auth],
-                :elastic_user => node[:elastic][:user]
+                :elastic_user => node[:elastic][:user],
+                :hiway_dir => node[:hiway][:hiway][:home] + "/hiway",                
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
