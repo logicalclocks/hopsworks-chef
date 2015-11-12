@@ -31,6 +31,12 @@ recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application.
 # Required Attributes
 #######################################################################################
 
+
+attribute "hopsworks/twofactor_auth",
+          :description => "twofactor_auth",
+          :type => 'string',
+          :required => "required"
+
 attribute "hopsworks/gmail/email",
           :description => "Email address for gmail account",
           :required => "required",
@@ -71,9 +77,6 @@ attribute "mysql/password",
           :type => 'string',
           :required => "required"
 
-
-
-
 #######################################################################################
 # Non-Required Attributes
 #######################################################################################
@@ -87,10 +90,6 @@ attribute "hopsworks/master/password",
 #           :description => "hopsworks/cert/password",
 #           :type => 'string',
 #           :default => "changeit"
-
-attribute "hopsworks/twofactor_auth",
-          :description => "hopsworks/twofactor_auth",
-          :type => 'string'
 
 attribute "karamel/cert/cn",
           :description => "Certificate Name",
@@ -164,8 +163,4 @@ attribute "hopsworks/reinstall",
 
 attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
-          :type => 'string'
-
-attribute "twofactor_auth",
-          :description => "Set to 'true' to enable two-factor authentication",
           :type => 'string'

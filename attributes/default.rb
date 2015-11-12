@@ -46,12 +46,12 @@ default[:karamel][:cert][:c]              = "se"
 default[:hopsworks][:cert][:password]     = "changeit"
 default[:hopsworks][:master][:password]   = "adminpw"
 
-case node[:hopsworks][:twofactor_auth]
- when "true"
-   default[:hopsworks][:war_url]          = "#{node[:download_url]}/hop-dashboard-2pc.war"
- else
+# case node[:hopsworks][:twofactor_auth]
+#  when "true"
+#    default[:hopsworks][:war_url]          = "#{node[:download_url]}/hop-dashboard-2pc.war"
+#  else
    default[:hopsworks][:war_url]          = "#{node[:download_url]}/hopsworks.war"
-end
+#end
 
 default[:bind_address]                    = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 

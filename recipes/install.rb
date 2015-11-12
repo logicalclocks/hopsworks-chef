@@ -1,3 +1,5 @@
+
+
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
@@ -163,4 +165,14 @@ end
 #end
 
 
+
+# Hack for cuneiform that expects that the username has a /home/username directory.
+
+directory "/home/#{node[:glassfish][:user]}/software" do
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "755"
+  action :create
+  recursive true
+end
 

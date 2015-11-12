@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 9500
+    memory: 12000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -38,6 +38,7 @@ suites:
       - recipe[spark::install]
       - recipe[flink::install]
       - recipe[hopsworks::install]
+      - recipe[hiway::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -52,7 +53,20 @@ suites:
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
       - recipe[hopsworks]
+      - recipe[hiway::cuneiform_client]
+      - recipe[hiway::hiway_client]
+      - recipe[hiway::helloworld_client]
+      - recipe[hiway::wordcount_client]
+      - recipe[hiway::montage_synth_client]
+#      - recipe[hiway::galaxy101_client]
+      - recipe[hiway::variantcall_client]
+      - recipe[hiway::cuneiform_worker]
+      - recipe[hiway::hiway_worker]
+#      - recipe[hiway::galaxy_worker]
+#      - recipe[hiway::galaxy101_worker]
+      - recipe[hiway::variantcall_worker]
       - recipe[spark::worker]
+
     attributes:
          # collectd:
          #    private_ips: ["10.0.2.15"]
@@ -96,6 +110,9 @@ suites:
          hadoop:
             yarn: 
                user: glassfish
+               nm:
+                   memory_mbs: '6656'
+               vcores: '2'
             mr: 
                user: glassfish
             nn:
@@ -134,10 +151,17 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
+#         twofactor_auth: "true"
          hiway:
-            user: "hiway"
+            user: "glassfish"
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
+            am:
+              memory_mb: '512'
+              vcores: '1'
+            worker:
+              memory_mb: '3072'
+              vcores: '1'
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "true"
