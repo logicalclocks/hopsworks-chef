@@ -264,3 +264,10 @@ p# when 'redhat', 'centos', 'fedora'
 #   mode 0750
 #   action :create
 # end 
+ template "/bin/hopsworks-2fa" do
+    source "hopsworks-2fa.erb"
+    owner "root"
+    mode 0700
+    action :create
+ end 
+
