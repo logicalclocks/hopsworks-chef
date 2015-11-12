@@ -12,7 +12,6 @@ cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'spark', github: "hopshadoop/spark-chef", branch: "master"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "hops"
 cookbook 'hiway', github: "biobankcloud/hiway-chef", branch: "master"
-#cookbook 'hiway', github: "marcbux/hiway-chef", branch: "master"
 
 cookbook 'python', "~> 1.4.4"
 cookbook 'openssl', "~> 1.1.0"

@@ -4,6 +4,10 @@ include_attribute "flink"
 include_attribute "elastic"
 include_attribute "zeppelin"
 include_attribute "glassfish"
+include_attribute "hiway"
+
+#{node[:hiway][:hiway][:home]}
+
 
 node.normal[:glassfish][:user]          = "glassfish"
 node.normal[:glassfish][:group]         = "glassfish-admin"
