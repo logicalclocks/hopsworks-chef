@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 12000
+    memory: 14000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -53,19 +53,20 @@ suites:
       - recipe[flink::jobmanager]
       - recipe[flink::taskmanager]
       - recipe[hopsworks]
+      - recipe[spark::worker]
       - recipe[hiway::cuneiform_client]
       - recipe[hiway::hiway_client]
       - recipe[hiway::helloworld_client]
       - recipe[hiway::wordcount_client]
       - recipe[hiway::montage_synth_client]
-#      - recipe[hiway::galaxy101_client]
       - recipe[hiway::variantcall_client]
       - recipe[hiway::cuneiform_worker]
       - recipe[hiway::hiway_worker]
+      - recipe[hiway::variantcall_worker]
+#      - recipe[hiway::galaxy101_client]
 #      - recipe[hiway::galaxy_worker]
 #      - recipe[hiway::galaxy101_worker]
-      - recipe[hiway::variantcall_worker]
-      - recipe[spark::worker]
+
 
     attributes:
          # collectd:
