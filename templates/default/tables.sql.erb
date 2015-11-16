@@ -5,13 +5,6 @@ CREATE TABLE `bbc_group` (
      PRIMARY KEY (`gid`)
 ) ENGINE=ndbcluster;
 
-create TABLE maintenance (
-    id tinyint(4) not null,
-    status tinyint(4) not null default '0',
-    message varchar(254),
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE `users` (
     `uid` INT(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(10)  NOT NULL,
@@ -129,8 +122,8 @@ CREATE TABLE `project` (
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
   UNIQUE KEY(`inode_pid`, `inode_name`),
-  FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+#  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `activity` (
@@ -225,19 +218,6 @@ CREATE TABLE `job_input_files` (
 ) ENGINE=ndbcluster;
 
 
-CREATE TABLE `consent` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `date` DATE DEFAULT NULL,
-    `project_name` VARCHAR(128) DEFAULT NULL,
-    `project_owner` VARCHAR(245) DEFAULT NULL,
-    `status` VARCHAR(30) DEFAULT NULL,
-    `name` VARCHAR(128) DEFAULT NULL,
-    `type` VARCHAR(30) DEFAULT NULL,
-    `consent_form` LONGBLOB DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`project_name`) REFERENCES `project` (`projectname`)
-) ENGINE=ndbcluster;
-
 CREATE TABLE `organization` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `uid` INT(11) DEFAULT NULL,
@@ -304,8 +284,8 @@ CREATE TABLE `meta_tuple_to_file` (
   `inodeid` INT(11) NOT NULL, -- pretty necessary for the rivers to work
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`tupleid`),
-  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  PRIMARY KEY (`tupleid`)
+#  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `meta_raw_data` (
@@ -331,8 +311,8 @@ CREATE TABLE `meta_template_to_inode` (
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`template_id`) REFERENCES `meta_templates` (`templateid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`template_id`) REFERENCES `meta_templates` (`templateid`) ON DELETE CASCADE ON UPDATE NO ACTION
+#  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `meta_inode_basic_metadata` (
@@ -342,8 +322,8 @@ CREATE TABLE `meta_inode_basic_metadata` (
   `description` VARCHAR(3000) DEFAULT NULL,
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`),
-  UNIQUE KEY (`inode_pid`, `inode_name`),
-  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  UNIQUE KEY (`inode_pid`, `inode_name`)
+#  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
  
 -- elastic jdbc-importer buffer tables -------
@@ -400,14 +380,8 @@ CREATE TABLE `dataset` (
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
-	FOREIGN KEY (`projectId`) 
-	REFERENCES `project` (`id`) 
-	ON DELETE CASCADE 
-	ON UPDATE NO ACTION,
-	FOREIGN KEY (`inode_pid`,`inode_name`) 
-	REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) 
-	ON DELETE CASCADE 
-	ON UPDATE NO ACTION
+  FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+#  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 
@@ -515,4 +489,17 @@ CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectna
 CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
 
+-- Consents for BiobankCloud
 
+CREATE TABLE consents ( 
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `inode_pid` INT(11) NOT NULL,
+  `inode_name` VARCHAR(255) NOT NULL,
+  `form_type` INT(11) not null, 
+  `status` INT(11) not null, 
+  `last_modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `project_id` INT(11) NOT NULL,
+   PRIMARY KEY (`id`),
+   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
