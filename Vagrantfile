@@ -13,22 +13,24 @@ Vagrant.configure("2") do |c|
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
+# MySQL Server
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>3309})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8082})
 # HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8081, :host=>8081})
+  c.vm.network(:forwarded_port, {:guest=>8081, :host=>8083})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4849})
 # HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
 # 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50076})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8089})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9201})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9089})
 
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "9000"]

@@ -491,16 +491,17 @@ CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) 
 
 -- Consents for BiobankCloud
 
-CREATE TABLE consents ( 
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inode_pid` INT(11) NOT NULL,
-  `inode_name` VARCHAR(255) NOT NULL,
-  `form_type` VARCHAR(127) not null, 
-  `status` VARCHAR(127) not null, 
-  `last_modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `project_id` INT(11) NOT NULL,
-   PRIMARY KEY (`id`),
-   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+CREATE TABLE `consents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inode_pid` int(11) NOT NULL,
+  `inode_name` varchar(255) NOT NULL,
+  `form_type` varchar(127) NOT NULL,
+  `status` varchar(127) NOT NULL,
+  `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `project_id` (`project_id`),
+  UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
-
