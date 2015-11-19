@@ -36,9 +36,9 @@ notifying_action :insert_rows do
       set -e
       #{exec} hopsworks -e \"source #{new_resource.rows_path}\"
       #{exec} glassfish_timers -e \"source #{timerTablePath}"
-      touch "#{node['glassfish']['base_dir']/.hopsworks_rows.sql"
+      touch "#{node['glassfish']['base_dir']}/.hopsworks_rows.sql"
     EOF
-    not_if { ::File.exists?("#{node['glassfish']['base_dir']/.hopsworks_rows.sql") }
+    not_if { ::File.exists?("#{node['glassfish']['base_dir']}/.hopsworks_rows.sql") }
   end
 end
 
