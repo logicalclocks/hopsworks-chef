@@ -1,5 +1,4 @@
 
-node.normal[:glassfish][:user] = node[:hopsworks][:user]
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
