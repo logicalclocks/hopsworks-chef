@@ -12,7 +12,7 @@ notifying_action :create_tables do
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1 COLLATE latin1_swedish_ci\"
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
     EOF
-    not_if "#{exec} #{db} -e 'show tables' | grep bbc_group"
+    not_if "#{exec} -e 'show databases' | grep hopsworks"
   end
 
 end
