@@ -1,6 +1,8 @@
 require 'json'
 require 'base64'
 
+node.normal[:glassfish][:user] = node[:hopsworks][:user]
+
 node.override = {
   'java' => {
     'install_flavor' => 'oracle',

@@ -120,8 +120,8 @@ attribute "glassfish/version",
           :description => "glassfish/version",
           :type => 'string'
 
-attribute "glassfish/user",
-          :description => "glassfish/user",
+attribute "hopsworks/user",
+          :description => "hopsworks/user",
           :type => 'string'
 
 attribute "glassfish/group",
