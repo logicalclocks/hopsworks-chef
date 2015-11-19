@@ -1,4 +1,6 @@
 
+node.override[:glassfish][:user] = node[:hopsworks][:user]
+
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
 domain_name="domain1"
@@ -126,6 +128,7 @@ if "#{node[:hopsworks][:reinstall]}" == "true"
      recursive true
    end
 end
+
 
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'

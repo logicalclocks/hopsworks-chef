@@ -11,7 +11,7 @@ include_attribute "hiway"
 
 default[:hopsworks][:user]              = "glassfish"
 
-node.normal[:glassfish][:group]         = node[:hopsworks][:user]
+node.normal[:glassfish][:user]          = node[:hopsworks][:user]
 node.normal[:glassfish][:group]         = "glassfish-admin"
 node.normal[:glassfish][:admin][:port]  = 4848
 node.normal[:glassfish][:port]          = 8080
