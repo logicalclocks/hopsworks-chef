@@ -153,16 +153,16 @@ end
 # This code is to enable ssh access
 #
 
-# node.default['authorization']['sudo']['include_sudoers_d'] = true
-# node.default['authorization']['sudo']['passwordless'] = true
+node.default['authorization']['sudo']['include_sudoers_d'] = true
+node.default['authorization']['sudo']['passwordless'] = true
 
-#include_recipe 'sudo'
+include_recipe 'sudo'
 
-#sudo 'glassfish' do
-#  user    node[:glassfish][:user]
-#  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser']
-#  nopasswd   true
-#end
+sudo 'glassfish' do
+  user    node[:glassfish][:user]
+  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser']
+  nopasswd   true
+end
 
 
 

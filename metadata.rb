@@ -21,7 +21,8 @@ depends 'spark'
 depends 'flink'
 depends 'zeppelin'
 depends 'hiway'
-#depends 'sudo'
+depends 'charon'
+depends 'sudo'
 
 recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
 
