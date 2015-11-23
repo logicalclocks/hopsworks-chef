@@ -172,7 +172,7 @@ suites:
               memory_mb: '3072'
               vcores: '1'
             hiway:
-              hdfs
+              hdfs:
                  basedir: "/"
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
