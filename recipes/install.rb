@@ -1,4 +1,5 @@
 
+node.override[:glassfish][:user] = node[:hopsworks][:user]
 
 username=node[:hopsworks][:admin][:user]
 password=node[:hopsworks][:admin][:password]
@@ -128,6 +129,7 @@ if "#{node[:hopsworks][:reinstall]}" == "true"
    end
 end
 
+
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
 
@@ -160,7 +162,7 @@ include_recipe 'sudo'
 
 sudo 'glassfish' do
   user    node[:glassfish][:user]
-  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser']
+  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser', '/usr/mount', '/usr/umount']
   nopasswd   true
 end
 
