@@ -8,8 +8,8 @@ notifying_action :create_tables do
   bash 'create_hopsworks_tables' do
     user "root"
     code <<-EOF
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1 COLLATE latin1_swedish_ci\"
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1 COLLATE latin1_swedish_ci\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1\"
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
     EOF
     not_if "#{exec} -e 'show databases' | grep hopsworks"
