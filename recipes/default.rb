@@ -165,7 +165,7 @@ props =  {
      'group-table-user-name-column' => 'email',
      'otp-secret-column' => 'secret',
      'user-status-column' => 'status',
-     'yubikey-table' => 'yubikey',
+     'yubikey-table' => 'hopsworks.yubikey',
      'variables-table' => 'hopsworks.variables'
  }
  
