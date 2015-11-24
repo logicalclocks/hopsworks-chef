@@ -9,23 +9,24 @@ include_attribute "hiway"
 #{node[:hiway][:hiway][:home]}
 
 
-default[:hopsworks][:user]              = "glassfish"
+default[:hopsworks][:user]                = "glassfish"
 
-node.normal[:glassfish][:user]          = node[:hopsworks][:user]
-node.normal[:glassfish][:group]         = "glassfish-admin"
-node.normal[:glassfish][:admin][:port]  = 4848
-node.normal[:glassfish][:port]          = 8080
-node.normal[:glassfish][:version]       = '4.1'
+node.normal[:glassfish][:user]            = node[:hopsworks][:user]
+node.normal[:glassfish][:group]           = "glassfish-admin"
+node.normal[:glassfish][:admin][:port]    = 4848
+node.normal[:glassfish][:port]            = 8080
+node.normal[:glassfish][:version]         = '4.1'
 node.normal[:glassfish][:base_dir]        = "/usr/local/glassfish"
 node.normal[:glassfish][:install_dir]     = "/usr/local/glassfish/versions/current"
 node.normal[:glassfish][:domains_dir]     = "#{node[:glassfish][:base_dir]}/glassfish/domains"
-node.normal[:glassfish][:max_mem]       = 1024
-node.normal[:glassfish][:min_mem]       = 1024
-node.normal[:glassfish][:max_stack_size]= 512
-node.normal[:glassfish][:max_perm_size] = 1024
-#node.normal[:glassfish][:package_url]   = "http://download.java.net/glassfish/#{node[:glassfish][:version]}/release/glassfish-#{node[:glassfish][:version]}.zip"
-node.normal[:glassfish][:package_url]   = node[:download_url] + "/glassfish-#{node[:glassfish][:version]}.zip"
+node.normal[:glassfish][:max_mem]         = 1024
+node.normal[:glassfish][:min_mem]         = 1024
+node.normal[:glassfish][:max_stack_size]  = 512
+node.normal[:glassfish][:max_perm_size]   = 1024
+#node.normal[:glassfish][:package_url]  = "http://download.java.net/glassfish/#{node[:glassfish][:version]}/release/glassfish-#{node[:glassfish][:version]}.zip"
+node.normal[:glassfish][:package_url]     = node[:download_url] + "/glassfish-#{node[:glassfish][:version]}.zip"
 default[:glassfish][:cauth_url]           = "#{node[:download_url]}/otp-auth-1.0.jar"
+default[:hopsworks][:war_url]             = "#{node[:download_url]}/hopsworks.war"
 
 default[:hopsworks][:admin][:user]        = "adminuser"
 default[:hopsworks][:admin][:password]    = "adminpw"
