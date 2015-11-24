@@ -3,6 +3,7 @@ dependencies:
     local:  
       - ndb::install
       - hops::install
+      - charon::install
   - recipe: hopsworks
     local:  
       - hopsworks::install
@@ -10,3 +11,4 @@ dependencies:
       - ndb::mysqld
       - hops::dn
       - hops::nn
+      - charon::default
