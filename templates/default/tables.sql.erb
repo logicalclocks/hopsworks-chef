@@ -1,3 +1,12 @@
+CREATE TABLE `project_account_history`
+(
+  projectname varchar(100),
+  action ENUM('hdfs_change_quota','yarn_change_quota','deposit','credit','disabled'),
+  date DATETIME,
+  value varchar(100),
+  PRIMARY KEY(`projectname`,`date`)
+) ENGINE=ndbcluster;
+
 CREATE TABLE `bbc_group` (
     `group_name` VARCHAR(20) NOT NULL,
     `group_desc` VARCHAR(200) DEFAULT NULL,
