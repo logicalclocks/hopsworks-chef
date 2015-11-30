@@ -1,7 +1,7 @@
 CREATE TABLE `project_account_history`
 (
   projectname varchar(100),
-  action ENUM('hdfs_change_quota','yarn_change_quota','deposit','credit','disabled'),
+  action varchar(100),
   date DATETIME,
   value varchar(100),
   PRIMARY KEY(`projectname`,`date`)
