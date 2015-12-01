@@ -1,5 +1,13 @@
-CREATE TABLE `project_account_history`
-(
+CREATE TABLE `project_payments_history` (
+  projectname varchar(100),
+  username varchar(150),
+  action varchar(100),
+  date DATETIME,
+  value varchar(100),
+  PRIMARY KEY(`projectname`,`date`)
+) ENGINE=ndbcluster;
+
+CREATE TABLE `project_account_history` (
   projectname varchar(100),
   action varchar(100),
   date DATETIME,
