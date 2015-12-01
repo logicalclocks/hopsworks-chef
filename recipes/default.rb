@@ -77,7 +77,8 @@ template "#{rows_path}" do
                 :elastic_dir => node[:elastic][:dir] + "/elastic",
                 :twofactor_auth => node[:hopsworks][:twofactor_auth],
                 :elastic_user => node[:elastic][:user],
-                :hiway_dir => node[:hiway][:hiway][:home]
+                :hiway_dir => node[:hiway][:home],
+                :charon_dir => node[:hiway][:home]
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
@@ -164,7 +165,7 @@ props =  {
      'group-table-user-name-column' => 'email',
      'otp-secret-column' => 'secret',
      'user-status-column' => 'status',
-     'yubikey-table' => 'yubikey',
+     'yubikey-table' => 'hopsworks.yubikey',
      'variables-table' => 'hopsworks.variables'
  }
  
