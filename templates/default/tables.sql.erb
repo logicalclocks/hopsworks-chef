@@ -1,43 +1,46 @@
-CREATE VIEW `projects_last_payment` AS 
-  select `project_payments_history`.`projectname` AS `projectname`,
-  max(`project_payments_history`.`date`) AS `max(date)` 
-  from `project_payments_history` 
-  where (`project_payments_history`.`action` = 'DEPOSIT_MONEY') 
-  group by `project_payments_history`.`projectname` 
-  order by max(`project_payments_history`.`date`)
+create TABLE project_account_history (
+  projectname varchar(100) NOT NULL,
+  action varchar(30) NOT NULL,
+  transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  details int(11) NOT NULL,
+  PRIMARY KEY(projectname, transaction_date),
+  KEY transaction_date_idx(transaction_date),
+  KEY action_idx(action)
+) ENGINE=ndbcluster;
 
+create TABLE project_payments_history (
+  projectname varchar(100) not null,
+  username varchar(150) NOT NULL,
+  action varchar(30) NOT NULL,
+  transaction_date datetime default CURRENT_TIMESTAMP,
+  amount int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (projectname, transaction_date),
+  KEY transaction_date_idx(transaction_date),
+  KEY action_idx(action),
+  KEY username_idx(username)
+) ENGINE=ndbcluster;
+
+CREATE VIEW `projects_last_payment` AS
+  select `project_payments_history`.`projectname` AS `projectname`,
+         max(`project_payments_history`.`transaction_date`) AS `max(transaction_date)`
+  from `project_payments_history`
+  where (`project_payments_history`.`action` = 'DEPOSIT_MONEY')
+  group by `project_payments_history`.`projectname`
+  order by max(`project_payments_history`.`transaction_date`)
 
 CREATE VIEW `projects_management` AS
   select
-  `b`.`projectname` AS `projectname`,
-  `a`.`quota_remaining` AS `yarn_quota_remaining`,
-  `a`.`total` AS `yarn_quota_total`,
-  `b`.`username` AS `username`,
-  `b`.`retention_period` AS `retention_period`,
-  `b`.`archived` AS `disabled`,
-  `c`.`max(date)` AS `last_paid_at`
+    `b`.`projectname` AS `projectname`,
+    `a`.`quota_remaining` AS `yarn_quota_remaining`,
+    `a`.`total` AS `yarn_quota_total`,
+    `b`.`username` AS `username`,
+    `b`.`retention_period` AS `retention_period`,
+    `b`.`archived` AS `disabled`,
+    `c`.`max(transaction_date)` AS `last_paid_at`
   from
-  ((`hops`.`yarn_projects_quota` `a` join `hopsworks`.`project` `b`) join `hopsworks`.`projects_last_payment` `c`)
+    ((`hops`.`yarn_projects_quota` `a` join `hopsworks`.`project` `b`) join `hopsworks`.`projects_last_payment` `c`)
   where
-  ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`))
-
-
-CREATE TABLE `project_payments_history` (
-  projectname varchar(100),
-  username varchar(150),
-  action varchar(100),
-  date DATETIME,
-  value varchar(100),
-  PRIMARY KEY(`projectname`,`date`)
-) ENGINE=ndbcluster;
-
-CREATE TABLE `project_account_history` (
-  projectname varchar(100),
-  action varchar(100),
-  date DATETIME,
-  value varchar(100),
-  PRIMARY KEY(`projectname`,`date`)
-) ENGINE=ndbcluster;
+    ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`))
 
 CREATE TABLE `bbc_group` (
     `group_name` VARCHAR(20) NOT NULL,
