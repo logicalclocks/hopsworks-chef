@@ -55,15 +55,15 @@ suites:
 #      - recipe[flink::taskmanager]
       - recipe[hopsworks]
       - recipe[spark::worker]
-      - recipe[hiway::cuneiform_client]
-      - recipe[hiway::hiway_client]
-      - recipe[hiway::helloworld_client]
-      - recipe[hiway::wordcount_client]
-      - recipe[hiway::variantcall_client]
-      - recipe[hiway::cuneiform_worker]
-      - recipe[hiway::hiway_worker]
-      - recipe[hiway::variantcall_worker]
-      - recipe[charon::default]
+#      - recipe[hiway::cuneiform_client]
+#      - recipe[hiway::hiway_client]
+#      - recipe[hiway::helloworld_client]
+#      - recipe[hiway::wordcount_client]
+#      - recipe[hiway::variantcall_client]
+#      - recipe[hiway::cuneiform_worker]
+#      - recipe[hiway::hiway_worker]
+#      - recipe[hiway::variantcall_worker]
+#      - recipe[charon::default]
 
     attributes:
          authorization:
@@ -173,9 +173,6 @@ suites:
             worker:
               memory_mb: '3072'
               vcores: '1'
-#            hiway:
-#              hdfs:
-#                 basedir: "/"
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "true"
