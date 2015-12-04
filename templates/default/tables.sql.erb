@@ -1,7 +1,7 @@
 create TABLE project_account_history (
   projectname varchar(100) NOT NULL,
   action varchar(30) NOT NULL,
-  transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  transaction_date datetime DEFAULT CURRENT_TIMESTAMP,
   details int(11) NOT NULL,
   PRIMARY KEY(projectname, transaction_date),
   KEY transaction_date_idx(transaction_date),
