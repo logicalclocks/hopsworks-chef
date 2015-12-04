@@ -37,7 +37,7 @@ suites:
       - recipe[zeppelin::install]
       - recipe[spark::install]
       - recipe[flink::install]
-      - recipe[charon::install]
+#      - recipe[charon::install]
       - recipe[hopsworks::install]
       - recipe[hiway::install]
       - recipe[ndb::mgmd]
@@ -55,17 +55,19 @@ suites:
 #      - recipe[flink::taskmanager]
       - recipe[hopsworks]
       - recipe[spark::worker]
-#      - recipe[hiway::cuneiform_client]
-#      - recipe[hiway::hiway_client]
-#      - recipe[hiway::helloworld_client]
-#      - recipe[hiway::wordcount_client]
-#      - recipe[hiway::variantcall_client]
-#      - recipe[hiway::cuneiform_worker]
-#      - recipe[hiway::hiway_worker]
-#      - recipe[hiway::variantcall_worker]
+      - recipe[hiway::cuneiform_client]
+      - recipe[hiway::hiway_client]
+      - recipe[hiway::helloworld_client]
+      - recipe[hiway::wordcount_client]
+      - recipe[hiway::variantcall_client]
+      - recipe[hiway::cuneiform_worker]
+      - recipe[hiway::hiway_worker]
+      - recipe[hiway::variantcall_worker]
 #      - recipe[charon::default]
 
     attributes:
+         java:
+           jdk_version: 7
          authorization:
             sudo:
               users: ['vagrant']
@@ -164,6 +166,7 @@ suites:
             user_envs: "false"
             twofactor_auth: "false"
          hiway:
+            release: "false"
             user: "glassfish"
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
