@@ -26,7 +26,7 @@ CREATE VIEW `projects_last_payment` AS
   from `project_payments_history`
   where (`project_payments_history`.`action` = 'DEPOSIT_MONEY')
   group by `project_payments_history`.`projectname`
-  order by max(`project_payments_history`.`transaction_date`)
+  order by max(`project_payments_history`.`transaction_date`);
 
 CREATE VIEW `projects_management` AS
   select
@@ -40,7 +40,7 @@ CREATE VIEW `projects_management` AS
   from
     ((`hops`.`yarn_projects_quota` `a` join `hopsworks`.`project` `b`) join `hopsworks`.`projects_last_payment` `c`)
   where
-    ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`))
+    ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`));
 
 CREATE TABLE `bbc_group` (
     `group_name` VARCHAR(20) NOT NULL,

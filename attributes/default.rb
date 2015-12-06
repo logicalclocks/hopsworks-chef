@@ -69,3 +69,8 @@ node.normal[:hadoop][:user_envs]          = "false"
 
 default[:hopsworks][:reinstall]           = "false"
 
+#quotas
+default[:hopsworks][:yarn_default_quota]       = "250"
+default[:hopsworks][:hdfs_default_quota]       = "100"
+default[:hopsworks][:max_num_proj_per_user]    = "40"
+

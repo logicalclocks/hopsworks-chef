@@ -10,7 +10,7 @@ driver:
   - ["forwarded_port", {guest: 3306, host: 9191}]
   - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
-  - ["forwarded_port", {guest: 8081, host: 8081}]
+  - ["forwarded_port", {guest: 8181, host: 8181}]
   - ["forwarded_port", {guest: 9088, host: 9088}]
   - ["forwarded_port", {guest: 4848, host: 4444}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
