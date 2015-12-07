@@ -104,9 +104,11 @@ CREATE TABLE `roles_audit` (
     `browser` VARCHAR(45) DEFAULT NULL,
     `mac` VARCHAR(45) DEFAULT NULL,
     PRIMARY KEY (`log_id`),
+    KEY `initiator` (`initiator`),
     KEY `target` (`target`),
+    FOREIGN KEY (`initiator`) REFERENCES `users` (`uid`),
     FOREIGN KEY (`target`) REFERENCES `users` (`uid`)
-)ENGINE=ndbcluster;
+) ENGINE=ndbcluster;
 
 CREATE TABLE `project` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
