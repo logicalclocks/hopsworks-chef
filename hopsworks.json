@@ -1,0 +1,83 @@
+{
+  "hdfs": {
+     "user" : "gholami"
+  },
+  "hops": {
+     "nn": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "dn": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "rm": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "nm": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "jhs": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "yarn": {
+        "user" : "gholami"
+      },
+     "mr": {
+        "user" : "gholami"
+     },
+     "cluster": "vagrant"
+  },
+  "hadoop": {
+     "yarn":{
+        "user" : "gholami"
+     },
+     "mr":{
+        "user": "gholami"
+     },
+     "nn": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "dn": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "rm": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "nm": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "jhs": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "cluster": "vagrant"
+  },
+  "ndb": {
+     "ndbd": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "mgmd": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "mysqld": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "memcached": {
+        "private_ips": ["130.237.221.40"]
+     },
+     "public_ips": ["130.237.221.40"],
+     "enabled": "true"
+  },
+  "private_ips": ["130.237.221.40"],
+  "public_ips": ["130.237.221.40"],
+  "run_list": [ 
+    "recipe[ndb::install]",
+    "recipe[hops::install]",
+    "recipe[ndb::mgmd]",
+    "recipe[ndb::ndbd]",
+    "recipe[ndb::mysqld]",
+    "recipe[hops::ndb]",
+    "recipe[hops::nn]",
+    "recipe[hops::dn]",
+    "recipe[hops::rm]",
+    "recipe[hops::nm]"
+  ]
+}

@@ -1,0 +1,183 @@
+DEPENDENCIES
+  ark
+  charon
+    git: git://github.com/biobankcloud/charon-chef.git
+    revision: e646e136fd0d2512df8d04ff10420c26dd4ede12
+    branch: master
+  elastic
+    git: git://github.com/hopshadoop/elasticsearch-chef.git
+    revision: 4822caad2a20b3d96ac31612ed0ab88112d7b9a6
+    branch: master
+  elasticsearch
+    git: git://github.com/elastic/cookbook-elasticsearch.git
+    revision: ecf3032c035e6f87383eba31a363c199bab5bc61
+    tag: v1.2.0
+  flink
+    git: git://github.com/hopshadoop/flink-chef.git
+    revision: 67253bec302606c970cd9849e4ee1b886f8e79ee
+    branch: hops
+  glassfish
+    git: git://github.com/hopshadoop/chef-glassfish.git
+    revision: fac6146c4cc58634d21f1f6e07c48c6461a991fd
+    branch: master
+  hadoop
+    git: git://github.com/hopshadoop/apache-hadoop-chef.git
+    revision: eba5f42c7a10e194e35fe8a027536de22e626640
+    branch: master
+  hiway
+    git: git://github.com/biobankcloud/hiway-chef.git
+    revision: dc84b6d717e0b2bdd2cc24306b25c4e0d7e921dd
+    branch: master
+  hops
+    git: git://github.com/hopshadoop/hops-hadoop-chef.git
+    revision: 565c4da79a998bc76178611a41bf76fdaa3cc699
+    branch: master
+  hopsworks
+    path: .
+    metadata: true
+  kagent
+    git: git://github.com/karamelchef/kagent-chef.git
+    revision: dc050e72862c0d51f623f923c2ba20fb0fbb4bb9
+    branch: master
+  ndb
+    git: git://github.com/hopshadoop/ndb-chef.git
+    revision: b024f9378847bd60995d85aa99ec1efc7a6a08cf
+    branch: master
+  openssl (~> 1.1.0)
+  python (~> 1.4.4)
+  spark
+    git: git://github.com/hopshadoop/spark-chef.git
+    revision: e33273a2df82b8e1b11b82fc682c80e4740f4a14
+    branch: master
+  sudo
+  zeppelin
+    git: git://github.com/hopshadoop/zeppelin-chef.git
+    revision: fc7adba7d847be97c424216ce7d8594dd3640290
+    branch: master
+
+GRAPH
+  7-zip (1.0.2)
+    windows (>= 1.2.2)
+  apt (2.9.2)
+  archive (0.2.8)
+    cutlery (>= 0.0.0)
+  ark (0.9.0)
+    7-zip (>= 0.0.0)
+    windows (>= 0.0.0)
+  authbind (0.1.10)
+  btsync (0.1.27)
+    partial_search (>= 0.0.0)
+  build-essential (2.2.4)
+  charon (0.1.0)
+    hadoop (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+  chef-sugar (3.1.1)
+  chef_handler (1.2.0)
+  compat_resource (12.5.14)
+  curl (2.0.1)
+  cutlery (0.2.10)
+    partial_search (>= 0.0.0)
+  dmg (2.3.0)
+  elastic (0.1.0)
+    apt (>= 0.0.0)
+    chef-sugar (>= 0.0.0)
+    elasticsearch (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+    ndb (>= 0.0.0)
+    ulimit (>= 0.0.0)
+    yum (>= 0.0.0)
+  elasticsearch (1.2.0)
+    apt (>= 0.0.0)
+    ark (>= 0.0.0)
+    chef-sugar (>= 0.0.0)
+    curl (>= 0.0.0)
+    yum (>= 0.0.0)
+  flink (1.0.0)
+    hadoop (>= 0.0.0)
+    hops (>= 0.0.0)
+    kagent (>= 0.0.0)
+  git (4.3.4)
+    build-essential (>= 0.0.0)
+    dmg (>= 0.0.0)
+    windows (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  glassfish (0.7.3)
+    archive (>= 0.0.0)
+    authbind (>= 0.0.0)
+    cutlery (>= 0.0.0)
+    java (>= 0.0.0)
+  hadoop (1.0.0)
+    apt (>= 0.0.0)
+    ark (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+    sysctl (>= 0.0.0)
+    ulimit (>= 0.0.0)
+    yum (>= 0.0.0)
+  hiway (1.0.0)
+    git (>= 0.0.0)
+    hadoop (>= 0.0.0)
+    hops (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+  hops (1.0.0)
+    hadoop (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+    ndb (>= 0.0.0)
+  hopsworks (0.1.0)
+    ark (>= 0.0.0)
+    charon (>= 0.0.0)
+    elastic (>= 0.0.0)
+    flink (>= 0.0.0)
+    glassfish (>= 0.0.0)
+    hiway (>= 0.0.0)
+    hops (>= 0.0.0)
+    kagent (>= 0.0.0)
+    ndb (>= 0.0.0)
+    spark (>= 0.0.0)
+    sudo (>= 0.0.0)
+    zeppelin (>= 0.0.0)
+  hostsfile (2.4.5)
+  iptables (2.0.1)
+    compat_resource (>= 0.0.0)
+  java (1.36.0)
+    apt (>= 0.0.0)
+  kagent (0.1.0)
+    hostsfile (>= 0.0.0)
+    openssh (>= 0.0.0)
+    openssl (>= 0.0.0)
+    python (>= 0.0.0)
+    sudo (>= 0.0.0)
+  ndb (1.0.0)
+    btsync (>= 0.0.0)
+    kagent (>= 0.0.0)
+  ohai (2.0.4)
+  openssh (1.5.2)
+    iptables (>= 0.0.0)
+  openssl (1.1.0)
+  partial_search (1.0.9)
+  python (1.4.6)
+    build-essential (>= 0.0.0)
+    yum-epel (>= 0.0.0)
+  spark (1.0.0)
+    hadoop (>= 0.0.0)
+    java (>= 0.0.0)
+    kagent (>= 0.0.0)
+  sudo (2.7.2)
+  sysctl (0.7.0)
+    ohai (>= 0.0.0)
+  ulimit (0.3.3)
+  windows (1.38.4)
+    chef_handler (>= 0.0.0)
+  yum (3.8.2)
+  yum-epel (0.6.5)
+    yum (~> 3.2)
+  zeppelin (1.0.0)
+    flink (>= 0.0.0)
+    hadoop (>= 0.0.0)
+    hops (>= 0.0.0)
+    kagent (>= 0.0.0)
+    spark (>= 0.0.0)
