@@ -55,11 +55,10 @@ insert into address (uid, address1,address2,address3,city,state,country,postalco
 
 -- --------------------------------------------------------
 --
--- Upadte the User Logins table
+-- Upadte the account audit table
 --
 
-insert into account_audit(initiator, ip, browser, action, target, time, message, os, outcome, email, mac) 
-values (10000,'127.0.0.1', 'Firefox', 'LOGIN', 10000, CURRENT_TIMESTAMP, 'Linux', 'Admin account was enabled', 'SUCCESS', 'admin@kth.se', '56:84:7a:fe:97:49');
+insert into account_audit(initiator, ip, browser, action, target, time, message, os, outcome, email, mac) values (10000,'127.0.0.1', 'Firefox', 'LOGIN', 10000, CURRENT_TIMESTAMP, 'Linux', 'Admin account was enabled', 'SUCCESS', 'admin@kth.se', '56:84:7a:fe:97:49');
 
 -- --------------------------------------------------------
 --
