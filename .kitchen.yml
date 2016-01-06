@@ -37,7 +37,7 @@ suites:
       - recipe[zeppelin::install]
       - recipe[spark::install]
       - recipe[flink::install]
-#      - recipe[charon::install]
+      - recipe[charon::install]
       - recipe[hopsworks::install]
       - recipe[hiway::install]
       - recipe[ndb::mgmd]
@@ -63,7 +63,7 @@ suites:
       - recipe[hiway::cuneiform_worker]
       - recipe[hiway::hiway_worker]
       - recipe[hiway::variantcall_worker]
-#      - recipe[charon::default]
+      - recipe[charon::default]
 
     attributes:
          java:

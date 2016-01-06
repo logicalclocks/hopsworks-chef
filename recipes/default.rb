@@ -78,7 +78,7 @@ template "#{rows_path}" do
                 :twofactor_auth => node[:hopsworks][:twofactor_auth],
                 :elastic_user => node[:elastic][:user],
                 :hiway_dir => node[:hiway][:home],
-                :charon_dir => node[:hiway][:home],
+                :charon_dir => node[:charon][:home],
                 :yarn_default_quota => node[:hopsworks][:yarn_default_quota],
                 :hdfs_default_quota => node[:hopsworks][:hdfs_default_quota],
                 :max_num_proj_per_user => node[:hopsworks][:max_num_proj_per_user]
