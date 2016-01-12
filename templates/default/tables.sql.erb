@@ -575,3 +575,19 @@ CREATE VIEW `projects_management` AS
     ((`hops`.`yarn_projects_quota` `a` join `hopsworks`.`project` `b`) join `hopsworks`.`projects_last_payment` `c`)
   where
     ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`));
+
+CREATE TABLE `charon_registered_sites` (
+  `project_id` int(11) NOT NULL,
+  `site_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`project_id`,`site_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
+CREATE TABLE `charon_repo_shared` (
+  `project_id` int(11) NOT NULL,
+  `site_id` varchar(255) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `permissions` varchar(2) NOT NULL,
+  PRIMARY KEY (`project_id`,`site_id`,`path`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
