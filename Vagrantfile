@@ -159,10 +159,8 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::nm"
       chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "spark::master"
-      chef.add_recipe "spark::worker"
-      chef.add_recipe "flink::jobmanager"
-      chef.add_recipe "flink::taskmanager"
+      chef.add_recipe "spark::yarn"
+      chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
   end 
 
