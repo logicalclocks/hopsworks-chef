@@ -84,10 +84,12 @@ suites:
             group: hadoop
             user_email: jdowling@kth.se
             use_only_aws: true
-         aws:
-            access_key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
-            secret_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
-            canonical_id: <%= ENV['AWS_CANONICAL_ID'] %>
+            site_id_name: kitchen
+            credentials:
+               aws:
+                  access_key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+                  secret_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
+                  canonical_id: <%= ENV['AWS_CANONICAL_ID'] %>
          elastic:
             default:
                 private_ips: ["10.0.2.15"]
