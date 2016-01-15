@@ -85,6 +85,8 @@ suites:
             user_email: jdowling@kth.se
             use_only_aws: true
             site_id_name: kitchen
+            locations:
+               use_cloud: true
             credentials:
                aws:
                   access_key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
