@@ -53,7 +53,13 @@ end
   end 
 
 
-elastic_ip = private_recipe_ip("elastic","default")
+begin
+  elastic_ip = private_recipe_ip("elastic","default")
+rescue 
+  elastic_ip = ""
+  Chef::Log.warn "could not find elastic server for HopsWorks!"
+end
+
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
