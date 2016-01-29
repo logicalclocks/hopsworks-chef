@@ -202,6 +202,8 @@ CREATE TABLE `executions` (
   `stderr_path` VARCHAR(255) DEFAULT NULL,
   `app_id` CHAR(30) DEFAULT NULL,
   `job_id` INT(11) NOT NULL,
+  `finalStatus` VARCHAR(128) NOT NULL DEFAULT 'UNDEFINED',
+  `progress` FLOAT NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE (`app_id`),
   FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,

@@ -39,7 +39,6 @@ suites:
       - recipe[flink::install]
       - recipe[charon::install]
       - recipe[hopsworks::install]
-#      - recipe[hiway::install]
       - recipe[ndb::mgmd]
       - recipe[ndb::ndbd]
       - recipe[ndb::mysqld]
@@ -51,19 +50,7 @@ suites:
       - recipe[hops::jhs]
       - recipe[elastic::default]
       - recipe[spark::yarn]
-#      - recipe[spark::master]
-#      - recipe[flink::jobmanager]
-#      - recipe[flink::taskmanager]
       - recipe[hopsworks]
-#      - recipe[spark::worker]
-#      - recipe[hiway::cuneiform_client]
-#      - recipe[hiway::hiway_client]
-#      - recipe[hiway::helloworld_client]
-#      - recipe[hiway::wordcount_client]
-#      - recipe[hiway::variantcall_client]
-#      - recipe[hiway::cuneiform_worker]
-#      - recipe[hiway::hiway_worker]
-#      - recipe[hiway::variantcall_worker]
       - recipe[charon::default]
 
     attributes:
@@ -169,7 +156,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-#            twofactor_auth: true
+            twofactor_auth: true
          hiway:
             release: "false"
             user: "glassfish"
