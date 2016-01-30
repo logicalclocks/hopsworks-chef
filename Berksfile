@@ -10,13 +10,11 @@ cookbook 'hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'spark', github: "hopshadoop/spark-chef", branch: "hops"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "hops"
-cookbook 'hiway', github: "biobankcloud/hiway-chef", branch: "master"
-cookbook 'charon', github: "biobankcloud/charon-chef", branch: "master"
 
 cookbook 'python', "~> 1.4.4"
 cookbook 'openssl', "~> 1.1.0"
-cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master" 
-cookbook 'ark'
-cookbook 'sudo'
+cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master" 
+#cookbook 'sudo'
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch',  tag: "v1.2.0"
+cookbook 'compat_resource'

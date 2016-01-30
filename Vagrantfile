@@ -2,11 +2,11 @@ require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
-  if Vagrant.has_plugin?("vagrant-cachier")
-    c.cache.auto_detect = false
-    c.cache.enable :apt
-  end
-  c.omnibus.cache_packages = false
+  # if Vagrant.has_plugin?("vagrant-cachier")
+  #   c.cache.auto_detect = false
+  #   c.cache.enable :apt
+  # end
+  # c.omnibus.cache_packages = false
 
   c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
@@ -14,7 +14,7 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>3309})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>33199})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8082})
 # HTTPS webserver
@@ -43,7 +43,6 @@ Vagrant.configure("2") do |c|
    c.vm.provision :chef_solo do |chef|
      chef.cookbooks_path = "cookbooks"
      chef.json = {
-     "vagrant" => "true",
      "ndb" => {
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
@@ -64,8 +63,7 @@ Vagrant.configure("2") do |c|
      "hopsworks" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
-	       },
-          "user_envs" => "false"
+	       }
      },
      "zeppelin" => {
 	  "default" =>      { 
@@ -132,19 +130,12 @@ Vagrant.configure("2") do |c|
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
-     "zeppelin" => {
-	  "user" => "glassfish",
-	  "default" =>    { 
-       	 	      "private_ips" => ["10.0.2.15"]
-          }
-     },
-
      }
 
       chef.add_recipe "kagent::install"
+      chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
-      chef.add_recipe "hopsworks::install"
       chef.add_recipe "spark::install"
       chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
@@ -164,6 +155,4 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsworks::default"
   end 
 
-
-#  c.vm.provision :shell, :path => "bootstrap.sh"
 end

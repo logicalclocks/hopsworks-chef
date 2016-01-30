@@ -15,16 +15,16 @@ depends 'glassfish'
 depends 'ndb'
 depends 'kagent'
 depends 'hops'
-depends 'ark'
+#depends 'ark'
 depends 'elastic'
 depends 'spark'
 depends 'flink'
 depends 'zeppelin'
-depends 'hiway'
-depends 'charon'
-depends 'sudo'
+#depends 'sudo'
+depends 'compat_resource'
 
-recipe  "hopsworks::install", "Installs HopsHub/Glassfish"
+#link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
+recipe  "hopsworks::install", "Installs Glassfish"
 
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
@@ -117,42 +117,42 @@ attribute "karamel/cert/c",
           :description => "Country (2 letters)",
           :type => 'string'
 
-attribute "glassfish/version",
-          :description => "glassfish/version",
+attribute "hopsworks/version",
+          :description => "hopsworks/version",
           :type => 'string'
 
 attribute "hopsworks/user",
           :description => "hopsworks/user",
           :type => 'string'
 
-attribute "glassfish/group",
-          :description => "glassfish/group",
+attribute "hopsworks/group",
+          :description => "hopsworks/group",
           :type => 'string'
 
-# attribute "glassfish/admin/port",
-#           :description => "glassfish/admin/port",
+# attribute "hopsworks/admin/port",
+#           :description => "hopsworks/admin/port",
 #           :type => 'string'
 
-# attribute "glassfish/port",
-#           :description => "glassfish/port",
+# attribute "hopsworks/port",
+#           :description => "hopsworks/port",
 #           :type => 'string'
 
 
-attribute "glassfish/max_mem",
-          :description => "glassfish/max_mem",
+attribute "hopsworks/max_mem",
+          :description => "hopsworks/max_mem",
           :type => 'string'
 
-attribute "glassfish/min_mem",
-          :description => "glassfish/min_mem",
+attribute "hopsworks/min_mem",
+          :description => "hopsworks/min_mem",
           :type => 'string'
 
-attribute "glassfish/max_stack_size",
-          :description => "glassfish/max_stack_size",
+attribute "hopsworks/max_stack_size",
+          :description => "hopsworks/max_stack_size",
           :type => 'string'
 
 
-attribute "glassfish/max_perm_size",
-          :description => "glassfish/max_perm_size",
+attribute "hopsworks/max_perm_size",
+          :description => "hopsworks/max_perm_size",
           :type => 'string'
 
 attribute "kagent/enabled",
@@ -178,3 +178,8 @@ attribute "hopsworks/hdfs_default_quota",
 attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
+
+attribute "hopsworks/package_url",
+          :description => "Url for the Glassfish distribution zip file.",
+          :type => 'string'
+

@@ -1,26 +1,16 @@
+# -*- coding: utf-8 -*-
 require 'json'
 require 'base64'
 
-node.override[:glassfish][:user] = node[:hopsworks][:user]
+# node.override[:glassfish][:user] = node[:hopsworks][:user]
 
-node.override = {
-  'java' => {
-    'install_flavor' => 'oracle',
-    'jdk_version' => 7,
-    'oracle' => {
-      'accept_oracle_download_terms' => true
-    }
-  }
-}
-include_recipe 'glassfish::default'
-
-bash 'fix_java_path_for_glassfish_cookbook' do
-user "root"
-    code <<-EOF
-# upstart job in glassfish expects java to be installed in /bin/java
-test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java 
-EOF
-end
+# bash 'fix_java_path_for_glassfish_cookbook' do
+# user "root"
+#     code <<-EOF
+# # upstart job in glassfish expects java to be installed in /bin/java
+# test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java 
+# EOF
+# end
 
 
 private_ip=my_private_ip()
@@ -83,8 +73,6 @@ template "#{rows_path}" do
                 :elastic_dir => node[:elastic][:dir] + "/elastic",
                 :twofactor_auth => node[:hopsworks][:twofactor_auth],
                 :elastic_user => node[:elastic][:user],
-                :hiway_dir => node[:hiway][:home],
-                :charon_dir => node[:charon][:home],
                 :yarn_default_quota => node[:hopsworks][:yarn_default_quota],
                 :hdfs_default_quota => node[:hopsworks][:hdfs_default_quota],
                 :max_num_proj_per_user => node[:hopsworks][:max_num_proj_per_user]
@@ -255,6 +243,7 @@ glassfish_deployable "hopsworks" do
 end
 
 
+
 # directory "/srv/users" do
 #   owner node[:glassfish][:user]
 
@@ -269,7 +258,7 @@ end
 # case node['platform']
 # when 'debian', 'ubuntu'
 #     source "mkuser.sh.erb"
-p# when 'redhat', 'centos', 'fedora'
+# when 'redhat', 'centos', 'fedora'
 #     source "mkuser.redhat.sh.erb"
 # end
 #   owner node[:glassfish][:user]
@@ -282,4 +271,3 @@ p# when 'redhat', 'centos', 'fedora'
     mode 0700
     action :create
  end 
-

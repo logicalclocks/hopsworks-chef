@@ -12,6 +12,107 @@ mysql_password=node[:mysql][:password]
 mysql_host = private_recipe_ip("ndb","mysqld")
 
 
+# node.override = {
+#   'java' => {
+#     'install_flavor' => 'oracle',
+#     'jdk_version' => 7,
+#     'oracle' => {
+#       'accept_oracle_download_terms' => true
+#     }
+#   },
+#   'glassfish' => {
+#     'version' => node[:glassfish][:version],
+# #    'base_dir' => node[:glassfish][:base_dir],
+# #    'domains_dir' => domains_dir,
+#     'domains' => {
+#       domain_name => {
+#         'config' => {
+# #          'min_memory' => node[:glassfish][:min_mem],
+# #          'max_memory' => node[:glassfish][:max_mem],
+# #          'max_perm_size' => node[:glassfish][:max_perm_size],
+# #          'port' => web_port,
+# #          'admin_port' => admin_port,
+#           'username' => username,
+#           'password' => password,
+#           'master_password' => node[:hopsworks][:master][:password],
+#           'remote_access' => false,
+#           'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
+#           'secure' => false
+#         },
+#         'extra_libraries' => {
+#           'jdbcdriver' => {
+#             'type' => 'common',
+#             'url' => node[:hopsworks][:mysql_connector_url]
+#           }
+#         },
+#         'threadpools' => {
+#           'thread-pool-1' => {
+#             'maxthreadpoolsize' => 200,
+#             'minthreadpoolsize' => 5,
+#             'idletimeout' => 900,
+#             'maxqueuesize' => 4096
+#           },
+#           'http-thread-pool' => {
+#             'maxthreadpoolsize' => 200,
+#             'minthreadpoolsize' => 5,
+#             'idletimeout' => 900,
+#             'maxqueuesize' => 4096
+#           },
+#           'admin-pool' => {
+#             'maxthreadpoolsize' => 50,
+#             'minthreadpoolsize' => 5,
+#             'maxqueuesize' => 256
+#           }
+#         },
+#         'jdbc_connection_pools' => {
+#           'hopsworksPool' => {
+#             'config' => {
+#               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#               'restype' => 'javax.sql.DataSource',
+#               'isconnectvalidatereq' => 'true',
+#               'validationmethod' => 'auto-commit',
+#               'ping' => 'true',
+#               'description' => 'Hopsworks Connection Pool',
+#               'properties' => {
+#                 'Url' => "jdbc:mysql://#{mysql_host}:3306/",
+#                 'User' => mysql_user,
+#                 'Password' => mysql_password
+#               }
+#             },
+#             'resources' => {
+#               'jdbc/hopsworks' => {
+#                 'description' => 'Resource for Hopsworks Pool',
+#               }
+#             }
+#           },
+#           'ejbTimerPool' => {
+#             'config' => {
+#               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+#               'restype' => 'javax.sql.DataSource',
+#               'isconnectvalidatereq' => 'true',
+
+#               'validationmethod' => 'auto-commit',
+#               'ping' => 'true',
+#               'description' => 'Hopsworks Connection Pool',
+#               'properties' => {
+#                 'Url' => "jdbc:mysql://#{mysql_host}:3306/glassfish_timers",
+#                 'User' => mysql_user,
+#                 'Password' => mysql_password
+#               }
+#             },
+#             'resources' => {
+#               'jdbc/hopsworksTimers' => {
+#                 'description' => 'Resource for Hopsworks EJB Timers Pool',
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+
+
 node.override = {
   'java' => {
     'install_flavor' => 'oracle',
@@ -22,8 +123,8 @@ node.override = {
   },
   'glassfish' => {
     'version' => node[:glassfish][:version],
-    'base_dir' => node[:glassfish][:base_dir],
-    'domains_dir' => domains_dir,
+    #    'base_dir' => node[:glassfish][:base_dir],
+    #    'domains_dir' => domains_dir,
     'domains' => {
       domain_name => {
         'config' => {
@@ -36,8 +137,8 @@ node.override = {
           'password' => password,
           'master_password' => node[:hopsworks][:master][:password],
           'remote_access' => false,
-          'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
-          'secure' => false
+          'secure' => false,
+          'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
         },
         'extra_libraries' => {
           'jdbcdriver' => {
@@ -64,13 +165,6 @@ node.override = {
             'maxqueuesize' => 256
           }
         },
-        # 'iiop_listeners' => {
-        #   'orb-listener-1' => {
-        #     'enabled' => true,
-        #     'iiopport' => 1072,
-        #     'securityenabled' => false
-        #   }
-        # },
         'jdbc_connection_pools' => {
           'hopsworksPool' => {
             'config' => {
@@ -97,6 +191,7 @@ node.override = {
               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
+
               'validationmethod' => 'auto-commit',
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
@@ -117,18 +212,11 @@ node.override = {
     }
   }
 }
+
+
+
 installed = "#{node[:glassfish][:base_dir]}/.installed"
-if ::File.exists?( "#{installed}" ) == false || "#{node[:hopsworks][:reinstall]}" == "true" 
-
-if "#{node[:hopsworks][:reinstall]}" == "true" 
-   directory node[:glassfish][:base_dir] do
-     owner node[:glassfish][:user]
-     group node[:glassfish][:group]
-     action :delete
-     recursive true
-   end
-end
-
+if ::File.exists?( "#{installed}" ) == false
 
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
@@ -137,17 +225,15 @@ end
     owner node[:glassfish][:user]
   end
 
-cauth = File.basename(node[:glassfish][:cauth_url])
+  cauth = File.basename(node[:hopsworks][:cauth_url])
 
-remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
-  user node[:glassfish][:user]
-  group node[:glassfish][:group]
-  source node[:glassfish][:cauth_url]
-  mode 0755
-  action :create_if_missing
-end
-
-
+  remote_file "#{node[:glassfish][:domains_dir]}/#{domain_name}/lib/#{cauth}"  do
+    user node[:glassfish][:user]
+    group node[:glassfish][:group]
+    source node[:hopsworks][:cauth_url]
+    mode 0755
+    action :create_if_missing
+  end
 
 end
 
@@ -169,12 +255,34 @@ end
 
 
 # Hack for cuneiform that expects that the username has a /home/username directory.
+# directory "/home/#{node[:glassfish][:user]}/software" do
+#   owner node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#   mode "755"
+#   action :create
+#   recursive true
+# end
 
-directory "/home/#{node[:glassfish][:user]}/software" do
+
+ template "#{node[:glassfish][:domains_dir]}/#{domain_name}/docroot/404.html" do
+    source "404.html.erb"
+    owner node[:glassfish][:user]
+    mode 0777
+    variables({
+                :org_name => node[:hopsworks][:cert][:o]
+              })
+    action :create
+ end 
+
+cookbook_file"#{node[:glassfish][:domains_dir]}/#{domain_name}/docroot/obama-smoked-us.gif" do
+  source 'obama-smoked-us.gif'
   owner node[:glassfish][:user]
   group node[:glassfish][:group]
-  mode "755"
+  mode '0755'
   action :create
-  recursive true
 end
 
+hopsworks_restart "set_404" do
+  domain_name domain_name
+  action :set_404
+end 

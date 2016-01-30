@@ -7,7 +7,7 @@ driver:
     natdnsproxy1: "on"
     nictype1: "virtio"
   network:
-  - ["forwarded_port", {guest: 3306, host: 9191}]
+  - ["forwarded_port", {guest: 3306, host: 3939}]
   - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
   - ["forwarded_port", {guest: 8181, host: 8181}]
@@ -23,62 +23,42 @@ provisioner:
 
 platforms:
 
-#  - name: ubuntu-12.04
   - name: ubuntu-14.04
-#  - name: centos-6.5
+#  - name: centos-7.0
 
 suites:
   - name: default
     run_list:
-      - recipe[kagent::install]
-      - recipe[ndb::install]
-      - recipe[hops::install]
-      - recipe[elastic::install]
-      - recipe[zeppelin::install]
-      - recipe[spark::install]
-      - recipe[flink::install]
-      - recipe[charon::install]
-      - recipe[hopsworks::install]
-      - recipe[ndb::mgmd]
-      - recipe[ndb::ndbd]
-      - recipe[ndb::mysqld]
-      - recipe[hops::ndb]
-      - recipe[hops::nn]
-      - recipe[hops::dn]
-      - recipe[hops::rm]
-      - recipe[hops::nm]
-      - recipe[hops::jhs]
-      - recipe[elastic::default]
-      - recipe[spark::yarn]
-      - recipe[hopsworks]
-      - recipe[charon::default]
+       - recipe[kagent::install]
+       - recipe[hopsworks::install]
+       - recipe[ndb::install]
+       - recipe[hops::install]
+       - recipe[elastic::install]
+       - recipe[zeppelin::install]
+       - recipe[spark::install]
+       - recipe[flink::install]
+       - recipe[ndb::mgmd]
+       - recipe[ndb::ndbd]
+       - recipe[ndb::mysqld]
+       - recipe[hops::ndb]
+       - recipe[hops::nn]
+       - recipe[hops::dn]
+       - recipe[hops::rm]
+       - recipe[hops::nm]
+#       - recipe[hops::jhs]
+       - recipe[elastic::default]
+#       - recipe[spark::yarn]
+       - recipe[hopsworks]
 
     attributes:
-         java:
-           jdk_version: 7
-         authorization:
-            sudo:
-              users: ['vagrant']
-              passwordless: true
-              include_sudoers_d: true
+        # authorization:
+        #    sudo:
+        #      users: ['vagrant']
+        #      passwordless: true
+        #      include_sudoers_d: true
          kagent:
             private_ips: ["10.0.2.15"]
             enabled: true
-         charon:
-            default:
-                private_ips: ["10.0.2.15"]
-            user: glassfish
-            group: hadoop
-            user_email: jdowling@kth.se
-            use_only_aws: true
-            site_id_name: kitchen
-            locations:
-               use_cloud: true
-            credentials:
-               aws:
-                  access_key: <%= ENV['AWS_ACCESS_KEY_ID'] %>
-                  secret_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
-                  canonical_id: <%= ENV['AWS_CANONICAL_ID'] %>
          elastic:
             default:
                 private_ips: ["10.0.2.15"]
@@ -130,7 +110,6 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
-#            user_envs: "false"
          zeppelin:
             default:
                private_ips: ["10.0.2.15"]
@@ -145,7 +124,7 @@ suites:
             private_ips: ["10.0.2.15"]
          flink:
 # This doesnt work
-#            user: glassfish
+            user: glassfish
             jobmanager:
                private_ips: ["10.0.2.15"]
             taskmanager:
@@ -156,18 +135,24 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-            twofactor_auth: true
-         hiway:
-            release: "false"
-            user: "glassfish"
-            private_ips: ["10.0.2.15"]
-            public_ips: ["10.0.2.15"]
-            am:
-              memory_mb: '512'
-              vcores: '1'
-            worker:
-              memory_mb: '3072'
-              vcores: '1'
+            twofactor_auth: false
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
-         vagrant: "true"
+         # glassfish:
+         #      version: "4.1"
+         #      package_url: "http://193.10.67.171/hops/glassfish-4.1.zip"
+         #      domains: 
+         #        domain1: 
+         #          config: 
+         #            port: 7070
+         #            admin_port: 4848
+         #            username: admin
+         #            password: admin
+         #            master_password: mykeystorepassword
+         #            remote_access: true
+         # java:
+         #     install_flavor: oracle
+         #     jdk_version: 7
+         #     oracle:       
+         #       accept_oracle_download_terms: "true"
+
