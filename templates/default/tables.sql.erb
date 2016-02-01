@@ -188,6 +188,7 @@ CREATE TABLE `jobs` (
   `type` VARCHAR(128) NOT NULL,
   `json_config` TEXT NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY name_idx (`name`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
