@@ -23,8 +23,9 @@ provisioner:
 
 platforms:
 
-  - name: ubuntu-14.04
-#  - name: centos-7.0
+#  - name: ubuntu-15.04
+#  - name: ubuntu-14.04
+  - name: centos-7.0
 
 suites:
   - name: default
@@ -45,9 +46,9 @@ suites:
        - recipe[hops::dn]
        - recipe[hops::rm]
        - recipe[hops::nm]
-#       - recipe[hops::jhs]
+       - recipe[hops::jhs]
        - recipe[elastic::default]
-#       - recipe[spark::yarn]
+       - recipe[spark::yarn]
        - recipe[hopsworks]
 
     attributes:
