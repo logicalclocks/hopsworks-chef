@@ -390,8 +390,6 @@ CREATE TABLE `dataset` (
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `public_ds_idx` (`public_ds`),
-  KEY `searchable_idx` (`searchable`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION

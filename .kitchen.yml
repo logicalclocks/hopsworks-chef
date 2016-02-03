@@ -60,14 +60,14 @@ suites:
          kagent:
             private_ips: ["10.0.2.15"]
             enabled: true
-            use_systemd: "true"
+#            use_systemd: "true"
          elastic:
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-            use_systemd: "true"
+#            use_systemd: "true"
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -80,7 +80,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             enabled: "true"
-            use_systemd: "true"
+#            use_systemd: "true"
          hops:
             nn:
                private_ips: ["10.0.2.15"]
@@ -93,7 +93,7 @@ suites:
             jhs:
                private_ips: ["10.0.2.15"]
             use_hopsworks: "true"
-            use_systemd: "true"
+#            use_systemd: "true"
          hdfs:
             user: glassfish
             conf_dir: "/srv/hadoop/etc/hadoop"
@@ -115,7 +115,7 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
-            use_systemd: "true"
+#            use_systemd: "true"
          zeppelin:
             default:
                private_ips: ["10.0.2.15"]
@@ -135,7 +135,7 @@ suites:
                private_ips: ["10.0.2.15"]
             taskmanager:
                private_ips: ["10.0.2.15"]
-            use_systemd: "true"
+#            use_systemd: "true"
          hopsworks:
             default:
                private_ips: ["10.0.2.15"]
@@ -143,7 +143,7 @@ suites:
             public_ips: ["10.0.2.15"]
             user_envs: "false"
             twofactor_auth: false
-            use_systemd: "true"
+#            use_systemd: "true"
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          # glassfish:
