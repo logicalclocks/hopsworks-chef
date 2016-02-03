@@ -46,7 +46,7 @@ suites:
        - recipe[hops::dn]
        - recipe[hops::rm]
        - recipe[hops::nm]
-       - recipe[hops::jhs]
+#       - recipe[hops::jhs]
        - recipe[elastic::default]
        - recipe[spark::yarn]
        - recipe[hopsworks]
