@@ -286,3 +286,8 @@ hopsworks_restart "set_404" do
   domain_name domain_name
   action :set_404
 end 
+
+
+user_ulimit node[:glassfish][:user] do
+  filehandle_limit 32768
+end

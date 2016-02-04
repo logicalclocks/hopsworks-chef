@@ -18,3 +18,4 @@ cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch',  tag: "v1.2.0"
 cookbook 'compat_resource'
+cookbook 'ulimit', github: 'bmhatfield/chef-ulimit', tag: 'v0.3.3'

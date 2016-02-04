@@ -24,8 +24,8 @@ provisioner:
 platforms:
 
 #  - name: ubuntu-15.04
-#  - name: ubuntu-14.04
-  - name: centos-7.0
+  - name: ubuntu-14.04
+#  - name: centos-7.0
 
 suites:
   - name: default
@@ -48,7 +48,7 @@ suites:
        - recipe[hops::nm]
        - recipe[hops::jhs]
        - recipe[elastic::default]
-       - recipe[spark::yarn]
+#       - recipe[spark::yarn]
        - recipe[hopsworks]
 
     attributes:
@@ -139,6 +139,7 @@ suites:
             twofactor_auth: false
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
+         vagrant: "true"
          # glassfish:
          #      version: "4.1"
          #      package_url: "http://193.10.67.171/hops/glassfish-4.1.zip"
