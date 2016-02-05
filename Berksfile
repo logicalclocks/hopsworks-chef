@@ -14,8 +14,7 @@ cookbook 'flink', github: "hopshadoop/flink-chef", branch: "hops"
 cookbook 'python', "~> 1.4.4"
 cookbook 'openssl', "~> 1.1.0"
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master" 
-#cookbook 'sudo'
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
-cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch',  tag: "v1.2.0"
+cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch', tag: "v2.1.1"
 cookbook 'compat_resource'
 cookbook 'ulimit', github: 'bmhatfield/chef-ulimit', tag: 'v0.3.3'
