@@ -50,12 +50,12 @@ default[:hopsworks][:twofactor_auth]          = "false"
 
 default[:hopsworks][:mysql_connector_url]      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
-default[:hopsworks][:cert][:cn]             = "sics.se"
-default[:hopsworks][:cert][:o]              = "swedish ict"
-default[:hopsworks][:cert][:ou]             = "sics"
-default[:hopsworks][:cert][:l]              = "kista"
-default[:hopsworks][:cert][:s]              = "stockholm"
-default[:hopsworks][:cert][:c]              = "se"
+default[:hopsworks][:cert][:cn]               = "sics.se"
+default[:hopsworks][:cert][:o]                = "swedish ict"
+default[:hopsworks][:cert][:ou]               = "sics"
+default[:hopsworks][:cert][:l]                = "kista"
+default[:hopsworks][:cert][:s]                = "stockholm"
+default[:hopsworks][:cert][:c]                = "se"
 
  default[:hopsworks][:cert][:password]         = "changeit"
  default[:hopsworks][:master][:password]       = "adminpw"
