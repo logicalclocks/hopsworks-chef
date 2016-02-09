@@ -1,7 +1,7 @@
 
   bash 'remove-glassfish' do
     user "root"
-    ignore_failure :true
+    ignore_failure true
     code <<-EOF
         service glassfish-domain1 stop
         systemctl stop glassfish-domain1 
