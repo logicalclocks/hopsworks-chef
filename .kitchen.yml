@@ -17,6 +17,7 @@ driver:
   - ["forwarded_port", {guest: 50075, host: 51075}]
   - ["forwarded_port", {guest: 9200, host: 9200}]
   - ["forwarded_port", {guest: 9009, host: 9009}]
+  - ["forwarded_port", {guest: 22, host: 2345}]
 
 provisioner:
   name: chef_solo
@@ -49,7 +50,7 @@ suites:
        - recipe[hops::nm]
        - recipe[hops::jhs]
        - recipe[elastic::default]
-#       - recipe[spark::yarn]
+       - recipe[spark::yarn]
        - recipe[hopsworks]
 
     attributes:

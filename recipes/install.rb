@@ -1,3 +1,17 @@
+# -*- coding: utf-8 -*-
+require 'json'
+require 'base64'
+
+# node.override[:glassfish][:user] = node[:hopsworks][:user]
+
+# bash 'fix_java_path_for_glassfish_cookbook' do
+# user "root"
+#     code <<-EOF
+# # upstart job in glassfish expects java to be installed in /bin/java
+# test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java 
+# EOF
+# end
+
 
 node.override[:glassfish][:user] = node[:hopsworks][:user]
 
@@ -12,107 +26,6 @@ mysql_password=node[:mysql][:password]
 mysql_host = private_recipe_ip("ndb","mysqld")
 
 
-# node.override = {
-#   'java' => {
-#     'install_flavor' => 'oracle',
-#     'jdk_version' => 7,
-#     'oracle' => {
-#       'accept_oracle_download_terms' => true
-#     }
-#   },
-#   'glassfish' => {
-#     'version' => node[:glassfish][:version],
-# #    'base_dir' => node[:glassfish][:base_dir],
-# #    'domains_dir' => domains_dir,
-#     'domains' => {
-#       domain_name => {
-#         'config' => {
-# #          'min_memory' => node[:glassfish][:min_mem],
-# #          'max_memory' => node[:glassfish][:max_mem],
-# #          'max_perm_size' => node[:glassfish][:max_perm_size],
-# #          'port' => web_port,
-# #          'admin_port' => admin_port,
-#           'username' => username,
-#           'password' => password,
-#           'master_password' => node[:hopsworks][:master][:password],
-#           'remote_access' => false,
-#           'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true'],
-#           'secure' => false
-#         },
-#         'extra_libraries' => {
-#           'jdbcdriver' => {
-#             'type' => 'common',
-#             'url' => node[:hopsworks][:mysql_connector_url]
-#           }
-#         },
-#         'threadpools' => {
-#           'thread-pool-1' => {
-#             'maxthreadpoolsize' => 200,
-#             'minthreadpoolsize' => 5,
-#             'idletimeout' => 900,
-#             'maxqueuesize' => 4096
-#           },
-#           'http-thread-pool' => {
-#             'maxthreadpoolsize' => 200,
-#             'minthreadpoolsize' => 5,
-#             'idletimeout' => 900,
-#             'maxqueuesize' => 4096
-#           },
-#           'admin-pool' => {
-#             'maxthreadpoolsize' => 50,
-#             'minthreadpoolsize' => 5,
-#             'maxqueuesize' => 256
-#           }
-#         },
-#         'jdbc_connection_pools' => {
-#           'hopsworksPool' => {
-#             'config' => {
-#               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-#               'restype' => 'javax.sql.DataSource',
-#               'isconnectvalidatereq' => 'true',
-#               'validationmethod' => 'auto-commit',
-#               'ping' => 'true',
-#               'description' => 'Hopsworks Connection Pool',
-#               'properties' => {
-#                 'Url' => "jdbc:mysql://#{mysql_host}:3306/",
-#                 'User' => mysql_user,
-#                 'Password' => mysql_password
-#               }
-#             },
-#             'resources' => {
-#               'jdbc/hopsworks' => {
-#                 'description' => 'Resource for Hopsworks Pool',
-#               }
-#             }
-#           },
-#           'ejbTimerPool' => {
-#             'config' => {
-#               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
-#               'restype' => 'javax.sql.DataSource',
-#               'isconnectvalidatereq' => 'true',
-
-#               'validationmethod' => 'auto-commit',
-#               'ping' => 'true',
-#               'description' => 'Hopsworks Connection Pool',
-#               'properties' => {
-#                 'Url' => "jdbc:mysql://#{mysql_host}:3306/glassfish_timers",
-#                 'User' => mysql_user,
-#                 'Password' => mysql_password
-#               }
-#             },
-#             'resources' => {
-#               'jdbc/hopsworksTimers' => {
-#                 'description' => 'Resource for Hopsworks EJB Timers Pool',
-#               }
-#             }
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
-
 node.override = {
   'java' => {
     'install_flavor' => 'oracle',
@@ -123,8 +36,6 @@ node.override = {
   },
   'glassfish' => {
     'version' => node[:glassfish][:version],
-    #    'base_dir' => node[:glassfish][:base_dir],
-    #    'domains_dir' => domains_dir,
     'domains' => {
       domain_name => {
         'config' => {
@@ -138,7 +49,7 @@ node.override = {
           'master_password' => node[:hopsworks][:master][:password],
           'remote_access' => false,
           'secure' => false,
-          'jvm_options' => ['-DHADOOP_DIR=/srv/hadoop', '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
+          'jvm_options' => ['-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
         },
         'extra_libraries' => {
           'jdbcdriver' => {
@@ -282,12 +193,33 @@ cookbook_file"#{node[:glassfish][:domains_dir]}/#{domain_name}/docroot/obama-smo
   action :create
 end
 
-hopsworks_restart "set_404" do
-  domain_name domain_name
-  action :set_404
-end 
-
 
 user_ulimit node[:glassfish][:user] do
   filehandle_limit 32768
 end
+
+
+
+#node.default['authorization']['sudo']['include_sudoers_d'] = true
+#node.default['authorization']['sudo']['passwordless'] = true
+
+#include_recipe 'sudo'
+
+#sudo 'glassfish' do
+#  user    node[:glassfish][:user]
+#  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser', '/usr/mount', '/usr/umount']
+#  nopasswd   true
+#end
+
+
+
+# Hack for cuneiform that expects that the username has a /home/username directory.
+# directory "/home/#{node[:glassfish][:user]}/software" do
+#   owner node[:glassfish][:user]
+#   group node[:glassfish][:group]
+#   mode "755"
+#   action :create
+#   recursive true
+# end
+
+
