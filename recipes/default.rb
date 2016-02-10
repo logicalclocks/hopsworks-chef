@@ -1,23 +1,22 @@
-# -*- coding: utf-8 -*-
-require 'json'
-require 'base64'
 
-# node.override[:glassfish][:user] = node[:hopsworks][:user]
 
-# bash 'fix_java_path_for_glassfish_cookbook' do
-# user "root"
-#     code <<-EOF
-# # upstart job in glassfish expects java to be installed in /bin/java
-# test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java 
-# EOF
-# end
 
+##
+## default.rb
+##
+
+# If the install.rb recipe was in a different run, the location of the install dir may
+# not be correct. install_dir is updated by install.rb, but not persisted, so we need to
+# reset it
+if node[:glassfish][:install_dir].include?("versions") == false
+  node.override[:glassfish][:install_dir] = node[:glassfish][:install_dir] + "/glassfish/versions/current"
+end
 
 private_ip=my_private_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
-mysql_user=node[:mysql][:user]
-mysql_pwd=node[:mysql][:password]
+#mysql_user=node[:mysql][:user]
+#mysql_pwd=node[:mysql][:password]
 
 
 tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
@@ -198,6 +197,13 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
    secure false
 end
 
+glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
 
 if node[:hopsworks][:gmail][:password] .eql? "password"
 

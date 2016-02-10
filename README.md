@@ -35,6 +35,18 @@ password: admin
 ````
 
 
+## On-Premise RedHat/Centos/Fedora Installations
+
+By default, Redhat/Centos/Fedora disable "ssh hostname sudo <cmd>", because it will show the password in clear. 
+This prevents Karamel from executing Chef recipes on bare-metal Centos/Redhat hosts. To overcome this, you can
+force the use of a pseudeo-terminal, by commenting out the following line in **/etc/sudoers**:
+
+# Comment out this line below, in /etc/sudoers
+#Defaults    requiretty
+
+This has to be done for all hosts in the cluster on which Karamel will be executed.
+
+
 ## Contributing
 
 1. Fork it

@@ -16,6 +16,8 @@ driver:
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
   - ["forwarded_port", {guest: 9200, host: 9200}]
+  - ["forwarded_port", {guest: 9009, host: 9009}]
+  - ["forwarded_port", {guest: 22, host: 9191}]
 
 provisioner:
   name: chef_solo
@@ -146,6 +148,7 @@ suites:
 #            use_systemd: "true"
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
+         vagrant: "true"
          # glassfish:
          #      version: "4.1"
          #      package_url: "http://193.10.67.171/hops/glassfish-4.1.zip"
