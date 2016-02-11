@@ -31,6 +31,8 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9200, :host=>9201})
 # Flink webserver
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9089})
+# Glassfish Debugger port
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "9000"]
