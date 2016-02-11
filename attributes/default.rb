@@ -6,28 +6,28 @@ include_attribute "zeppelin"
 include_attribute "glassfish"
 
 
-node.normal[:glassfish][:variant]             = "payara"
-node.normal[:glassfish][:user]                = "glassfish"
-node.normal[:glassfish][:group]               = "glassfish-admin"
-node.normal[:hopsworks][:admin][:port]        = 4848
-node.normal[:hopsworks][:port]                = 8080
-node.normal[:glassfish][:admin][:port]        = node[:hopsworks][:admin][:port]
-node.normal[:glassfish][:port]                = node[:hopsworks][:port]
-node.normal[:glassfish][:version]             = '4.1.152'
-#node.normal[:glassfish][:base_dir]            = "/home/glassfish"
-node.normal[:glassfish][:install_dir]         = "/usr/local"
-node.normal[:glassfish][:domains_dir]         = "/srv/glassfish"
-node.normal[:glassfish][:max_mem]             = 1024
-node.normal[:glassfish][:min_mem]             = 1024
-node.normal[:glassfish][:max_stack_size]      = 512
-node.normal[:glassfish][:max_perm_size]       = 1024
-node.normal[:glassfish][:package_url]         = node[:download_url] + "/payara-#{node[:glassfish][:version]}.zip"
+node.default[:glassfish][:variant]             = "payara"
+node.default[:glassfish][:user]                = "glassfish"
+node.default[:glassfish][:group]               = "glassfish-admin"
+node.default[:hopsworks][:admin][:port]        = 4848
+node.default[:hopsworks][:port]                = 8080
+node.default[:glassfish][:admin][:port]        = node[:hopsworks][:admin][:port]
+node.default[:glassfish][:port]                = node[:hopsworks][:port]
+node.default[:glassfish][:version]             = '4.1.152'
+#node.default[:glassfish][:base_dir]            = "/home/glassfish"
+node.default[:glassfish][:install_dir]         = "/usr/local"
+node.default[:glassfish][:domains_dir]         = "/srv/glassfish"
+node.default[:glassfish][:max_mem]             = 1024
+node.default[:glassfish][:min_mem]             = 1024
+node.default[:glassfish][:max_stack_size]      = 512
+node.default[:glassfish][:max_perm_size]       = 1024
+node.default[:glassfish][:package_url]         = node[:download_url] + "/payara-#{node[:glassfish][:version]}.zip"
 default[:hopsworks][:cauth_url]               = "#{node[:download_url]}/otp-auth-1.0.jar"
 default[:hopsworks][:war_url]                 = "#{node[:download_url]}/hopsworks.war"
 
 default[:hopsworks][:admin][:user]            = "adminuser"
 default[:hopsworks][:admin][:password]        = "adminpw"
-node.normal[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
+node.default[:glassfish][:cert][:password]     = node[:hopsworks][:admin][:password]
 
 default[:hopsworks][:default][:user]          = "admin@kth.se"
 default[:hopsworks][:default][:password]      = "admin"
@@ -64,7 +64,7 @@ default[:hopsworks][:gmail][:placeholder]      = "http://snurran.sics.se/hops/ho
 
 # #quotas
 default[:hopsworks][:yarn_default_quota]       = "250"
-default[:hopsworks][:hdfs_default_quota]       = "100"
-default[:hopsworks][:max_num_proj_per_user]    = "40"
+default[:hopsworks][:hdfs_default_quota]       = "300000000000"
+default[:hopsworks][:max_num_proj_per_user]    = "5"
 
-node.normal[:hadoop][:user_envs]               = "false"
+node.default[:hadoop][:user_envs]               = "false"

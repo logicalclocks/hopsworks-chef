@@ -155,6 +155,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "spark::yarn"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
+      chef.add_recipe "hopsworks::dev"
   end 
 
 end
