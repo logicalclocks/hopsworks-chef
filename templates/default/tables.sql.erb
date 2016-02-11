@@ -27,6 +27,7 @@ CREATE TABLE `users` (
     `password_changed` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
     `notes` VARCHAR(500)  DEFAULT '-',
     `mobile` VARCHAR(15)  DEFAULT '-',
+    `max_num_projects` INT(11) NOT NULL,
     PRIMARY KEY (`uid`),
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`)
