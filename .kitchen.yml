@@ -93,16 +93,16 @@ suites:
                private_ips: ["10.0.2.15"]
             use_hopsworks: "true"
          hdfs:
-            user: vagrant
+            user: glassfish
             conf_dir: "/srv/hadoop/etc/hadoop"
          hadoop:
             yarn: 
-               user: vagrant
+               user: glassfish
                nm:
                    memory_mbs: '6656'
                vcores: '2'
             mr: 
-               user: vagrant
+               user: glassfish
             nn:
                private_ips: ["10.0.2.15"]
             dn:
@@ -119,7 +119,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
          spark:
-            user: vagrant
+            user: glassfish
             worker:
                private_ips: ["10.0.2.15"]
             master:
@@ -127,7 +127,7 @@ suites:
             private_ips: ["10.0.2.15"]
          flink:
 # This doesnt work
-            user: vagrant
+            user: glassfish
             jobmanager:
                private_ips: ["10.0.2.15"]
             taskmanager:
@@ -139,8 +139,9 @@ suites:
             public_ips: ["10.0.2.15"]
             user_envs: "false"
             twofactor_auth: false
+            war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
          glassfish:
-            user: vagrant
+            user: glassfish
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "true"
