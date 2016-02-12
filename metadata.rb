@@ -29,13 +29,17 @@ recipe  "hopsworks::install", "Installs Glassfish"
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 
+recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
+
+recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
+
 #######################################################################################
 # Required Attributes
 #######################################################################################
 
 
 attribute "hopsworks/twofactor_auth",
-          :description => "twofactor_auth",
+          :description => "twofactor_auth (default: false)",
           :type => 'string',
           :required => "required"
 

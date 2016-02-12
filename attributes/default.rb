@@ -47,8 +47,8 @@ default[:hopsworks][:cert][:l]                = "kista"
 default[:hopsworks][:cert][:s]                = "stockholm"
 default[:hopsworks][:cert][:c]                = "se"
 
- default[:hopsworks][:cert][:password]         = "changeit"
- default[:hopsworks][:master][:password]       = "adminpw"
+default[:hopsworks][:cert][:password]         = "changeit"
+default[:hopsworks][:master][:password]       = "adminpw"
 
 # default[:bind_address]                    = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 
