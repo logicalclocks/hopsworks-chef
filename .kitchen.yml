@@ -8,7 +8,7 @@ driver:
     nictype1: "virtio"
     cpus: 2
   network:
-  - ["forwarded_port", {guest: 3306, host: 3939}]
+  - ["forwarded_port", {guest: 3306, host: 50070}]
   - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
   - ["forwarded_port", {guest: 8181, host: 8181}]
