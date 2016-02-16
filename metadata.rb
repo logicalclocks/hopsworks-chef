@@ -171,11 +171,11 @@ attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
           :type => 'string'
 
-attribute "hopsworks/yarn_default_quota",
-          :description => "Default number of CPU hours availble per project",
+attribute "hopsworks/yarn_default_quota_mins",
+          :description => "Default number of CPU mins availble per project",
           :type => 'string'
 
-attribute "hopsworks/hdfs_default_quota",
+attribute "hopsworks/hdfs_default_quota_gbs",
           :description => "Default amount in GB of available storage per project",
           :type => 'string'
 

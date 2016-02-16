@@ -72,8 +72,8 @@ template "#{rows_path}" do
                 :elastic_dir => node[:elastic][:dir] + "/elastic",
                 :twofactor_auth => node[:hopsworks][:twofactor_auth],
                 :elastic_user => node[:elastic][:user],
-                :yarn_default_quota => node[:hopsworks][:yarn_default_quota],
-                :hdfs_default_quota => node[:hopsworks][:hdfs_default_quota],
+                :yarn_default_quota => node[:hopsworks][:yarn_default_quota_mins].to_i * 60,
+                :hdfs_default_quota => node[:hopsworks][:hdfs_default_quota_gbs].to_i * 1024 * 1024 * 1024,
                 :max_num_proj_per_user => node[:hopsworks][:max_num_proj_per_user]
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
