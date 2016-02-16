@@ -286,5 +286,5 @@ hadoop_hdfs_directory "/raidrs" do
   owner node[:hdfs][:user]
   group node[:hadoop][:group]
   mode "1777"
-  not_if ". #{node[:hadoop][:home]}/sbin/set-env.sh && #{node[:hadoop][:home]}/bin/hdfs dfs -test -d #{d}"
+  not_if ". #{node[:hadoop][:home]}/sbin/set-env.sh && #{node[:hadoop][:home]}/bin/hdfs dfs -test -d /raidrs"
 end
