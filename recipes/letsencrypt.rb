@@ -59,7 +59,7 @@ bash 'letsencrypt-setup' do
 	rm -rf etc
 
 	touch #{node[:glassfish][:base_dir]}/.letsencypt_installed
-  chown #{node[:glassfish][:user]} ​#{node[:glassfish][:base_dir]}/.letsencypt_installed
+  	chown #{node[:glassfish][:user]} ​#{node[:glassfish][:base_dir]}/.letsencypt_installed
 
 	#Restart Glassfish
 	service glassfish-domain1 stop
