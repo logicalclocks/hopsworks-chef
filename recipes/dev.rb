@@ -2,7 +2,7 @@
     user "root"
     code <<-EOF
        apt-get install git -y 
-       apt-get install nodejs
+       apt-get install nodejs -y
        apt-get install npm -y
 #       npm cache clean && npm uninstall -g bower && npm install -g bower
        npm install -g bower
