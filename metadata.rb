@@ -143,6 +143,10 @@ attribute "glassfish/group",
 #           :type => 'string'
 
 
+attribute "hopsworks/port",
+          :description => "Port that webserver will listen on",
+          :type => 'string'
+
 attribute "glassfish/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'
