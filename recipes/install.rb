@@ -2,17 +2,6 @@
 require 'json'
 require 'base64'
 
-# node.override[:glassfish][:user] = node[:hopsworks][:user]
-
-# bash 'fix_java_path_for_glassfish_cookbook' do
-# user "root"
-#     code <<-EOF
-# # upstart job in glassfish expects java to be installed in /bin/java
-# test -f /usr/bin/java && ln -sf /usr/bin/java /bin/java 
-# EOF
-# end
-
-
 node.override[:glassfish][:user] = node[:hopsworks][:user]
 
 username=node[:hopsworks][:admin][:user]
