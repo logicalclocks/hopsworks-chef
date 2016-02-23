@@ -9,7 +9,7 @@ driver:
     cpus: 2
   network:
   - ["forwarded_port", {guest: 3306, host: 50070}]
-  - ["forwarded_port", {guest: 8080, host: 8080}]
+  - ["forwarded_port", {guest: 80, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
   - ["forwarded_port", {guest: 8181, host: 8181}]
   - ["forwarded_port", {guest: 9088, host: 9088}]
@@ -40,7 +40,7 @@ suites:
        - recipe[elastic::install]
        - recipe[zeppelin::install]
        - recipe[spark::install]
-       - recipe[flink::install]
+#       - recipe[flink::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
@@ -136,6 +136,7 @@ suites:
             taskmanager:
                private_ips: ["10.0.2.15"]
          hopsworks:
+            port: 80
             default:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]

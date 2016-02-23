@@ -18,3 +18,4 @@ cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'elasticsearch', github: 'elastic/cookbook-elasticsearch', tag: "v2.1.1"
 cookbook 'compat_resource'
 cookbook 'ulimit', github: 'bmhatfield/chef-ulimit', tag: 'v0.3.3'
+cookbook 'authbind', github: 'realityforge/chef-authbind'
