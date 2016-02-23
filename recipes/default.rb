@@ -1,5 +1,5 @@
 
-
+include_recipe "hops::wrap"
 
 ##
 ## default.rb

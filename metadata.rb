@@ -187,3 +187,16 @@ attribute "glassfish/package_url",
           :description => "Url for the Glassfish distribution zip file.",
           :type => 'string'
 
+attribute "ndb/dir",
+          :description => "Ndb Installation directory.",
+          :type => 'string'
+
+attribute "hops/dir",
+          :description => "Ndb Installation directory.",
+          :type => 'string'
+
+attribute "spark/dir",
+          :description => "Installation directory.",
+          :type => 'string'
+
+

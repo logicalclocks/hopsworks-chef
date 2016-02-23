@@ -23,8 +23,8 @@ admin_port = node[:glassfish][:admin][:port]
 web_port = node[:glassfish][:port]
 mysql_user=node[:mysql][:user]
 mysql_password=node[:mysql][:password]
-mysql_host = private_recipe_ip("ndb","mysqld")
-
+#mysql_host = private_recipe_ip("ndb","mysqld")
+mysql_host = my_private_ip()
 
 node.override = {
   'java' => {
