@@ -53,7 +53,7 @@ suites:
        - recipe[elastic::default]
        - recipe[spark::yarn]
        - recipe[hopsworks]
-       - recipe[hopsworks::dev]
+       #- recipe[hopsworks::dev]
 
     attributes:
         # authorization:
@@ -94,6 +94,7 @@ suites:
             jhs:
                private_ips: ["10.0.2.15"]
             use_hopsworks: "true"
+            erasure_coding: "true"
          hdfs:
             user: glassfish
             conf_dir: "/srv/hadoop/etc/hadoop"
@@ -140,8 +141,8 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-            twofactor_auth: false
-            war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
+            twofactor_auth: true
+            #war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
          glassfish:
             user: glassfish
          private_ips: ["10.0.2.15"]
