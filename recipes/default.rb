@@ -282,11 +282,11 @@ end
 
  # Directory for RS erasure coded data
 for d in %w{ /raidrs /parity }
-  hadoop_hdfs_directory "#{d}" do
-    action :create_as_superuser
-    owner node[:hdfs][:user]
-    group node[:hadoop][:group]
-    mode "1777"
-    not_if ". #{node[:hadoop][:home]}/sbin/set-env.sh && #{node[:hadoop][:home]}/bin/hdfs dfs -test -d #{d}"
-  end
+  # hadoop_hdfs_directory "#{d}" do
+  #   action :create_as_superuser
+  #   owner node[:hdfs][:user]
+  #   group node[:hadoop][:group]
+  #   mode "1777"
+  #   not_if ". #{node[:hadoop][:home]}/sbin/set-env.sh && #{node[:hadoop][:home]}/bin/hdfs dfs -test -d #{d}"
+  # end
 end
