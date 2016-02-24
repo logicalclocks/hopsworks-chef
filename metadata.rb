@@ -147,20 +147,20 @@ attribute "hopsworks/port",
           :description => "Port that webserver will listen on",
           :type => 'string'
 
-attribute "glassfish/max_mem",
+attribute "hopsworks/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'
 
-attribute "glassfish/min_mem",
+attribute "hopsworks/min_mem",
           :description => "glassfish/min_mem",
           :type => 'string'
 
-attribute "glassfish/max_stack_size",
+attribute "hopsworks/max_stack_size",
           :description => "glassfish/max_stack_size",
           :type => 'string'
 
 
-attribute "glassfish/max_perm_size",
+attribute "hopsworks/max_perm_size",
           :description => "glassfish/max_perm_size",
           :type => 'string'
 
