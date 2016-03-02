@@ -95,10 +95,10 @@ suites:
                private_ips: ["10.0.2.15"]
             use_hopsworks: "true"
             erasure_coding: "true"
-         hdfs:
-            user: glassfish
-            conf_dir: "/srv/hadoop/etc/hadoop"
          apache_hadoop:
+            hdfs:
+               user: glassfish
+               conf_dir: "/srv/hadoop/etc/hadoop"
             yarn: 
                user: glassfish
                nm:

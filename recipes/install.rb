@@ -187,7 +187,7 @@ end
 
 
 user_ulimit node.glassfish.user do
-  filehandle_limit 32768
+  filehandle_limit 65000
 end
 
 # if node.glassfish.port == 80
