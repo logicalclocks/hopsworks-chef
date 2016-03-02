@@ -1,4 +1,4 @@
-name             'hopsworks'
+name             "hopsworks"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
