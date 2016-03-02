@@ -82,6 +82,9 @@ attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
 
+attribute "download_url",
+          :description => "URL for downloading binaries",
+          :type => 'string'
 
 # attribute "hopsworks/cert/password",
 #           :description => "hopsworks/cert/password",
