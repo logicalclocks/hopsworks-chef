@@ -13,8 +13,8 @@ cookbook 'zeppelin', '~> 0.1.1'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
 cookbook 'glassfish', '~> 0.7.6'
-#cookbook 'elastic', '~> 0.1.0'
-cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "apache_hadoop"
+cookbook 'elastic', '~> 0.1.1'
+#cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "apache_hadoop"
 #cookbook 'elasticsearch', '~> 2.2.0'
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit', '~> 0.3.3'
