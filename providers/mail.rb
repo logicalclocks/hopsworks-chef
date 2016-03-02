@@ -2,7 +2,7 @@ use_inline_resources
 
 notifying_action :jndi do
 
-decoded = node[:hopsworks][:gmail][:password] 
+decoded = node.hopsworks.gmail.password 
 
 # If the password is the 'default' password
 if decoded.eql? "password"
@@ -11,7 +11,7 @@ end
 
 gmailProps = {
   'mail-smtp-host' => 'smtp.gmail.com',
-  'mail-smtp-user' => node[:hopsworks][:gmail][:email],
+  'mail-smtp-user' => node.hopsworks.gmail.email,
   'mail-smtp-password' => decoded,
   'mail-smtp-auth' => 'true',
   'mail-smtp-port' => '587',
@@ -26,9 +26,9 @@ gmailProps = {
 
  glassfish_javamail_resource "gmail" do 
    jndi_name "mail/BBCMail"
-   mailuser node[:hopsworks][:gmail][:email]
+   mailuser node.hopsworks.gmail.email
    mailhost "smtp.gmail.com"
-   fromaddress node[:hopsworks][:gmail][:email]
+   fromaddress node.hopsworks.gmail.email
    properties gmailProps
    domain_name "#{new_resource.domain_name}"
    password_file "#{new_resource.password_file}"
