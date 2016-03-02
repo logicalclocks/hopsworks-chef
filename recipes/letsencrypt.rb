@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 package 'openssl'
 
 myHost=node.fqdn
