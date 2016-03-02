@@ -14,20 +14,20 @@
 ### END INIT INFO
 
 # Variables
-#START_PROG=<%= "#{node[:glassfish][:base_dir]}/scripts/glassfish-start.sh" %>
-#STOP_PROG=<%= "#{node[:glassfish][:base_dir]}/scripts/glassfish-stop.sh" %>
-#RESTART_PROG=<%= "#{node[:glassfish][:base_dir]}/scripts/glassfish-restart.sh" %>
+#START_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-start.sh" %>
+#STOP_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-stop.sh" %>
+#RESTART_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-restart.sh" %>
 
 RETVAL=0
 
 start() {
-su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> start-domain <%= @domain_name %>" <%= node[:glassfish][:user] %> 
+su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> start-domain <%= @domain_name %>" <%= node.glassfish.user %> 
 return $?
 
 }
 
 stop() {
-su -c "<%= node[:glassfish][:base_dir] %>/glassfish/bin/asadmin --user <%= node[:hopsworks][:admin][:user] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node[:glassfish][:user] %> 
+su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node.glassfish.user %> 
 res=$?
 id=`ps -ef | grep ASMain` 
 if [ "$id" != "" ] ; then
@@ -46,7 +46,7 @@ restart() {
 
 status() {  
   ID=<%= @node_id %>
-  PID_FILE=<%= node[:glassfish][:base_dir] %>/glassfish/domains/#{domain_name}/config/glassfish.pid
+  PID_FILE=<%= node.glassfish.base_dir %>/glassfish/domains/#{domain_name}/config/glassfish.pid
   if [ -f $PID_FILE ] ; then
      PID=`cat $PID_FILE`
      kill -0 $PID

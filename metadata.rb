@@ -1,11 +1,10 @@
-
-name             'hopsworks'
+name             "hopsworks"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
-description      "Installs/Configures the HopsHub Dashboard"
+description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.1"
+version          "0.1.0"
 
 %w{ ubuntu debian centos rhel }.each do |os|
   supports os
@@ -16,13 +15,14 @@ depends 'ndb'
 depends 'kagent'
 depends 'hops'
 depends 'elastic'
-depends 'spark'
+depends 'hadoop_spark'
 depends 'flink'
 depends 'zeppelin'
 #depends 'sudo'
 depends 'compat_resource'
 depends 'ulimit'
 depends 'authbind'
+depends 'apache_hadoop'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
@@ -53,16 +53,6 @@ attribute "hopsworks/gmail/password",
           :description => "Password for gmail account",
           :required => "required",
           :type => 'string'
-
-attribute "hopsworks/default/user",
-          :description => "Username for the first (default) HopsWorks account",
-          :type => 'string',
-          :required => "required"
-
-attribute "hopsworks/default/password",
-          :description => "Password for the first (default) HopsWorks account",
-          :type => 'string',
-          :required => "required"
 
 attribute "hopsworks/admin/user",
           :description => "Username for the Administration account on the Web Application Server",
@@ -127,7 +117,7 @@ attribute "glassfish/version",
           :type => 'string'
 
 attribute "glassfish/user",
-          :description => "glassfish/user",
+          :description => "Install and run the glassfish server as this username",
           :type => 'string'
 
 attribute "glassfish/group",
@@ -200,7 +190,7 @@ attribute "hops/dir",
           :description => "Ndb Installation directory.",
           :type => 'string'
 
-attribute "spark/dir",
+attribute "hadoop_spark/dir",
           :description => "Installation directory.",
           :type => 'string'
 
