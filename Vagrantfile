@@ -77,6 +77,7 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
           "version" => "2.1.2",
+          "checksum" => "1713b7e1f6511f89d72b1df018bdf696bd01008c",
 	  "jdbc_importer" =>      { 
                "version" => "2.1.1.2"
           },
