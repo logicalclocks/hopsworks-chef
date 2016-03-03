@@ -27,8 +27,8 @@ provisioner:
 platforms:
 
 #  - name: ubuntu-15.04
-  - name: ubuntu-14.04
-#  - name: centos-7.0
+#  - name: ubuntu-14.04
+  - name: centos-7.0
 
 suites:
   - name: default

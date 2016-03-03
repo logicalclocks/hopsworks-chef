@@ -123,7 +123,7 @@ Vagrant.configure("2") do |c|
        	  	      "private_ips" => ["10.0.2.15"]
                  },
       },
-     "spark" => {
+     "hadoop_spark" => {
 	  "user" => "glassfish",
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
@@ -138,7 +138,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
-      chef.add_recipe "spark::install"
+      chef.add_recipe "hadoop_spark::install"
       chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
@@ -152,7 +152,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::nm"
       chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "spark::yarn"
+      chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
