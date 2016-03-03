@@ -76,6 +76,10 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+          "version" => "2.1.2",
+	  "jdbc_importer" =>      { 
+               "version" => "2.1.1.2"
+          },
      },
      "hdfs" => {
 	  "user" => "glassfish"
