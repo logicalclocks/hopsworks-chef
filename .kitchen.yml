@@ -2,18 +2,18 @@
 driver:
   name: vagrant
   customize:
-    memory: 10000
+    memory: 9000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
     cpus: 2
   network:
   - ["forwarded_port", {guest: 3306, host: 50070}]
-  - ["forwarded_port", {guest: 80, host: 8080}]
+  - ["forwarded_port", {guest: 8080, host: 18080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
-  - ["forwarded_port", {guest: 8181, host: 8181}]
+  - ["forwarded_port", {guest: 8181, host: 18181}]
   - ["forwarded_port", {guest: 9088, host: 9088}]
-  - ["forwarded_port", {guest: 4848, host: 4444}]
+  - ["forwarded_port", {guest: 4848, host: 4848}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
   - ["forwarded_port", {guest: 9200, host: 9200}]
@@ -68,8 +68,10 @@ suites:
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
-            private_ips: ["10.0.2.15"]
-            public_ips: ["10.0.2.15"]
+            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
+            version: 2.1.2
+            jdbc_importer:
+                version: 2.1.1.2
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -102,7 +104,7 @@ suites:
             yarn: 
                user: glassfish
                nm:
-                   memory_mbs: '6656'
+                   memory_mbs: '1656'
                vcores: '2'
             mr: 
                user: glassfish
@@ -142,7 +144,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-            twofactor_auth: true
+#            twofactor_auth: true
             war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
          glassfish:
             user: glassfish
