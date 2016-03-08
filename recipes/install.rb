@@ -41,7 +41,7 @@ node.override = {
           'master_password' => node.hopsworks.master.password,
           'remote_access' => false,
           'secure' => false,
-          'jvm_options' => ["-DHADOOP_DIR=#{node.hops.dir}/hadoop", "-DHADOOP_HOME=#{node.hops.dir}/hadoop", "-DHADOOP_CONF_DIR=#{node.hops.dir}/hadoop/etc/hadoop", '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
+          'jvm_options' => ["-DHADOOP_HOME=#{node.hops.dir}/hadoop", "-DHADOOP_CONF_DIR=#{node.hops.dir}/hadoop/etc/hadoop", '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
         },
         'extra_libraries' => {
           'jdbcdriver' => {
