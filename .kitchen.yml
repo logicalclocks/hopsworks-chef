@@ -9,9 +9,9 @@ driver:
     cpus: 2
   network:
   - ["forwarded_port", {guest: 3306, host: 50070}]
-  - ["forwarded_port", {guest: 8080, host: 18080}]
+  - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
-  - ["forwarded_port", {guest: 8181, host: 18181}]
+  - ["forwarded_port", {guest: 8181, host: 8181}]
   - ["forwarded_port", {guest: 9088, host: 9088}]
   - ["forwarded_port", {guest: 4848, host: 4848}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
@@ -27,8 +27,8 @@ provisioner:
 platforms:
 
 #  - name: ubuntu-15.04
-#  - name: ubuntu-14.04
-  - name: centos-7.0
+  - name: ubuntu-14.04
+#  - name: centos-7.0
 
 suites:
   - name: default
