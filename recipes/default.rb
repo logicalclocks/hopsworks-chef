@@ -197,6 +197,46 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
    secure false
 end
 
+
+# cluster="hopsworks"
+
+# glassfish_asadmin "create-cluster #{cluster}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+# glassfish_asadmin "#asadmin --host das_host --port das_port create-local-instance --node #{hostname} instance_#{hostname}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
+# glassfish_asadmin "create-local-instance --cluster #{cluster} instance1" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
+# TODO - set ejb timer source as a cluster called 'hopsworks'
+# https://docs.oracle.com/cd/E18930_01/html/821-2418/beahw.html#gktqo
+# glassfish_asadmin "set configs.config.hopsworks-config.ejb-container.ejb-timer-service.timer-datasource=#{timerDB}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
 glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"

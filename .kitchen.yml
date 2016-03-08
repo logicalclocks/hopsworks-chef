@@ -34,7 +34,6 @@ suites:
   - name: default
     run_list:
        - recipe[kagent::install]
-       - recipe[hopsworks::install]
        - recipe[ndb::install]
        - recipe[hops::install]
        - recipe[elastic::install]
@@ -44,6 +43,7 @@ suites:
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
+       - recipe[hopsworks::install]
        - recipe[hops::ndb]
        - recipe[hops::nn]
        - recipe[hops::dn]
@@ -138,7 +138,7 @@ suites:
             taskmanager:
                private_ips: ["10.0.2.15"]
          hopsworks:
-#            port: 80
+            #port: 80
             default:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
