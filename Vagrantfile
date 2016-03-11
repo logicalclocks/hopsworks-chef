@@ -14,28 +14,28 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>33199})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>3307})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8082})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8081})
 # HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8081, :host=>8083})
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8182})
 # Glassfish webserver
   c.vm.network(:forwarded_port, {:guest=>4848, :host=>4849})
 # HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
 # 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50076})
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8089})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9201})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9089})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "9000"]
+    p.customize ["modifyvm", :id, "--memory", "11000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -76,14 +76,11 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-          "version" => "2.1.2",
-          "checksum" => "1713b7e1f6511f89d72b1df018bdf696bd01008c",
-	  "jdbc_importer" =>      { 
-               "version" => "2.1.1.2"
-          },
-     },
-     "hdfs" => {
-	  "user" => "glassfish"
+#          "version" => "2.1.2",
+#          "checksum" => "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1", 
+#	  "jdbc_importer" =>      { 
+#               "version" => "2.1.1.2"
+#          },
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -105,7 +102,10 @@ Vagrant.configure("2") do |c|
        	  	      "private_ips" => ["10.0.2.15"]
                  }
      },
-     "hadoop"  =>    {
+     "apache_hadoop"  =>    {
+     	        "hdfs" => {
+                      "user" => "glassfish"
+                 },
      	        "yarn" => {
 		      "user" => "glassfish"
 		 },
@@ -144,6 +144,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
+      #chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
       chef.add_recipe "ndb::mgmd"
@@ -157,6 +158,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "hadoop_spark::yarn"
+      #chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
   end 
