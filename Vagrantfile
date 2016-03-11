@@ -35,7 +35,7 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "12000"]
+    p.customize ["modifyvm", :id, "--memory", "11000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -82,9 +82,6 @@ Vagrant.configure("2") do |c|
 #               "version" => "2.1.1.2"
 #          },
      },
-     "hdfs" => {
-	  "user" => "glassfish"
-     },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
@@ -105,7 +102,10 @@ Vagrant.configure("2") do |c|
        	  	      "private_ips" => ["10.0.2.15"]
                  }
      },
-     "hadoop"  =>    {
+     "apache_hadoop"  =>    {
+     	        "hdfs" => {
+                      "user" => "glassfish"
+                 },
      	        "yarn" => {
 		      "user" => "glassfish"
 		 },
