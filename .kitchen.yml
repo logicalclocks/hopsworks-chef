@@ -2,11 +2,11 @@
 driver:
   name: vagrant
   customize:
-    memory: 13000
+    memory: 11000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
-    cpus: 2
+    cpus: 1
   network:
   - ["forwarded_port", {guest: 3306, host: 50070}]
   - ["forwarded_port", {guest: 8080, host: 8080}]

@@ -58,7 +58,7 @@ node.override = {
           },
           'http-thread-pool' => {
             'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
+            'minthreadpoolsize' => 10,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
@@ -188,14 +188,18 @@ end
 
 user_ulimit node.glassfish.user do
   filehandle_limit 65000
+  process_limit 65000
+  memory_limit 100000
+  stack_soft_limit 65533
+  stack_hard_limit 65533
 end
 
-# if node.glassfish.port == 80
-#   authbind_port "AuthBind GlassFish Port 80" do
-#     port 80
-#     user node.glassfish.user
-#   end
-# end
+ if node.glassfish.port == 80
+   authbind_port "AuthBind GlassFish Port 80" do
+     port 80
+     user node.glassfish.user
+   end
+ end
 
 
 
