@@ -51,19 +51,19 @@ node.override = {
         },
         'threadpools' => {
           'thread-pool-1' => {
-            'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
+            'maxthreadpoolsize' => 150,
+            'minthreadpoolsize' => 10,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
+            'maxthreadpoolsize' => 150,
+            'minthreadpoolsize' => 10,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'admin-pool' => {
-            'maxthreadpoolsize' => 50,
+            'maxthreadpoolsize' => 40,
             'minthreadpoolsize' => 5,
             'maxqueuesize' => 256
           }
@@ -188,6 +188,10 @@ end
 
 user_ulimit node.glassfish.user do
   filehandle_limit 65000
+  process_limit 65000
+  memory_limit 100000
+  stack_soft_limit 65533
+  stack_hard_limit 65533
 end
 
 # if node.glassfish.port == 80
