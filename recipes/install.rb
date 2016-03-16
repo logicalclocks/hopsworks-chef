@@ -51,19 +51,19 @@ node.override = {
         },
         'threadpools' => {
           'thread-pool-1' => {
-            'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
+            'maxthreadpoolsize' => 150,
+            'minthreadpoolsize' => 10,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 200,
+            'maxthreadpoolsize' => 150,
             'minthreadpoolsize' => 10,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'admin-pool' => {
-            'maxthreadpoolsize' => 50,
+            'maxthreadpoolsize' => 40,
             'minthreadpoolsize' => 5,
             'maxqueuesize' => 256
           }

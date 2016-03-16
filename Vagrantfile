@@ -137,6 +137,7 @@ Vagrant.configure("2") do |c|
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
+     "vagrant" => "true",
      }
 
       chef.add_recipe "kagent::install"

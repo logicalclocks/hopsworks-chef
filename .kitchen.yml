@@ -95,6 +95,8 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
+            yarn:
+               rm_distributed: "false"
             use_hopsworks: "true"
             erasure_coding: "true"
          apache_hadoop:
