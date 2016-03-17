@@ -2,21 +2,22 @@
 driver:
   name: vagrant
   customize:
-    memory: 10000
+    memory: 11000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
+    cpus: 2
   network:
-  - ["forwarded_port", {guest: 3306, host: 3939}]
+  - ["forwarded_port", {guest: 3306, host: 50070}]
   - ["forwarded_port", {guest: 8080, host: 8080}]
   - ["forwarded_port", {guest: 8088, host: 8088}]
   - ["forwarded_port", {guest: 8181, host: 8181}]
   - ["forwarded_port", {guest: 9088, host: 9088}]
-  - ["forwarded_port", {guest: 4848, host: 4444}]
+  - ["forwarded_port", {guest: 4848, host: 4848}]
   - ["forwarded_port", {guest: 50070, host: 51070}]
   - ["forwarded_port", {guest: 50075, host: 51075}]
   - ["forwarded_port", {guest: 9200, host: 9200}]
-  - ["forwarded_port", {guest: 9009, host: 9009}]
+  - ["forwarded_port", {guest: 9009, host: 9999}]
   - ["forwarded_port", {guest: 22, host: 9191}]
 
 provisioner:
@@ -33,16 +34,18 @@ suites:
   - name: default
     run_list:
        - recipe[kagent::install]
-       - recipe[hopsworks::install]
        - recipe[ndb::install]
        - recipe[hops::install]
        - recipe[elastic::install]
        - recipe[zeppelin::install]
-       - recipe[spark::install]
-       - recipe[flink::install]
+       - recipe[hadoop_spark::install]
+#       - recipe[flink::install]
+       - recipe[kzookeeper::install]
+       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
+       - recipe[hopsworks::install]
        - recipe[hops::ndb]
        - recipe[hops::nn]
        - recipe[hops::dn]
@@ -50,8 +53,9 @@ suites:
        - recipe[hops::nm]
 #       - recipe[hops::jhs]
        - recipe[elastic::default]
-       - recipe[spark::yarn]
+       - recipe[hadoop_spark::yarn]
        - recipe[hopsworks]
+       - recipe[hopsworks::dev]
 
     attributes:
         # authorization:
@@ -59,6 +63,13 @@ suites:
         #      users: ['vagrant']
         #      passwordless: true
         #      include_sudoers_d: true
+         kzookeeper:
+            default:
+               private_ips: ["10.0.2.15"]
+         kkafka:
+            ulimit_file: 128000
+            default:
+                private_ips: ["10.0.2.15"]
          kagent:
             private_ips: ["10.0.2.15"]
             enabled: true
@@ -69,7 +80,10 @@ suites:
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-#            use_systemd: "true"
+#            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
+#            version: 2.1.2
+#            jdbc_importer:
+#                version: 2.1.1.2
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -95,15 +109,14 @@ suites:
             jhs:
                private_ips: ["10.0.2.15"]
             use_hopsworks: "true"
-#            use_systemd: "true"
-         hdfs:
-            user: glassfish
-            conf_dir: "/srv/hadoop/etc/hadoop"
-         hadoop:
+            erasure_coding: "true"
+         apache_hadoop:
+            hdfs:
+               user: glassfish
             yarn: 
                user: glassfish
                nm:
-                   memory_mbs: '6656'
+                   memory_mbs: '1656'
                vcores: '2'
             mr: 
                user: glassfish
@@ -117,13 +130,12 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
-#            use_systemd: "true"
          zeppelin:
             default:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-         spark:
+         hadoop_spark:
             user: glassfish
             worker:
                private_ips: ["10.0.2.15"]
@@ -137,15 +149,17 @@ suites:
                private_ips: ["10.0.2.15"]
             taskmanager:
                private_ips: ["10.0.2.15"]
-#            use_systemd: "true"
          hopsworks:
+            #port: 80
             default:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
             twofactor_auth: false
-#            use_systemd: "true"
+            war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
+         glassfish:
+            user: glassfish
          private_ips: ["10.0.2.15"]
          public_ips: ["10.0.2.15"]
          vagrant: "true"

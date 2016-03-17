@@ -3,7 +3,7 @@ use_inline_resources
 notifying_action :create_tables do
   Chef::Log.info("Tables.sql is here: #{new_resource.tables_path}")
   db="hopsworks"
-  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
+  exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
 
   bash 'create_hopsworks_tables' do
     user "root"
@@ -19,13 +19,13 @@ end
 
 notifying_action :insert_rows do
   Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
-  exec = "#{node[:ndb][:scripts_dir]}/mysql-client.sh"
+  exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
   timerTable = "ejbtimer_mysql.sql"
-  timerTablePath = "#{Chef::Config[:file_cache_path]}/#{timerTable}"
+  timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
 
  template timerTablePath do
     source "#{timerTable}.erb"
-    owner node[:glassfish][:user]
+    owner node.glassfish.user
     mode 0750
     action :create
   end 
@@ -36,15 +36,15 @@ notifying_action :insert_rows do
       set -e
       #{exec} hopsworks -e \"source #{new_resource.rows_path}\"
       #{exec} glassfish_timers -e \"source #{timerTablePath}"
-      touch "#{node['glassfish']['base_dir']}/.hopsworks_rows.sql"
+      touch "#{node.glassfish.base_dir}/.hopsworks_rows.sql"
     EOF
-    not_if { ::File.exists?("#{node['glassfish']['base_dir']}/.hopsworks_rows.sql") }
+    not_if { ::File.exists?("#{node.glassfish.base_dir}/.hopsworks_rows.sql") }
   end
 end
 
 notifying_action :sshkeys do
   # Set attribute for dashboard's public_key to the ssh public key
-  key=IO.readlines("#{node['glassfish']['base_dir']}/.ssh/id_rsa.pub").first
-  node.normal[:hopsworks][:public_key]=key.gsub("\n","")
+  key=IO.readlines("#{node.glassfish.base_dir}/.ssh/id_rsa.pub").first
+  node.normal.hopsworks.public_key=key.gsub("\n","")
 end
 

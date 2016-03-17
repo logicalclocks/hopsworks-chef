@@ -27,6 +27,7 @@ CREATE TABLE `users` (
     `password_changed` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
     `notes` VARCHAR(500)  DEFAULT '-',
     `mobile` VARCHAR(15)  DEFAULT '-',
+    `max_num_projects` INT(11) NOT NULL,
     PRIMARY KEY (`uid`),
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`)
@@ -188,7 +189,7 @@ CREATE TABLE `jobs` (
   `type` VARCHAR(128) NOT NULL,
   `json_config` TEXT NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY name_idx (`name`),
+  KEY name_idx (`name`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
@@ -210,6 +211,17 @@ CREATE TABLE `executions` (
   FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
+
+CREATE TABLE `executions_inputfiles` (
+  `execution_id` INT(11) NOT NULL,
+  `inode_pid` INT(11) NOT NULL,
+  `inode_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`execution_id`,`inode_pid`,`inode_name`),
+  UNIQUE KEY `inode_idx` (`inode_pid`,`inode_name`),
+  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
 
 CREATE TABLE `job_output_files` (
   `execution_id` INT(11) NOT NULL,

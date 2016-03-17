@@ -1,11 +1,10 @@
-
-name             'hopsworks'
+name             "hopsworks"
 maintainer       "Jim Dowling"
 maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
-description      "Installs/Configures the HopsHub Dashboard"
+description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.1"
+version          "0.1.0"
 
 %w{ ubuntu debian centos rhel }.each do |os|
   supports os
@@ -16,12 +15,14 @@ depends 'ndb'
 depends 'kagent'
 depends 'hops'
 depends 'elastic'
-depends 'spark'
+depends 'hadoop_spark'
 depends 'flink'
 depends 'zeppelin'
 #depends 'sudo'
 depends 'compat_resource'
 depends 'ulimit'
+depends 'authbind'
+depends 'apache_hadoop'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
@@ -29,13 +30,17 @@ recipe  "hopsworks::install", "Installs Glassfish"
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 
+recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
+
+recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
+
 #######################################################################################
 # Required Attributes
 #######################################################################################
 
 
 attribute "hopsworks/twofactor_auth",
-          :description => "twofactor_auth",
+          :description => "twofactor_auth (default: false)",
           :type => 'string',
           :required => "required"
 
@@ -48,16 +53,6 @@ attribute "hopsworks/gmail/password",
           :description => "Password for gmail account",
           :required => "required",
           :type => 'string'
-
-attribute "hopsworks/default/user",
-          :description => "Username for the first (default) HopsWorks account",
-          :type => 'string',
-          :required => "required"
-
-attribute "hopsworks/default/password",
-          :description => "Password for the first (default) HopsWorks account",
-          :type => 'string',
-          :required => "required"
 
 attribute "hopsworks/admin/user",
           :description => "Username for the Administration account on the Web Application Server",
@@ -87,6 +82,9 @@ attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
 
+attribute "download_url",
+          :description => "URL for downloading binaries",
+          :type => 'string'
 
 # attribute "hopsworks/cert/password",
 #           :description => "hopsworks/cert/password",
@@ -122,7 +120,7 @@ attribute "glassfish/version",
           :type => 'string'
 
 attribute "glassfish/user",
-          :description => "glassfish/user",
+          :description => "Install and run the glassfish server as this username",
           :type => 'string'
 
 attribute "glassfish/group",
@@ -138,20 +136,24 @@ attribute "glassfish/group",
 #           :type => 'string'
 
 
-attribute "glassfish/max_mem",
+attribute "hopsworks/port",
+          :description => "Port that webserver will listen on",
+          :type => 'string'
+
+attribute "hopsworks/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'
 
-attribute "glassfish/min_mem",
+attribute "hopsworks/min_mem",
           :description => "glassfish/min_mem",
           :type => 'string'
 
-attribute "glassfish/max_stack_size",
+attribute "hopsworks/max_stack_size",
           :description => "glassfish/max_stack_size",
           :type => 'string'
 
 
-attribute "glassfish/max_perm_size",
+attribute "hopsworks/max_perm_size",
           :description => "glassfish/max_perm_size",
           :type => 'string'
 
@@ -167,11 +169,11 @@ attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
           :type => 'string'
 
-attribute "hopsworks/yarn_default_quota",
-          :description => "Default number of CPU hours availble per project",
+attribute "hopsworks/yarn_default_quota_mins",
+          :description => "Default number of CPU mins availble per project",
           :type => 'string'
 
-attribute "hopsworks/hdfs_default_quota",
+attribute "hopsworks/hdfs_default_quota_gbs",
           :description => "Default amount in GB of available storage per project",
           :type => 'string'
 
@@ -182,4 +184,17 @@ attribute "hopsworks/max_num_proj_per_user",
 attribute "glassfish/package_url",
           :description => "Url for the Glassfish distribution zip file.",
           :type => 'string'
+
+attribute "ndb/dir",
+          :description => "Ndb Installation directory.",
+          :type => 'string'
+
+attribute "hops/dir",
+          :description => "Ndb Installation directory.",
+          :type => 'string'
+
+attribute "hadoop_spark/dir",
+          :description => "Installation directory.",
+          :type => 'string'
+
 

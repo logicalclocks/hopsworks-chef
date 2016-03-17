@@ -1,5 +1,5 @@
 
-
+include_recipe "hops::wrap"
 
 ##
 ## default.rb
@@ -8,19 +8,19 @@
 # If the install.rb recipe was in a different run, the location of the install dir may
 # not be correct. install_dir is updated by install.rb, but not persisted, so we need to
 # reset it
-if node[:glassfish][:install_dir].include?("versions") == false
-  node.override[:glassfish][:install_dir] = node[:glassfish][:install_dir] + "/glassfish/versions/current"
+if node.glassfish.install_dir.include?("versions") == false
+  node.override.glassfish.install_dir = node.glassfish.install_dir + "/glassfish/versions/current"
 end
 
 private_ip=my_private_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
-#mysql_user=node[:mysql][:user]
-#mysql_pwd=node[:mysql][:password]
+#mysql_user=node.mysql.user
+#mysql_pwd=node.mysql.password
 
 
-tables_path = "#{Chef::Config[:file_cache_path]}/tables.sql"
-rows_path = "#{Chef::Config[:file_cache_path]}/rows.sql"
+tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
+rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
 
 
 hopsworks_grants "creds" do
@@ -32,7 +32,7 @@ end
  Chef::Log.info("Could not find previously defined #{tables_path} resource")
  template tables_path do
     source File.basename("#{tables_path}") + ".erb"
-    owner node[:glassfish][:user]
+    owner node.glassfish.user
     mode 0750
     action :create
     variables({
@@ -52,29 +52,29 @@ end
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
-   owner node[:glassfish][:user]
+   owner node.glassfish.user
    mode 0755
    action :create
     variables({
                 :elastic_ip => elastic_ip,
-                :spark_dir => node[:spark][:dir] + "/spark",                
-                :spark_user => node[:spark][:user],
-                :hadoop_dir => node[:hadoop][:dir] + "/hadoop",                                
-                :yarn_user => node[:hadoop][:yarn][:user],
-                :hdfs_user => node[:hdfs][:user],
-                :mr_user => node[:hadoop][:mr][:user],
-                :flink_dir => node[:flink][:dir] + "/flink",
-                :flink_user => node[:flink][:user],
-                :zeppelin_dir => node[:zeppelin][:dir] + "/zeppelin",
-                :zeppelin_user => node[:zeppelin][:user],
-                :ndb_dir => node[:ndb][:dir] + "/mysql-cluster",
-                :mysql_dir => node[:mysql][:dir] + "/mysql",
-                :elastic_dir => node[:elastic][:dir] + "/elastic",
-                :twofactor_auth => node[:hopsworks][:twofactor_auth],
-                :elastic_user => node[:elastic][:user],
-                :yarn_default_quota => node[:hopsworks][:yarn_default_quota],
-                :hdfs_default_quota => node[:hopsworks][:hdfs_default_quota],
-                :max_num_proj_per_user => node[:hopsworks][:max_num_proj_per_user]
+                :spark_dir => node.hadoop_spark.dir + "/spark",                
+                :spark_user => node.hadoop_spark.user,
+                :hadoop_dir => node.apache_hadoop.dir + "/hadoop",                                
+                :yarn_user => node.apache_hadoop.yarn.user,
+                :hdfs_user => node.apache_hadoop.hdfs.user,
+                :mr_user => node.apache_hadoop.mr.user,
+                :flink_dir => node.flink.dir + "/flink",
+                :flink_user => node.flink.user,
+                :zeppelin_dir => node.zeppelin.dir + "/zeppelin",
+                :zeppelin_user => node.zeppelin.user,
+                :ndb_dir => node.ndb.dir + "/mysql-cluster",
+                :mysql_dir => node.mysql.dir + "/mysql",
+                :elastic_dir => node.elastic.dir + "/elastic",
+                :twofactor_auth => node.hopsworks.twofactor_auth,
+                :elastic_user => node.elastic.user,
+                :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
+                :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
+                :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user
               })
    notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
 end
@@ -85,10 +85,10 @@ end
 # config glassfish
 ###############################################################################
 
-username=node[:hopsworks][:admin][:user]
-password=node[:hopsworks][:admin][:password]
+username=node.hopsworks.admin.user
+password=node.hopsworks.admin.password
 domain_name="domain1"
-domains_dir = node[:glassfish][:domains_dir]
+domains_dir = node.glassfish.domains_dir
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 
@@ -96,7 +96,7 @@ mysql_host = private_recipe_ip("ndb","mysqld")
 jndiDB = "jdbc/hopsworks"
 timerDB = "jdbc/hopsworksTimers"
 
-asadmin = "#{node[:glassfish][:base_dir]}/versions/current/bin/asadmin"
+asadmin = "#{node.glassfish.base_dir}/versions/current/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 
 
@@ -109,8 +109,8 @@ end
 template "#{login_cnf}" do
   cookbook 'hopsworks'
   source "login.conf.erb"
-  owner node[:glassfish][:user]
-  group node[:glassfish][:group]
+  owner node.glassfish.user
+  group node.glassfish.group
   mode "0600"
 end
 
@@ -197,6 +197,46 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
    secure false
 end
 
+
+# cluster="hopsworks"
+
+# glassfish_asadmin "create-cluster #{cluster}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+# glassfish_asadmin "#asadmin --host das_host --port das_port create-local-instance --node #{hostname} instance_#{hostname}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
+# glassfish_asadmin "create-local-instance --cluster #{cluster} instance1" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
+# TODO - set ejb timer source as a cluster called 'hopsworks'
+# https://docs.oracle.com/cd/E18930_01/html/821-2418/beahw.html#gktqo
+# glassfish_asadmin "set configs.config.hopsworks-config.ejb-container.ejb-timer-service.timer-datasource=#{timerDB}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
+
+
 glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -205,14 +245,14 @@ glassfish_asadmin "set server.http-service.virtual-server.server.property.send-e
    secure false
 end
 
-if node[:hopsworks][:gmail][:password] .eql? "password"
+if node.hopsworks.gmail.password .eql? "password"
 
   bash 'gmail' do
     user "root"
     code <<-EOF
       cd /tmp
       rm -f /tmp/hopsworks.email 
-      wget #{node[:hopsworks][:gmail][:placeholder]} 
+      wget #{node.hopsworks.gmail.placeholder} 
       cat /tmp/hopsworks.email | base64 -d > /tmp/hopsworks.encoded
       chmod 775 /tmp/hopsworks.encoded
     EOF
@@ -235,7 +275,7 @@ end
 
 glassfish_deployable "hopsworks" do
   component_name "hopsworks"
-  url node[:hopsworks][:war_url]
+  url node.hopsworks.war_url
   context_root "/hopsworks"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -251,9 +291,9 @@ end
 
 
 # directory "/srv/users" do
-#   owner node[:glassfish][:user]
+#   owner node.glassfish.user
 
-#   group node[:glassfish][:group]
+#   group node.glassfish.group
 #   mode "0755"
 #   action :create
 #   recursive true
@@ -267,7 +307,7 @@ end
 # when 'redhat', 'centos', 'fedora'
 #     source "mkuser.redhat.sh.erb"
 # end
-#   owner node[:glassfish][:user]
+#   owner node.glassfish.user
 #   mode 0750
 #   action :create
 # end 
@@ -277,3 +317,16 @@ end
     mode 0700
     action :create
  end 
+
+
+
+ # Directory for RS erasure coded data
+for d in %w{ /raidrs /parity }
+  # apache_hadoop_hdfs_directory "#{d}" do
+  #   action :create_as_superuser
+  #   owner node.apache_hadoop.hdfs.user
+  #   group node.apache_hadoop.group
+  #   mode "1777"
+  #   not_if ". #{node.hadoop.home}/sbin/set-env.sh && #{node.apache_hadoop.home}/bin/hdfs dfs -test -d #{d}"
+  # end
+end
