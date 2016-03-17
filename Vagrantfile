@@ -82,9 +82,6 @@ Vagrant.configure("2") do |c|
 #               "version" => "2.1.1.2"
 #          },
      },
-     "hdfs" => {
-	  "user" => "glassfish"
-     },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
@@ -106,6 +103,9 @@ Vagrant.configure("2") do |c|
                  }
      },
      "apache_hadoop"  =>    {
+     	        "hdfs" => {
+                      "user" => "glassfish"
+                 },
      	        "yarn" => {
 		      "user" => "glassfish"
 		 },
@@ -147,6 +147,7 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "vagrant" => "true",
      }
 
       chef.add_recipe "kagent::install"
