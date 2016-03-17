@@ -159,7 +159,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
-      chef.add_recipe "kzookeeper::install"
+      chef.add_recipe "kkafka::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
