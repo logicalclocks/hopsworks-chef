@@ -18,6 +18,8 @@ cookbook 'zeppelin', '~> 0.1.1'
 cookbook 'glassfish', '~> 0.7.6'
 #cookbook 'elastic', '~> 0.1.0'
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
+cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
+cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'elasticsearch', '~> 2.2.0'
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit', '~> 0.3.3'

@@ -36,10 +36,12 @@ suites:
        - recipe[kagent::install]
        - recipe[ndb::install]
        - recipe[hops::install]
-       - recipe[elastic::install]
+#       - recipe[elastic::install]
        - recipe[zeppelin::install]
        - recipe[hadoop_spark::install]
 #       - recipe[flink::install]
+       - recipe[kzookeeper::install]
+       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
@@ -50,7 +52,7 @@ suites:
        - recipe[hops::rm]
        - recipe[hops::nm]
        - recipe[hops::jhs]
-       - recipe[elastic::default]
+#       - recipe[elastic::default]
        - recipe[hadoop_spark::yarn]
        - recipe[hopsworks]
        - recipe[hopsworks::dev]
@@ -61,6 +63,13 @@ suites:
         #      users: ['vagrant']
         #      passwordless: true
         #      include_sudoers_d: true
+         kzookeeper:
+            default:
+               private_ips: ["10.0.2.15"]
+         kkafka:
+            ulimit_file: 128000
+            default:
+                private_ips: ["10.0.2.15"]
          kagent:
             private_ips: ["10.0.2.15"]
             enabled: true

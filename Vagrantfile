@@ -35,7 +35,7 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "11000"]
+    p.customize ["modifyvm", :id, "--memory", "13000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -137,6 +137,16 @@ Vagrant.configure("2") do |c|
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
+     "kzookeeper" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
+     "kkafka" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      }
 
       chef.add_recipe "kagent::install"
@@ -147,6 +157,8 @@ Vagrant.configure("2") do |c|
       #chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
+      chef.add_recipe "kzookeeper::install"
+      chef.add_recipe "kzookeeper::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
