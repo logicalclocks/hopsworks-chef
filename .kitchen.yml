@@ -1,4 +1,4 @@
----
+v---
 driver:
   name: vagrant
   customize:
@@ -116,7 +116,7 @@ suites:
             yarn: 
                user: glassfish
                nm:
-                   memory_mbs: '1656'
+                   memory_mbs: '2656'
                vcores: '2'
             mr: 
                user: glassfish
