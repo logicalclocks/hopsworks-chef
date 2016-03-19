@@ -186,13 +186,21 @@ cookbook_file"#{node.glassfish.domains_dir}/#{domain_name}/docroot/obama-smoked-
 end
 
 
-user_ulimit node.glassfish.user do
-  filehandle_limit 65000
-  process_limit 65000
-  memory_limit 100000
-  stack_soft_limit 65533
-  stack_hard_limit 65533
-end
+node.override.ulimit.conf_dir = "/etc/security"
+node.override.ulimit.conf_file = "limits.conf"
+
+node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+node.override.ulimit[:params][:default][:nproc] = 8000
+
+node.override.ulimit.conf_dir = "/etc/security"
+node.override.ulimit.conf_file = "limits.conf"
+
+node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+node.override.ulimit[:params][:default][:nproc] = 8000
+
+include_recipe "ulimit2"
+
+
 
 # if node.glassfish.port == 80
 #   authbind_port "AuthBind GlassFish Port 80" do

@@ -25,6 +25,6 @@ cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'elasticsearch', '~> 2.2.0'
 cookbook 'compat_resource', '~> 12.7.3'
-cookbook 'ulimit', '~> 0.3.3'
+cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'authbind', '~> 0.1.10'
 
