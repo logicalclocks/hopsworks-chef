@@ -18,7 +18,8 @@ cookbook 'flink', '~> 0.1.0'
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
-cookbook 'glassfish', '~> 0.7.6'
+#cookbook 'glassfish', '~> 0.7.6'
+cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 #cookbook 'elastic', '~> 0.1.0'
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"

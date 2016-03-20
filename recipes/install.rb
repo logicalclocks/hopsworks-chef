@@ -15,6 +15,19 @@ mysql_password=node.mysql.password
 mysql_host = my_private_ip()
 
 
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
+
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
 
  
 
@@ -31,6 +44,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'systemd_enabled' => systemd,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
