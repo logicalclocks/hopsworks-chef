@@ -15,6 +15,19 @@ mysql_password=node.mysql.password
 mysql_host = my_private_ip()
 
 
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
+
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
 
  
 
@@ -31,6 +44,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'systemd_enabled' => systemd,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
@@ -186,13 +200,21 @@ cookbook_file"#{node.glassfish.domains_dir}/#{domain_name}/docroot/obama-smoked-
 end
 
 
-user_ulimit node.glassfish.user do
-  filehandle_limit 65000
-  process_limit 65000
-  memory_limit 100000
-  stack_soft_limit 65533
-  stack_hard_limit 65533
-end
+node.override.ulimit.conf_dir = "/etc/security"
+node.override.ulimit.conf_file = "limits.conf"
+
+node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+node.override.ulimit[:params][:default][:nproc] = 8000
+
+node.override.ulimit.conf_dir = "/etc/security"
+node.override.ulimit.conf_file = "limits.conf"
+
+node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+node.override.ulimit[:params][:default][:nproc] = 8000
+
+include_recipe "ulimit2"
+
+
 
 # if node.glassfish.port == 80
 #   authbind_port "AuthBind GlassFish Port 80" do

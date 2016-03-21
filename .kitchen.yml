@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 11000
+    memory: 13000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -22,7 +22,7 @@ driver:
 
 provisioner:
   name: chef_solo
-  require_chef_omnibus: 12.4.3
+#  require_chef_omnibus: 12.4.3
 
 platforms:
 
@@ -36,12 +36,12 @@ suites:
        - recipe[kagent::install]
        - recipe[ndb::install]
        - recipe[hops::install]
-       - recipe[elastic::install]
+#       - recipe[elastic::install]
        - recipe[zeppelin::install]
        - recipe[hadoop_spark::install]
 #       - recipe[flink::install]
-       - recipe[kzookeeper::install]
-       - recipe[kkafka::install]
+#       - recipe[kzookeeper::install]
+#       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
@@ -51,8 +51,8 @@ suites:
        - recipe[hops::dn]
        - recipe[hops::rm]
        - recipe[hops::nm]
-#       - recipe[hops::jhs]
-       - recipe[elastic::default]
+       - recipe[hops::jhs]
+#       - recipe[elastic::default]
        - recipe[hadoop_spark::yarn]
        - recipe[hopsworks]
        - recipe[hopsworks::dev]

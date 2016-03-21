@@ -18,13 +18,14 @@ cookbook 'flink', '~> 0.1.0'
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
-cookbook 'glassfish', '~> 0.7.6'
+#cookbook 'glassfish', '~> 0.7.6'
+cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 #cookbook 'elastic', '~> 0.1.0'
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'elasticsearch', '~> 2.2.0'
 cookbook 'compat_resource', '~> 12.7.3'
-cookbook 'ulimit', '~> 0.3.3'
+cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'authbind', '~> 0.1.10'
 

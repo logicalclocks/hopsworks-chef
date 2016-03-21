@@ -70,3 +70,5 @@ default.hopsworks.hdfs_default_quota_gbs   = "200"
 default.hopsworks.max_num_proj_per_user    = "5"
 
 node.default.apache_hadoop.user_envs       = "false"
+
+default.hopsworks.systemd                  = "true"
