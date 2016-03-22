@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 12000
+    memory: 14000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"

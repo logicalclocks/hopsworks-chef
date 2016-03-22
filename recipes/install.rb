@@ -228,6 +228,7 @@ include_recipe "ulimit2"
 #node.default['authorization']['sudo']['include_sudoers_d'] = true
 #node.default['authorization']['sudo']['passwordless'] = true
 
+
 #include_recipe 'sudo'
 
 #sudo 'glassfish' do
@@ -248,3 +249,18 @@ include_recipe "ulimit2"
 # end
 
 
+
+directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
+  owner "root"
+  group "root"
+  mode "755"
+  action :create
+  recursive true
+end
+
+template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+  source "limits.conf.erb"
+  owner "root"
+  mode 0774
+  action :create
+end 
