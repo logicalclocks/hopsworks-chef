@@ -28,8 +28,26 @@ else
   systemd = false
 end
 
+tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
 
- 
+hopsworks_grants "creds" do
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
+  action :nothing
+end 
+
+Chef::Log.info("Could not find previously defined #{tables_path} resource")
+template tables_path do
+  source File.basename("#{tables_path}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+                :private_ip => private_ip
+              })
+    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
+end 
+
 
 node.override = {
   'java' => {
@@ -200,19 +218,19 @@ cookbook_file"#{node.glassfish.domains_dir}/#{domain_name}/docroot/obama-smoked-
 end
 
 
-node.override.ulimit.conf_dir = "/etc/security"
-node.override.ulimit.conf_file = "limits.conf"
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
 
-node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
-node.override.ulimit[:params][:default][:nproc] = 8000
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
 
-node.override.ulimit.conf_dir = "/etc/security"
-node.override.ulimit.conf_file = "limits.conf"
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
 
-node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
-node.override.ulimit[:params][:default][:nproc] = 8000
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
 
-include_recipe "ulimit2"
+# include_recipe "ulimit2"
 
 
 
