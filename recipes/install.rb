@@ -2,7 +2,7 @@ require 'json'
 require 'base64'
 
 #node.override.glassfish.user = node.hopsworks.user
-
+private_ip=my_private_ip()
 username=node.hopsworks.admin.user
 password=node.hopsworks.admin.password
 domain_name="domain1"
@@ -28,25 +28,24 @@ else
   systemd = false
 end
 
-tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
+timerTable = "ejbtimer_mysql.sql"
+timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
 
-hopsworks_grants "creds" do
-  tables_path  "#{tables_path}"
-  rows_path  "#{rows_path}"
+hopsworks_grants "timers_tables" do
+  tables_path  "#{timerTablePath}"
+  rows_path  ""
   action :nothing
 end 
 
-Chef::Log.info("Could not find previously defined #{tables_path} resource")
-template tables_path do
-  source File.basename("#{tables_path}") + ".erb"
+
+template timerTablePath do
+  source File.basename("#{timerTablePath}") + ".erb"
   owner node.glassfish.user
   mode 0750
   action :create
-  variables({
-                :private_ip => private_ip
-              })
-    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
+  notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end 
+
 
 
 node.override = {
@@ -66,6 +65,7 @@ node.override = {
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
+          'max_stack_size' => node.glassfish.max_stack_size, 
           'port' => web_port,
           'admin_port' => admin_port,
           'username' => username,
@@ -266,19 +266,35 @@ end
 #   recursive true
 # end
 
+if systemd == true
+
+  directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
+    owner "root"
+    group "root"
+    mode "755"
+    action :create
+    recursive true
+  end
+
+  template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+    source "limits.conf.erb"
+    owner "root"
+    mode 0774
+    action :create
+  end 
+
+  case node.platform
+  when "rhel"
+    hopsworks_grants "reload_systemd" do
+      tables_path  ""
+      rows_path  ""
+      action :reload_systemd
+    end 
 
 
-directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
-  owner "root"
-  group "root"
-  mode "755"
-  action :create
-  recursive true
+    service "glassfish-#{domain_name}.service" do
+      action :restart, :immediately
+    end
+  end
+
 end
-
-template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
-  source "limits.conf.erb"
-  owner "root"
-  mode 0774
-  action :create
-end 

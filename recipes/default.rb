@@ -14,16 +14,6 @@ else
 end
 
 
-
-bash 'reload-systemctl-units' do
-  user "root"
-  code <<-EOF
-   systemctl daemon-reload
-  EOF
-end
-
-
-
 ##
 ## default.rb
 ##
@@ -41,7 +31,6 @@ realmname="kthfsrealm"
 #mysql_user=node.mysql.user
 #mysql_pwd=node.mysql.password
 
-rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
 
 begin
   elastic_ip = private_recipe_ip("elastic","default")
@@ -49,6 +38,30 @@ rescue
   elastic_ip = ""
   Chef::Log.warn "could not find elastic server for HopsWorks!"
 end
+
+tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
+rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
+
+hopsworks_grants "hopsworks_tables" do
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
+  action :nothing
+end 
+
+Chef::Log.info("Could not find previously defined #{tables_path} resource")
+template tables_path do
+  source File.basename("#{tables_path}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+                :private_ip => private_ip
+              })
+    notifies :create_tables, 'hopsworks_grants[hopsworks_tables]', :immediately
+end 
+
+
+
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
@@ -76,7 +89,7 @@ template "#{rows_path}" do
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user
               })
-   notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
+   notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
 
 
@@ -140,17 +153,14 @@ end
 #   end
 # end
 
-
-
-
-glassfish_secure_admin domain_name do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  action :enable
+glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
 end
+
 
 
 props =  { 
@@ -227,6 +237,7 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
 end
 
 
+
 # cluster="hopsworks"
 
 # glassfish_asadmin "create-cluster #{cluster}" do
@@ -265,14 +276,6 @@ end
 #    secure false
 # end
 
-
-glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
 
 if node.hopsworks.gmail.password .eql? "password"
 
@@ -315,6 +318,16 @@ glassfish_deployable "hopsworks" do
   async_replication false
   retries 2
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
+end
+
+
+glassfish_secure_admin domain_name do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :enable
 end
 
 
