@@ -40,7 +40,7 @@ end
 
 template timerTablePath do
   source File.basename("#{timerTablePath}") + ".erb"
-  owner username
+  owner node.glassfish.user
   mode 0750
   action :create
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
@@ -291,10 +291,12 @@ if systemd == true
       action :reload_systemd
     end 
 
-
-    #service "glassfish-#{domain_name}.service" do
-    #  action :restart, :immediately
-    #end
+   service "glassfish-#{domain_name}.service" do
+     action :stop, :immediately
+   end
+   service "glassfish-#{domain_name}.service" do
+     action :start, :immediately
+   end
 #  end
 
 end
