@@ -283,20 +283,11 @@ if systemd == true
     action :create
   end 
 
- # case node.platform
- # when "rhel"
     hopsworks_grants "reload_systemd" do
       tables_path  ""
       rows_path  ""
       action :reload_systemd
     end 
 
-   service "glassfish-#{domain_name}.service" do
-     action :stop, :immediately
-   end
-   service "glassfish-#{domain_name}.service" do
-     action :start, :immediately
-   end
-#  end
 
 end
