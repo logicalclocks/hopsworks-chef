@@ -153,16 +153,6 @@ end
 #   end
 # end
 
-glassfish_secure_admin domain_name do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  action :enable
-end
-
-
 
 props =  { 
   'datasource-jndi' => jndiDB,
@@ -359,4 +349,14 @@ end
     mode 0700
     action :create
  end 
+
+#glassfish_secure_admin domain_name do
+#  domain_name domain_name
+#  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#  username username
+#  admin_port admin_port
+#  secure false
+#  action :enable
+#end
+
 
