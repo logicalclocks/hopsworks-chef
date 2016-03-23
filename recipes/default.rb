@@ -60,6 +60,23 @@ template tables_path do
     notifies :create_tables, 'hopsworks_grants[hopsworks_tables]', :immediately
 end 
 
+timerTable = "ejbtimer_mysql.sql"
+timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
+
+hopsworks_grants "timers_tables" do
+  tables_path  "#{timerTablePath}"
+  rows_path  ""
+  action :nothing
+end 
+
+
+template timerTablePath do
+  source File.basename("#{timerTablePath}") + ".erb"
+  owner "root"
+  mode 0750
+  action :create
+  notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
+end 
 
 
 
@@ -128,30 +145,20 @@ template "#{login_cnf}" do
 end
 
 
+#case node.platform
+# when "debian"
 
-# case node.platform
-# when "rhel"
-# service_name = "glassfish-#{domain_name}"
+glassfish_secure_admin domain_name do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :enable
+end
 
-# file "/etc/systemd/system/#{service_name}.service" do
-#   owner "root"
-#   action :delete
-# end
+#end
 
-
-#   template "/usr/lib/systemd/system/#{service_name}.service" do
-#     source 'systemd.service.erb'
-#     mode '0741'
-#     cookbook 'hopsworks'
-#     variables(
-#               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
-#               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
-#               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
-#               :authbind => requires_authbind,
-#               :listen_ports => [admin_port, node.glassfish.port])
-#     notifies :restart, "service[#{service_name}]", :delayed
-#   end
-# end
 
 
 props =  { 
@@ -349,14 +356,3 @@ end
     mode 0700
     action :create
  end 
-
-#glassfish_secure_admin domain_name do
-#  domain_name domain_name
-#  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#  username username
-#  admin_port admin_port
-#  secure false
-#  action :enable
-#end
-
-
