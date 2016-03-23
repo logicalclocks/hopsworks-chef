@@ -40,7 +40,7 @@ end
 
 template timerTablePath do
   source File.basename("#{timerTablePath}") + ".erb"
-  owner node.glassfish.user
+  owner "root"
   mode 0750
   action :create
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
