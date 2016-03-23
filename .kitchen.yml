@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 11000
+    memory: 12000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -22,13 +22,13 @@ driver:
 
 provisioner:
   name: chef_solo
-  require_chef_omnibus: 12.4.3
+#  require_chef_omnibus: 12.4.3
 
 platforms:
 
 #  - name: ubuntu-15.04
-  - name: ubuntu-14.04
-#  - name: centos-7.0
+#  - name: ubuntu-14.04
+  - name: centos-7.0
 
 suites:
   - name: default
@@ -40,8 +40,8 @@ suites:
        - recipe[zeppelin::install]
        - recipe[hadoop_spark::install]
 #       - recipe[flink::install]
-       - recipe[kzookeeper::install]
-       - recipe[kkafka::install]
+#       - recipe[kzookeeper::install]
+#       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
@@ -73,14 +73,17 @@ suites:
          kagent:
             private_ips: ["10.0.2.15"]
             enabled: true
+#            use_systemd: "true"
          elastic:
             default:
                 private_ips: ["10.0.2.15"]
                 public_ips: ["10.0.2.15"]
-            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
-            version: 2.1.2
-            jdbc_importer:
-                version: 2.1.1.2
+            private_ips: ["10.0.2.15"]
+            public_ips: ["10.0.2.15"]
+#            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
+#            version: 2.1.2
+#            jdbc_importer:
+#                version: 2.1.1.2
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -93,6 +96,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             enabled: "true"
+#            use_systemd: "true"
          hops:
             nn:
                private_ips: ["10.0.2.15"]
@@ -111,11 +115,10 @@ suites:
          apache_hadoop:
             hdfs:
                user: glassfish
-               conf_dir: "/srv/hadoop/etc/hadoop"
             yarn: 
                user: glassfish
                nm:
-                   memory_mbs: '1656'
+                   memory_mbs: '2656'
                vcores: '2'
             mr: 
                user: glassfish
@@ -155,7 +158,7 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-#            twofactor_auth: true
+            twofactor_auth: false
             war_url: "http://snurran.sics.se/hops/hopsworks-jim.war"
          glassfish:
             user: glassfish

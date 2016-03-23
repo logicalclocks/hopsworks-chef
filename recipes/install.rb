@@ -15,8 +15,39 @@ mysql_password=node.mysql.password
 mysql_host = my_private_ip()
 
 
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
 
- 
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
+tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
+
+hopsworks_grants "creds" do
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
+  action :nothing
+end 
+
+Chef::Log.info("Could not find previously defined #{tables_path} resource")
+template tables_path do
+  source File.basename("#{tables_path}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+                :private_ip => private_ip
+              })
+    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
+end 
+
 
 node.override = {
   'java' => {
@@ -31,6 +62,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'systemd_enabled' => systemd,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
@@ -51,14 +83,14 @@ node.override = {
         },
         'threadpools' => {
           'thread-pool-1' => {
-            'maxthreadpoolsize' => 150,
-            'minthreadpoolsize' => 10,
+            'maxthreadpoolsize' => 200,
+            'minthreadpoolsize' => 5,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 150,
-            'minthreadpoolsize' => 10,
+            'maxthreadpoolsize' => 200,
+            'minthreadpoolsize' => 5,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
@@ -186,13 +218,21 @@ cookbook_file"#{node.glassfish.domains_dir}/#{domain_name}/docroot/obama-smoked-
 end
 
 
-user_ulimit node.glassfish.user do
-  filehandle_limit 65000
-  process_limit 65000
-  memory_limit 100000
-  stack_soft_limit 65533
-  stack_hard_limit 65533
-end
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
+
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
+
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
+
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
+
+# include_recipe "ulimit2"
+
+
 
  if node.glassfish.port == 80
    authbind_port "AuthBind GlassFish Port 80" do

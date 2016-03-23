@@ -418,6 +418,7 @@ CREATE TABLE `dataset` (
   `editable` TINYINT(1) NOT NULL DEFAULT '1',
   `status` TINYINT(1) NOT NULL DEFAULT '1',
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
+  `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,

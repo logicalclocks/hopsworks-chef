@@ -20,7 +20,7 @@ depends 'flink'
 depends 'zeppelin'
 #depends 'sudo'
 depends 'compat_resource'
-depends 'ulimit'
+depends 'ulimit2'
 depends 'authbind'
 depends 'apache_hadoop'
 

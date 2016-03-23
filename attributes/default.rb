@@ -19,11 +19,11 @@ node.default.glassfish.install_dir         = "/usr/local"
 node.default.glassfish.domains_dir         = "/srv/glassfish"
 default.hopsworks.max_mem                  = "3000"
 node.default.glassfish.max_mem             = node.hopsworks.max_mem.to_i
-default.hopsworks.min_mem                  = "700"
+default.hopsworks.min_mem                  = "1024"
 node.default.glassfish.min_mem             = node.hopsworks.min_mem.to_i
-default.hopsworks.max_stack_size           = "512"
+default.hopsworks.max_stack_size           = "4000"
 node.default.glassfish.max_stack_size      = node.hopsworks.max_stack_size.to_i
-default.hopsworks.max_perm_size            = "1024"
+default.hopsworks.max_perm_size            = "1500"
 node.default.glassfish.max_perm_size       = node.hopsworks.max_perm_size.to_i
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-1.0.jar"
@@ -70,3 +70,5 @@ default.hopsworks.hdfs_default_quota_gbs   = "200"
 default.hopsworks.max_num_proj_per_user    = "5"
 
 node.default.apache_hadoop.user_envs       = "false"
+
+default.hopsworks.systemd                  = "true"

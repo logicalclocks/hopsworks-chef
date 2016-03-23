@@ -1,5 +1,19 @@
-
 include_recipe "hops::wrap"
+
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
+
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
+
 
 ##
 ## default.rb
@@ -18,29 +32,7 @@ realmname="kthfsrealm"
 #mysql_user=node.mysql.user
 #mysql_pwd=node.mysql.password
 
-
-tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
 rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
-
-
-hopsworks_grants "creds" do
-  tables_path  "#{tables_path}"
-  rows_path  "#{rows_path}"
-  action :nothing
-end 
-
- Chef::Log.info("Could not find previously defined #{tables_path} resource")
- template tables_path do
-    source File.basename("#{tables_path}") + ".erb"
-    owner node.glassfish.user
-    mode 0750
-    action :create
-    variables({
-                :private_ip => private_ip
-              })
-    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
-  end 
-
 
 begin
   elastic_ip = private_recipe_ip("elastic","default")
@@ -48,7 +40,6 @@ rescue
   elastic_ip = ""
   Chef::Log.warn "could not find elastic server for HopsWorks!"
 end
-
 
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
@@ -99,7 +90,7 @@ timerDB = "jdbc/hopsworksTimers"
 asadmin = "#{node.glassfish.base_dir}/versions/current/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 
-
+password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 login_cnf="#{domains_dir}/#{domain_name}/config/login.conf"
 file "#{login_cnf}" do
@@ -113,6 +104,35 @@ template "#{login_cnf}" do
   group node.glassfish.group
   mode "0600"
 end
+
+
+
+# case node.platform
+# when "rhel"
+# service_name = "glassfish-#{domain_name}"
+
+# file "/etc/systemd/system/#{service_name}.service" do
+#   owner "root"
+#   action :delete
+# end
+
+
+#   template "/usr/lib/systemd/system/#{service_name}.service" do
+#     source 'systemd.service.erb'
+#     mode '0741'
+#     cookbook 'hopsworks'
+#     variables(
+#               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
+#               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
+#               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
+#               :authbind => requires_authbind,
+#               :listen_ports => [admin_port, node.glassfish.port])
+#     notifies :restart, "service[#{service_name}]", :delayed
+#   end
+# end
+
+
+
 
 glassfish_secure_admin domain_name do
   domain_name domain_name
