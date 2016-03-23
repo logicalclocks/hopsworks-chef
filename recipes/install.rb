@@ -28,24 +28,6 @@ else
   systemd = false
 end
 
-timerTable = "ejbtimer_mysql.sql"
-timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
-
-hopsworks_grants "timers_tables" do
-  tables_path  "#{timerTablePath}"
-  rows_path  ""
-  action :nothing
-end 
-
-
-template timerTablePath do
-  source File.basename("#{timerTablePath}") + ".erb"
-  owner "root"
-  mode 0750
-  action :create
-  notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
-end 
-
 
 
 node.override = {
@@ -266,8 +248,33 @@ end
 #   recursive true
 # end
 
-if systemd == true
 
+case node.platform
+when "rhel"
+service_name = "glassfish-#{domain_name}"
+
+file "/etc/systemd/system/#{service_name}.service" do
+  owner "root"
+  action :delete
+end
+
+
+  template "/usr/lib/systemd/system/#{service_name}.service" do
+    source 'systemd.service.erb'
+    mode '0741'
+    cookbook 'hopsworks'
+    variables(
+              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
+              :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
+              :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
+              :authbind => requires_authbind,
+              :listen_ports => [admin_port, node.glassfish.port])
+#    notifies :restart, "service[#{service_name}]", :delayed
+  end
+end
+
+
+if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
     owner "root"
     group "root"
@@ -288,6 +295,6 @@ if systemd == true
       rows_path  ""
       action :reload_systemd
     end 
-
-
 end
+
+
