@@ -1,5 +1,18 @@
-
 include_recipe "hops::wrap"
+
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
+
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
 
 ##
 ## default.rb
@@ -19,35 +32,35 @@ realmname="kthfsrealm"
 #mysql_pwd=node.mysql.password
 
 
-tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
-rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
-
-
-hopsworks_grants "creds" do
-  tables_path  "#{tables_path}"
-  rows_path  "#{rows_path}"
-  action :nothing
-end 
-
- Chef::Log.info("Could not find previously defined #{tables_path} resource")
- template tables_path do
-    source File.basename("#{tables_path}") + ".erb"
-    owner node.glassfish.user
-    mode 0750
-    action :create
-    variables({
-                :private_ip => private_ip
-              })
-    notifies :create_tables, 'hopsworks_grants[creds]', :immediately
-  end 
-
-
 begin
   elastic_ip = private_recipe_ip("elastic","default")
 rescue 
   elastic_ip = ""
   Chef::Log.warn "could not find elastic server for HopsWorks!"
 end
+
+tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
+rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
+
+hopsworks_grants "hopsworks_tables" do
+  tables_path  "#{tables_path}"
+  rows_path  "#{rows_path}"
+  action :nothing
+end 
+
+Chef::Log.info("Could not find previously defined #{tables_path} resource")
+template tables_path do
+  source File.basename("#{tables_path}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+                :private_ip => private_ip
+              })
+    notifies :create_tables, 'hopsworks_grants[hopsworks_tables]', :immediately
+end 
+
+
 
 
 template "#{rows_path}" do
@@ -76,7 +89,7 @@ template "#{rows_path}" do
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user
               })
-   notifies :insert_rows, 'hopsworks_grants[creds]', :immediately
+   notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
 
 
@@ -99,7 +112,7 @@ timerDB = "jdbc/hopsworksTimers"
 asadmin = "#{node.glassfish.base_dir}/versions/current/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 
-
+password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 login_cnf="#{domains_dir}/#{domain_name}/config/login.conf"
 file "#{login_cnf}" do
@@ -114,14 +127,40 @@ template "#{login_cnf}" do
   mode "0600"
 end
 
-glassfish_secure_admin domain_name do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  action :enable
+
+
+# case node.platform
+# when "rhel"
+# service_name = "glassfish-#{domain_name}"
+
+# file "/etc/systemd/system/#{service_name}.service" do
+#   owner "root"
+#   action :delete
+# end
+
+
+#   template "/usr/lib/systemd/system/#{service_name}.service" do
+#     source 'systemd.service.erb'
+#     mode '0741'
+#     cookbook 'hopsworks'
+#     variables(
+#               :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
+#               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
+#               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
+#               :authbind => requires_authbind,
+#               :listen_ports => [admin_port, node.glassfish.port])
+#     notifies :restart, "service[#{service_name}]", :delayed
+#   end
+# end
+
+glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
 end
+
 
 
 props =  { 
@@ -198,6 +237,7 @@ glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datas
 end
 
 
+
 # cluster="hopsworks"
 
 # glassfish_asadmin "create-cluster #{cluster}" do
@@ -236,14 +276,6 @@ end
 #    secure false
 # end
 
-
-glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
 
 if node.hopsworks.gmail.password .eql? "password"
 
@@ -289,6 +321,16 @@ glassfish_deployable "hopsworks" do
 end
 
 
+glassfish_secure_admin domain_name do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :enable
+end
+
+
 
 # directory "/srv/users" do
 #   owner node.glassfish.user
@@ -318,15 +360,3 @@ end
     action :create
  end 
 
-
-
- # Directory for RS erasure coded data
-for d in %w{ /raidrs /parity }
-  # apache_hadoop_hdfs_directory "#{d}" do
-  #   action :create_as_superuser
-  #   owner node.apache_hadoop.hdfs.user
-  #   group node.apache_hadoop.group
-  #   mode "1777"
-  #   not_if ". #{node.hadoop.home}/sbin/set-env.sh && #{node.apache_hadoop.home}/bin/hdfs dfs -test -d #{d}"
-  # end
-end

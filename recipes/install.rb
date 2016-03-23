@@ -2,7 +2,7 @@ require 'json'
 require 'base64'
 
 #node.override.glassfish.user = node.hopsworks.user
-
+private_ip=my_private_ip()
 username=node.hopsworks.admin.user
 password=node.hopsworks.admin.password
 domain_name="domain1"
@@ -15,8 +15,38 @@ mysql_password=node.mysql.password
 mysql_host = my_private_ip()
 
 
+case node.platform
+when "ubuntu"
+ if node.platform_version.to_f <= 14.04
+   node.override.hopsworks.systemd = "false"
+ end
+end
 
- 
+if node.hopsworks.systemd === "true" 
+  systemd = true
+else
+  systemd = false
+end
+
+timerTable = "ejbtimer_mysql.sql"
+timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
+
+hopsworks_grants "timers_tables" do
+  tables_path  "#{timerTablePath}"
+  rows_path  ""
+  action :nothing
+end 
+
+
+template timerTablePath do
+  source File.basename("#{timerTablePath}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
+end 
+
+
 
 node.override = {
   'java' => {
@@ -31,9 +61,11 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'systemd_enabled' => systemd,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
+          'max_stack_size' => node.glassfish.max_stack_size, 
           'port' => web_port,
           'admin_port' => admin_port,
           'username' => username,
@@ -51,14 +83,14 @@ node.override = {
         },
         'threadpools' => {
           'thread-pool-1' => {
-            'maxthreadpoolsize' => 150,
-            'minthreadpoolsize' => 10,
+            'maxthreadpoolsize' => 200,
+            'minthreadpoolsize' => 5,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 150,
-            'minthreadpoolsize' => 10,
+            'maxthreadpoolsize' => 200,
+            'minthreadpoolsize' => 5,
             'idletimeout' => 900,
             'maxqueuesize' => 4096
           },
@@ -186,13 +218,21 @@ cookbook_file"#{node.glassfish.domains_dir}/#{domain_name}/docroot/obama-smoked-
 end
 
 
-user_ulimit node.glassfish.user do
-  filehandle_limit 65000
-  process_limit 65000
-  memory_limit 100000
-  stack_soft_limit 65533
-  stack_hard_limit 65533
-end
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
+
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
+
+# node.override.ulimit.conf_dir = "/etc/security"
+# node.override.ulimit.conf_file = "limits.conf"
+
+# node.override.ulimit[:params][:default][:nofile] = 65000     # hard and soft open file limit for all users
+# node.override.ulimit[:params][:default][:nproc] = 8000
+
+# include_recipe "ulimit2"
+
+
 
  if node.glassfish.port == 80
    authbind_port "AuthBind GlassFish Port 80" do
@@ -205,6 +245,7 @@ end
 
 #node.default['authorization']['sudo']['include_sudoers_d'] = true
 #node.default['authorization']['sudo']['passwordless'] = true
+
 
 #include_recipe 'sudo'
 
@@ -225,4 +266,35 @@ end
 #   recursive true
 # end
 
+if systemd == true
 
+  directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
+    owner "root"
+    group "root"
+    mode "755"
+    action :create
+    recursive true
+  end
+
+  template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+    source "limits.conf.erb"
+    owner "root"
+    mode 0774
+    action :create
+  end 
+
+  case node.platform
+  when "rhel"
+    hopsworks_grants "reload_systemd" do
+      tables_path  ""
+      rows_path  ""
+      action :reload_systemd
+    end 
+
+
+    service "glassfish-#{domain_name}.service" do
+      action :restart, :immediately
+    end
+  end
+
+end

@@ -418,6 +418,7 @@ CREATE TABLE `dataset` (
   `editable` TINYINT(1) NOT NULL DEFAULT '1',
   `status` TINYINT(1) NOT NULL DEFAULT '1',
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
+  `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -478,25 +479,6 @@ CREATE TABLE `message_to_user` (
   `id` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=ndbcluster;
-
--- Glassfish timers
--- ----------------------
-
-CREATE TABLE `EJB__TIMER__TBL` (
-  `CREATIONTIMERAW` bigint(20) NOT NULL,
-  `BLOB` blob,
-  `TIMERID` varchar(255) NOT NULL,
-  `CONTAINERID` bigint(20) NOT NULL,
-  `OWNERID` varchar(255) DEFAULT NULL,
-  `STATE` int(11) NOT NULL,
-  `PKHASHCODE` int(11) NOT NULL,
-  `INTERVALDURATION` bigint(20) NOT NULL,
-  `INITIALEXPIRATIONRAW` bigint(20) NOT NULL,
-  `LASTEXPIRATIONRAW` bigint(20) NOT NULL,
-  `SCHEDULE` varchar(255) DEFAULT NULL,
-  `APPLICATIONID` bigint(20) NOT NULL,
-  PRIMARY KEY (`TIMERID`)
 ) ENGINE=ndbcluster;
 
 -- VIEWS --------------
