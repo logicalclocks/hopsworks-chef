@@ -41,6 +41,7 @@ suites:
        - recipe[zeppelin::install]
        - recipe[hadoop_spark::install]
        - recipe[flink::install]
+       - recipe[adam::install]
 #       - recipe[kzookeeper::install]
 #       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
@@ -57,6 +58,7 @@ suites:
        - recipe[flink::yarn]
        - recipe[hopsworks]
        - recipe[hopsworks::dev]
+       - recipe[adam]
 
     attributes:
         # authorization:

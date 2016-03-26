@@ -18,6 +18,7 @@ cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
+cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
 cookbook 'elasticsearch', '~> 2.2.0'
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit2', '~> 0.2.0'
