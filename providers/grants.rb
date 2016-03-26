@@ -16,6 +16,21 @@ notifying_action :reload_systemd do
 
 end
 
+
+notifying_action :reload_sysv do
+
+  bash 'reload_sysv' do
+    user "root"
+    code <<-EOF
+          service glassfish-domain1 stop
+          service glassfish-domain1 start
+    EOF
+  end
+
+end
+
+
+
 notifying_action :create_timers do
   exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
 
