@@ -1,0 +1,131 @@
+{
+  "hops": {
+     "nn": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "dn": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "rm": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "nm": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "jhs": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "yarn": {
+        "user" : "glassfish"
+      },
+     "mr": {
+        "user" : "glassfish"
+     },
+     "cluster": "vagrant",
+     "use_hopsworks": "true"
+  },
+  "apache_hadoop": {
+      "hdfs": {
+        "user" : "glassfish"
+     },
+     "yarn":{
+        "user" : "glassfish"
+     },
+     "mr":{
+        "user": "glassfish"
+     },
+     "nn": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "dn": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "rm": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "nm": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "jhs": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "cluster": "vagrant"
+  },
+  "ndb": {
+     "ndbd": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "mgmd": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "mysqld": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "memcached": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "public_ips": ["127.0.0.1"],
+     "enabled": "true"
+  },
+  "hadoop_spark": {
+     "user": "glassfish",
+     "master": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "worker": {
+        "private_ips": ["127.0.0.1"]
+     }
+  },
+  "flink": {
+     "user": "glassfish",	
+     "jobmanager": {
+        "private_ips": ["127.0.0.1"]
+     },
+     "taskmanager": {
+        "private_ips": ["127.0.0.1"]
+     }
+  },
+  "elastic": {
+     "default": {
+        "private_ips": ["127.0.0.1"]
+     }
+  },
+  "zeppelin": {
+     "default": {
+        "private_ips": ["127.0.0.1"]
+     }
+  },
+  "hopsworks": {
+     "user": "glassfish",
+     "default": {
+          "private_ips": ["127.0.0.1"],
+      },
+     "private_ips": ["127.0.0.1"],
+     "public_ips": ["127.0.0.1"]
+  },
+  "private_ips": ["127.0.0.1"],
+  "public_ips": ["127.0.0.1"],
+  "run_list": [ 
+    "recipe[ndb::install]",
+    "recipe[hops::install]",
+    "recipe[hadoop_spark::install]",
+    "recipe[zeppelin::install]",
+    "recipe[hopsworks::install]",
+    "recipe[flink::install]",
+    "recipe[adam::install]",
+    "recipe[ndb::mgmd]",
+    "recipe[ndb::ndbd]",
+    "recipe[ndb::mysqld]",
+    "recipe[hops::ndb]",
+    "recipe[hops::nn]",
+    "recipe[hops::dn]",
+    "recipe[hops::rm]",
+    "recipe[hops::nm]",
+    "recipe[hadoop_spark::yarn]",
+    "recipe[flink::yarn]",
+    "recipe[zeppelin::default]",
+    "recipe[adam::default]",      
+    "recipe[hopsworks::default]",
+    "recipe[hopsworks::dev]"      
+  ]
+}
