@@ -98,7 +98,7 @@
   "hopsworks": {
      "user": "glassfish",
      "default": {
-          "private_ips": ["127.0.0.1"],
+          "private_ips": ["127.0.0.1"]
       },
      "private_ips": ["127.0.0.1"],
      "public_ips": ["127.0.0.1"]
