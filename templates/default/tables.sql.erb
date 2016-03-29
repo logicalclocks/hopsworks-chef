@@ -347,7 +347,7 @@ CREATE TABLE `meta_inode_basic_metadata` (
   UNIQUE KEY (`inode_pid`, `inode_name`),
   FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
- 
+
 -- elastic jdbc-importer buffer tables -------
 
 CREATE TABLE `meta_inodes_ops_parents_buffer` (
@@ -417,17 +417,17 @@ CREATE TABLE `dataset_request` (
   `message` VARCHAR(3000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`dataset`,`projectId`),
-  FOREIGN KEY (`projectId`,`user_email`) 
-   REFERENCES `project_team` (`project_id`,`team_member`) 
-   ON DELETE CASCADE 
+  FOREIGN KEY (`projectId`,`user_email`)
+   REFERENCES `project_team` (`project_id`,`team_member`)
+   ON DELETE CASCADE
    ON UPDATE NO ACTION,
-  FOREIGN KEY (`dataset`) 
-   REFERENCES `dataset` (`id`) 
-   ON DELETE CASCADE 
+  FOREIGN KEY (`dataset`)
+   REFERENCES `dataset` (`id`)
+   ON DELETE CASCADE
    ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
--- Message 
+-- Message
 -- ------------------------
 CREATE TABLE `message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -488,7 +488,7 @@ CREATE TABLE `ssh_keys` (
 ) ENGINE=ndbcluster;
 
 
-CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`)); 
+CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));
 
 CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
@@ -595,4 +595,36 @@ CREATE TABLE `charon_repo_shared` (
   PRIMARY KEY (`project_id`,`site_id`,`path`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`project_id`,`site_id`) REFERENCES `charon_registered_sites` (`project_id`, `site_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
+CREATE TABLE `workflows` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (`id`)
+) ENGINE=ndbcluster;
+
+CREATE TABLE `nodes` (
+    `id` VARCHAR(255) NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
+    `workflow_id` INT(11) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (`id`, `workflow_id`),
+     CONSTRAINT fk_workflow_id FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
+CREATE TABLE `edges` (
+  `id` VARCHAR(255) NOT NULL,
+  `type` VARCHAR(255) NOT NULL DEFAULT 'default-edge',
+  `target_id` VARCHAR(255) NOT NULL,
+  `source_id` VARCHAR(255) NOT NULL,
+  `workflow_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`, `workflow_id`),
+  CONSTRAINT fk_workflow_id FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT fk_target_id FOREIGN KEY (`target_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT fk_source_id FOREIGN KEY (`source_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
