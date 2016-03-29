@@ -106,26 +106,7 @@
   "private_ips": ["127.0.0.1"],
   "public_ips": ["127.0.0.1"],
   "run_list": [ 
-    "recipe[ndb::install]",
-    "recipe[hops::install]",
-    "recipe[hadoop_spark::install]",
-    "recipe[zeppelin::install]",
-    "recipe[hopsworks::install]",
-    "recipe[flink::install]",
-    "recipe[adam::install]",
-    "recipe[ndb::mgmd]",
-    "recipe[ndb::ndbd]",
-    "recipe[ndb::mysqld]",
-    "recipe[hops::ndb]",
-    "recipe[hops::nn]",
-    "recipe[hops::dn]",
-    "recipe[hops::rm]",
-    "recipe[hops::nm]",
-    "recipe[hadoop_spark::yarn]",
-    "recipe[flink::yarn]",
-    "recipe[zeppelin::default]",
-    "recipe[adam::default]",      
-    "recipe[hopsworks::default]",
-    "recipe[hopsworks::dev]"      
+    "recipe[elastic::install]",
+    "recipe[elastic::default]"
   ]
 }
