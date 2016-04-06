@@ -134,6 +134,16 @@ CREATE TABLE `project` (
   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
+CREATE TABLE `user_certs` (
+`project_id` INT(11) NOT NULL,
+`user_id` INT(11) NOT NULL,
+`user_key` BLOB,
+`user_cert` BLOB,
+ PRIMARY KEY (`project_id`, `user_id`),
+ FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE 
+) ENGINE=ndbcluster;
+
 CREATE TABLE `activity` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `activity` VARCHAR(128) NOT NULL,
