@@ -505,18 +505,18 @@ CREATE TABLE `user_certs` (
 	`user_id` INT(11) NOT NULL,
 	`user_key` BLOB,
 	`user_cert` BLOB,
- 	PRIMARY KEY (`project_id`, `user_id`),
- 	FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
- 	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
+	PRIMARY KEY (`project_id`, `user_id`),
+	FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster;
 
--- CREATE TABLE `ssh_keys` (
---  `uid` INT(11) NOT NULL,
---  `name` VARCHAR(255) NOT NULL,
---  `public_key` VARCHAR(2000) NOT NULL,
---  PRIMARY KEY (`uid`, `name`),
---  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
--- ) ENGINE=ndbcluster;
+CREATE TABLE `ssh_keys` (
+  `uid` INT(11) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `public_key` VARCHAR(2000) NOT NULL,
+  PRIMARY KEY (`uid`, `name`),
+  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
 
 
 CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`)); 
