@@ -16,23 +16,23 @@
         "private_ips": ["127.0.0.1"]
      },
      "yarn": {
-        "user" : "glassfish"
+        "user" : "XXX"
       },
      "mr": {
-        "user" : "glassfish"
+        "user" : "XXX"
      },
      "cluster": "vagrant",
      "use_hopsworks": "true"
   },
   "apache_hadoop": {
       "hdfs": {
-        "user" : "glassfish"
+        "user" : "XXX"
      },
      "yarn":{
-        "user" : "glassfish"
+        "user" : "XXX"
      },
      "mr":{
-        "user": "glassfish"
+        "user": "XXX"
      },
      "nn": {
         "private_ips": ["127.0.0.1"]
@@ -68,7 +68,7 @@
      "enabled": "true"
   },
   "hadoop_spark": {
-     "user": "glassfish",
+     "user": "XXX",
      "master": {
         "private_ips": ["127.0.0.1"]
      },
@@ -77,7 +77,7 @@
      }
   },
   "flink": {
-     "user": "glassfish",	
+     "user": "XXX",	
      "jobmanager": {
         "private_ips": ["127.0.0.1"]
      },
@@ -96,7 +96,7 @@
      }
   },
   "hopsworks": {
-     "user": "glassfish",
+     "user": "XXX",
      "default": {
           "private_ips": ["127.0.0.1"]
       },
