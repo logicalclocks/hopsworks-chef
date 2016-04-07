@@ -2,7 +2,7 @@
 driver:
   name: vagrant
   customize:
-    memory: 12000
+    memory: 13000
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
@@ -22,7 +22,7 @@ driver:
 
 provisioner:
   name: chef_solo
-#  require_chef_omnibus: 12.4.3
+  require_chef_omnibus: 12.4.3
 
 platforms:
 
@@ -57,7 +57,7 @@ suites:
        - recipe[hadoop_spark::yarn]
        - recipe[flink::yarn]
        - recipe[hopsworks]
-       - recipe[hopsworks::dev]
+#       - recipe[hopsworks::dev]
        - recipe[adam]
 
     attributes:
