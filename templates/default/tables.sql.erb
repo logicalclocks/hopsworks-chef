@@ -609,22 +609,24 @@ CREATE TABLE `nodes` (
     `id` VARCHAR(255) NOT NULL,
     `type` VARCHAR(255) NOT NULL,
     `workflow_id` INT(11) NOT NULL,
+    `data` LONGTEXT NOT NULL,
+    `classname` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
      PRIMARY KEY (`id`, `workflow_id`),
-     CONSTRAINT fk_workflow_id FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `edges` (
   `id` VARCHAR(255) NOT NULL,
-  `type` VARCHAR(255) NOT NULL DEFAULT 'default-edge',
+  `type` VARCHAR(255),
   `target_id` VARCHAR(255) NOT NULL,
   `source_id` VARCHAR(255) NOT NULL,
   `workflow_id` INT(11) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`, `workflow_id`),
-  CONSTRAINT fk_workflow_id FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT fk_target_id FOREIGN KEY (`target_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT fk_source_id FOREIGN KEY (`source_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`target_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`source_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
