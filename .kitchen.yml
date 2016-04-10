@@ -36,11 +36,11 @@ suites:
        - recipe[hopsworks::install]
        - recipe[ndb::install]
        - recipe[hops::install]
-       - recipe[elastic::install]
+#       - recipe[elastic::install]
        - recipe[zeppelin::install]
        - recipe[hadoop_spark::install]
-       - recipe[flink::install]
-       - recipe[adam::install]
+#       - recipe[flink::install]
+#       - recipe[adam::install]
 #       - recipe[kzookeeper::install]
 #       - recipe[kkafka::install]
        - recipe[ndb::mgmd]
@@ -52,15 +52,15 @@ suites:
        - recipe[hops::rm]
        - recipe[hops::nm]
        - recipe[hops::jhs]
-       - recipe[elastic::default]
+#       - recipe[elastic::default]
        - recipe[hadoop_spark::yarn]
-       - recipe[flink::yarn]
+#       - recipe[flink::yarn]
        - recipe[hopsworks]
  #      - recipe[hopsworks::dev]
-       - recipe[adam]
+#       - recipe[adam]
 
     attributes:
-         download_url: "http://127.0.0.1/hops"
+         download_url: "http://192.168.1.2/hops"
         # authorization:
         #    sudo:
         #      users: ['vagrant']
