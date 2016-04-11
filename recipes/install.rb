@@ -267,7 +267,7 @@ end
   end
 
 # Create certificate authority dirs
-dirs = %w{certs crl newcerts private}
+dirs = %w{certs crl newcerts private intermediate}
 
 for d in dirs 
   directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/#{d}" do
