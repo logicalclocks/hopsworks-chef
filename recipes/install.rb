@@ -290,7 +290,7 @@ for d in int_dirs
   end
 end
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/caopenssl.cnf" do
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl.cnf" do
   source "caopenssl.cnf.erb"
   owner node.glassfish.user
   mode 0610
@@ -301,7 +301,7 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/caopenssl.cnf" 
 end 
 
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediateopenssl.cnf" do
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
   mode 0610
@@ -310,4 +310,3 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediateope
               })
   action :create
 end 
-
