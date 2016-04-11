@@ -208,31 +208,6 @@ end
 # end
 
 
-
-#node.default['authorization']['sudo']['include_sudoers_d'] = true
-#node.default['authorization']['sudo']['passwordless'] = true
-
-
-#include_recipe 'sudo'
-
-#sudo 'glassfish' do
-#  user    node.glassfish.user
-#  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser', '/usr/mount', '/usr/umount']
-#  nopasswd   true
-#end
-
-
-
-# Hack for cuneiform that expects that the username has a /home/username directory.
-# directory "/home/#{node.glassfish.user}/software" do
-#   owner node.glassfish.user
-#   group node.glassfish.group
-#   mode "755"
-#   action :create
-#   recursive true
-# end
-
-
 case node.platform
 when "rhel"
 service_name = "glassfish-#{domain_name}"
@@ -282,4 +257,41 @@ if systemd == true
 
 end
 
+
+
+  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "610"
+    action :create
+  end
+
+dirs = %w{certs crl newcerts private}
+
+for d in dirs 
+  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/#{d}" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "700"
+    action :create
+  end
+end
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/caopenssl.cnf" do
+  source "caopenssl.cnf.erb"
+  owner node.glassfish.user
+  mode 0610
+  variables({
+#        :org_name => node.hopsworks.cert.o
+  })
+  action :create
+end 
+
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediateopenssl.cnf" do
+  source "intermediateopenssl.cnf.erb"
+  owner node.glassfish.user
+  mode 0610
+  action :create
+end 
 
