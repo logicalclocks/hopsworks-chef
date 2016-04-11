@@ -302,6 +302,9 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediateope
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
   mode 0610
+    variables({
+                :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
+              })
   action :create
 end 
 
