@@ -1,6 +1,6 @@
 package 'openssl'
 
-bash 'create_authority' do
+bash 'certificateauthority' do
     user "root"
     code <<-EOF
         set -eo pipefail
@@ -18,7 +18,7 @@ bash 'create_authority' do
 	chmod 400 private/ca.key.pem
 
 	#3 Create the root certificate
-	openssl req -subj "/C=#{hopsworks.cert.c}/ST=#{hopsworks.cert.s}/L=#{hopsworks.cert.l}/O=#{hopsworks.cert.o}/CN=#{hopsworks.cert.cn}" \
+	openssl req -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsRootCA" \
 	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
       -key private/ca.key.pem \
       -new -x509 -days 7300 -sha256 -extensions v3_ca \
