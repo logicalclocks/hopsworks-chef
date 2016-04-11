@@ -294,6 +294,9 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/caopenssl.cnf" 
   source "caopenssl.cnf.erb"
   owner node.glassfish.user
   mode 0610
+      variables({
+                :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca"
+              })
   action :create
 end 
 
@@ -303,7 +306,7 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediateope
   owner node.glassfish.user
   mode 0610
     variables({
-                :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
               })
   action :create
 end 
