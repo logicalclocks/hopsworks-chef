@@ -145,6 +145,13 @@ template "#{login_cnf}" do
 end
 
 
+hopsworks_grants "reload_sysv" do
+ tables_path  ""
+ rows_path  ""
+ action :reload_sysv
+end 
+
+
 #case node.platform
 # when "debian"
 
@@ -156,6 +163,7 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
+
 
 #end
 

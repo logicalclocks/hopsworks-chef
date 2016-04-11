@@ -47,6 +47,39 @@ force the use of a pseudeo-terminal, by commenting out the following line in **/
 This has to be done for all hosts in the cluster on which Karamel will be executed.
 
 
+
+# Installing on Localhost for Development
+
+You can install the hopsworks stack on your ubuntu host by first forking hopsworks and then
+cloning it from the repository in which you cloned Hopsworks. F
+
+````
+# Example of cloning from my own repo, where I cloned Hopsworks to.
+git clone git://github.com/jimdowling/hopsworks.git
+
+
+# This command copies all Hopswork's dependent cookbooks into the /tmp/cookbooks folder:
+berks vendor /tmp
+
+# This command updates the hopsworks.json to install all servers with the id of the current user ($USER)
+./fix-hopsworks.json.sh
+
+# This command runs chef to execute all the recipes
+sudo chef-solo -c solo.rb -j hopsworks.json
+
+````
+
+# Development Tips
+
+
+## Javascript/HTML development on localhost
+If you are only editing javascript or html code, you can easily debug and view your changes by running the script:
+
+````
+cd scripts
+./local-deploy.sh
+````
+
 ## Contributing
 
 1. Fork it
