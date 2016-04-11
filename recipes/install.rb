@@ -266,6 +266,7 @@ end
     action :create
   end
 
+# Create certificate authority dirs
 dirs = %w{certs crl newcerts private}
 
 for d in dirs 
@@ -277,13 +278,22 @@ for d in dirs
   end
 end
 
+# Create intermediate cert dirs 
+int_dirs = %w{certs crl csr newcerts private}
+
+for d in int_dirs 
+  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/#{d}" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "700"
+    action :create
+  end
+end
+
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/caopenssl.cnf" do
   source "caopenssl.cnf.erb"
   owner node.glassfish.user
   mode 0610
-  variables({
-#        :org_name => node.hopsworks.cert.o
-  })
   action :create
 end 
 

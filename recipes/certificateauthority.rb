@@ -1,28 +1,24 @@
 package 'openssl'
 
-
-
 bash 'create_authority' do
     user "root"
     code <<-EOF
         set -eo pipefail
 
-    KEYSTOREPW=#{node.hopsworks.master.password}
+	KEYSTOREPW=#{node.hopsworks.master.password}
 
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
+	cd "#{node.glassfish.domains_dir}/domain1/config/ca"
 	chmod 700 private
 	touch index.txt
 	echo 1000 > serial
 
 	#2 Create the root key
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
-	openssl genrsa -aes256 -out private/ca.key.pem -passout pass:#{node.hopsworks.master.password} 4096
+	openssl genrsa -aes256 -out private/ca.key.pem -passout pass:$KEYSTOREPW 4096
 
 	chmod 400 private/ca.key.pem
 
 	#3 Create the root certificate
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
-	openssl req -subj "/C=#{hopsworks.cert.c}/ST=Sweden/L=Stockholm/O=SICS/CN=HopsRootCA" \
+	openssl req -subj "/C=#{hopsworks.cert.c}/ST=#{hopsworks.cert.s}/L=#{hopsworks.cert.l}/O=#{hopsworks.cert.o}/CN=#{hopsworks.cert.cn}" \
 	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
       -key private/ca.key.pem \
       -new -x509 -days 7300 -sha256 -extensions v3_ca \
@@ -30,29 +26,24 @@ bash 'create_authority' do
 
 	chmod 444 certs/ca.cert.pem
 
-	#4 Prepare the directories
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
-	mkdir certs crl csr newcerts private
-	chmod 700 private
-	touch index.txt
-	echo 1000 > serial
-	echo 1000 > /root/ca/intermediate/crlnumber
+	#4 Prepare the intermediate directories
+	chmod 700 intermediate/private/
+	touch intermediate/index.txt
+	echo 1000 > intermediate/serial
+	echo 1000 > intermediate/crlnumber
 
 	#5 Create the intermediate key
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
 	openssl genrsa -aes256 -out intermediate/private/intermediate.key.pem -passout pass:$KEYSTOREPW 4096
 
 	chmod 400 intermediate/private/intermediate.key.pem
 
 	#6 Create the intermediate certificate 
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
 	openssl req -new -sha256 \
 	  -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermedtiateCA" \
       -key intermediate/private/intermediate.key.pem \
       -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
       -out intermediate/csr/intermediate.csr.pem
 
-	cd #{node.glassfish.domains_dir}/domain1/config/ca
 	openssl ca -batch -config openssl.cnf -extensions v3_intermediate_ca \
       -days 3650 -notext -md sha256 \
       -passin pass:$KEYSTOREPW \
