@@ -310,3 +310,12 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/op
               })
   action :create
 end 
+
+## should be executeable.
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh" do
+  source "createusercerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "610"
+  action :create
+end 
