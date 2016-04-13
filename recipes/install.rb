@@ -316,6 +316,6 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/cr
   source "createusercerts.sh.erb"
   owner node.glassfish.user
   group node.glassfish.group
-  mode "610"
+  mode "710"
   action :create
 end 
