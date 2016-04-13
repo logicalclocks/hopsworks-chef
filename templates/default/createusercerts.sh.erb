@@ -8,10 +8,7 @@ fi
 #Variables
 DOMAIN="$1"
 
-# TODO # # TODO # # TODO # # TODO #
-##   HARDCODED -> CHANGE LATER   ##
-# TODO # # TODO # # TODO # # TODO #
-KEYSTOREPW=adminpw
+KEYSTOREPW=<%= node.hopsworks.admin.password %>
 
 #1 Create a user key
 openssl genrsa \
