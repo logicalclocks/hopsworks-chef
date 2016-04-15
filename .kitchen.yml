@@ -61,7 +61,7 @@ suites:
 #       - recipe[adam]
 
     attributes:
-         download_url: "http://192.168.1.2/hops"
+#         download_url: "http://192.168.1.2/hops"
         # authorization:
         #    sudo:
         #      users: ['vagrant']
