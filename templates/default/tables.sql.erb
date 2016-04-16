@@ -624,6 +624,16 @@ CREATE TABLE `workflows` (
      PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster;
 
+CREATE TABLE `workflow_executions` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job_id` VARCHAR(255),
+    `error` TEXT,
+    `workflow_id` INT(11) NOT NULL,
+    `workflow_timestamp` TIMESTAMP NULL DEFAULT NULL,
+     PRIMARY KEY (`id`),
+     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
 CREATE TABLE `nodes` (
     `id` VARCHAR(255) NOT NULL,
     `type` VARCHAR(255) NOT NULL,
