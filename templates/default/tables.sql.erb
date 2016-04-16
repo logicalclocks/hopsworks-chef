@@ -627,3 +627,22 @@ CREATE TABLE `charon_repo_shared` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`project_id`,`site_id`) REFERENCES `charon_registered_sites` (`project_id`, `site_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
+
+-- File Activity Table 
+--
+
+CREATE TABLE `file_activity`
+(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `activity` varchar(128) NOT NULL,
+  `hdfs_user_id` binary(16) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `parent_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hdfs_user_idx` (`hdfs_user_id`),
+  KEY `inode_idx` (`parent_id`, `name`),
+  CONSTRAINT `FK_144_466` FOREIGN KEY (`parent_id`,`name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_134_321` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster;
+
