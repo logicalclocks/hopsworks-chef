@@ -318,4 +318,15 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/cr
   group node.glassfish.group
   mode "710"
   action :create
-end 
+end
+
+template "/etc/sudoers.d/glassfish" do
+  source "glassfish_sudoers.erb"
+  owner "root"
+  group "root"
+  mode "644"
+  variables({
+                :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh"
+              })
+  action :create
+end  
