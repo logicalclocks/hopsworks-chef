@@ -257,16 +257,13 @@ if systemd == true
 
 end
 
-
-
-  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
+directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
     owner node.glassfish.user
     group node.glassfish.group
     mode "610"
     action :create
   end
 
-# Create certificate authority dirs
 dirs = %w{certs crl newcerts private intermediate}
 
 for d in dirs 
@@ -278,7 +275,6 @@ for d in dirs
   end
 end
 
-# Create intermediate cert dirs 
 int_dirs = %w{certs crl csr newcerts private}
 
 for d in int_dirs 
@@ -300,7 +296,6 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl.cnf" do
   action :create
 end 
 
-
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
@@ -311,12 +306,14 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/op
   action :create
 end 
 
-## should be executeable.
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh" do
   source "createusercerts.sh.erb"
   owner node.glassfish.user
   group node.glassfish.group
   mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
   action :create
 end
 
@@ -330,3 +327,10 @@ template "/etc/sudoers.d/glassfish" do
               })
   action :create
 end  
+
+ directory "/tmp/tempstores/" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "750"
+    action :create
+end
