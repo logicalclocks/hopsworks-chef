@@ -364,3 +364,8 @@ end
     mode 0700
     action :create
  end 
+
+
+kagent_bouncycastle "install_bouncycastle_libs_jvm" do
+  action :install
+end
