@@ -135,6 +135,8 @@ node.override = {
 installed = "#{node.glassfish.base_dir}/.installed"
 if ::File.exists?( "#{installed}" ) == false
 
+  package 'openssl'
+
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
 
@@ -289,7 +291,7 @@ end
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl.cnf" do
   source "caopenssl.cnf.erb"
   owner node.glassfish.user
-  mode "700"
+  mode "600"
       variables({
                 :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca"
               })
@@ -299,7 +301,7 @@ end
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
-  mode "700"
+  mode "600"
     variables({
                 :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
               })

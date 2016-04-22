@@ -1,4 +1,3 @@
-package 'openssl'
 
 bash 'certificateauthority' do
     user "root"
