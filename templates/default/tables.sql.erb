@@ -164,22 +164,26 @@ CREATE TABLE `project_team` (
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `project_topics` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
-  PRIMARY KEY (`topic_name`),
+  `owner` bit(8) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY topic_idx(`topic_name`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster;
+) ENGINE=ndbcluster ;
 
 CREATE TABLE `topic_acls` (
- `topic_name` VARCHAR(255) NOT NULL,
+ `topic_id` INT (11) NOT NULL,
  `user_id` VARCHAR(1000) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
  `role` VARCHAR(255) NOT NULL,
- PRIMARY KEY (`topic_name`, `user_id`),
- FOREIGN KEY (`topic_name`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster;
+ `shared` VARCHAR(25) NOT NULL,
+ PRIMARY KEY (`topic_id`, `user_id`, `permission_type`, `operation_type`, `host`, `role`),
+ FOREIGN KEY (`topic_id`) REFERENCES `project_topics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster /*!50100 PARTITION BY KEY (topic_id) */ ;
 
 CREATE TABLE `userlogins` (
     `login_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
