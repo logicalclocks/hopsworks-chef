@@ -262,7 +262,7 @@ end
 directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
     owner node.glassfish.user
     group node.glassfish.group
-    mode "610"
+    mode "700"
     action :create
   end
 
