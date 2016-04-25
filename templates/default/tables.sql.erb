@@ -189,7 +189,6 @@ CREATE TABLE `topic_acls` (
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
- FOREIGN KEY (`topic_id`) REFERENCES `project_topics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster ;
 
 CREATE TABLE `userlogins` (
