@@ -90,6 +90,14 @@ INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"
 
 INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
 
+-- ------
+-- Kafka settings
+--
+
+INSERT INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
+
+INSERT INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
+
 -- --------------------------------------------------------
 --
 -- For enabling two facto authentication
