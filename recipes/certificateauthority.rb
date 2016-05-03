@@ -34,7 +34,8 @@ bash 'certificateauthority' do
 	#5 Create the intermediate key
 	openssl genrsa -aes256 -out intermediate/private/intermediate.key.pem -passout pass:$KEYSTOREPW 4096
 
-	chmod 400 intermediate/private/intermediate.key.pem
+	chown -R glassfish:glassfish-admin intermediate/private/intermediate.key.pem
+	chmod 440 intermediate/private/intermediate.key.pem
 
 	#6 Create the intermediate certificate 
 	openssl req -new -sha256 \
