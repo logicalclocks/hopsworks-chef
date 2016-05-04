@@ -159,7 +159,7 @@ suites:
             public_ips: ["10.0.2.15"]
             user_envs: "false"
             twofactor_auth: true
-            war_url: "http://127.0.0.1/hops/hopsworks-centos.war"
+#            war_url: "http://127.0.0.1/hops/hopsworks-centos.war"
          glassfish:
             user: glassfish
          private_ips: ["10.0.2.15"]
