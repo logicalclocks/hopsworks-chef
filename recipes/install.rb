@@ -283,3 +283,18 @@ if systemd == true
 end
 
 
+# Fix for:
+#  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html
+file "#{node.override.glassfish.install_dir}/glassfish/modules/guava.jar" do
+  owner "root"
+  action :delete
+end
+ 
+remote_file "#{node.override.glassfish.install_dir}/glassfish/modules/guava.jar" do
+  user node.glassfish.user
+  group node.glassfish.group
+  source node.hopsworks.guava_url
+  mode 0755
+  action :create_if_missing
+end
+

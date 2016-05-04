@@ -85,7 +85,8 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
-		 "use_hopsworks" => "true",
+                "use_hopsworks" => "true",
+#               "download_url" => "http://snurran.sics.se/hops/beta/hops-2.4.0.tgz"
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
