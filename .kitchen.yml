@@ -142,6 +142,8 @@ suites:
                private_ips: ["10.0.2.15"]
             master:
                private_ips: ["10.0.2.15"]
+            historyserver:
+               private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
          flink:
             user: glassfish

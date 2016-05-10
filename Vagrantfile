@@ -39,6 +39,7 @@ Vagrant.configure("2") do |c|
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
+    p.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
 
@@ -132,6 +133,9 @@ Vagrant.configure("2") do |c|
      "hadoop_spark" => {
 	  "user" => "glassfish",
 	  "master" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          },
+	  "historyserver" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
 	  "worker" =>    { 
