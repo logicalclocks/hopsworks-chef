@@ -57,7 +57,7 @@ suites:
        - recipe[hadoop_spark::yarn]
 #       - recipe[flink::yarn]
        - recipe[hopsworks]
-#      - recipe[hopsworks::dev]
+       - recipe[hopsworks::dev]
 #       - recipe[adam]
 
     attributes:
@@ -83,10 +83,10 @@ suites:
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-#            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
-#            version: 2.1.2
-#            jdbc_importer:
-#                version: 2.1.1.2
+            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
+            version: 2.1.2
+            jdbc_importer:
+                version: 2.1.1.2
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -158,8 +158,8 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-            twofactor_auth: true
-#            war_url: "http://127.0.0.1/hops/hopsworks-centos.war"
+            #twofactor_auth: true
+            war_url: "http://snurran.sics.se/hops/hopsworks-kafka.war"
          glassfish:
             user: glassfish
          private_ips: ["10.0.2.15"]
