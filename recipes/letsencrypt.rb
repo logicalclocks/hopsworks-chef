@@ -1,4 +1,3 @@
-package 'openssl'
 
 myHost=node.fqdn
 keytool="#{node.java.java_home}/bin/keytool"

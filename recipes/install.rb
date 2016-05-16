@@ -135,6 +135,8 @@ node.override = {
 installed = "#{node.glassfish.base_dir}/.installed"
 if ::File.exists?( "#{installed}" ) == false
 
+  package 'openssl'
+
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
 
@@ -208,31 +210,6 @@ end
 # end
 
 
-
-#node.default['authorization']['sudo']['include_sudoers_d'] = true
-#node.default['authorization']['sudo']['passwordless'] = true
-
-
-#include_recipe 'sudo'
-
-#sudo 'glassfish' do
-#  user    node.glassfish.user
-#  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser', '/usr/mount', '/usr/umount']
-#  nopasswd   true
-#end
-
-
-
-# Hack for cuneiform that expects that the username has a /home/username directory.
-# directory "/home/#{node.glassfish.user}/software" do
-#   owner node.glassfish.user
-#   group node.glassfish.group
-#   mode "755"
-#   action :create
-#   recursive true
-# end
-
-
 case node.platform
 when "rhel"
 service_name = "glassfish-#{domain_name}"
@@ -282,6 +259,83 @@ if systemd == true
 
 end
 
+directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "700"
+    action :create
+  end
+
+dirs = %w{certs crl newcerts private intermediate}
+
+for d in dirs 
+  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/#{d}" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "700"
+    action :create
+  end
+end
+
+int_dirs = %w{certs crl csr newcerts private}
+
+for d in int_dirs 
+  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/#{d}" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "700"
+    action :create
+  end
+end
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl.cnf" do
+  source "caopenssl.cnf.erb"
+  owner node.glassfish.user
+  mode "600"
+      variables({
+                :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca"
+              })
+  action :create
+end 
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl.cnf" do
+  source "intermediateopenssl.cnf.erb"
+  owner node.glassfish.user
+  mode "600"
+    variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
+              })
+  action :create
+end 
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh" do
+  source "createusercerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
+  action :create
+end
+
+template "/etc/sudoers.d/glassfish" do
+  source "glassfish_sudoers.erb"
+  owner "root"
+  group "root"
+  mode "644"
+  variables({
+                :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh"
+              })
+  action :create
+end  
+
+ directory "/tmp/tempstores/" do
+    owner node.glassfish.user
+    group node.glassfish.group
+    mode "750"
+    action :create
+end
 
 # Fix for:
 #  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html

@@ -76,3 +76,8 @@ default.hopsworks.max_num_proj_per_user    = "5"
 node.default.apache_hadoop.user_envs       = "false"
 
 default.hopsworks.systemd                  = "true"
+
+
+default.hopsworks.kafka_num_replicas       = "1"
+default.hopsworks.kafka_num_partitions     = "1"
+

@@ -4,12 +4,11 @@
 --
 
 INSERT INTO `bbc_group` (`group_name`, `group_desc`, `gid`) VALUES
-('BBC_ADMIN','Data Owner', 1001),
-('BBC_RESEARCHER','Users to run experiment', 1002),
-('BBC_GUEST','New users', 1003),
-('AUDITOR','To audit the platform',1004),
-('SYS_ADMIN', 'Platform administrator', 1005),
-('BBC_USER', 'Registered users in the system', 1006);
+('AUDITOR','Auditors for the platform',1004),
+('HOPS_ADMIN', 'System administrator', 1005),
+('HOPS_USER', 'Registered users in the system', 1006),
+('AGENT', 'Secret Agents in the system', 1007)
+;
 
 
 
@@ -31,6 +30,10 @@ INSERT INTO `meta_field_types` (`id`, `description`) VALUES
 INSERT INTO `users` 
 (`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`) VALUES
 (10000, 'meb10000', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin@kth.se', 'Admin', 'Admin', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 30);
+
+INSERT INTO `users` 
+(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`) VALUES
+(10001, 'agent007', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'agent@hops.io', 'Agent', '007', '2015-05-15 10:22:36', 'Mrs', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 0);
 
 -- --------------------------------------------------------
 
@@ -65,8 +68,11 @@ insert into account_audit(initiator, ip, browser, action, target, time, message,
 -- Dumping data for table `people_group`
 --
 
+-- Admin user now has a sysadmin 
 INSERT INTO `people_group` (`uid`, `gid`) VALUES (10000, 1005);
 
+-- Agent user now has an agent role
+INSERT INTO `people_group` (`uid`, `gid`) VALUES (10001, 1007);
 
 -- --------------------------------------------------------
 --
@@ -80,6 +86,14 @@ INSERT INTO variables VALUES ("hiway_dir", "<%= @hiway_dir %>");
 INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>");
 
 INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
+
+-- ------
+-- Kafka settings
+--
+
+INSERT INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
+
+INSERT INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
 
 -- --------------------------------------------------------
 --

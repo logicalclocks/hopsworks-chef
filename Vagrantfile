@@ -35,7 +35,7 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "13000"]
+    p.customize ["modifyvm", :id, "--memory", "12400"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -171,9 +171,9 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hadoop_spark::install"
       chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
-      chef.add_recipe "elastic::install"
+#      chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
-      chef.add_recipe "kkafka::install"
+      #chef.add_recipe "kkafka::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -182,12 +182,13 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-      chef.add_recipe "elastic::default"
+      #chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
+      chef.add_recipe "hopsworks::certificateauthority"
   end 
 
 end

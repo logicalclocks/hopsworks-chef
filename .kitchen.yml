@@ -6,7 +6,7 @@ driver:
     natdnshostresolver1: "on"
     natdnsproxy1: "on"
     nictype1: "virtio"
-    cpus: 2
+    cpus: 1
   network:
   - ["forwarded_port", {guest: 3306, host: 50070}]
   - ["forwarded_port", {guest: 8080, host: 8080}]
@@ -57,7 +57,7 @@ suites:
        - recipe[hadoop_spark::yarn]
        - recipe[flink::yarn]
        - recipe[hopsworks]
-#      - recipe[hopsworks::dev]
+       - recipe[hopsworks::dev]
 #       - recipe[adam]
 
     attributes:
@@ -83,10 +83,10 @@ suites:
                 public_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
-#            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
-#            version: 2.1.2
-#            jdbc_importer:
-#                version: 2.1.1.2
+            checksum: "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1"
+            version: 2.1.2
+            jdbc_importer:
+                version: 2.1.1.2
          ndb:
             mgmd:
                private_ips: ["10.0.2.15"]
@@ -110,6 +110,8 @@ suites:
                private_ips: ["10.0.2.15"]
             jhs:
                private_ips: ["10.0.2.15"]
+            yarn:
+               rm_distributed: "false"
             use_hopsworks: "true"
          apache_hadoop:
             hdfs:
@@ -158,8 +160,8 @@ suites:
             private_ips: ["10.0.2.15"]
             public_ips: ["10.0.2.15"]
             user_envs: "false"
-            twofactor_auth: true
-#            war_url: "http://127.0.0.1/hops/hopsworks-centos.war"
+            war_url: "http://snurran.sics.se/hops/hopsworks.war"
+#            twofactor_auth: true
          glassfish:
             user: glassfish
          private_ips: ["10.0.2.15"]
