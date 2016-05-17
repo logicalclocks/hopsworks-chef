@@ -640,6 +640,7 @@ CREATE TABLE `workflow_executions` (
 
 CREATE TABLE `nodes` (
     `id` VARCHAR(255) NOT NULL,
+	  `external_id` VARCHAR(255),
     `type` VARCHAR(255) NOT NULL,
     `workflow_id` INT(11) NOT NULL,
     `data` LONGTEXT NOT NULL,
