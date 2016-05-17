@@ -1,4 +1,4 @@
-require 'vagrant-omnibus'
+#require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
@@ -8,7 +8,7 @@ Vagrant.configure("2") do |c|
   # end
   # c.omnibus.cache_packages = false
 
-  c.omnibus.chef_version = "12.4.3"
+#  c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -35,10 +35,11 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "13000"]
+    p.customize ["modifyvm", :id, "--memory", "12400"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
+    p.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
 
@@ -85,7 +86,8 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
-		 "use_hopsworks" => "true",
+                "use_hopsworks" => "true",
+#               "download_url" => "http://snurran.sics.se/hops/beta/hops-2.4.0.tgz"
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
@@ -133,7 +135,19 @@ Vagrant.configure("2") do |c|
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
+	  "historyserver" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          },
 	  "worker" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          }
+     },
+     "flink" => {
+	  "user" => "glassfish",
+	  "jobmanager" =>    { 
+       	 	      "private_ips" => ["10.0.2.15"]
+          },
+	  "taskmanager" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
@@ -155,11 +169,11 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
-      #chef.add_recipe "flink::install"
+      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
-      chef.add_recipe "elastic::install"
+#      chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
-      chef.add_recipe "kkafka::install"
+      #chef.add_recipe "kkafka::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -168,12 +182,13 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-      chef.add_recipe "elastic::default"
+      #chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "hadoop_spark::yarn"
-      #chef.add_recipe "flink::yarn"
+      chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
+      chef.add_recipe "hopsworks::certificateauthority"
   end 
 
 end

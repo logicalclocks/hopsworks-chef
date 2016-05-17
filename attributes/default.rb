@@ -31,6 +31,7 @@ node.default.glassfish.max_stack_size       = node.hopsworks.max_stack_size.to_i
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-1.0.jar"
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks.war"
+default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
 
 default.hopsworks.admin.user               = "adminuser"
 default.hopsworks.admin.password           = "adminpw"
@@ -75,3 +76,8 @@ default.hopsworks.max_num_proj_per_user    = "5"
 node.default.apache_hadoop.user_envs       = "false"
 
 default.hopsworks.systemd                  = "true"
+
+
+default.hopsworks.kafka_num_replicas       = "1"
+default.hopsworks.kafka_num_partitions     = "1"
+
