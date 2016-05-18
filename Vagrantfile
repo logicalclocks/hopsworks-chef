@@ -1,3 +1,4 @@
+
 require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
