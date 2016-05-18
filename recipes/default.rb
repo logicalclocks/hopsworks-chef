@@ -39,6 +39,15 @@ rescue
   Chef::Log.warn "could not find elastic server for HopsWorks!"
 end
 
+begin
+  spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
+rescue 
+  spark_history_server_ip = ""
+  Chef::Log.warn "could not find spark history server ip for HopsWorks!"
+end
+
+
+
 tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
 rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
 
@@ -86,6 +95,7 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
+                :spark_history_server_ip => spark_history_server_ip,
                 :elastic_ip => elastic_ip,
                 :spark_dir => node.hadoop_spark.dir + "/spark",                
                 :spark_user => node.hadoop_spark.user,
