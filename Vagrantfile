@@ -1,14 +1,15 @@
-#require 'vagrant-omnibus'
+
+require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
-  # if Vagrant.has_plugin?("vagrant-cachier")
-  #   c.cache.auto_detect = false
-  #   c.cache.enable :apt
-  # end
-  # c.omnibus.cache_packages = false
+   if Vagrant.has_plugin?("vagrant-cachier")
+     c.cache.auto_detect = false
+     c.cache.enable :apt
+   end
+   c.omnibus.cache_packages = false
 
-#  c.omnibus.chef_version = "12.4.3"
+  c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -33,6 +34,13 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
+# Ooozie port
+  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
+# Dr Elephant
+#  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
+# Spark History Server
+  c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
+
 
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "12400"]
@@ -72,16 +80,14 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+	  "livy" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
      },
      "elastic" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-#          "version" => "2.1.2",
-#          "checksum" => "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1", 
-#	  "jdbc_importer" =>      { 
-#               "version" => "2.1.1.2"
-#          },
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -156,6 +162,11 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "oozie" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "kkafka" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -173,7 +184,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "zeppelin::install"
 #      chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
-      #chef.add_recipe "kkafka::install"
+#      chef.add_recipe "kkafka::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -182,13 +193,15 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-      #chef.add_recipe "elastic::default"
+#      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "hadoop_spark::yarn"
+      chef.add_recipe "zeppelin::livy"
       chef.add_recipe "flink::yarn"
+      chef.add_recipe "hadoop_spark::yarn"
+      chef.add_recipe "hadoop_spark::historyserver"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
-      chef.add_recipe "hopsworks::certificateauthority"
+#      chef.add_recipe "hopsworks::certificateauthority"
   end 
 
 end

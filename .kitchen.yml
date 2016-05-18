@@ -56,6 +56,7 @@ suites:
        - recipe[elastic::default]
        - recipe[hadoop_spark::yarn]
        - recipe[flink::yarn]
+       - recipe[zeppelin::livy]
        - recipe[hopsworks]
        - recipe[hopsworks::dev]
 #       - recipe[adam]
