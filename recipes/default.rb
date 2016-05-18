@@ -22,7 +22,7 @@ end
 # not be correct. install_dir is updated by install.rb, but not persisted, so we need to
 # reset it
 if node.glassfish.install_dir.include?("versions") == false
-  node.override.glassfish.install_dir = node.glassfish.install_dir + "/glassfish/versions/current"
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
 end
 
 private_ip=my_private_ip()
