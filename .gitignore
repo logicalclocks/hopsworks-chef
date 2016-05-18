@@ -7,3 +7,12 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
+
+# Vagrant
+Berksfile.lock
+Vagrantfile.Projects
+Vagrantfile.paul
+nohup.out
+start-dev.sh
+vagrant.pid
+

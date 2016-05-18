@@ -2,11 +2,11 @@ require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
-   if Vagrant.has_plugin?("vagrant-cachier")
-     c.cache.auto_detect = false
-     c.cache.enable :apt
-   end
-   c.omnibus.cache_packages = false
+  # if Vagrant.has_plugin?("vagrant-cachier")
+  #   c.cache.auto_detect = false
+  #   c.cache.enable :apt
+  # end
+  # c.omnibus.cache_packages = false
 
   c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
@@ -14,25 +14,25 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>3307})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8081})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>14009})
 # HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>8182})
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4849})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>16009})
 # HDFS webserver
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
 # 
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>17009})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>18009})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>19009})
 # Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>20009})
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
@@ -42,11 +42,11 @@ Vagrant.configure("2") do |c|
 
 
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "12400"]
+    p.customize ["modifyvm", :id, "--memory", "13000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
-    p.customize ["modifyvm", :id, "--cpus", "2"]
+    p.customize ["modifyvm", :id, "--cpus", "2"]   
   end
 
 
@@ -73,7 +73,9 @@ Vagrant.configure("2") do |c|
      "hopsworks" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
-	       }
+	       },
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-kafka.war",
+        "user_envs" => "false",
      },
      "zeppelin" => {
 	  "default" =>      { 
@@ -87,6 +89,11 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+#          "version" => "2.1.2",
+#          "checksum" => "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1", 
+#	  "jdbc_importer" =>      { 
+#               "version" => "2.1.1.2"
+#          },
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -179,10 +186,10 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
-      chef.add_recipe "flink::install"
+      #chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
 #      chef.add_recipe "elastic::install"
-      chef.add_recipe "kzookeeper::install"
+#      chef.add_recipe "kzookeeper::install"
 #      chef.add_recipe "kkafka::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
@@ -195,12 +202,14 @@ Vagrant.configure("2") do |c|
 #      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "zeppelin::livy"
-      chef.add_recipe "flink::yarn"
+#      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
-#      chef.add_recipe "hopsworks::certificateauthority"
+      chef.add_recipe "hopsworks::certificateauthority"
+      chef.add_recipe "kagent::default"
+      chef.add_recipe "kagent::csr"
   end 
 
 end
