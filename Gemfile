@@ -16,3 +16,6 @@ gem 'berkshelf'
 
 gem 'test-kitchen'
 gem 'kitchen-vagrant'
+gem "rspec", "3.4.0"
+gem 'airborne', '0.2.5'
+gem 'byebug'
