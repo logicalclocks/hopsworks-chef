@@ -13,6 +13,7 @@ cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
+cookbook 'oozie', github: "hopshadoop/oozie-chef", branch: "master"
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"

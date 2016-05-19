@@ -185,6 +185,8 @@ Vagrant.configure("2") do |c|
 #      chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
 #      chef.add_recipe "kkafka::install"
+      chef.add_recipe "livy::install"
+#      chef.add_recipe "oozie::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -195,13 +197,14 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::nm"
 #      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "zeppelin::livy"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
+      chef.add_recipe "livy::default"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
 #      chef.add_recipe "hopsworks::certificateauthority"
+#      chef.add_recipe "oozie::default"
   end 
 
 end
