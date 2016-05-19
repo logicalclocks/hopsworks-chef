@@ -25,6 +25,7 @@ depends 'compat_resource'
 depends 'ulimit2'
 depends 'authbind'
 depends 'apache_hadoop'
+depends 'livy'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
