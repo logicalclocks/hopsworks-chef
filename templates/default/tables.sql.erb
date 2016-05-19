@@ -187,7 +187,7 @@ CREATE TABLE `shared_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
   `owner_id` INT(11) NOT NULL,
-  PRIMARY KEY (`topic_name`,`project_id`),
+  PRIMARY KEY (`project_id`,`topic_name`),
   FOREIGN KEY `topic_idx` (`topic_name`, `owner_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster /*!50100 PARTITION BY KEY (topic_name) */ ;
 

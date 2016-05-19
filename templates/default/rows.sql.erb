@@ -4,12 +4,9 @@
 --
 
 INSERT INTO `bbc_group` (`group_name`, `group_desc`, `gid`) VALUES
-('BBC_ADMIN','Data Owner', 1001),
-('BBC_RESEARCHER','Users to run experiment', 1002),
-('BBC_GUEST','New users', 1003),
-('AUDITOR','To audit the platform',1004),
-('SYS_ADMIN', 'Platform administrator', 1005),
-('BBC_USER', 'Registered users in the system', 1006),
+('AUDITOR','Auditors for the platform',1004),
+('HOPS_ADMIN', 'System administrator', 1005),
+('HOPS_USER', 'Registered users in the system', 1006),
 ('AGENT', 'Secret Agents in the system', 1007)
 ;
 
@@ -89,6 +86,8 @@ INSERT INTO variables VALUES ("hiway_dir", "<%= @hiway_dir %>");
 INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>");
 
 INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
+
+INSERT INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
 
 -- ------
 -- Kafka settings

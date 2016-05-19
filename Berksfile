@@ -1,7 +1,7 @@
 source 'https://supermarket.chef.io'
 metadata
 
-cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "master"
+cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "certification"
 #cookbook 'kagent', '~> 0.1.2'
 #cookbook 'apache_hadoop', '~> 0.1.1'
 cookbook 'apache_hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "master"
