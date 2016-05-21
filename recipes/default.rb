@@ -43,8 +43,22 @@ end
 begin
   spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
 rescue 
-  spark_history_server_ip = ""
+  spark_history_server_ip = "127.0.0.1"
   Chef::Log.warn "could not find spark history server ip for HopsWorks!"
+end
+
+begin
+  oozie_ip = private_recipe_ip("oozie","default")
+rescue 
+  oozie_ip = "127.0.0.1"
+  Chef::Log.warn "could not find oozie ip for HopsWorks!"
+end
+
+begin
+  jhs_ip = private_recipe_ip("apache_hadoop","jhs")
+rescue 
+  jhs_ip = "127.0.0.1"
+  Chef::Log.warn "could not job history server ip for HopsWorks!"
 end
 
 
@@ -96,6 +110,8 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
+                :jhs_ip => jhs_ip,
+                :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :elastic_ip => elastic_ip,
                 :spark_dir => node.hadoop_spark.dir + "/spark",                
