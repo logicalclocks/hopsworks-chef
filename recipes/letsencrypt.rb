@@ -57,7 +57,7 @@ bash 'letsencrypt-setup' do
 	#{keytool} -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass $KEYSTOREPW
 	#{keytool} -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass $KEYSTOREPW
 
-	#{keytool} -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass adminpw
+	#{keytool} -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#{keytool} -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#Replace old Keystore & Truststore
 	cp -f keystore.jks cacerts.jks $GFDOMAIN/config/
