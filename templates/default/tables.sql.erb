@@ -592,7 +592,7 @@ create TABLE project_payments_history (
   KEY transaction_date_idx(transaction_date),
   KEY action_idx(action),
   KEY username_idx(username),
-  FOREIGN KEY username_idx(`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY username_idx(`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE VIEW `projects_last_payment` AS
