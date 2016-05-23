@@ -130,6 +130,7 @@ CREATE TABLE `project` (
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
   UNIQUE KEY(`inode_pid`, `inode_name`),
+  KEY user_idx(`username`),
   FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
@@ -194,12 +195,13 @@ CREATE TABLE `topic_acls` (
  `id` INT(11) NOT NULL AUTO_INCREMENT,
  `topic_name` VARCHAR(255) NOT NULL,
  `project_id` INT(11) NOT NULL,
- `username` VARCHAR(1000) NOT NULL,
+ `username` VARCHAR(150) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
+  FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster ;
 
@@ -601,7 +603,8 @@ create TABLE project_payments_history (
   PRIMARY KEY (projectname, transaction_date),
   KEY transaction_date_idx(transaction_date),
   KEY action_idx(action),
-  KEY username_idx(username)
+  KEY username_idx(username),
+  FOREIGN KEY username_idx(`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
 CREATE VIEW `projects_last_payment` AS
@@ -657,7 +660,7 @@ CREATE TABLE `file_activity`
 (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `activity` varchar(128) NOT NULL,
-  `hdfs_user_id` binary(16) NOT NULL,
+  `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `parent_id` int NOT NULL,
   `name` varchar(255) NOT NULL,

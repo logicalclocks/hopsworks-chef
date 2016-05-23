@@ -22,9 +22,10 @@ end
 # not be correct. install_dir is updated by install.rb, but not persisted, so we need to
 # reset it
 if node.glassfish.install_dir.include?("versions") == false
-  node.override.glassfish.install_dir = node.glassfish.install_dir + "/glassfish/versions/current"
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
 end
 
+domains_dir = node.glassfish.domains_dir
 private_ip=my_private_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
@@ -42,14 +43,28 @@ end
 begin
   spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
 rescue 
-  spark_history_server_ip = ""
+  spark_history_server_ip = "127.0.0.1"
   Chef::Log.warn "could not find spark history server ip for HopsWorks!"
+end
+
+begin
+  oozie_ip = private_recipe_ip("oozie","default")
+rescue 
+  oozie_ip = "127.0.0.1"
+  Chef::Log.warn "could not find oozie ip for HopsWorks!"
+end
+
+begin
+  jhs_ip = private_recipe_ip("apache_hadoop","jhs")
+rescue 
+  jhs_ip = "127.0.0.1"
+  Chef::Log.warn "could not job history server ip for HopsWorks!"
 end
 
 
 
-tables_path = "#{Chef::Config.file_cache_path}/tables.sql"
-rows_path = "#{Chef::Config.file_cache_path}/rows.sql"
+tables_path = "#{domains_dir}/tables.sql"
+rows_path = "#{domains_dir}/rows.sql"
 
 hopsworks_grants "hopsworks_tables" do
   tables_path  "#{tables_path}"
@@ -95,6 +110,8 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
+                :jhs_ip => jhs_ip,
+                :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :elastic_ip => elastic_ip,
                 :spark_dir => node.hadoop_spark.dir + "/spark",                
@@ -130,7 +147,6 @@ end
 username=node.hopsworks.admin.user
 password=node.hopsworks.admin.password
 domain_name="domain1"
-domains_dir = node.glassfish.domains_dir
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 

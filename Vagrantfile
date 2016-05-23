@@ -33,13 +33,6 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>19009})
 # Glassfish Debugger port
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>20009})
-# Ooozie port
-  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
-# Dr Elephant
-#  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
-# Spark History Server
-  c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
-
 
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13000"]
@@ -81,9 +74,6 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	  "livy" =>      { 
-   	  	       "private_ips" => ["10.0.2.15"]
-	       },
      },
      "elastic" => {
 	  "default" =>      { 
@@ -98,8 +88,7 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
-                "use_hopsworks" => "true",
-#               "download_url" => "http://snurran.sics.se/hops/beta/hops-2.4.0.tgz"
+		 "use_hopsworks" => "true",
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
@@ -147,28 +136,11 @@ Vagrant.configure("2") do |c|
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
-	  "historyserver" =>    { 
-       	 	      "private_ips" => ["10.0.2.15"]
-          },
 	  "worker" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
-     "flink" => {
-	  "user" => "glassfish",
-	  "jobmanager" =>    { 
-       	 	      "private_ips" => ["10.0.2.15"]
-          },
-	  "taskmanager" =>    { 
-       	 	      "private_ips" => ["10.0.2.15"]
-          }
-     },
      "kzookeeper" => {
-	  "default" =>      { 
-   	  	       "private_ips" => ["10.0.2.15"]
-	       },
-     },
-     "oozie" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -201,10 +173,8 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::nm"
 #      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "zeppelin::livy"
-#      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
-      chef.add_recipe "hadoop_spark::historyserver"
+      #chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "hopsworks::certificateauthority"
@@ -213,3 +183,4 @@ Vagrant.configure("2") do |c|
   end 
 
 end
+

@@ -44,6 +44,7 @@ suites:
 #       - recipe[adam::install]
 #       - recipe[kzookeeper::install]
 #       - recipe[kkafka::install]
+       - recipe[livy::install]
        - recipe[ndb::mgmd]
        - recipe[ndb::ndbd]
        - recipe[ndb::mysqld]
@@ -56,7 +57,7 @@ suites:
        - recipe[elastic::default]
        - recipe[hadoop_spark::yarn]
        - recipe[flink::yarn]
-       - recipe[zeppelin::livy]
+       - recipe[livy::default]
        - recipe[hopsworks]
        - recipe[hopsworks::dev]
 #       - recipe[adam]
@@ -138,7 +139,10 @@ suites:
             default:
                private_ips: ["10.0.2.15"]
             private_ips: ["10.0.2.15"]
-            public_ips: ["10.0.2.15"]
+         livy:
+            default:
+               private_ips: ["10.0.2.15"]
+            private_ips: ["10.0.2.15"]
          hadoop_spark:
             user: glassfish
             worker:
