@@ -30,9 +30,6 @@ bash 'letsencrypt-setup' do
 	cp -f $GFDOMAIN/config/keystore.jks keystore.jks.backup
 	cp -f $GFDOMAIN/config/cacerts.jks cacerts.jks.backup
 
-	mkdir etc
-	cd etc
-
 	#Make a temp. copy of the Trusstore
 	cp -f $GFDOMAIN/config/cacerts.jks .
 
@@ -62,10 +59,6 @@ bash 'letsencrypt-setup' do
 	#Replace old Keystore & Truststore
 	cp -f keystore.jks cacerts.jks $GFDOMAIN/config/
 	chown -R #{node.glassfish.user} $GFDOMAIN/config/
-
-	#Delete Temp Folder
-	cd ..
-	rm -rf etc
 
 	touch #{node.glassfish.base_dir}/.letsencypt_installed
   	chown #{node.glassfish.user} #{node.glassfish.base_dir}/.letsencypt_installed
