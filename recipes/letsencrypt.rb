@@ -8,9 +8,9 @@ bash 'letsencrypt-run' do
     cwd "/tmp"
     code <<-EOF
       cd /tmp
-      git clone https://github.com/letsencrypt/letsencrypt
-      cd letsencrypt
-      ./letsencrypt-auto -p certonly --standalone -d hops.site -d www.hops.site
+      git clone https://github.com/certbot/certbot
+      cd certbot
+      ./certbot-auto certonly --standalone -d hops.site -d www.hops.site
 EOF
 end
 
