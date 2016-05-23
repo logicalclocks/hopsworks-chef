@@ -164,11 +164,23 @@ CREATE TABLE `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster;
 
+CREATE TABLE `schemas` (
+  `name` VARCHAR(255) NOT NULL,
+  `version` INT(11) NOT NULL,
+  `contents` VARCHAR(10000) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   KEY created_on_idx (created_on),
+   PRIMARY KEY (`name`,`version`)
+) ENGINE=ndbcluster;
+
 CREATE TABLE `project_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
+  `schema_name` VARCHAR(255) NOT NULL,
+  `schema_version` INT(11) NOT NULL,
   PRIMARY KEY (`topic_name`,`project_id`),
-  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schemas` (`name`,`version`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster /*!50100 PARTITION BY KEY (topic_name) */ ;
 
 CREATE TABLE `shared_topics` (
