@@ -25,6 +25,7 @@ depends 'compat_resource'
 depends 'ulimit2'
 depends 'authbind'
 depends 'apache_hadoop'
+depends 'epipe'
 depends 'livy'
 depends 'oozie'
 

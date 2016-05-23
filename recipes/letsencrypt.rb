@@ -8,9 +8,9 @@ bash 'letsencrypt-run' do
     cwd "/tmp"
     code <<-EOF
       cd /tmp
-      git clone https://github.com/letsencrypt/letsencrypt
-      cd letsencrypt
-      ./letsencrypt-auto -p certonly --standalone -d hops.site -d www.hops.site
+      git clone https://github.com/certbot/certbot
+      cd certbot
+      ./certbot-auto certonly --standalone -d hops.site -d www.hops.site
 EOF
 end
 
@@ -29,9 +29,6 @@ bash 'letsencrypt-setup' do
 	#Backup Keystore & Truststore
 	cp -f $GFDOMAIN/config/keystore.jks keystore.jks.backup
 	cp -f $GFDOMAIN/config/cacerts.jks cacerts.jks.backup
-
-	mkdir etc
-	cd etc
 
 	#Make a temp. copy of the Trusstore
 	cp -f $GFDOMAIN/config/cacerts.jks .
@@ -57,15 +54,11 @@ bash 'letsencrypt-setup' do
 	#{keytool} -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass $KEYSTOREPW
 	#{keytool} -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass $KEYSTOREPW
 
-	#{keytool} -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass adminpw
+	#{keytool} -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#{keytool} -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#Replace old Keystore & Truststore
 	cp -f keystore.jks cacerts.jks $GFDOMAIN/config/
 	chown -R #{node.glassfish.user} $GFDOMAIN/config/
-
-	#Delete Temp Folder
-	cd ..
-	rm -rf etc
 
 	touch #{node.glassfish.base_dir}/.letsencypt_installed
   	chown #{node.glassfish.user} #{node.glassfish.base_dir}/.letsencypt_installed

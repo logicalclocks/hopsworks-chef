@@ -93,7 +93,6 @@ Vagrant.configure("2") do |c|
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
                 "use_hopsworks" => "true",
-#               "download_url" => "http://snurran.sics.se/hops/beta/hops-2.4.0.tgz"
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
@@ -167,6 +166,11 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "epipe" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "kkafka" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -185,7 +189,8 @@ Vagrant.configure("2") do |c|
 #      chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
 #      chef.add_recipe "kkafka::install"
-      chef.add_recipe "livy::install"
+#      chef.add_recipe "epipe::install"
+#      chef.add_recipe "livy::install"
 #      chef.add_recipe "oozie::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
@@ -195,15 +200,17 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
+      chef.add_recipe "hops::jhs"
 #      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
-      chef.add_recipe "livy::default"
+#      chef.add_recipe "livy::default"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
 #      chef.add_recipe "hopsworks::certificateauthority"
+#      chef.add_recipe "epipe::install"
 #      chef.add_recipe "oozie::default"
   end 
 
