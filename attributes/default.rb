@@ -4,6 +4,8 @@ include_attribute "flink"
 include_attribute "elastic"
 include_attribute "zeppelin"
 include_attribute "glassfish"
+include_attribute "kkafka"
+include_attribute "kzookeeper"
 
 
 node.default.glassfish.variant             = "payara"

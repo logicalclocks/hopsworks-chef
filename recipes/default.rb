@@ -165,7 +165,8 @@ template "#{rows_path}" do
                 :zk_ip => zk_ip,
                 :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
-                :kafka_num_partitions => node.hopsworks.kafka_num_partitions
+                :kafka_num_partitions => node.hopsworks.kafka_num_partitions,
+                :kafka_user => node.kkafka.user
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
