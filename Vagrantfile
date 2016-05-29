@@ -40,8 +40,7 @@ Vagrant.configure("2") do |c|
 #  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
-
-
+  
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "12400"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -74,7 +73,8 @@ Vagrant.configure("2") do |c|
      "hopsworks" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
-	       }
+	       },
+          "war_url" => "http://snurran.sics.se/hops/hopsworks-jim.war",
      },
      "zeppelin" => {
 	  "default" =>      { 
