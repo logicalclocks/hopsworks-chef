@@ -7,6 +7,7 @@ decoded = node.hopsworks.gmail.password
 # If the password is the 'default' password
 if decoded.eql? "password"
   decoded = ::File.read("/tmp/hopsworks.encoded")
+  node.override.hopsworks.gmail.password = decoded
 end
 
 gmailProps = {

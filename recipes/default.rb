@@ -37,28 +37,42 @@ begin
   elastic_ip = private_recipe_ip("elastic","default")
 rescue 
   elastic_ip = ""
-  Chef::Log.warn "could not find elastic server for HopsWorks!"
+  Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
 end
 
 begin
   spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
 rescue 
-  spark_history_server_ip = "127.0.0.1"
-  Chef::Log.warn "could not find spark history server ip for HopsWorks!"
+  spark_history_server_ip = node.hostname
+  Chef::Log.warn "could not find the spark history server ip for HopsWorks!"
 end
 
 begin
   oozie_ip = private_recipe_ip("oozie","default")
 rescue 
-  oozie_ip = "127.0.0.1"
+  oozie_ip = node.hostname
   Chef::Log.warn "could not find oozie ip for HopsWorks!"
 end
 
 begin
   jhs_ip = private_recipe_ip("apache_hadoop","jhs")
 rescue 
-  jhs_ip = "127.0.0.1"
-  Chef::Log.warn "could not job history server ip for HopsWorks!"
+  jhs_ip = node.hostname
+  Chef::Log.warn "could not find the MR job history server ip!"
+end
+
+begin
+  livy_ip = private_recipe_ip("livy","default")
+rescue 
+  livy_ip = node.hostname
+  Chef::Log.warn "could not find livy server ip!"
+end
+
+begin
+  epipe_ip = private_recipe_ip("epipe","default")
+rescue 
+  epipe_ip = node.hostname
+  Chef::Log.warn "could not find th epipe server ip!"
 end
 
 
@@ -110,6 +124,8 @@ template "#{rows_path}" do
    mode 0755
    action :create
     variables({
+                :epipe_ip => epipe_ip,
+                :livy_ip => livy_ip,
                 :jhs_ip => jhs_ip,
                 :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
