@@ -75,6 +75,20 @@ rescue
   Chef::Log.warn "could not find th epipe server ip!"
 end
 
+begin
+  zk_ip = private_recipe_ip("kzookeeper","default")
+rescue 
+  zk_ip = node.hostname
+  Chef::Log.warn "could not find th zk server ip!"
+end
+
+begin
+  kafka_ip = private_recipe_ip("kkafka","default")
+rescue 
+  kafka_ip = node.hostname
+  Chef::Log.warn "could not find th kafka server ip!"
+end
+
 
 
 tables_path = "#{domains_dir}/tables.sql"
@@ -148,6 +162,8 @@ template "#{rows_path}" do
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user,
+                :zk_ip => zk_ip,
+                :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
                 :kafka_num_partitions => node.hopsworks.kafka_num_partitions
               })
