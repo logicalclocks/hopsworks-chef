@@ -201,7 +201,7 @@ CREATE TABLE `topic_acls` (
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`principal`) REFERENCES `hops`.`hdfs_users` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY `topic_idx` (`topic_name`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `topic_idx` (`topic_name`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster ;
 
 CREATE TABLE `userlogins` (
