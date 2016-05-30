@@ -40,8 +40,7 @@ Vagrant.configure("2") do |c|
 #  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
-
-
+  
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "12400"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -74,7 +73,8 @@ Vagrant.configure("2") do |c|
      "hopsworks" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
-	       }
+	       },
+          "war_url" => "http://snurran.sics.se/hops/hopsworks-jim.war",
      },
      "zeppelin" => {
 	  "default" =>      { 
@@ -184,10 +184,10 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
-      chef.add_recipe "flink::install"
+#      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
 #      chef.add_recipe "elastic::install"
-      chef.add_recipe "kzookeeper::install"
+#      chef.add_recipe "kzookeeper::install"
 #      chef.add_recipe "kkafka::install"
 #      chef.add_recipe "epipe::install"
 #      chef.add_recipe "livy::install"
@@ -200,10 +200,10 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-      chef.add_recipe "hops::jhs"
+#      chef.add_recipe "hops::jhs"
 #      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "flink::yarn"
+#      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
 #      chef.add_recipe "livy::default"
