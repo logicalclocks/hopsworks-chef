@@ -194,15 +194,14 @@ CREATE TABLE `shared_topics` (
 CREATE TABLE `topic_acls` (
  `id` INT(11) NOT NULL AUTO_INCREMENT,
  `topic_name` VARCHAR(255) NOT NULL,
- `project_id` INT(11) NOT NULL,
- `username` VARCHAR(150) NOT NULL,
+ `principal` VARCHAR(100) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`principal`) REFERENCES `hops`.`hdfs_users` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY `topic_idx` (`topic_name`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
 ) ENGINE=ndbcluster ;
 
 CREATE TABLE `userlogins` (
