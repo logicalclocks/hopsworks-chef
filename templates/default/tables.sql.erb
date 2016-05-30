@@ -526,12 +526,12 @@ CREATE VIEW `users_groups` AS
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
 CREATE TABLE `user_certs` (
 	`projectname` VARCHAR(100) NOT NULL,
-	`user_id` INT(11) NOT NULL,
+	`username` VARCHAR(10)  NOT NULL,
 	`user_key` BLOB,
 	`user_cert` BLOB,
-	PRIMARY KEY (`projectname`, `user_id`),
+	PRIMARY KEY (`projectname`, `username`),
 	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
-	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
+	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster;
 
 CREATE TABLE `ssh_keys` (
