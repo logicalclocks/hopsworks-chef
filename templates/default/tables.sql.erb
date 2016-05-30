@@ -521,15 +521,15 @@ CREATE VIEW `users_groups` AS
 -- -----------------------
 
 -- ATTENTION
--- CERTS ARE BOUND TO PROJECTID+USERID
+-- CERTS ARE BOUND TO PROJECTNAME+USERID
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
 CREATE TABLE `user_certs` (
-	`project_id` INT(11) NOT NULL,
+	`projectname` VARCHAR(100) NOT NULL,
 	`user_id` INT(11) NOT NULL,
 	`user_key` BLOB,
 	`user_cert` BLOB,
-	PRIMARY KEY (`project_id`, `user_id`),
-	FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+	PRIMARY KEY (`projectname`, `user_id`),
+	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
 	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster;
 
