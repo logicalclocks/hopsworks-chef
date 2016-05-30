@@ -33,7 +33,14 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>19009})
 # Glassfish Debugger port
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>20009})
-
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
+# Ooozie port
+  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
+# Dr Elephant
+#  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
+# Spark History Server
+  c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
+  
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -159,6 +166,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
       #chef.add_recipe "flink::install"
+#      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
 #      chef.add_recipe "elastic::install"
 #      chef.add_recipe "kzookeeper::install"
@@ -171,8 +179,11 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
-#      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
+#      chef.add_recipe "elastic::default"
+#      chef.add_recipe "hops::jhs"
+#      chef.add_recipe "elastic::default"
+#      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       #chef.add_recipe "flink::yarn"
       chef.add_recipe "hopsworks::default"
