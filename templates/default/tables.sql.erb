@@ -164,7 +164,7 @@ CREATE TABLE `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
-CREATE TABLE `schemas` (
+CREATE TABLE `schema_topics` (
   `name` VARCHAR(255) NOT NULL,
   `version` INT(11) NOT NULL,
   `contents` VARCHAR(10000) NOT NULL,
@@ -194,14 +194,15 @@ CREATE TABLE `shared_topics` (
 CREATE TABLE `topic_acls` (
  `id` INT(11) NOT NULL AUTO_INCREMENT,
  `topic_name` VARCHAR(255) NOT NULL,
- `principal` VARCHAR(100) NOT NULL,
+ `project_id` INT(11) NOT NULL,
+ `username` VARCHAR(150) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`principal`) REFERENCES `hops`.`hdfs_users` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY `topic_idx` (`topic_name`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE `userlogins` (
@@ -526,12 +527,12 @@ CREATE VIEW `users_groups` AS
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
 CREATE TABLE `user_certs` (
 	`projectname` VARCHAR(100) NOT NULL,
-	`user_id` INT(11) NOT NULL,
+	`username` VARCHAR(10)  NOT NULL,
 	`user_key` BLOB,
 	`user_cert` BLOB,
-	PRIMARY KEY (`projectname`, `user_id`),
+	PRIMARY KEY (`projectname`, `username`),
 	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
-	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
+	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ssh_keys` (
