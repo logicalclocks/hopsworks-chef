@@ -337,6 +337,15 @@ end
     action :create
 end
 
+if node.glassfish.install_dir.include?("versions") == false
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
+end
+
+# If the install.rb recipe failed and is re-run, install_dir needs to reset it
+if node.glassfish.install_dir.include?("versions") == false
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
+end
+
 # Fix for:
 #  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html
 file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
