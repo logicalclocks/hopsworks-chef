@@ -171,7 +171,7 @@ CREATE TABLE `schema_topics` (
   `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    KEY created_on_idx (created_on),
    PRIMARY KEY (`name`,`version`)
-) ENGINE=ndbcluster;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `project_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
@@ -203,7 +203,7 @@ CREATE TABLE `topic_acls` (
  `role` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 ;
 
 CREATE TABLE `userlogins` (
