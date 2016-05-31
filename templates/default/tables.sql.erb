@@ -179,8 +179,9 @@ CREATE TABLE `project_topics` (
   `schema_name` VARCHAR(255) NOT NULL,
   `schema_version` INT(11) NOT NULL,
   PRIMARY KEY (`topic_name`,`project_id`),
+  KEY schema_idx (schema_name),  
   FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schemas` (`name`,`version`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (topic_name) */ ;
 
 CREATE TABLE `shared_topics` (
