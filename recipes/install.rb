@@ -156,6 +156,14 @@ if ::File.exists?( "#{installed}" ) == false
 
 end
 
+
+# If the install.rb recipe failed and is re-run, install_dir needs to reset it
+if node.glassfish.install_dir.include?("versions") == false
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
+end
+
+
+
 #
 # This code is to enable ssh access
 #
@@ -335,15 +343,6 @@ end
     group node.glassfish.group
     mode "750"
     action :create
-end
-
-if node.glassfish.install_dir.include?("versions") == false
-  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
-end
-
-# If the install.rb recipe failed and is re-run, install_dir needs to reset it
-if node.glassfish.install_dir.include?("versions") == false
-  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
 end
 
 # Fix for:
