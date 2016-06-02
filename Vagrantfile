@@ -16,30 +16,29 @@ Vagrant.configure("2") do |c|
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>14009})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
 # HTTPS webserver
   c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>16009})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4849})
 # HDFS webserver
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
-# 
+# Datanode 
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>17009})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>18009})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>900})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>19009})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
   c.vm.network(:forwarded_port, {:guest=>9009, :host=>20009})
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
 #  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
 # Spark History Server
-  c.vm.network(:forwarded_port, {:guest=>18080, :host=>21006})
+  c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
   
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13000"]
