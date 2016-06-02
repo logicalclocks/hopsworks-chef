@@ -164,11 +164,24 @@ CREATE TABLE `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `schema_topics` (
+  `name` VARCHAR(255) NOT NULL,
+  `version` INT(11) NOT NULL,
+  `contents` VARCHAR(10000) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   KEY created_on_idx (created_on),
+   PRIMARY KEY (`name`,`version`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 CREATE TABLE `project_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
+  `schema_name` VARCHAR(255) NOT NULL,
+  `schema_version` INT(11) NOT NULL,
   PRIMARY KEY (`topic_name`,`project_id`),
-  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY schema_name_idx (schema_name),  
+  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (topic_name) */ ;
 
 CREATE TABLE `shared_topics` (
@@ -184,6 +197,7 @@ CREATE TABLE `topic_acls` (
  `topic_name` VARCHAR(255) NOT NULL,
  `project_id` INT(11) NOT NULL,
  `username` VARCHAR(150) NOT NULL,
+ `principal` VARCHAR(170) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
@@ -472,16 +486,16 @@ CREATE VIEW `users_groups` AS
 -- -----------------------
 
 -- ATTENTION
--- CERTS ARE BOUND TO PROJECTID+USERID
+-- CERTS ARE BOUND TO PROJECTNAME+USERID
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
 CREATE TABLE `user_certs` (
-	`project_id` INT(11) NOT NULL,
-	`user_id` INT(11) NOT NULL,
+	`projectname` VARCHAR(100) NOT NULL,
+	`username` VARCHAR(10)  NOT NULL,
 	`user_key` BLOB,
 	`user_cert` BLOB,
-	PRIMARY KEY (`project_id`, `user_id`),
-	FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+	PRIMARY KEY (`projectname`, `username`),
+	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
+	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ssh_keys` (
