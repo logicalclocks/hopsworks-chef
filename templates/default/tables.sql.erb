@@ -325,10 +325,11 @@ CREATE TABLE `meta_fields` (
   `fieldid` INT(11) NOT NULL AUTO_INCREMENT,
   `maxsize` INT(11) DEFAULT NULL,
   `name` VARCHAR(255) DEFAULT NULL,
-  `required` SMALLINT(6) DEFAULT NULL,
-  `searchable` SMALLINT(6) DEFAULT NULL,
+  `required` TINYINT(1) DEFAULT NULL,
+  `searchable` TINYINT(1) DEFAULT NULL,
   `tableid` INT(11) DEFAULT NULL,
   `type` VARCHAR(255) DEFAULT NULL,
+  `ftype` MEDIUMINT(11) DEFAULT 3,
   `description` VARCHAR(250) NOT NULL,
   `fieldtypeid` MEDIUMINT(11) NOT NULL,
   `position` MEDIUMINT(11) DEFAULT '0',
@@ -364,7 +365,7 @@ CREATE TABLE `meta_raw_data` (
 
 CREATE TABLE `meta_data` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `data` LONGTEXT NOT NULL,
+  `data` VARCHAR(12000) NOT NULL,
   `fieldid` INT(11) NOT NULL,
   `tupleid` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `fieldid`, `tupleid`),
