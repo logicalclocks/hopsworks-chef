@@ -85,11 +85,6 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-#          "version" => "2.1.2",
-#          "checksum" => "069cf3ab88a36d01f86e54b46169891b0adef6eda126ea35e540249d904022e1", 
-#	  "jdbc_importer" =>      { 
-#               "version" => "2.1.1.2"
-#          },
      },
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
@@ -151,6 +146,16 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "livy" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
+     "epipe" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "kkafka" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -159,18 +164,18 @@ Vagrant.configure("2") do |c|
      "vagrant" => "true",
      }
 
-      chef.add_recipe "kagent::install"
+     chef.add_recipe "kagent::install"
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
-      #chef.add_recipe "flink::install"
-#      chef.add_recipe "flink::install"
+      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
-#      chef.add_recipe "kzookeeper::install"
-      chef.add_recipe "kkafka::install"
-      chef.add_recipe "epipe:install"
+      chef.add_recipe "kzookeeper::install"
+      chef.add_recipe "epipe::install"
+      chef.add_recipe "livy::install"
+#      chef.add_recipe "oozie::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -179,19 +184,22 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
       chef.add_recipe "hops::nm"
+      chef.add_recipe "hops::jhs"
+      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "elastic::default"
-#      chef.add_recipe "hops::jhs"
-      chef.add_recipe "elastic::default"
-#      chef.add_recipe "flink::yarn"
+      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
-      #chef.add_recipe "flink::yarn"
+      chef.add_recipe "hadoop_spark::historyserver"
+      chef.add_recipe "livy::default"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "hopsworks::certificateauthority"
       chef.add_recipe "kagent::default"
-      chef.add_recipe "epipe:default"
       chef.add_recipe "kagent::csr"
+      chef.add_recipe "epipe::default"
+      chef.add_recipe "kkafka::install"
+#      chef.add_recipe "oozie::default"
+
   end 
 
 end
