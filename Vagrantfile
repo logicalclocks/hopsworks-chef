@@ -1,4 +1,4 @@
-#require 'vagrant-omnibus'
+require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
@@ -8,7 +8,7 @@ Vagrant.configure("2") do |c|
   # end
   # c.omnibus.cache_packages = false
 
-#  c.omnibus.chef_version = "12.4.3"
+  c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-kafka.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks.war",
         "user_envs" => "false",
      },
      "zeppelin" => {
