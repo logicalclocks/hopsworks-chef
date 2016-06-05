@@ -2,11 +2,13 @@ require 'vagrant-omnibus'
 
 Vagrant.configure("2") do |c|
 
-  # if Vagrant.has_plugin?("vagrant-cachier")
-  #   c.cache.auto_detect = false
-  #   c.cache.enable :apt
-  # end
-  # c.omnibus.cache_packages = false
+  if Vagrant.has_plugin?("vagrant-cachier")
+    c.cache.scope = :box
+    c.cache.auto_detect = true
+    #c.cache.enable :apt
+    #c.cache.enable :dpkg
+    c.omnibus.cache_packages = true
+  end
 
   c.omnibus.chef_version = "12.4.3"
   c.vm.box = "opscode-ubuntu-14.04"
