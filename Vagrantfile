@@ -1,16 +1,18 @@
-require 'vagrant-omnibus'
+
 
 Vagrant.configure("2") do |c|
-
-#  if Vagrant.has_plugin?("vagrant-cachier")
-#    c.cache.scope = :box
-#    c.cache.auto_detect = true
-#    c.cache.enable :apt
-#    c.cache.enable :dpkg
-#    c.omnibus.cache_packages = true
-#  end
-
-  c.omnibus.chef_version = "12.4.3"
+  if Vagrant.has_plugin?("vagrant-omnibus")
+#    require 'vagrant-omnibus'
+    c.omnibus.chef_version = "12.4.3"
+  end
+  if Vagrant.has_plugin?("vagrant-cachier")
+    c.omnibus.cache_packages = true        
+    c.cache.scope = :machine
+    c.cache.auto_detect = false
+    c.cache.enable :apt
+    c.cache.enable :gem    
+  end
+#  c.vm.synced_folder "/srv/hops-downloads", "/srv/hops-downloads"
   c.vm.box = "opscode-ubuntu-14.04"
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -166,28 +168,28 @@ Vagrant.configure("2") do |c|
      "vagrant" => "true",
      }
 
-     chef.add_recipe "kagent::install"
-      chef.add_recipe "hopsworks::install"
-      chef.add_recipe "ndb::install"
-      chef.add_recipe "hops::install"
-      chef.add_recipe "hadoop_spark::install"
-      chef.add_recipe "flink::install"
-      chef.add_recipe "zeppelin::install"
-      chef.add_recipe "elastic::install"
-      chef.add_recipe "kzookeeper::install"
-      chef.add_recipe "epipe::install"
-      chef.add_recipe "livy::install"
+#     chef.add_recipe "kagent::install"
+#      chef.add_recipe "hopsworks::install"
+#      chef.add_recipe "ndb::install"
+#      chef.add_recipe "hops::install"
+#      chef.add_recipe "hadoop_spark::install"
+#      chef.add_recipe "flink::install"
+#      chef.add_recipe "zeppelin::install"
+#      chef.add_recipe "elastic::install"
+#      chef.add_recipe "kzookeeper::install"
+#      chef.add_recipe "epipe::install"
+#      chef.add_recipe "livy::install"
 #      chef.add_recipe "oozie::install"
-      chef.add_recipe "ndb::mgmd"
-      chef.add_recipe "ndb::ndbd"
-      chef.add_recipe "ndb::mysqld"
-      chef.add_recipe "hops::ndb"
-      chef.add_recipe "hops::nn"
-      chef.add_recipe "hops::dn"
-      chef.add_recipe "hops::rm"
-      chef.add_recipe "hops::nm"
-      chef.add_recipe "hops::jhs"
-      chef.add_recipe "elastic::default"
+#      chef.add_recipe "ndb::mgmd"
+#      chef.add_recipe "ndb::ndbd"
+#      chef.add_recipe "ndb::mysqld"
+#      chef.add_recipe "hops::ndb"
+#      chef.add_recipe "hops::nn"
+#      chef.add_recipe "hops::dn"
+#      chef.add_recipe "hops::rm"
+#      chef.add_recipe "hops::nm"
+#      chef.add_recipe "hops::jhs"
+#      chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
       chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
