@@ -356,7 +356,7 @@ remote_file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
   user node.glassfish.user
   group node.glassfish.group
   source node.hopsworks.guava_url
-  mode 0755
+  mode 0644
   action :create_if_missing
 end
 
