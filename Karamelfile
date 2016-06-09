@@ -7,6 +7,3 @@ dependencies:
     global:  
       - ndb::mysqld
       - hops::ndb
-  - recipe: hopsworks::certificateauthority
-    global:  
-      - hopsworks::default
