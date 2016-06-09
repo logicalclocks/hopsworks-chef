@@ -480,7 +480,8 @@ end
 #   mode 0750
 #   action :create
 # end 
- template "/bin/hopsworks-2fa" do
+
+template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"
     owner "root"
     mode 0700
@@ -488,3 +489,7 @@ end
  end 
 
 
+
+ hopsworks_certs "generate-certs" do
+   action :generate
+ end
