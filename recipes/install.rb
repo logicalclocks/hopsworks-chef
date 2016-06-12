@@ -44,6 +44,7 @@ node.override = {
       domain_name => {
         'config' => {
           'systemd_enabled' => systemd,
+          'systemd_start_timeout' => 240,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,

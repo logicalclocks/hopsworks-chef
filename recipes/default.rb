@@ -89,7 +89,12 @@ rescue
   Chef::Log.warn "could not find th kafka server ip!"
 end
 
-
+begin
+  drelephant_ip = private_recipe_ip("drelephant","default")
+rescue 
+  drelephant_ip = node.hostname
+  Chef::Log.warn "could not find the dr elephant server ip!"
+end
 
 tables_path = "#{domains_dir}/tables.sql"
 rows_path = "#{domains_dir}/rows.sql"
@@ -166,6 +171,9 @@ template "#{rows_path}" do
                 :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
                 :kafka_num_partitions => node.hopsworks.kafka_num_partitions,
+                :drelephant_port => node.drelephant.port,
+                :drelephant_db => node.drelephant.db,                
+                :drelephant_ip => drelephant_ip,
                 :kafka_user => node.kkafka.user
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
