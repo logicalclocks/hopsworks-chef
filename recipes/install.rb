@@ -328,6 +328,29 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/cr
   action :create
 end
 
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh" do
+  source "deleteusercerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
+  action :create
+end
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh" do
+  source "deleteprojectcerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
+  action :create
+end
+
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
