@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ $# -ne 1  ]; then
+ echo "incorrect usage"
+ exit 1
+fi
+
+DOMAIN="$1"
+
+rm -f <%= @int_ca_dir %>/private/${DOMAIN}.key.pem
+

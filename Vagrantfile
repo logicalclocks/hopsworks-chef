@@ -160,6 +160,11 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "drelephant" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "kkafka" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
