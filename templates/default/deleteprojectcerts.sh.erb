@@ -8,3 +8,5 @@ fi
 DOMAIN="$1"
 
 rm -f <%= @int_ca_dir %>/private/${DOMAIN}__*.key.pem
+rm -f <%= @int_ca_dir %>/certs/${DOMAIN}__*.cert.pem
+rm -f <%= @int_ca_dir %>/csr/${DOMAIN}__*.csr.pem
