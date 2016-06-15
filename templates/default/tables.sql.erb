@@ -702,3 +702,10 @@ CREATE TABLE `file_activity`
 
 -- create index yarn_app_heuristic_result_details_i1 on yarn_app_heuristic_result_details (name);
 
+-- ePipe
+
+CREATE TABLE `epipe_recovery` (
+  `table` tinyint(1) NOT NULL,
+  `last_used_id` INT(11) NOT NULL,
+  PRIMARY KEY (`table`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
