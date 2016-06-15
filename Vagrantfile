@@ -32,7 +32,7 @@ Vagrant.configure("2") do |c|
 # YARN webserver
   c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>900})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
 # Flink webserver
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
@@ -184,7 +184,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
-      chef.add_recipe "oozie::install"
+#      chef.add_recipe "oozie::install"
 #      chef.add_recipe "drelephant::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
