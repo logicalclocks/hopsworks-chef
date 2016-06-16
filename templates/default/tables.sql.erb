@@ -492,8 +492,8 @@ CREATE VIEW `users_groups` AS
 CREATE TABLE `user_certs` (
 	`projectname` VARCHAR(100) NOT NULL,
 	`username` VARCHAR(10)  NOT NULL,
-	`user_key` BLOB,
-	`user_cert` BLOB,
+	`user_key` VARBINARY(7000),
+	`user_cert` VARBINARY(3000),
 	PRIMARY KEY (`projectname`, `username`),
 	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
 	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
