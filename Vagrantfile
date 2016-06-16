@@ -56,6 +56,9 @@ Vagrant.configure("2") do |c|
    c.vm.provision :chef_solo do |chef|
      chef.cookbooks_path = "cookbooks"
      chef.json = {
+     "ntp" => {
+          "install" => "true"
+     },
      "ndb" => {
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
