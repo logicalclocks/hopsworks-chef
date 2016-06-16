@@ -42,7 +42,6 @@ keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.c
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 
 chown -R glassfish:glassfish-admin ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
-cp  ${DOMAIN}__kstore.jks /tmp/tempstores/${DOMAIN}__kstore.jks
-cp  ${DOMAIN}__tstore.jks /tmp/tempstores/${DOMAIN}__tstore.jks
-rm  ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
+mv  ${DOMAIN}__kstore.jks /tmp/${DOMAIN}__kstore.jks
+mv  ${DOMAIN}__tstore.jks /tmp/${DOMAIN}__tstore.jks
 rm cert_and_key.p12
