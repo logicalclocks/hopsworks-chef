@@ -21,5 +21,6 @@ cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'authbind', '~> 0.1.10'
+cookbook 'ntp', '~> 2.0.0'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
