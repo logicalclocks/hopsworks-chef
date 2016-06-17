@@ -187,7 +187,6 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
-      chef.add_recipe "oozie::install"
 #      chef.add_recipe "adam::install"
 #      chef.add_recipe "oozie::install"
 #      chef.add_recipe "drelephant::install"
