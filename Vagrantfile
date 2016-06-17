@@ -32,7 +32,7 @@ Vagrant.configure("2") do |c|
 # YARN webserver
   c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>900})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
 # Flink webserver
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
@@ -56,6 +56,9 @@ Vagrant.configure("2") do |c|
    c.vm.provision :chef_solo do |chef|
      chef.cookbooks_path = "cookbooks"
      chef.json = {
+     "ntp" => {
+          "install" => "true"
+     },
      "ndb" => {
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
@@ -186,6 +189,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "livy::install"
       chef.add_recipe "oozie::install"
 #      chef.add_recipe "adam::install"
+#      chef.add_recipe "oozie::install"
 #      chef.add_recipe "drelephant::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
