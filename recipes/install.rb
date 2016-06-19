@@ -364,13 +364,6 @@ template "/etc/sudoers.d/glassfish" do
   action :create
 end  
 
- directory "/tmp/tempstores/" do
-    owner node.glassfish.user
-    group node.glassfish.group
-    mode "750"
-    action :create
-end
-
 # Fix for:
 #  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html
 file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
