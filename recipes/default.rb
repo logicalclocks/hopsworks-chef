@@ -165,7 +165,7 @@ template "#{rows_path}" do
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :elastic_user => node.elastic.user,
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
-                :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
+                :hdfs_default_quota => node.hopsworks.hdfs_default_quota_mbs.to_i,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user,
                 :zk_ip => zk_ip,
                 :kafka_ip => kafka_ip,                

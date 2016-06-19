@@ -72,7 +72,7 @@ default.hopsworks.gmail.placeholder        = "http://snurran.sics.se/hops/hopswo
 
 # #quotas
 default.hopsworks.yarn_default_quota_mins  = "10000"
-default.hopsworks.hdfs_default_quota_gbs   = "2000"
+default.hopsworks.hdfs_default_quota_mbs   = "200000"
 default.hopsworks.max_num_proj_per_user    = "10"
 
 node.default.apache_hadoop.user_envs       = "false"
