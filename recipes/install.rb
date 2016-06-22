@@ -355,7 +355,7 @@ template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
   group "root"
-  mode "644"
+  mode "0440"
   variables({
                 :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh",
                 :delete_usercert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh",
