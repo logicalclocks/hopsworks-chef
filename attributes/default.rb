@@ -27,6 +27,7 @@ default.hopsworks.max_perm_size            = "1500"
 node.default.glassfish.max_perm_size       = node.hopsworks.max_perm_size.to_i
 default.hopsworks.max_stack_size            = "1500"
 node.default.glassfish.max_stack_size       = node.hopsworks.max_stack_size.to_i
+node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-1.0.jar"
