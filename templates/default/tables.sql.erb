@@ -164,11 +164,24 @@ CREATE TABLE `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `schema_topics` (
+  `name` VARCHAR(255) NOT NULL,
+  `version` INT(11) NOT NULL,
+  `contents` VARCHAR(10000) NOT NULL,
+  `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   KEY created_on_idx (created_on),
+   PRIMARY KEY (`name`,`version`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 CREATE TABLE `project_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
+  `schema_name` VARCHAR(255) NOT NULL,
+  `schema_version` INT(11) NOT NULL,
   PRIMARY KEY (`topic_name`,`project_id`),
-  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY schema_name_idx (schema_name),  
+  FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (topic_name) */ ;
 
 CREATE TABLE `shared_topics` (
@@ -184,6 +197,7 @@ CREATE TABLE `topic_acls` (
  `topic_name` VARCHAR(255) NOT NULL,
  `project_id` INT(11) NOT NULL,
  `username` VARCHAR(150) NOT NULL,
+ `principal` VARCHAR(170) NOT NULL,
  `permission_type` VARCHAR(255) NOT NULL,
  `operation_type` VARCHAR(255) NOT NULL,
  `host` VARCHAR(255) NOT NULL,
@@ -311,10 +325,11 @@ CREATE TABLE `meta_fields` (
   `fieldid` INT(11) NOT NULL AUTO_INCREMENT,
   `maxsize` INT(11) DEFAULT NULL,
   `name` VARCHAR(255) DEFAULT NULL,
-  `required` SMALLINT(6) DEFAULT NULL,
-  `searchable` SMALLINT(6) DEFAULT NULL,
+  `required` TINYINT(1) DEFAULT NULL,
+  `searchable` TINYINT(1) DEFAULT NULL,
   `tableid` INT(11) DEFAULT NULL,
   `type` VARCHAR(255) DEFAULT NULL,
+  `ftype` MEDIUMINT(11) DEFAULT 3,
   `description` VARCHAR(250) NOT NULL,
   `fieldtypeid` MEDIUMINT(11) NOT NULL,
   `position` MEDIUMINT(11) DEFAULT '0',
@@ -350,7 +365,7 @@ CREATE TABLE `meta_raw_data` (
 
 CREATE TABLE `meta_data` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `data` LONGTEXT NOT NULL,
+  `data` VARCHAR(12000) NOT NULL,
   `fieldid` INT(11) NOT NULL,
   `tupleid` INT(11) NOT NULL,
   PRIMARY KEY (`id`, `fieldid`, `tupleid`),
@@ -377,48 +392,6 @@ CREATE TABLE `meta_inode_basic_metadata` (
   UNIQUE KEY (`inode_pid`, `inode_name`),
   FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
- 
--- elastic jdbc-importer buffer tables -------
-
-CREATE TABLE `meta_inodes_ops_parents_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
-CREATE TABLE `meta_inodes_ops_datasets_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=85;
-
-CREATE TABLE `meta_inodes_ops_children_pr_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
-CREATE TABLE `meta_inodes_ops_children_ds_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 -- Dataset table-------------------------------------------------
 CREATE TABLE `dataset` (
@@ -432,8 +405,11 @@ CREATE TABLE `dataset` (
   `status` TINYINT(1) NOT NULL DEFAULT '1',
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
+  `shared` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
+  KEY `inode_id` (`inode_id`),
+  KEY `inode_name` (`inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
@@ -448,17 +424,17 @@ CREATE TABLE `dataset_request` (
   `message` VARCHAR(3000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`dataset`,`projectId`),
-  FOREIGN KEY (`projectId`,`user_email`) 
-   REFERENCES `project_team` (`project_id`,`team_member`) 
-   ON DELETE CASCADE 
+  FOREIGN KEY (`projectId`,`user_email`)
+   REFERENCES `project_team` (`project_id`,`team_member`)
+   ON DELETE CASCADE
    ON UPDATE NO ACTION,
-  FOREIGN KEY (`dataset`) 
-   REFERENCES `dataset` (`id`) 
-   ON DELETE CASCADE 
+  FOREIGN KEY (`dataset`)
+   REFERENCES `dataset` (`id`)
+   ON DELETE CASCADE
    ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
--- Message 
+-- Message
 -- ------------------------
 CREATE TABLE `message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -511,16 +487,16 @@ CREATE VIEW `users_groups` AS
 -- -----------------------
 
 -- ATTENTION
--- CERTS ARE BOUND TO PROJECTID+USERID
+-- CERTS ARE BOUND TO PROJECTNAME+USERID
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
 CREATE TABLE `user_certs` (
-	`project_id` INT(11) NOT NULL,
-	`user_id` INT(11) NOT NULL,
-	`user_key` BLOB,
-	`user_cert` BLOB,
-	PRIMARY KEY (`project_id`, `user_id`),
-	FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-	FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION 
+	`projectname` VARCHAR(100) NOT NULL,
+	`username` VARCHAR(10)  NOT NULL,
+	`user_key` VARBINARY(7000),
+	`user_cert` VARBINARY(3000),
+	PRIMARY KEY (`projectname`, `username`),
+	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
+	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `ssh_keys` (
@@ -532,7 +508,7 @@ CREATE TABLE `ssh_keys` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
-CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`)); 
+CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));
 
 CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
@@ -642,7 +618,7 @@ CREATE TABLE `charon_repo_shared` (
   FOREIGN KEY (`project_id`,`site_id`) REFERENCES `charon_registered_sites` (`project_id`, `site_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
--- File Activity Table 
+-- File Activity Table
 --
 
 CREATE TABLE `file_activity`
@@ -660,3 +636,76 @@ CREATE TABLE `file_activity`
   CONSTRAINT `FK_134_321` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+
+
+
+--
+--
+-- DR ELEPHANT TABLES
+--
+
+-- CREATE TABLE yarn_app_result (
+--   id              VARCHAR(50)   NOT NULL,
+--   name            TEXT          ,
+--   username        VARCHAR(50)   NOT NULL,
+--   queue_name      TEXT          ,
+--   start_time      BIGINT        UNSIGNED NOT NULL,
+--   finish_time     BIGINT        UNSIGNED NOT NULL,
+--   tracking_url    TEXT          ,
+--   job_type        VARCHAR(50)   NOT NULL DEFAULT '',
+--   severity        TINYINT(2)    UNSIGNED NOT NULL,
+--   score           MEDIUMINT(9)  UNSIGNED DEFAULT 0,
+--   workflow_depth  TINYINT(2)    UNSIGNED DEFAULT 0,
+--   scheduler       TEXT          ,
+--   job_name        TEXT          ,
+--   job_exec_id     TEXT          ,
+--   flow_exec_id    VARCHAR(128)  NOT NULL DEFAULT '',
+--   job_def_id      VARCHAR(128)  NOT NULL DEFAULT '',
+--   flow_def_id     VARCHAR(128)  NOT NULL DEFAULT '',
+--   job_exec_url    TEXT          ,
+--   flow_exec_url   TEXT          ,
+--   job_def_url     TEXT          ,
+--   flow_def_url    TEXT          ,                                                          
+--   PRIMARY KEY (id)
+-- );
+
+-- create index yarn_app_result_i1 on yarn_app_result (finish_time);
+-- create index yarn_app_result_i2 on yarn_app_result (username,finish_time);
+-- create index yarn_app_result_i3 on yarn_app_result (job_type,username,finish_time);
+-- create index yarn_app_result_i4 on yarn_app_result (flow_exec_id);
+-- create index yarn_app_result_i5 on yarn_app_result (job_def_id);
+-- create index yarn_app_result_i6 on yarn_app_result (flow_def_id);
+-- create index yarn_app_result_i7 on yarn_app_result (start_time);
+
+-- CREATE TABLE yarn_app_heuristic_result (
+--   id                  INT(11)       NOT NULL AUTO_INCREMENT,
+--   yarn_app_result_id  VARCHAR(50)   NOT NULL,
+--   heuristic_class     TEXT          ,
+--   heuristic_name      VARCHAR(128)  NOT NULL,
+--   severity            TINYINT(2)    UNSIGNED NOT NULL,
+--   score               MEDIUMINT(9)  UNSIGNED DEFAULT 0,
+--   PRIMARY KEY (id),
+--   CONSTRAINT yarn_app_heuristic_result_f1 FOREIGN KEY (yarn_app_result_id) REFERENCES yarn_app_result (id)
+-- );
+
+-- create index yarn_app_heuristic_result_i1 on yarn_app_heuristic_result (yarn_app_result_id);
+-- create index yarn_app_heuristic_result_i2 on yarn_app_heuristic_result (heuristic_name,severity);
+
+-- CREATE TABLE yarn_app_heuristic_result_details (
+--   yarn_app_heuristic_result_id  INT(11)          NOT NULL,
+--   name                          VARCHAR(128)     NOT NULL DEFAULT '',
+--   value                         TEXT             ,
+--   details                       TEXT             ,
+--   PRIMARY KEY (yarn_app_heuristic_result_id,name),
+--   CONSTRAINT yarn_app_heuristic_result_details_f1 FOREIGN KEY (yarn_app_heuristic_result_id) REFERENCES yarn_app_heuristic_result (id)
+-- );
+
+-- create index yarn_app_heuristic_result_details_i1 on yarn_app_heuristic_result_details (name);
+
+-- ePipe
+
+CREATE TABLE `epipe_recovery` (
+  `table` tinyint(1) NOT NULL,
+  `last_used_id` INT(11) NOT NULL,
+  PRIMARY KEY (`table`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;

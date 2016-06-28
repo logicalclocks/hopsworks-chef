@@ -4,6 +4,8 @@ include_attribute "flink"
 include_attribute "elastic"
 include_attribute "zeppelin"
 include_attribute "glassfish"
+include_attribute "kkafka"
+include_attribute "kzookeeper"
 
 
 node.default.glassfish.variant             = "payara"
@@ -71,7 +73,7 @@ default.hopsworks.gmail.placeholder        = "http://snurran.sics.se/hops/hopswo
 
 # #quotas
 default.hopsworks.yarn_default_quota_mins  = "10000"
-default.hopsworks.hdfs_default_quota_gbs   = "2000"
+default.hopsworks.hdfs_default_quota_mbs   = "200000"
 default.hopsworks.max_num_proj_per_user    = "10"
 
 node.default.apache_hadoop.user_envs       = "false"
@@ -82,3 +84,7 @@ default.hopsworks.systemd                  = "true"
 default.hopsworks.kafka_num_replicas       = "1"
 default.hopsworks.kafka_num_partitions     = "1"
 
+default.glassfish.ciphersuite				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,+TLS_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA"
+											
+
+node.normal.java.jdk_version               = 7

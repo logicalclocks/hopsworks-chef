@@ -3,7 +3,7 @@ dependencies:
     local:  
       - ndb::install
       - hops::install
-  - recipe: hopsworks
+  - recipe: hopsworks::default
     global:  
       - ndb::mysqld
       - hops::ndb

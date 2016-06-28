@@ -20,7 +20,6 @@ depends 'elastic'
 depends 'hadoop_spark'
 depends 'flink'
 depends 'zeppelin'
-#depends 'sudo'
 depends 'compat_resource'
 depends 'ulimit2'
 depends 'authbind'
@@ -28,6 +27,9 @@ depends 'apache_hadoop'
 depends 'epipe'
 depends 'livy'
 depends 'oozie'
+depends 'kkafka'
+depends 'kzookeeper'
+depends 'drelephant'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
@@ -39,7 +41,6 @@ recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks d
 
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 
-recipe  "hopsworks::certificateauthority", "Creates Certificate Authority"
 #######################################################################################
 # Required Attributes
 #######################################################################################

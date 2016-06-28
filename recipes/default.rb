@@ -75,7 +75,26 @@ rescue
   Chef::Log.warn "could not find th epipe server ip!"
 end
 
+begin
+  zk_ip = private_recipe_ip("kzookeeper","default")
+rescue 
+  zk_ip = node.hostname
+  Chef::Log.warn "could not find th zk server ip!"
+end
 
+begin
+  kafka_ip = private_recipe_ip("kkafka","default")
+rescue 
+  kafka_ip = node.hostname
+  Chef::Log.warn "could not find th kafka server ip!"
+end
+
+begin
+  drelephant_ip = private_recipe_ip("drelephant","default")
+rescue 
+  drelephant_ip = node.hostname
+  Chef::Log.warn "could not find the dr elephant server ip!"
+end
 
 tables_path = "#{domains_dir}/tables.sql"
 rows_path = "#{domains_dir}/rows.sql"
@@ -148,10 +167,16 @@ template "#{rows_path}" do
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :elastic_user => node.elastic.user,
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
-                :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
+                :hdfs_default_quota => node.hopsworks.hdfs_default_quota_mbs.to_i,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user,
+                :zk_ip => zk_ip,
+                :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
-                :kafka_num_partitions => node.hopsworks.kafka_num_partitions
+                :kafka_num_partitions => node.hopsworks.kafka_num_partitions,
+                :drelephant_port => node.drelephant.port,
+                :drelephant_db => node.drelephant.db,                
+                :drelephant_ip => drelephant_ip,
+                :kafka_user => node.kkafka.user
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
@@ -296,7 +321,68 @@ glassfish_asadmin "set server.http-service.virtual-server.server.property.send-e
    secure false
 end
 
+# Disable SSLv3 on http-listener-2
+glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled=false" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
 
+# Disable SSLv3 on http-adminListener
+glassfish_asadmin "set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled=false" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Disable SSLv3 on iiop-listener.ssl
+glassfish_asadmin "set server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled=false" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Disable SSLv3 on iiop-muth_listener.ssl
+glassfish_asadmin "set server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled=false" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Restrict ciphersuite
+glassfish_asadmin "set 'configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Restrict ciphersuite
+glassfish_asadmin "set 'configs.config.server-config.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Restrict ciphersuite
+glassfish_asadmin "set 'configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
 
 # cluster="hopsworks"
 
@@ -404,7 +490,8 @@ end
 #   mode 0750
 #   action :create
 # end 
- template "/bin/hopsworks-2fa" do
+
+template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"
     owner "root"
     mode 0700
@@ -412,3 +499,7 @@ end
  end 
 
 
+
+ hopsworks_certs "generate-certs" do
+   action :generate
+ end
