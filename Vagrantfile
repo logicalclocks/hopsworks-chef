@@ -210,6 +210,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kagent::default"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kkafka::install"
+      chef.add_recipe "kkafka::default"
 #      chef.add_recipe "adam::default"
 #      chef.add_recipe "drelephant::default"
 #      chef.add_recipe "oozie::default"
