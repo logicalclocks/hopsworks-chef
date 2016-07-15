@@ -40,7 +40,7 @@ Vagrant.configure("2") do |c|
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
-#  c.vm.network(:forwarded_port, {:guest=>11000, :host=>21001})
+#  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
   
