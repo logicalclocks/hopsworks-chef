@@ -21,6 +21,7 @@
 RETVAL=0
 
 start() {
+rm -rf <%= node.glassfish.base_dir %>/glassfish/domains/#{domain_name}/osgi-cache/*
 su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> start-domain <%= @domain_name %>" <%= node.glassfish.user %> 
 return $?
 

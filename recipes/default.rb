@@ -104,7 +104,9 @@ template "#{rows_path}" do
                 :elastic_user => node.elastic.user,
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_gbs.to_i * 1024 * 1024 * 1024,
-                :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user
+                :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user,
+                :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
+                :kafka_num_partitions => node.hopsworks.kafka_num_partitions
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
@@ -364,3 +366,5 @@ end
     mode 0700
     action :create
  end 
+
+
