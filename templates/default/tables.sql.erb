@@ -238,6 +238,28 @@ CREATE TABLE `jobs` (
   FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `jobs_history` (
+  `job_id` INT(11) NOT NULL,
+  `inode_pid` INT(11) NOT NULL,
+  `inode_name` VARCHAR(255) NOT NULL,
+  `execution_id` INT(11) NOT NULL,
+  `app_id` CHAR(30) DEFAULT NULL,
+  `job_type` VARCHAR(255) NOT NULL,
+  `class_name` VARCHAR(255) NOT NULL,
+  `arguments` TEXT NOT NULL,
+  `input_blocks_in_hdfs` INT(11) NOT NULL,
+  `am_memory` INT(11) NOT NULL,
+  `am_Vcores` INT(11) NOT NULL,
+  `execution_duration` BIGINT(20) DEFAULT NULL,
+  `user_email` VARCHAR(150) NOT NULL,
+  `project_name` VARCHAR(100) NOT NULL,
+  `job_name` VARCHAR(128) DEFAULT NULL,
+  `state` VARCHAR(128) DEFAULT NULL,
+  `final_status` VARCHAR(128) DEFAULT NULL,
+  PRIMARY KEY (`job_id`,`inode_pid`,`inode_name`,`execution_id`),
+  UNIQUE KEY `inode_idx` (`job_id`, `inode_pid`,`inode_name`,`execution_id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 CREATE TABLE `executions` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `submission_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -261,7 +283,7 @@ CREATE TABLE `executions_inputfiles` (
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`execution_id`,`inode_pid`,`inode_name`),
-  UNIQUE KEY `inode_idx` (`inode_pid`,`inode_name`),
+  UNIQUE KEY `inode_idx` (`execution_id`, `inode_pid`,`inode_name`),
   FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
