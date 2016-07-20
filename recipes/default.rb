@@ -384,31 +384,31 @@ end
 
 
 # Enable Single Sign on
-glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-enabled=true'" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-enabled=true'" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
 # Enable Single Sign on
-glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-max-inactive-seconds=300'" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-max-inactive-seconds=300'" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
 # Enable Single Sign on
-glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-reap-interval-seconds=60'" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-reap-interval-seconds=60'" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
 
 
