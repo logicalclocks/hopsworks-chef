@@ -87,13 +87,35 @@ INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"
 
 INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
 
+INSERT INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
+
+INSERT INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
+
+INSERT INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
+
+INSERT INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
+
+INSERT INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
+
 -- ------
 -- Kafka settings
 --
 
+INSERT INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
+
+INSERT INTO variables VALUES ("kafka_user", "<%= @kafka_user %>");
+
+INSERT INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
+
 INSERT INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
 
 INSERT INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
+
+INSERT INTO variables VALUES ("drelephant_port", "<%= @drelephant_port %>");
+
+INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
+
+INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
 -- --------------------------------------------------------
 --
@@ -102,4 +124,8 @@ INSERT INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>"
 
 INSERT INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
 
+-- ePipe
 
+INSERT INTO epipe_recovery VALUES (1, 0);
+INSERT INTO epipe_recovery VALUES (2, 0);
+INSERT INTO epipe_recovery VALUES (3, 0);

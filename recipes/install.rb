@@ -44,6 +44,7 @@ node.override = {
       domain_name => {
         'config' => {
           'systemd_enabled' => systemd,
+          'systemd_start_timeout' => 240,
           'min_memory' => node.glassfish.min_mem,
           'max_memory' => node.glassfish.max_mem,
           'max_perm_size' => node.glassfish.max_perm_size,
@@ -155,6 +156,14 @@ if ::File.exists?( "#{installed}" ) == false
   end
 
 end
+
+
+# If the install.rb recipe failed and is re-run, install_dir needs to reset it
+if node.glassfish.install_dir.include?("versions") == false
+  node.override.glassfish.install_dir = "#{node.glassfish.install_dir}/glassfish/versions/current"
+end
+
+
 
 #
 # This code is to enable ssh access
@@ -319,36 +328,54 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/cr
   action :create
 end
 
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh" do
+  source "deleteusercerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
+  action :create
+end
+
+template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh" do
+  source "deleteprojectcerts.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "710"
+ variables({
+                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+              })
+  action :create
+end
+
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
   group "root"
-  mode "644"
+  mode "0440"
   variables({
-                :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh"
+                :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh",
+                :delete_usercert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh",
+                :delete_projectcert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh"
               })
   action :create
 end  
 
- directory "/tmp/tempstores/" do
-    owner node.glassfish.user
-    group node.glassfish.group
-    mode "750"
-    action :create
-end
-
 # Fix for:
 #  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html
-file "#{node.override.glassfish.install_dir}/glassfish/modules/guava.jar" do
+file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
   owner "root"
   action :delete
 end
  
-remote_file "#{node.override.glassfish.install_dir}/glassfish/modules/guava.jar" do
+remote_file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
   user node.glassfish.user
   group node.glassfish.group
   source node.hopsworks.guava_url
-  mode 0755
+  mode 0644
   action :create_if_missing
 end
 

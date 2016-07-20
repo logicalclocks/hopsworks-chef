@@ -1,3 +1,6 @@
+use_inline_resources
+
+notifying_action :generate do
 
 bash 'certificateauthority' do
     user "root"
@@ -63,4 +66,6 @@ bash 'certificateauthority' do
 	chmod 444 intermediate/certs/ca-chain.cert.pem
     EOF
  not_if { ::File.exists?("#{node.glassfish.domains_dir}/domain1/config/ca/private/ca.key.pem" ) }
+end
+
 end

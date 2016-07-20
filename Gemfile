@@ -9,10 +9,12 @@ gem 'berkshelf'
 #   gem "vagrant", github: "mitchellh/vagrant", tag: "v1.5.2"
 # end
 #
-# group :plugins do
-#   gem "vagrant-berkshelf", github: "berkshelf/vagrant-berkshelf"
-#   gem "vagrant-omnibus", github: "schisamo/vagrant-omnibus"
-# end
+ group :plugins do
+   gem "vagrant-omnibus", github: "schisamo/vagrant-omnibus"
+ end
 
 gem 'test-kitchen'
 gem 'kitchen-vagrant'
+gem "rspec", "3.4.0"
+gem 'airborne', '0.2.5'
+gem 'byebug'
