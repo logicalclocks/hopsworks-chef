@@ -413,49 +413,7 @@ CREATE TABLE `meta_inode_basic_metadata` (
   PRIMARY KEY(`id`),
   UNIQUE KEY (`inode_pid`, `inode_name`),
   FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster;
-
--- elastic jdbc-importer buffer tables -------
-
-CREATE TABLE `meta_inodes_ops_parents_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster AUTO_INCREMENT=1;
-
-CREATE TABLE `meta_inodes_ops_datasets_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster AUTO_INCREMENT=85;
-
-CREATE TABLE `meta_inodes_ops_children_pr_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster AUTO_INCREMENT=1;
-
-CREATE TABLE `meta_inodes_ops_children_ds_buffer` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `inodeid` INT(11) NOT NULL,
-  `parentid` INT(11) NOT NULL,
-  `operation` SMALLINT(11) NOT NULL,
-  `logical_time` INT(11) NOT NULL,
-  `processed` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`,`inodeid`,`parentid`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 -- Dataset table-------------------------------------------------
 CREATE TABLE `dataset` (
