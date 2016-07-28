@@ -661,10 +661,63 @@ CREATE TABLE `file_activity`
 
 
 
+
+CREATE TABLE `workflows` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `project_id` INT(11) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (`id`),
+     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+CREATE TABLE `workflow_executions` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `job_id` VARCHAR(255),
+    `user_id` INT(11),
+    `error` TEXT,
+    `workflow_id` INT(11) NOT NULL,
+    `workflow_timestamp` TIMESTAMP NULL DEFAULT NULL,
+     PRIMARY KEY (`id`),
+     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+     FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+CREATE TABLE `nodes` (
+    `id` VARCHAR(255) NOT NULL,
+    `external_id` VARCHAR(255),
+    `type` VARCHAR(255) NOT NULL,
+    `workflow_id` INT(11) NOT NULL,
+    `data` LONGTEXT NOT NULL,
+    `classname` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (`id`, `workflow_id`),
+     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+CREATE TABLE `edges` (
+  `id` VARCHAR(255) NOT NULL,
+  `type` VARCHAR(255),
+  `target_id` VARCHAR(255) NOT NULL,
+  `source_id` VARCHAR(255) NOT NULL,
+  `workflow_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`, `workflow_id`),
+  FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`target_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`source_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
 --
 --
 -- DR ELEPHANT TABLES
 --
+
 
 -- CREATE TABLE yarn_app_result (
 --   id              VARCHAR(50)   NOT NULL,
@@ -731,3 +784,4 @@ CREATE TABLE `epipe_recovery` (
   `last_used_id` INT(11) NOT NULL,
   PRIMARY KEY (`table`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+

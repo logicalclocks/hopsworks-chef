@@ -153,6 +153,8 @@ template "#{rows_path}" do
                 :spark_user => node.hadoop_spark.user,
                 :hadoop_dir => node.apache_hadoop.dir + "/hadoop",                                
                 :yarn_user => node.apache_hadoop.yarn.user,
+                :yarn_ui_ip => public_recipe_ip("apache_hadoop","rm"),
+                :yarn_ui_port => node.default.yarn.rm.web.port,
                 :hdfs_user => node.apache_hadoop.hdfs.user,
                 :mr_user => node.apache_hadoop.mr.user,
                 :flink_dir => node.flink.dir + "/flink",
