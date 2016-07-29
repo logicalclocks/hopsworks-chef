@@ -679,6 +679,7 @@ CREATE TABLE `workflow_executions` (
     `error` TEXT,
     `workflow_id` INT(11) NOT NULL,
     `workflow_timestamp` TIMESTAMP NULL DEFAULT NULL,
+    `snapshot` VARCHAR(10000),
      PRIMARY KEY (`id`),
      FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
      FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
