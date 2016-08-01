@@ -17,6 +17,8 @@ Vagrant.configure("2") do |c|
   c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
+# Ssh port on vagrant
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>20005})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
