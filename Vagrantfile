@@ -26,7 +26,7 @@ Vagrant.configure("2") do |c|
 # HTTPS webserver
   c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4849})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
 # HDFS webserver
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
 # Datanode 
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |c|
 # Flink webserver
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>20009})
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9191})
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
   
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "13000"]
+    p.customize ["modifyvm", :id, "--memory", "15000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -169,6 +169,9 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+     },
+     "kagent" => {
+           "enabled" => "true",
      },
      "kkafka" => {
 	  "default" =>      { 
