@@ -140,7 +140,7 @@ end
 hosts = ""
 
 for h in node.kagent.private_ips
-  hosts += "('" + h + "')" + ","
+  hosts += "('" + h + "','" + h + "')" + ","
 end
 if h.length > 0 
   hosts = hosts.chop!
