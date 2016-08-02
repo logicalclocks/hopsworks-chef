@@ -431,7 +431,7 @@ CREATE TABLE `dataset` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
   KEY `inode_id` (`inode_id`),
-  KEY `inode_name` (`inode_name`),
+  KEY `projectId_name` (`projectId`, `inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
