@@ -137,12 +137,22 @@ end
 
 
 
+hosts = ""
+
+for h in node.kagent.private_ips
+  hosts += "('" + h + "')" + ","
+end
+if h.length > 0 
+  hosts = hosts.chop!
+end
+
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node.glassfish.user
    mode 0755
    action :create
     variables({
+                :hosts => hosts,
                 :epipe_ip => epipe_ip,
                 :livy_ip => livy_ip,
                 :jhs_ip => jhs_ip,
@@ -222,9 +232,6 @@ hopsworks_grants "reload_sysv" do
  action :reload_sysv
 end 
 
-
-#case node.platform
-# when "debian"
 
 glassfish_secure_admin domain_name do
   domain_name domain_name
