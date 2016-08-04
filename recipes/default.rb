@@ -535,8 +535,6 @@ template "/bin/hopsworks-2fa" do
     action :create
  end 
 
-
-
  hopsworks_certs "generate-certs" do
    action :generate
  end

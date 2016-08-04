@@ -297,16 +297,6 @@ for d in int_dirs
   end
 end
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl.cnf" do
-  source "caopenssl.cnf.erb"
-  owner node.glassfish.user
-  mode "600"
-      variables({
-                :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca"
-              })
-  action :create
-end 
-
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
