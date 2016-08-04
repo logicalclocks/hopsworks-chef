@@ -119,6 +119,7 @@ INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
 INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
+INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node.hopsworks.master.password %>");
 -- --------------------------------------------------------
 --
 -- For enabling two facto authentication
@@ -136,3 +137,4 @@ INSERT INTO epipe_recovery VALUES (3, 0);
 -- kmon
 
 INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
+
