@@ -174,7 +174,7 @@ template "#{rows_path}" do
                 :ndb_dir => node.ndb.dir + "/mysql-cluster",
                 :mysql_dir => node.mysql.dir + "/mysql",
                 :elastic_dir => node.elastic.dir + "/elastic",
-                :hopsworks_dir => node.glassfish.domains_dir + "/domain1",
+                :hopsworks_dir => node.glassfish.domains_dir,
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :elastic_user => node.elastic.user,
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
