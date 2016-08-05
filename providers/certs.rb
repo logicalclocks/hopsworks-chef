@@ -41,7 +41,7 @@ bash 'certificateauthority' do
 	[ -f intermediate/csr/intermediate.csr.pem ] || openssl req -new -sha256 -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermedtiateCA" \
       -key intermediate/private/intermediate.key.pem -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -out intermediate/csr/intermediate.csr.pem
 
-	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config intermediate/openssl.cnf -extensions v3_intermediate_ca \
+	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config openssl-ca.cnf -extensions v3_intermediate_ca \
       -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem 
 
 	chmod 444 intermediate/certs/intermediate.cert.pem
