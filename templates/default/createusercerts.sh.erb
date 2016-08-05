@@ -24,7 +24,7 @@ openssl req -config openssl.cnf \
       -key private/${DOMAIN}.key.pem \
       -new -sha256 -out csr/${DOMAIN}.csr.pem
 
-openssl ca -batch -config openssl.cnf \
+openssl ca -batch -config openssl-intermediate.cnf \
       -passin pass:$KEYSTOREPW \
       -extensions usr_cert -days 365 -notext -md sha256 \
       -in csr/${DOMAIN}.csr.pem \
