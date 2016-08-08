@@ -284,6 +284,8 @@ props =  {
      'user-name-column' => 'email',
      'group-table-user-name-column' => 'email',
      'otp-secret-column' => 'secret',
+     'two-factor-column' => 'two_factor',
+     'two-factor-excluded-groups' => '<%= @twofactor_exclude_groups %>',
      'user-status-column' => 'status',
      'yubikey-table' => 'hopsworks.yubikey',
      'variables-table' => 'hopsworks.variables'

@@ -828,6 +828,7 @@ CREATE TABLE `hosts` (
   `memory_used` bigint(20) DEFAULT NULL,
   `private_ip` varchar(15) DEFAULT NULL,
   `public_ip` varchar(15) DEFAULT NULL,
+  `agent_password` varchar(25) DEFAULT NULL,
   `registered` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`hostid`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
