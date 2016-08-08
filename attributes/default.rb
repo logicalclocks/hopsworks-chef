@@ -32,7 +32,7 @@ node.default.glassfish.max_stack_size       = node.hopsworks.max_stack_size.to_i
 node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
-default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-1.0.jar"
+default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks.war"
 default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
 
