@@ -42,6 +42,7 @@ node.default.glassfish.cert.password       = "#{node.hopsworks.admin.password}"
 #default.hopsworks.default_user             = "admin@kth.se"
 #default.hopsworks.default_password         = "admin"
 default.hopsworks.twofactor_auth           = "false"
+default.hopsworks.twofactor_exclude_groups = "AGENT" #semicolon separated list of roles
 
 # # mysql-server may be part of mysql-cluster (ndb)
 # default.mysql.mysql_bin                  = "#{node.mysql.base_dir}/bin/mysql"
