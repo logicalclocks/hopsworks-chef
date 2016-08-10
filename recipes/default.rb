@@ -176,6 +176,7 @@ template "#{rows_path}" do
                 :elastic_dir => node.elastic.dir + "/elastic",
                 :hopsworks_dir => node.glassfish.domains_dir,
                 :twofactor_auth => node.hopsworks.twofactor_auth,
+                :twofactor_exclude_groups => node.hopsworks.twofactor_exclude_groups,
                 :elastic_user => node.elastic.user,
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_mbs.to_i,
@@ -284,6 +285,7 @@ props =  {
      'user-name-column' => 'email',
      'group-table-user-name-column' => 'email',
      'otp-secret-column' => 'secret',
+     'two-factor-column' => 'two_factor',
      'user-status-column' => 'status',
      'yubikey-table' => 'hopsworks.yubikey',
      'variables-table' => 'hopsworks.variables'

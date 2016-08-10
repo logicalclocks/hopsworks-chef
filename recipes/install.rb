@@ -319,9 +319,9 @@ end
 
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh" do
   source "createusercerts.sh.erb"
-  owner node.glassfish.user
+  owner "root"
   group node.glassfish.group
-  mode "710"
+  mode "750"
  variables({
                 :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
               })
@@ -330,9 +330,9 @@ end
 
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh" do
   source "deleteusercerts.sh.erb"
-  owner node.glassfish.user
+  owner "root"
   group node.glassfish.group
-  mode "710"
+  mode "750"
  variables({
                 :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
               })
@@ -341,9 +341,9 @@ end
 
 template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh" do
   source "deleteprojectcerts.sh.erb"
-  owner node.glassfish.user
+  owner "root"
   group node.glassfish.group
-  mode "710"
+  mode "750"
  variables({
                 :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
               })
