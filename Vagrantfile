@@ -18,7 +18,7 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>20005})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
@@ -28,7 +28,7 @@ Vagrant.configure("2") do |c|
 # Glassfish webserver
   c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
 # HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50070})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
 # Datanode 
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
 # YARN webserver
@@ -222,6 +222,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "adam::default"
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
+      #chef.add_recipe "tensorflow::install"
 #      chef.add_recipe "oozie::default"
 
   end 

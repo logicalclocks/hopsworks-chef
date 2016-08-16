@@ -395,6 +395,28 @@ glassfish_asadmin "set 'configs.config.server-config.iiop-service.iiop-listener.
 end
 
 
+# Needed by Shibboleth
+glassfish_asadmin "create-network-listener --protocol http-listener-1 --listenerport 8009 --jkenabled true jk-connector" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+# Needed by Shibboleth
+glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.RequestUtils=SEVERE" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+
+# Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
+
+
 # Enable Single Sign on
 # glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-enabled=true'" do
 #    domain_name domain_name

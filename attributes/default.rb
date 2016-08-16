@@ -15,7 +15,8 @@ node.default.hopsworks.admin.port          = 4848
 node.default.hopsworks.port                = "8080"
 node.default.glassfish.admin.port          = node.hopsworks.admin.port
 node.default.glassfish.port                = node.hopsworks.port.to_i
-node.default.glassfish.version             = '4.1.153'
+# payara-4.1.153.zip
+node.default.glassfish.version             = '4.1.1.163'
 #node.default.glassfish.base_dir            = "/home/glassfish"
 node.default.glassfish.install_dir         = "/usr/local"
 node.default.glassfish.domains_dir         = "/srv/glassfish"
