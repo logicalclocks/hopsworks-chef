@@ -10,13 +10,12 @@
         if [ $pid != "" ] ; then
            kill $pid
         fi
-        rm -rf /usr/local/glassfish
-        rm -rf /srv/glassfish
+        rm -rf #{node.glassfish.domains_dir}
+        rm -rf #{node.glassfish.install_dir}/glassfish
         rm -f /etc/init.d/glassfish-domain1
         rm -f /usr/lib/systemd/system/glassfish-domain1.service
         rm -f /lib/systemd/system/glassfish-domain1.service
         rm -f /etc/systemd/system/glassfish-domain1.service
-        /var/lib/mysql-cluster/ndb/scripts/mysql-client.sh -e "drop database hopsworks"
     EOF
   end
 
