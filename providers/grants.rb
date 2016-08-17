@@ -37,6 +37,7 @@ notifying_action :create_timers do
   bash 'create_timers_tables' do
     user "root"
     code <<-EOF
+      set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1\"
       #{exec} glassfish_timers -e \"source #{new_resource.tables_path}\"
     EOF
@@ -54,6 +55,7 @@ notifying_action :create_tables do
   bash 'create_hopsworks_tables' do
     user "root"
     code <<-EOF
+      set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
       #{exec} #{db} -e \"source #{new_resource.tables_path}\"
     EOF
