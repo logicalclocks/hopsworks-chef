@@ -1,34 +1,30 @@
-#!/bin/sh
-#
-# Startup script for glassfish
+#!/bin/bash
 #
 ### BEGIN INIT INFO
-# Provides:                     glassfish-domain1
-# Required-Start:                 
-# Should-Start:                 
-# Required-Stop:                  
-# Default-Start:                2 3 4 5
-# Default-Stop:                 0 1 6
-# Short-Description:            start and stop glassfish-domain1
-# Description:                  Start/Stop/Restart glassfish-domain1
+# Provides:          glassfish
+# Required-Start:    
+# Required-Stop:     
+# Should-Start:      $network $time
+# Should-Stop:       $network $time
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start and stop a glassfish domain server 
+# Description:       Controls the main glassfish domain server 
 ### END INIT INFO
-
-# Variables
-#START_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-start.sh" %>
-#STOP_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-stop.sh" %>
-#RESTART_PROG=<%= "#{node.glassfish.base_dir}/scripts/glassfish-restart.sh" %>
-
-RETVAL=0
+#
+umask 0077
 
 start() {
-rm -rf <%= node.glassfish.base_dir %>/glassfish/domains/#{domain_name}/osgi-cache/*
-su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> start-domain <%= @domain_name %>" <%= node.glassfish.user %> 
-return $?
+  ulimit -n 30000
+#  ulimit -l  2>&1 > /dev/null
+  rm -rf <%= node.glassfish.base_dir %>/glassfish/domains/#{domain_name}/osgi-cache/*
+  su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin  start-domain --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> --verbose false --debug false --upgrade false <%= @domain_name %>" <%= node.glassfish.user %> 
+  return $?
 
 }
 
 stop() {
-su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node.glassfish.user %> 
+su -c "<%= node.glassfish.base_dir %>/glassfish/bin/asadmin stop-domain --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> --verbose false --debug false --upgrade false <%= @domain_name %>" <%= node.glassfish.user %> 
 res=$?
 id=`ps -ef | grep ASMain` 
 if [ "$id" != "" ] ; then
@@ -46,21 +42,7 @@ restart() {
 }
 
 status() {  
-  ID=<%= @node_id %>
-  PID_FILE=<%= node.glassfish.base_dir %>/glassfish/domains/#{domain_name}/config/glassfish.pid
-  if [ -f $PID_FILE ] ; then
-     PID=`cat $PID_FILE`
-     kill -0 $PID
-     res=$?
-  else 
-     res=1
-  fi
-  if [ $res -eq 0 ] ; then
-   echo "glassfish($PID) is running"
-  else
-   echo "glassfish is not running"
-  fi
-  return $res
+  su -s /bin/sh <%= node.hopsworks.user %> -c "exec <%= node.glassfish.base_dir %>/glassfish/bin/asadmin list-domains --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> --domaindir <%= node.glassfish.domains_dir %>" | grep "<%= @domain_name %> running"
 }
 
 # user-supplied parameter to stop/start/restart process.
@@ -92,4 +74,4 @@ case "$1" in
   esac
 
 
-exit $RETVAL
+exit $?

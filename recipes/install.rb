@@ -380,3 +380,21 @@ remote_file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
   action :create_if_missing
 end
 
+
+# Replace sysv with our version. It increases the max number of open files limit (ulimit -n)
+case node.platform
+when "ubuntu"
+  file "/etc/init.d/glassfish-#{domain_name}" do
+    owner "root"
+    action :delete
+  end
+
+ template "/etc/init.d/glassfish-#{domain_name}" do
+    source "glassfish.erb"
+    owner node.glassfish.user
+    mode 0744
+    action :create
+ end 
+
+end
+
