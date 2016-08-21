@@ -259,7 +259,7 @@ CREATE TABLE `jobs_history` (
   `final_status` VARCHAR(128) DEFAULT NULL,
   PRIMARY KEY (`execution_id`),
   UNIQUE KEY `inode_idx` (`app_id`)
-) ENGINE=ndbcluster;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `executions` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
