@@ -78,10 +78,6 @@ default.hopsworks.yarn_default_quota_mins  = "10000"
 default.hopsworks.hdfs_default_quota_mbs   = "200000"
 default.hopsworks.max_num_proj_per_user    = "10"
 
-# file preview
-default.hopsworks.file_preview_image_size  = "10000000"
-default.hopsworks.file_preview_txt_size    = "100"
-
 node.default.apache_hadoop.user_envs       = "false"
 
 default.hopsworks.systemd                  = "true"

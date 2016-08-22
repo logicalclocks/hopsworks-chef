@@ -181,8 +181,6 @@ template "#{rows_path}" do
                 :yarn_default_quota => node.hopsworks.yarn_default_quota_mins.to_i * 60,
                 :hdfs_default_quota => node.hopsworks.hdfs_default_quota_mbs.to_i,
                 :max_num_proj_per_user => node.hopsworks.max_num_proj_per_user,
-		:file_preview_image_size => node.hopsworks.file_preview_image_size,
-		:file_preview_txt_size => node.hopsworks.file_preview_txt_size,
                 :zk_ip => zk_ip,
                 :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
