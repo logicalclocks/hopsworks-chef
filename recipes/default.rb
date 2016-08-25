@@ -404,7 +404,7 @@ glassfish_asadmin "create-network-listener --protocol http-listener-1 --listener
    username username
    admin_port admin_port
    secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-http-listeners | grep 'jk-listener'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-http-listeners | grep 'jk-connect'"
 end
 
 # Needed by Shibboleth
