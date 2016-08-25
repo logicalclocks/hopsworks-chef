@@ -222,3 +222,10 @@ attribute "hopsworks/file_preview_txt_size",
           :description => "Maximum size in lines of file that can be previewed in DataSets",
           :type => 'string'
 
+attribute "java/jdk_version",
+          :display_name =>  "Jdk version",
+          :type => 'string'
+
+attribute "java/install_flavor",
+          :display_name =>  "Oracle (default) or openjdk",
+          :type => 'string'
