@@ -143,3 +143,22 @@ INSERT INTO epipe_recovery VALUES (3, 0);
 -- kmon
 
 INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
+
+-- --------------------------------------------------------
+--
+-- dela
+--
+
+INSERT INTO variables VALUES ("domain","<%= node.hopsworks.dela.domain %>");
+
+INSERT INTO variables VALUES ("certificate","<%= node.hopsworks.dela.certifcate %>");
+
+INSERT INTO variables VALUES ("gvod_rest_endpoint","http://<%= @dela_ip %>:<%= @dela_port %>");
+
+INSERT INTO variables VALUES ("hops_site_base_uri","<%= node.hopsworks.dela.hops_site_base_uri %>");
+
+-- INSERT INTO variables VALUES ("cluster_mail","johsn@kth.se");
+
+INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node.hopsworks.port %>/<%= node.hopsworks.dela.public_search_endpoint %>");
+
+INSERT INTO variables VALUES ("rest_port","<%= node.hopsworks.port %>");

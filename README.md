@@ -87,3 +87,13 @@ cd scripts
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## Develop
+You probably want to change the Vagrantfile - ports. And you don't want this change to affect your push/pull
+````
+git update-index --skip-worktree Vagrantfile
+````
+and when you actually want to change something and push it
+````
+git update-index --no-skip-worktree Vagrantfile
+````
