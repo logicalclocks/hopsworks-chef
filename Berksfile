@@ -20,6 +20,7 @@ cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
 cookbook 'oozie', github: "hopshadoop/oozie-chef", branch: "master"
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
+cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'authbind', '~> 0.1.10'
