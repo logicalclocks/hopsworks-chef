@@ -32,8 +32,8 @@ end
 
 node.override = {
   'java' => {
-    'install_flavor' => 'oracle',
-    'jdk_version' => 7,
+    'install_flavor' => node.java.install_flavor,
+    'jdk_version' => node.java.jdk_version,
     'oracle' => {
       'accept_oracle_download_terms' => true
     }
