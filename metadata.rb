@@ -30,6 +30,8 @@ depends 'oozie'
 depends 'kkafka'
 depends 'kzookeeper'
 depends 'drelephant'
+depends 'dela'
+depends 'java'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
