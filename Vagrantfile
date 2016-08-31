@@ -192,10 +192,10 @@ Vagrant.configure("2") do |c|
 	       },
      },
       "dela" => {
-        "port" => "19003",
-        "stun-port1" => "19103",
-        "stun-port2" => "19203",
-        "http-port" => "19103",
+        "port" => "40100",
+        "stun-port1" => "40200",
+        "stun-port2" => "40300",
+        "http-port" => "40400",
         "default" => { 
           "private_ips" => ["10.0.2.15"]
         },
