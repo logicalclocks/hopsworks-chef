@@ -97,7 +97,7 @@ default.glassfish.ciphersuite				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,+TL
 #
 
 default.hopsworks.dela.domain                 = "bbc1.sics.se"
-default.hopsworks.dela.certifcate             = "DummyCert14003"
-default.hopsworks.dela.hops_site_base_uri     = "http://bbc1.sics.se:14003/hops-site/webresources"
+default.hopsworks.dela.certifcate             = "DummyCert25100"
+default.hopsworks.dela.hops_site_base_uri     = "http://bbc1.sics.se:25100/hops-site/webresources"
 default.hopsworks.dela.public_search_endpoint =  "hopsworks/api/elastic/publicdatasets/"
 
