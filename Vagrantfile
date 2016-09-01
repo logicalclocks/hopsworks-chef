@@ -18,35 +18,31 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>22100})
-# MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>9090, :host=>23100})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>50700})
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>24100})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13003})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>25100})
-# HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>26100})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>27100})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
 # HDFS webserver
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>28100})
 # Datanode 
   c.vm.network(:forwarded_port, {:guest=>50075, :host=>29100})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>30100})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>31100})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>32100})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>33100})
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>34100})
 # Dr Elephant
-#  c.vm.network(:forwarded_port, {:guest=>11011, :host=>35100})
+#  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
-  c.vm.network(:forwarded_port, {:guest=>18080, :host=>36100})
+  c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
 # Dela udp ports
   c.vm.network(:forwarded_port, {:guest=>40100, :host=>40100, :protocol=>"udp"})
   c.vm.network(:forwarded_port, {:guest=>40200, :host=>40200, :protocol=>"udp"})
