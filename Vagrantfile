@@ -1,4 +1,4 @@
-  
+
 
 Vagrant.configure("2") do |c|
   if Vagrant.has_plugin?("vagrant-omnibus")
@@ -18,17 +18,21 @@ Vagrant.configure("2") do |c|
   c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
 
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>50700})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
+# MySQL Server
+  c.vm.network(:forwarded_port, {:guest=>9090, :host=>9090})
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13003})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
+# HTTPS webserver
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
 # Glassfish webserver
   c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
 # HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>28100})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
 # Datanode 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>29100})
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
 # YARN webserver
   c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
@@ -36,19 +40,14 @@ Vagrant.configure("2") do |c|
 # Flink webserver
   c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
 # Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9191})
 # Ooozie port
-  c.vm.network(:forwarded_port, {:guest=>11000, :host=>34100})
+  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
 #  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
-# Dela udp ports
-  c.vm.network(:forwarded_port, {:guest=>40100, :host=>40100, :protocol=>"udp"})
-  c.vm.network(:forwarded_port, {:guest=>40200, :host=>40200, :protocol=>"udp"})
-  c.vm.network(:forwarded_port, {:guest=>40300, :host=>40300, :protocol=>"udp"})
-# Dela http port
-  c.vm.network(:forwarded_port, {:guest=>40400, :host=>40400})
+  
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13500"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -85,10 +84,7 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	  "gmail" =>      { 
-   	  	       "email" => "johan@gmail.com"
-	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-johan.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
         "user_envs" => "false",
      },
      "zeppelin" => {
@@ -187,19 +183,10 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
-      "dela" => {
-        "port" => "40100",
-        "stun-port1" => "40200",
-        "stun-port2" => "40300",
-        "http-port" => "40400",
-        "default" => { 
-          "private_ips" => ["10.0.2.15"]
-        },
-     },
      "vagrant" => "true",
      }
 
-      chef.add_recipe "kagent::install"
+     chef.add_recipe "kagent::install"
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
@@ -211,10 +198,9 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
       chef.add_recipe "adam::install"
-    #  chef.add_recipe "oozie::install"
-    #  chef.add_recipe "drelephant::install"
+#      chef.add_recipe "oozie::install"
+      chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
-    #  chef.add_recipe "dela::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -236,10 +222,11 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::default"
       chef.add_recipe "kkafka::default"
       chef.add_recipe "adam::default"
-    #  chef.add_recipe "drelephant::default"
+      chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
-    #  chef.add_recipe "oozie::default"
-    #  chef.add_recipe "dela::default"
+      #chef.add_recipe "tensorflow::install"
+#      chef.add_recipe "oozie::default"
+
   end 
 
 end
