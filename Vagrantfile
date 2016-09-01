@@ -172,6 +172,11 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "dela" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "kagent" => {
           "enabled" => "true",
 	  "default" =>      { 
