@@ -6,7 +6,7 @@ echo "gathering external params for metadata.rb"
 rm -f params.txt
 touch params.txt
 
-for i in kagent-chef ndb-chef hops-hadoop-chef spark-chef flink-chef epipe-chef livy-chef dela-chef kzookeeper kafka-cookbook elasticsearch-chef dr-elephant-chef zeppelin-chef dela-chef 
+for i in kagent-chef ndb-chef hops-hadoop-chef spark-chef flink-chef epipe-chef livy-chef kzookeeper kafka-cookbook elasticsearch-chef dr-elephant-chef zeppelin-chef dela-chef 
 do
    string="$(cat ../${i}/metadata.rb)"
    result="${string#"${string%%attribute*}"}"
