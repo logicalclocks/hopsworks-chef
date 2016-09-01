@@ -1,5 +1,7 @@
 .vagrant
 /cookbooks
+*~
+params.txt
 
 # Bundler
 bin/*

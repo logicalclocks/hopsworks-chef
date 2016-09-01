@@ -7,6 +7,7 @@ include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
 
+default.hopsworks.version                  = "0.1.0"
 
 node.default.glassfish.variant             = "payara"
 node.default.glassfish.user                = "glassfish"
@@ -34,7 +35,7 @@ node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
-default.hopsworks.war_url                  = "#{node.download_url}/hopsworks.war"
+default.hopsworks.war_url                  = "#{node.download_url}/hopsworks-#{node.hopsworks.version}.war"
 default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
 
 default.hopsworks.admin.user               = "adminuser"
