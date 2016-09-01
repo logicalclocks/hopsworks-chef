@@ -3,22 +3,24 @@ source 'https://supermarket.chef.io'
 metadata
 
 cookbook 'java'
-cookbook 'ndb', '~> 0.2.1'
-cookbook 'kagent', '~> 0.1.3'
-cookbook 'apache_hadoop', '~> 0.1.1'
-cookbook 'hops', '~> 0.1.1'
-cookbook 'hadoop_spark', '~> 0.1.3'
-cookbook 'flink', '~> 0.1.3'
 
-cookbook 'zeppelin', '~> 0.1.2'
-cookbook 'drelephant', '~> 0.1.1'
-cookbook 'epipe', '~> 0.1.2'
-cookbook 'adam', '~> 0.1.2'
-cookbook 'dela', '~> 0.1.0'
+cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "v7.5.3"
+cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "v0.1"
+cookbook 'apache_hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "v2.4.0"
+cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "v2.4.0"
+cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "v1.6.1"
+cookbook 'flink', github: "hopshadoop/flink-chef", branch: "v1.0.3"
 
-cookbook 'kzookeeper', '~> 0.1.1'
-cookbook 'kkafka', '~> 0.2.1'
-cookbook 'elastic', '~> 0.1.2'
+cookbook 'livy', github: "hopshadoop/livy-chef", branch: "v0.3.0"
+cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "v0.6.0"
+cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "v2.0.3"
+cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "v0.2.2"
+cookbook 'adam', github: "hopshadoop/adam-chef", branch: "master"
+cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
+
+cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "v3.4.7"
+cookbook 'kkafka', , github: "hopshadoop/kzookeeper", branch: "v0.10.0.0"
+cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "v2.1.2"
 
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 
