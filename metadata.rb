@@ -85,9 +85,14 @@ attribute "mysql/password",
           :type => 'string',
           :required => "required"
 
+
 #######################################################################################
 # Non-Required Attributes
 #######################################################################################
+
+attribute "hopsworks/dir",
+          :description => "Installation directory for the glassfish binaries",
+          :type => 'string'
 
 attribute "hopsworks/master/password",
           :description => "Web Application Server master password",

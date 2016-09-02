@@ -20,7 +20,7 @@ Vagrant.configure("2") do |c|
 # Ssh port on vagrant
   c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>9090, :host=>9090})
+  c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
 
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
 # HTTP webserver
