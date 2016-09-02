@@ -147,7 +147,7 @@ end
 
 hosts = ""
 
-for h in node.kagent.default.private_ips
+for h in node.kagent[:default][:private_ips]
   hosts += "('" + h + "','" + h + "')" + ","
 end
 if h.length > 0 
