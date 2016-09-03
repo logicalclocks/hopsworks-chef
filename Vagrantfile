@@ -20,9 +20,9 @@ Vagrant.configure("2") do |c|
 # Ssh port on vagrant
   c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>9090, :host=>9090})
+  c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
 # HTTPS webserver
@@ -84,7 +84,7 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
         "user_envs" => "false",
      },
      "zeppelin" => {
@@ -168,6 +168,11 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "drelephant" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
+     "dela" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },

@@ -1,5 +1,7 @@
 .vagrant
 /cookbooks
+*~
+params.txt
 
 # Bundler
 bin/*
@@ -15,4 +17,3 @@ Vagrantfile.paul
 nohup.out
 start-dev.sh
 vagrant.pid
-

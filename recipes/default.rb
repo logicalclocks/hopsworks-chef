@@ -27,6 +27,7 @@ end
 
 domains_dir = node.glassfish.domains_dir
 private_ip=my_private_ip()
+public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
 #mysql_user=node.mysql.user
@@ -96,6 +97,13 @@ rescue
   Chef::Log.warn "could not find the dr elephant server ip!"
 end
 
+begin
+  dela_ip = private_recipe_ip("dela","default")
+rescue 
+  dela_ip = node.hostname
+  Chef::Log.warn "could not find the dela server ip!"
+end
+
 tables_path = "#{domains_dir}/tables.sql"
 rows_path = "#{domains_dir}/rows.sql"
 
@@ -139,7 +147,7 @@ end
 
 hosts = ""
 
-for h in node.kagent.private_ips
+for h in node.kagent[:default][:private_ips]
   hosts += "('" + h + "','" + h + "')" + ","
 end
 if h.length > 0 
@@ -184,13 +192,16 @@ template "#{rows_path}" do
 		:file_preview_image_size => node.hopsworks.file_preview_image_size,
 		:file_preview_txt_size => node.hopsworks.file_preview_txt_size,
                 :zk_ip => zk_ip,
+                :dela_ip => dela_ip,
+                :dela_port => node.dela.http_port,
                 :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node.hopsworks.kafka_num_replicas,
                 :kafka_num_partitions => node.hopsworks.kafka_num_partitions,
                 :drelephant_port => node.drelephant.port,
                 :drelephant_db => node.drelephant.db,                
                 :drelephant_ip => drelephant_ip,
-                :kafka_user => node.kkafka.user
+                :kafka_user => node.kkafka.user,
+                :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end

@@ -7,6 +7,7 @@ include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
 
+default.hopsworks.version                  = "0.1.0"
 
 node.default.glassfish.variant             = "payara"
 node.default.glassfish.user                = "glassfish"
@@ -18,7 +19,8 @@ node.default.glassfish.port                = node.hopsworks.port.to_i
 # payara-4.1.153.zip
 node.default.glassfish.version             = '4.1.1.163'
 #node.default.glassfish.base_dir            = "/home/glassfish"
-node.default.glassfish.install_dir         = "/usr/local"
+node.default.hopsworks.dir                 = "/usr/local"
+node.default.glassfish.install_dir         = node.hopsworks.dir
 node.default.glassfish.domains_dir         = "/srv/glassfish"
 default.hopsworks.max_mem                  = "3000"
 node.default.glassfish.max_mem             = node.hopsworks.max_mem.to_i
@@ -34,7 +36,7 @@ node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
-default.hopsworks.war_url                  = "#{node.download_url}/hopsworks.war"
+default.hopsworks.war_url                  = "#{node.download_url}/hopsworks-#{node.hopsworks.version}.war"
 default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
 
 default.hopsworks.admin.user               = "adminuser"
@@ -92,3 +94,12 @@ default.hopsworks.kafka_num_partitions     = "1"
 
 default.glassfish.ciphersuite				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,+TLS_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA"
 											
+#
+# Dela
+#
+
+default.hopsworks.dela.domain                 = "bbc1.sics.se"
+default.hopsworks.dela.certifcate             = "DummyCert25100"
+default.hopsworks.dela.hops_site_base_uri     = "http://bbc1.sics.se:25100/hops-site/webresources"
+default.hopsworks.dela.public_search_endpoint =  "hopsworks/api/elastic/publicdatasets/"
+
