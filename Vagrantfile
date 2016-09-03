@@ -22,7 +22,7 @@ Vagrant.configure("2") do |c|
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>13009})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
 # HTTPS webserver
