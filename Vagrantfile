@@ -12,11 +12,13 @@ Vagrant.configure("2") do |c|
     c.cache.enable :apt
     c.cache.enable :gem    
   end
-#  c.vm.synced_folder "/srv/hops-downloads", "/srv/hops-downloads"
   c.vm.box = "opscode-ubuntu-14.04"
-  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
-  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
-
+#   c.vm.box = "bento/centos-7.2"
+#  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
+#  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
+ 
+   
+  c.ssh.insert_key="false"
 # Ssh port on vagrant
   c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
 # MySQL Server

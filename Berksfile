@@ -18,8 +18,8 @@ cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
-cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "v3.4.7"
-cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "v0.10.0.0"
+cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
+cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "v2.1.2"
 
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
