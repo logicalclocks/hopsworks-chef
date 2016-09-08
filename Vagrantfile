@@ -86,7 +86,7 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-jim.war",
         "user_envs" => "false",
         "twofactor_auth" => "false",
      },
