@@ -6,15 +6,15 @@ cookbook 'java'
 
 cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "v0.1"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "v7.5.3"
-cookbook 'apache_hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "v2.4.0"
+cookbook 'apache_hadoop', github: "hopshadoop/apache-hadoop-chef", branch: "master"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "v2.4.0"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "v1.6.1"
-cookbook 'flink', github: "hopshadoop/flink-chef", branch: "v1.0.3"
+cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 
-cookbook 'livy', github: "hopshadoop/livy-chef", branch: "v0.3.0"
-cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "v0.6.0"
-cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "v2.0.3"
-cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "v0.2.2"
+cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
+cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
+cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
+cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
