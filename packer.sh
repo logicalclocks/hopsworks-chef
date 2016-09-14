@@ -8,7 +8,7 @@ fi
 rm -rf Berksfile.lock
 rm -rf vendor
 berks vendor vendor/cookbooks
-packer build \
+PACKER_LOG=1 packer build \
   -var "account_id=$AWS_ACCOUNT_ID" \
   -var "aws_access_key_id=$AWS_ACCESS_KEY_ID" \
   -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY" \
