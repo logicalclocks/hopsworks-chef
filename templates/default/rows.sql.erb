@@ -162,3 +162,7 @@ INSERT INTO variables VALUES ("hops_site_base_uri","<%= node.hopsworks.dela.hops
 INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node.hopsworks.port %>/<%= node.hopsworks.dela.public_search_endpoint %>");
 
 INSERT INTO variables VALUES ("rest_port","<%= node.hopsworks.port %>");
+
+INSERT INTO variables VALUES ("max_gpu_request_size","<%= node.hopsworks.max_gpu_request_size %>");
+
+INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu_request_size %>");
