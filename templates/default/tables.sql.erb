@@ -434,6 +434,7 @@ CREATE TABLE `dataset_request` (
   `user_email` VARCHAR(150) NOT NULL,
   `requested` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `message` VARCHAR(3000) DEFAULT NULL,
+  `message_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`dataset`,`projectId`),
   FOREIGN KEY (`projectId`,`user_email`)
@@ -443,6 +444,10 @@ CREATE TABLE `dataset_request` (
   FOREIGN KEY (`dataset`)
    REFERENCES `dataset` (`id`)
    ON DELETE CASCADE
+   ON UPDATE NO ACTION,
+  FOREIGN KEY (`message_id`)
+   REFERENCES `message` (`id`) 
+   ON DELETE NO ACTION 
    ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
