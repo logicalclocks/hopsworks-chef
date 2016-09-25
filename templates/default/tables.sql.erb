@@ -427,6 +427,27 @@ CREATE TABLE `dataset` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
+
+-- Message
+-- ------------------------
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_from` varchar(150) DEFAULT NULL,
+  `user_to` varchar(150)  NOT NULL,
+  `date_sent` datetime NOT NULL,
+  `subject` varchar(128)  DEFAULT NULL,
+  `preview` varchar(128) DEFAULT NULL,
+  `content` text  NOT NULL,
+  `unread` tinyint(1) NOT NULL,
+  `deleted` tinyint(1) NOT NULL,
+  `path` varchar(600) DEFAULT NULL,
+  `reply_to_msg` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_from`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  FOREIGN KEY (`user_to`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`reply_to_msg`) REFERENCES `message` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 CREATE TABLE `dataset_request` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `dataset` INT(11) NOT NULL,
@@ -449,26 +470,6 @@ CREATE TABLE `dataset_request` (
    REFERENCES `message` (`id`) 
    ON DELETE NO ACTION 
    ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
-
--- Message
--- ------------------------
-CREATE TABLE `message` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_from` varchar(150) DEFAULT NULL,
-  `user_to` varchar(150)  NOT NULL,
-  `date_sent` datetime NOT NULL,
-  `subject` varchar(128)  DEFAULT NULL,
-  `preview` varchar(128) DEFAULT NULL,
-  `content` text  NOT NULL,
-  `unread` tinyint(1) NOT NULL,
-  `deleted` tinyint(1) NOT NULL,
-  `path` varchar(600) DEFAULT NULL,
-  `reply_to_msg` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_from`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  FOREIGN KEY (`user_to`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`reply_to_msg`) REFERENCES `message` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
