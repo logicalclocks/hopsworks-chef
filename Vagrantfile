@@ -208,7 +208,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
-#      chef.add_recipe "adam::install"
+      chef.add_recipe "adam::install"
 #      chef.add_recipe "oozie::install"
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
@@ -232,12 +232,11 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
-      chef.add_recipe "kkafka::default"
-#      chef.add_recipe "adam::default"
+      chef.add_recipe "adam::default"
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
+      chef.add_recipe "kkafka::default"
       chef.add_recipe "tensorflow::default"
-      #chef.add_recipe "tensorflow::install"
 #      chef.add_recipe "oozie::default"
 
   end 
