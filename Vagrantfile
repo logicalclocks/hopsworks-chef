@@ -228,10 +228,10 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
-      chef.add_recipe "kkafka::default"
       chef.add_recipe "adam::default"
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
+      chef.add_recipe "kkafka::default"
       #chef.add_recipe "tensorflow::install"
 #      chef.add_recipe "oozie::default"
 
