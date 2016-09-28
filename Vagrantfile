@@ -236,7 +236,11 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
+<<<<<<< HEAD
       chef.add_recipe "tensorflow::default"
+=======
+      #chef.add_recipe "tensorflow::install"
+>>>>>>> ba07a1942a7171e57a4e6e54227e30239114116f
 #      chef.add_recipe "oozie::default"
 
   end 
