@@ -5,6 +5,8 @@ if [ $# -ne 1  ]; then
  exit 1
 fi
 
+set -e
+
 #Variables
 DOMAIN="$1"
 
@@ -18,7 +20,7 @@ openssl genrsa \
 chmod 400 private/${DOMAIN}.key.pem
 
 #2 Create a user certificate
-openssl req -config openssl.cnf \
+openssl req -config ../openssl-ca.cnf \
 	  -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=${DOMAIN}" \
 	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
       -key private/${DOMAIN}.key.pem \
