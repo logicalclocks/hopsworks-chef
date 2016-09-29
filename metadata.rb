@@ -55,14 +55,27 @@ attribute "hopsworks/twofactor_auth",
           :type => 'string',
           :required => "required"
 
-attribute "hopsworks/gmail/email",
-          :description => "Email address for gmail account",
+attribute "hopsworks/email",
+          :description => "Email address. Recommended to use a gmail account",
           :required => "required",
           :type => 'string'
 
-attribute "hopsworks/gmail/password",
-          :description => "Password for gmail account",
+attribute "hopsworks/password",
+          :description => "Password for email account. ",
           :required => "required",
+          :type => 'string'
+
+
+attribute "hopsworks/smtp",
+          :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
+          :type => 'string'
+
+attribute "hopsworks/smtp_port",
+          :description => "Port of SMTP server (default is 587)",
+          :type => 'string'
+
+attribute "hopsworks/smtp_ssl_port",
+          :description => "SSL port of SMTP server (default is 465)",
           :type => 'string'
 
 attribute "hopsworks/admin/user",
@@ -213,11 +226,11 @@ attribute "hadoop_spark/dir",
           :description => "Installation directory.",
           :type => 'string'
 
-attribute "hopsworks.kafka_num_replicas",
+attribute "hopsworks/kafka_num_replicas",
           :description => "Default number of replicas for Kafka Topics.",
           :type => 'string'
 
-attribute "hopsworks.kafka_num_partitions",
+attribute "hopsworks/kafka_num_partitions",
           :description => "Default number of partitions for Kafka Topics.",
           :type => 'string'
 
@@ -236,6 +249,7 @@ attribute "java/jdk_version",
 attribute "java/install_flavor",
           :display_name =>  "Oracle (default) or openjdk",
           :type => 'string'
+
 
 
 #########################################################################
