@@ -11,7 +11,7 @@ if decoded.eql? "password"
 end
 
 gmailProps = {
-  'mail-smtp-host' => node.hopsworks.smtp_ip,
+  'mail-smtp-host' => node.hopsworks.smtp,
   'mail-smtp-user' => node.hopsworks.email,
   'mail-smtp-password' => decoded,
   'mail-smtp-auth' => 'true',
