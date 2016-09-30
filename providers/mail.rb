@@ -2,12 +2,12 @@ use_inline_resources
 
 notifying_action :jndi do
 
-decoded = node.hopsworks.gmail.password 
+decoded = node.hopsworks.email_password 
 
-# If the password is the 'default' password
+# If the email_password is the 'default' password
 if decoded.eql? "password"
   decoded = ::File.read("/tmp/hopsworks.encoded")
-  node.override.hopsworks.gmail.password = decoded
+  node.override.hopsworks.email_password = decoded
 end
 
 gmailProps = {

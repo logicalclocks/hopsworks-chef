@@ -74,7 +74,7 @@ default.hopsworks.smtp                     = "smtp.gmail.com"
 default.hopsworks.smtp_port                = "587"
 default.hopsworks.smtp_ssl_port            = "465"
 default.hopsworks.email                    = "hopsworks@gmail.com"
-default.hopsworks.password                 = "password"
+default.hopsworks.email_password           = "password"
 default.hopsworks.gmail.placeholder        = "http://snurran.sics.se/hops/hopsworks.email"
 
 # #quotas
