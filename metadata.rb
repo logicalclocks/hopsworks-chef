@@ -60,7 +60,7 @@ attribute "hopsworks/email",
           :required => "required",
           :type => 'string'
 
-attribute "hopsworks/password",
+attribute "hopsworks/email_password",
           :description => "Password for email account. ",
           :required => "required",
           :type => 'string'
