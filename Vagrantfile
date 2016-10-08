@@ -197,7 +197,9 @@ Vagrant.configure("2") do |c|
      "vagrant" => "true",
      }
 
-     chef.add_recipe "kagent::install"
+#      chef.add_recipe "logstash::install"
+#      chef.add_recipe "logstash::server"
+      chef.add_recipe "kagent::install"
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
