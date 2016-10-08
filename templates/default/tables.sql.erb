@@ -310,6 +310,7 @@ CREATE TABLE `organization` (
     FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+-- ------------------------
 -- Metadata --------------
 -- ------------------------
 
@@ -774,7 +775,10 @@ CREATE TABLE `edges` (
 
 -- create index yarn_app_heuristic_result_details_i1 on yarn_app_heuristic_result_details (name);
 
+
+-- ------------------------
 -- ePipe
+-- ------------------------
 
 CREATE TABLE `epipe_recovery` (
   `table` tinyint(1) NOT NULL,
@@ -784,8 +788,9 @@ CREATE TABLE `epipe_recovery` (
 
 
 
+-- ------------------------
 -- kmon
-
+-- ------------------------
 
 CREATE TABLE `alerts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -853,5 +858,89 @@ CREATE TABLE `commands` (
   `start_time` datetime DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+-- ------------------------
+-- tensorflow
+-- ------------------------
+
+CREATE TABLE `tf_resources` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `host_id` VARCHAR(128) NOT NULL,
+  `device_id` INT NOT NULL,
+  `device_path` VARCHAR(255) NOT NULL,
+  `resource` VARCHAR(20) NOT NULL,
+  `free` tinyint(1) NOT NULL DEFAULT '1',
+  KEY `resource_idx` (`resource`),
+  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`hostid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `tf_clusters` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(150) NOT NULL,
+  `creator` VARCHAR(150) NOT NULL,
+  `project_id` INT NOT NULL,
+  FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `tf_jobs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cluster_id` INT NOT NULL,
+  `name` VARCHAR(150) NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
+  KEY `name_idx` (`name`),
+  FOREIGN KEY (`cluster_id`) REFERENCES `tf_clusters` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+-- One task per host. Tasks belong to a job (type).
+-- One or many resource(s) per task?!? Either supported here.
+CREATE TABLE `tf_tasks` (
+  `id` INT NOT NULL,
+  `job_id` INT NOT NULL,
+  `resource_id` INT NOT NULL,
+  FOREIGN KEY (`job_id`) REFERENCES `tf_jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`resource_id`) REFERENCES `tf_resources` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `tf_executions` (
+  `attempt_id` INT NOT NULL,
+  `cluster_id` INT NOT NULL,
+  `job_id` INT NOT NULL,
+  `resource_id` INT NOT NULL,
+  `result` VARCHAR(255) NOT NULL,
+  `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `end_time` TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+  `proj_user` VARCHAR(150) NOT NULL,
+  `project_id` INT NOT NULL,
+  KEY `proj_user_idx` (`proj_user`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`cluster_id`) REFERENCES `tf_clusters` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (`job_id`) REFERENCES `tf_jobs` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (`resource_id`) REFERENCES `tf_resources` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`proj_user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  PRIMARY KEY (`attempt_id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `tf_fifo_queue` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cluster_id` INT NOT NULL,
+  `proj_user` VARCHAR(150) NOT NULL,
+  `num_cpus` INT NOT NULL DEFAULT 0,
+  `num_gpus` INT NOT NULL DEFAULT 0,
+  `submission_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`proj_user`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`cluster_id`) REFERENCES `tf_clusters` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 

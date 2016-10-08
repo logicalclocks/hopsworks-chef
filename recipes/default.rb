@@ -499,7 +499,7 @@ end
 # end
 
 
-if node.hopsworks.gmail.password .eql? "password"
+if node.hopsworks.email_password .eql? "password"
 
   bash 'gmail' do
     user "root"

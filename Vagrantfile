@@ -12,11 +12,13 @@ Vagrant.configure("2") do |c|
     c.cache.enable :apt
     c.cache.enable :gem    
   end
-#  c.vm.synced_folder "/srv/hops-downloads", "/srv/hops-downloads"
   c.vm.box = "opscode-ubuntu-14.04"
-  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
-  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
-
+#   c.vm.box = "bento/centos-7.2"
+#  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
+#  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
+ 
+   
+  c.ssh.insert_key="false"
 # Ssh port on vagrant
   c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
 # MySQL Server
@@ -84,8 +86,9 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-jim.war",
         "user_envs" => "false",
+        "twofactor_auth" => "false",
      },
      "zeppelin" => {
 	  "default" =>      { 
@@ -194,7 +197,9 @@ Vagrant.configure("2") do |c|
      "vagrant" => "true",
      }
 
-     chef.add_recipe "kagent::install"
+#      chef.add_recipe "logstash::install"
+#      chef.add_recipe "logstash::server"
+      chef.add_recipe "kagent::install"
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
@@ -209,6 +214,7 @@ Vagrant.configure("2") do |c|
 #      chef.add_recipe "oozie::install"
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
+      chef.add_recipe "tensorflow::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -232,7 +238,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
-      #chef.add_recipe "tensorflow::install"
+      chef.add_recipe "tensorflow::default"
 #      chef.add_recipe "oozie::default"
 
   end 

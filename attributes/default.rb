@@ -71,8 +71,10 @@ default.hopsworks.private_ips              = ['10.0.2.15']
 default.kagent.enabled                     = "false"
 
 default.hopsworks.smtp                     = "smtp.gmail.com"
-default.hopsworks.gmail.email              = "hopsworks@gmail.com"
-default.hopsworks.gmail.password           = "password"
+default.hopsworks.smtp_port                = "587"
+default.hopsworks.smtp_ssl_port            = "465"
+default.hopsworks.email                    = "hopsworks@gmail.com"
+default.hopsworks.email_password           = "password"
 default.hopsworks.gmail.placeholder        = "http://snurran.sics.se/hops/hopsworks.email"
 
 # #quotas
@@ -103,3 +105,5 @@ default.hopsworks.dela.certifcate             = "DummyCert25100"
 default.hopsworks.dela.hops_site_base_uri     = "http://bbc1.sics.se:25100/hops-site/webresources"
 default.hopsworks.dela.public_search_endpoint =  "hopsworks/api/elastic/publicdatasets/"
 
+default.hopsworks.max_gpu_request_size        = 1
+default.hopsworks.max_cpu_request_size        = 1
