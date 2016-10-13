@@ -19,3 +19,17 @@
     EOF
   end
 
+directory "#{node.glassfish.install_dir}/glassfish" do
+  recursive true
+  action :delete
+  ignore_failure true
+end
+
+directory "#{node.glassfish.domains_dir}" do
+  recursive true
+  action :delete
+  ignore_failure true
+end
+
+
+
