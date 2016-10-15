@@ -21,6 +21,7 @@ cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
+cookbook 'kibana', github: "hopshadoop/kibana-chef", branch: "master"
 
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 #cookbook 'logstash', github: "lusis/chef-logstash", branch: "master"

@@ -49,6 +49,8 @@ Vagrant.configure("2") do |c|
 #  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
+# Kibana Server
+  c.vm.network(:forwarded_port, {:guest=>5601, :host=>50070})
   
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13500"]
@@ -215,6 +217,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
       chef.add_recipe "tensorflow::install"
+      chef.add_recipe "kibana::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -239,6 +242,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
       chef.add_recipe "tensorflow::default"
+      chef.add_recipe "kibana::default"
 #      chef.add_recipe "oozie::default"
 
   end 
