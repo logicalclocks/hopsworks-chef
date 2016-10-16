@@ -1,6 +1,6 @@
 Encoding.default_external = "UTF-8"
 source 'https://supermarket.chef.io'
-metadata
+
 
 cookbook 'java'
 cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "master"
@@ -23,7 +23,14 @@ cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kibana', github: "hopshadoop/kibana-chef", branch: "master"
 
+cookbook 'hopsmonitor', github: "hopshadoop/stream-monitoring-chef", branch: "master"
+cookbook 'graphite', '~> 1.0.4'
+cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
+
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
+
+cookbook 'simple-logstash', '~> 0.2.4'
+
 #cookbook 'logstash', github: "lusis/chef-logstash", branch: "master"
 
 #cookbook 'logstash', '~> 0.12.0'
@@ -34,3 +41,5 @@ cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
+
+metadata

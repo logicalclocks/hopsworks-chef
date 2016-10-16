@@ -104,6 +104,28 @@ rescue
   Chef::Log.warn "could not find the dela server ip!"
 end
 
+begin
+  kibana_ip = private_recipe_ip("kibana","default")
+rescue 
+  kibana_ip = node.hostname
+  Chef::Log.warn "could not find the kibana server ip!"
+end
+
+begin
+  logstash_ip = private_recipe_ip("simple-logstash","default")
+rescue 
+  logstash_ip = node.hostname
+  Chef::Log.warn "could not find the logstash server ip!"
+end
+
+begin
+  hopsmonitor_ip = private_recipe_ip("hopsmonitor","default")
+rescue 
+  hopsmonitor_ip = node.hostname
+  Chef::Log.warn "could not find the hopsmonitor server ip!"
+end
+
+
 tables_path = "#{domains_dir}/tables.sql"
 rows_path = "#{domains_dir}/rows.sql"
 
@@ -201,6 +223,10 @@ template "#{rows_path}" do
                 :drelephant_db => node.drelephant.db,                
                 :drelephant_ip => drelephant_ip,
                 :kafka_user => node.kkafka.user,
+                :kibana_ip => kibana_ip,
+                :logstash_ip => logstash_ip,
+                :grafana_ip => hopsmonitor_ip,
+                :graphite_ip => hopsmonitor_ip,
                 :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately

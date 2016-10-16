@@ -13,6 +13,7 @@ Vagrant.configure("2") do |c|
     c.cache.enable :gem    
   end
   c.vm.box = "opscode-ubuntu-14.04"
+  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
 #   c.vm.box = "bento/centos-7.2"
 #  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
 #  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -34,7 +35,7 @@ Vagrant.configure("2") do |c|
 # HDFS webserver
   c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
 # Datanode 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50075})
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50079})
 # YARN webserver
   c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
 # Elasticsearch rpc port
@@ -51,6 +52,12 @@ Vagrant.configure("2") do |c|
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
 # Kibana Server
   c.vm.network(:forwarded_port, {:guest=>5601, :host=>50070})
+# Grafana Server
+  c.vm.network(:forwarded_port, {:guest=>3000, :host=>50075})
+# Graphite WebServer
+  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
+# Logstash Server
+#  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
   
   c.vm.provider :virtualbox do |p|
     p.customize ["modifyvm", :id, "--memory", "13500"]
@@ -180,6 +187,16 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "hopsmonitor" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
+     "simple-logstash" => {
+	  "default" =>      { 
+   	  	       "private_ips" => ["10.0.2.15"]
+	       },
+     },
      "drelephant" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -204,9 +221,14 @@ Vagrant.configure("2") do |c|
      "vagrant" => "true",
      }
 
-#      chef.add_recipe "logstash::install"
-#      chef.add_recipe "logstash::server"
       chef.add_recipe "kagent::install"
+      chef.add_recipe "kibana::install"
+      chef.add_recipe "simple-logstash::install"
+      chef.add_recipe "hopsmonitor::install"      
+      chef.add_recipe "kibana::default"
+      chef.add_recipe "simple-logstash::server"
+      chef.add_recipe "hopsmonitor::default"      
+
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
@@ -222,7 +244,6 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
       chef.add_recipe "tensorflow::install"
-      chef.add_recipe "kibana::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -247,7 +268,6 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
       chef.add_recipe "tensorflow::default"
-      chef.add_recipe "kibana::default"
 #      chef.add_recipe "oozie::default"
 
   end 
