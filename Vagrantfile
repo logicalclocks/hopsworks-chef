@@ -192,11 +192,6 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
-     "simple-logstash" => {
-	  "default" =>      { 
-   	  	       "private_ips" => ["10.0.2.15"]
-	       },
-     },
      "drelephant" => {
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -223,10 +218,8 @@ Vagrant.configure("2") do |c|
 
       chef.add_recipe "kagent::install"
       chef.add_recipe "kibana::install"
-      chef.add_recipe "simple-logstash::install"
       chef.add_recipe "hopsmonitor::install"      
       chef.add_recipe "kibana::default"
-      chef.add_recipe "simple-logstash::server"
       chef.add_recipe "hopsmonitor::default"      
 
       chef.add_recipe "hopsworks::install"
