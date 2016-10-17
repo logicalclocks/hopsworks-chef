@@ -23,7 +23,7 @@ cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kibana', github: "hopshadoop/kibana-chef", branch: "master"
 
-cookbook 'hopsmonitor', github: "hopshadoop/stream-monitoring-chef", branch: "master"
+cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
 
