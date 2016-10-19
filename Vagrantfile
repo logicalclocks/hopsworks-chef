@@ -95,7 +95,7 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-jim.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks-gautier.war",
         "user_envs" => "false",
         "twofactor_auth" => "false",
      },
@@ -112,7 +112,8 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
-		 "use_hopsworks" => "true",
+                 "download_url" => "http://snurran.sics.se/hops/gautier/hops-2.4.0.tgz",
+                 "use_hopsworks" => "true",
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
@@ -128,6 +129,11 @@ Vagrant.configure("2") do |c|
 		 "jhs" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  }
+     },
+     "dal" => {
+           "download_url" => "http://snurran.sics.se/hops/gautier/ndb-dal-2.4.0-7.5.3.jar",
+           "lib_url" => "http://snurran.sics.se/hops/gautier/libhopsyarn-2.4.0-7.5.3.so",
+           "schema_url" => "http://snurran.sics.se/hops/gautier/hops.sql"
      },
      "apache_hadoop"  =>    {
      	        "hdfs" => {
@@ -218,9 +224,9 @@ Vagrant.configure("2") do |c|
 
       chef.add_recipe "kagent::install"
       chef.add_recipe "kibana::install"
-      chef.add_recipe "hopsmonitor::install"      
+      chef.add_recipe "hopsmonitor::install"
       chef.add_recipe "kibana::default"
-      chef.add_recipe "hopsmonitor::default"      
+      chef.add_recipe "hopsmonitor::default"
 
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
