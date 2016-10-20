@@ -120,6 +120,7 @@ CREATE TABLE `project` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
+  `partition_id` INT(11) NOT NULL,
   `projectname` VARCHAR(100) NOT NULL,
   `username` VARCHAR(150) NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -130,10 +131,10 @@ CREATE TABLE `project` (
   `description` VARCHAR(2000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
-  UNIQUE KEY(`inode_pid`, `inode_name`),
+  UNIQUE KEY(`inode_pid`, `inode_name`,	`partition_id`),
   KEY user_idx(`username`),
   FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`inode_pid`,`inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `activity` (
@@ -364,8 +365,9 @@ CREATE TABLE `meta_tuple_to_file` (
   `inodeid` INT(11) NOT NULL, -- pretty necessary for the rivers to work
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
+  `partition_id` INT(11) NOT NULL,
   PRIMARY KEY (`tupleid`),
-  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`inode_pid`, `inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `meta_raw_data` (
@@ -390,20 +392,22 @@ CREATE TABLE `meta_template_to_inode` (
   `template_id` INT(11) NOT NULL,
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
+  `partition_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`template_id`) REFERENCES `meta_templates` (`templateid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `meta_inode_basic_metadata` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
-  `inode_name` VARCHAR(255) NOT NULL,
+  `inode_name` VARCHAR(255) NOT NULL
+  `partition_id` INT(11) NOT NULL,
   `description` VARCHAR(3000) DEFAULT NULL,
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`),
-  UNIQUE KEY (`inode_pid`, `inode_name`),
-  FOREIGN KEY (`inode_pid`, `inode_name`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  UNIQUE KEY (`inode_pid`, `inode_name`,`partition_id`),
+  FOREIGN KEY (`inode_pid`, `inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 -- Dataset table-------------------------------------------------
@@ -412,6 +416,7 @@ CREATE TABLE `dataset` (
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
   `inode_id` INT(11) NOT NULL,
+  `partition_id` INT(11) NOT NULL,
   `projectId` INT(11) NOT NULL,
   `description` VARCHAR(2000) DEFAULT NULL,
   `editable` TINYINT(1) NOT NULL DEFAULT '1',
@@ -424,7 +429,7 @@ CREATE TABLE `dataset` (
   KEY `inode_id` (`inode_id`),
   KEY `projectId_name` (`projectId`, `inode_name`),
   FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
@@ -538,15 +543,16 @@ CREATE TABLE `consents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` int(11) NOT NULL,
   `inode_name` varchar(255) NOT NULL,
+  `partition_id` INT(11) NOT NULL,
   `form_type` varchar(127) NOT NULL,
   `status` varchar(127) NOT NULL,
   `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
-  UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`),
+  UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`inode_pid`,`inode_name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `consents_audit` (
@@ -651,7 +657,7 @@ CREATE TABLE `file_activity`
   PRIMARY KEY (`id`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),
   KEY `inode_idx` (`parent_id`, `name`),
-  CONSTRAINT `FK_144_466` FOREIGN KEY (`parent_id`,`name`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_144_466` FOREIGN KEY (`parent_id`,`name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_134_321` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
