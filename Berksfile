@@ -24,16 +24,11 @@ cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 cookbook 'kibana', github: "hopshadoop/kibana-chef", branch: "master"
 
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+#cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
 cookbook 'graphite', '~> 1.0.4'
-cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
-
-cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
-
 cookbook 'simple-logstash', '~> 0.2.4'
 
-#cookbook 'logstash', github: "lusis/chef-logstash", branch: "master"
-
-#cookbook 'logstash', '~> 0.12.0'
+cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit2', '~> 0.2.0'

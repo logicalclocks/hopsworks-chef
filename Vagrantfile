@@ -221,7 +221,6 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsmonitor::install"      
       chef.add_recipe "kibana::default"
       chef.add_recipe "hopsmonitor::default"      
-
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
