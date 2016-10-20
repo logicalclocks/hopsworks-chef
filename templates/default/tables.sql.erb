@@ -401,7 +401,7 @@ CREATE TABLE `meta_template_to_inode` (
 CREATE TABLE `meta_inode_basic_metadata` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
-  `inode_name` VARCHAR(255) NOT NULL
+  `inode_name` VARCHAR(255) NOT NULL,
   `partition_id` INT(11) NOT NULL,
   `description` VARCHAR(3000) DEFAULT NULL,
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
