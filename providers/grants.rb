@@ -39,7 +39,7 @@ notifying_action :create_timers do
     code <<-EOF
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1\"
-      #{exec} glassfish_timers #{new_resource.tables_path}
+      #{exec} glassfish_timers < #{new_resource.tables_path}
     EOF
     not_if "#{exec} -e 'show databases' | grep glassfish_timers"
   end
