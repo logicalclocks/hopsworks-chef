@@ -654,6 +654,7 @@ CREATE TABLE `file_activity`
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `parent_id` int NOT NULL,
   `name` varchar(255) NOT NULL,
+  `partition_id` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),
   KEY `inode_idx` (`parent_id`, `name`),
