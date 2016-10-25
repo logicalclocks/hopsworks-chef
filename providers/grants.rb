@@ -39,7 +39,7 @@ notifying_action :create_timers do
     code <<-EOF
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS glassfish_timers CHARACTER SET latin1\"
-      #{exec} glassfish_timers -e \"source #{new_resource.tables_path}\"
+      #{exec} glassfish_timers < #{new_resource.tables_path}
     EOF
     not_if "#{exec} -e 'show databases' | grep glassfish_timers"
   end
@@ -57,7 +57,7 @@ notifying_action :create_tables do
     code <<-EOF
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
-      #{exec} #{db} -e \"source #{new_resource.tables_path}\"
+      #{exec} #{db} < #{new_resource.tables_path}
     EOF
     not_if "#{exec} -e 'show databases' | grep hopsworks"
   end
@@ -81,7 +81,7 @@ notifying_action :insert_rows do
     user "root"
     code <<-EOF
       set -e
-      #{exec} hopsworks -e \"source #{new_resource.rows_path}\"
+      #{exec} hopsworks < #{new_resource.rows_path}
       touch "#{node.glassfish.base_dir}/.hopsworks_rows.sql"
     EOF
     not_if { ::File.exists?("#{node.glassfish.base_dir}/.hopsworks_rows.sql") }
