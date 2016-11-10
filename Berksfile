@@ -30,6 +30,8 @@ cookbook 'simple-logstash', '~> 0.2.4'
 
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 
+cookbook 'elasticsearch', '~> 2.4.0'
+
 cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit2', '~> 0.2.0'
 cookbook 'authbind', '~> 0.1.10'
