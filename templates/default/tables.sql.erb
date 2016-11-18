@@ -258,7 +258,7 @@ CREATE TABLE `jobs_history` (
   `job_name` VARCHAR(128) DEFAULT NULL,
   `state` VARCHAR(128) DEFAULT NULL,
   `final_status` VARCHAR(128) DEFAULT NULL,
-  `project_id` ING(11) DEFAULT NULL,
+  `project_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`execution_id`),
   UNIQUE KEY `inode_idx` (`app_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
