@@ -65,11 +65,8 @@ suites:
 
     attributes:
 #         download_url: "http://192.168.1.2/hops"
-        # authorization:
-        #    sudo:
-        #      users: ['vagrant']
-        #      passwordless: true
-        #      include_sudoers_d: true
+         cuda:
+            enabled: "false"
          kzookeeper:
             default:
                private_ips: ["10.0.2.15"]

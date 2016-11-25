@@ -213,6 +213,9 @@ Vagrant.configure("2") do |c|
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
+     "cuda" => {
+	  "enabled": "false",
+     },
      "vagrant" => "true",
      }
 
