@@ -10,7 +10,9 @@ set -e
 #Variables
 DOMAIN="$1"
 
-KEYSTOREPW=<%= node.hopsworks.admin.password %>
+# the cert passwd is: <%= node.hopsworks.cert.password %>
+# default should be 'adminpw'
+KEYSTOREPW=<%= node.hopsworks.master.password %>
 cd <%= @int_ca_dir %>
 
 #1 Create a user key
