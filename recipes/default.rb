@@ -127,10 +127,12 @@ end
 
 
 tables_path = "#{domains_dir}/tables.sql"
+views_path = "#{domains_dir}/views.sql"
 rows_path = "#{domains_dir}/rows.sql"
 
 hopsworks_grants "hopsworks_tables" do
   tables_path  "#{tables_path}"
+  views_path  "#{views_path}"
   rows_path  "#{rows_path}"
   action :nothing
 end 

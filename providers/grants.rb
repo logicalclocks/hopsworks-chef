@@ -62,6 +62,18 @@ notifying_action :create_tables do
     not_if "#{exec} -e 'show databases' | grep hopsworks"
   end
 
+#
+# There is no support for distributed views in MySQL Cluster, so each mysql server has to install
+# the views
+  bash 'create_hopsworks_views' do
+    user "root"
+    code <<-EOF
+      set -e
+      #{exec} #{db} < < #{new_resource.views_path}
+    EOF
+    not_if "#{exec} -e hopsworks \"show tables like 'users_groups'\" | grep users_groups"
+  end
+
 end
 
 notifying_action :insert_rows do
