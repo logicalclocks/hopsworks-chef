@@ -14,9 +14,6 @@ CREATE VIEW `users_groups` AS
 
 CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));
 
-CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
-
-
 CREATE VIEW `projects_last_payment` AS
   select `project_payments_history`.`projectname` AS `projectname`,
          max(`project_payments_history`.`transaction_date`) AS `max(transaction_date)`

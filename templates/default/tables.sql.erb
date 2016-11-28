@@ -521,6 +521,7 @@ CREATE TABLE `ssh_keys` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
+CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
 -- Consents for BiobankCloud
 
