@@ -137,6 +137,16 @@ hopsworks_grants "hopsworks_tables" do
   action :nothing
 end 
 
+template views_path do
+  source File.basename("#{views_path}") + ".erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+               :private_ip => private_ip
+              })
+end
+
 Chef::Log.info("Could not find previously defined #{tables_path} resource")
 template tables_path do
   source File.basename("#{tables_path}") + ".erb"

@@ -262,6 +262,7 @@ if systemd == true
 
     hopsworks_grants "reload_systemd" do
       tables_path  ""
+      views_path ""
       rows_path  ""
       action :reload_systemd
     end 
