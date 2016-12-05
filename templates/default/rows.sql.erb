@@ -133,13 +133,6 @@ INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node.hopsworks.m
 INSERT INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
 INSERT INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_exclude_groups %>");
 
--- ePipe
-
-INSERT INTO epipe_recovery VALUES (1, 0);
-INSERT INTO epipe_recovery VALUES (2, 0);
-INSERT INTO epipe_recovery VALUES (3, 0);
-
-
 -- kmon
 
 INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
