@@ -893,3 +893,11 @@ CREATE TABLE `tf_fifo_queue` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `zeppelin_interpreter_confs` (
+  `project_name` VARCHAR(100),
+  `lastUpdate` TIMESTAMP,
+  `interpreter_conf` TEXT,
+  FOREIGN KEY (`project_name`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  PRIMARY KEY (`project_name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
