@@ -34,7 +34,7 @@ bash 'certificateauthority' do
 	#5 Create the intermediate key
 	[ -f intermediate/private/intermediate.key.pem ] || openssl genrsa -aes256 -out intermediate/private/intermediate.key.pem -passout pass:${KEYSTOREPW} 4096 
 
-	chown -R #{node.glassfish.user}:#{node.glassfish.group} intermediate/private/intermediate.key.pem
+	chown #{node.glassfish.user}:#{node.glassfish.group} intermediate/private/intermediate.key.pem
 	chmod 440 intermediate/private/intermediate.key.pem
 
 	#6 Create the intermediate certificate 

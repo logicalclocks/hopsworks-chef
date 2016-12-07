@@ -11,7 +11,7 @@ default.hopsworks.version                  = "0.1.0"
 
 node.default.glassfish.variant             = "payara"
 node.default.glassfish.user                = "glassfish"
-node.default.glassfish.group               = "glassfish-admin"
+node.default.glassfish.group               = "glassfish"
 node.default.hopsworks.admin.port          = 4848
 node.default.hopsworks.port                = "8080"
 node.default.glassfish.admin.port          = node.hopsworks.admin.port
@@ -42,14 +42,8 @@ default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.ja
 default.hopsworks.admin.user               = "adminuser"
 default.hopsworks.admin.password           = "adminpw"
 node.default.glassfish.cert.password       = "#{node.hopsworks.admin.password}"
-#default.hopsworks.default_user             = "admin@kth.se"
-#default.hopsworks.default_password         = "admin"
 default.hopsworks.twofactor_auth           = "false"
 default.hopsworks.twofactor_exclude_groups = "AGENT" #semicolon separated list of roles
-
-# # mysql-server may be part of mysql-cluster (ndb)
-# default.mysql.mysql_bin                  = "#{node.mysql.base_dir}/bin/mysql"
-# default.mysql.mysql_cnf                  = "#{node.ndb.base_dir}/my.cnf"
 
 default.hopsworks.mysql_connector_url      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
