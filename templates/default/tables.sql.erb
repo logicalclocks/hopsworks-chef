@@ -411,6 +411,18 @@ CREATE TABLE `meta_inode_basic_metadata` (
   FOREIGN KEY (`inode_pid`, `inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `meta_data_schemaless` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inode_id` int(11) NOT NULL,
+  `inode_parent_id` int(11) NOT NULL,
+  `inode_name` varchar(255) NOT NULL,
+  `inode_partition_id` int(11) NOT NULL,
+  `data` varchar(12000) NOT NULL,
+  PRIMARY KEY (`id`, `inode_id`, `inode_parent_id`),
+  UNIQUE KEY (`inode_parent_id`, `inode_name`,`inode_partition_id`),
+  FOREIGN KEY (`inode_parent_id`, `inode_name`,`inode_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
 -- Dataset table-------------------------------------------------
 CREATE TABLE `dataset` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -729,13 +741,26 @@ CREATE TABLE `edges` (
 -- ePipe
 -- ------------------------
 
-CREATE TABLE `epipe_recovery` (
-  `table` tinyint(1) NOT NULL,
-  `last_used_id` INT(11) NOT NULL,
-  PRIMARY KEY (`table`)
+CREATE TABLE `ops_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `op_id` int(11) NOT NULL,
+  `op_on` tinyint(1) NOT NULL,
+  `op_type` tinyint(1) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `dataset_id` int(11) NOT NULL,
+  `inode_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
-
+CREATE TABLE `meta_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `meta_pk1` int(11) NOT NULL,
+  `meta_pk2` int(11) NOT NULL,
+  `meta_pk3` int(11) NOT NULL,
+  `meta_type` tinyint(1) NOT NULL,
+  `meta_op_type` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 -- ------------------------
 -- kmon
