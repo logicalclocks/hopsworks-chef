@@ -254,7 +254,7 @@ attribute "java/install_flavor",
           :display_name =>  "Oracle (default) or openjdk",
           :type => 'string'
 
-attribute "vagrant/enabled",
+attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
 
