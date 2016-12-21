@@ -258,6 +258,9 @@ attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
 
+attribute "services/enabled",
+          :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
+          :type => "string"
 
 #########################################################################
 #########################################################################

@@ -18,9 +18,9 @@ node.default.glassfish.admin.port          = node.hopsworks.admin.port
 node.default.glassfish.port                = node.hopsworks.port.to_i
 # payara-4.1.153.zip
 node.default.glassfish.version             = '4.1.1.163'
-#node.default.glassfish.base_dir            = "/home/glassfish"
 node.default.hopsworks.dir                 = "/usr/local"
 node.default.glassfish.install_dir         = node.hopsworks.dir
+node.default.glassfish.base_dir            = node.glassfish.install_dir + "/glassfish"
 node.default.glassfish.domains_dir         = "/srv/glassfish"
 default.hopsworks.max_mem                  = "3000"
 node.default.glassfish.max_mem             = node.hopsworks.max_mem.to_i

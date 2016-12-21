@@ -182,16 +182,6 @@ end
 
 
 
-# Hack for cuneiform that expects that the username has a /home/username directory.
-# directory "/home/#{node.glassfish.user}/software" do
-#   owner node.glassfish.user
-#   group node.glassfish.group
-#   mode "755"
-#   action :create
-#   recursive true
-# end
-
-
  template "#{node.glassfish.domains_dir}/#{domain_name}/docroot/404.html" do
     source "404.html.erb"
     owner node.glassfish.user
@@ -239,7 +229,6 @@ end
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
               :authbind => requires_authbind,
               :listen_ports => [admin_port, node.glassfish.port])
-#    notifies :restart, "service[#{service_name}]", :delayed
   end
 end
 

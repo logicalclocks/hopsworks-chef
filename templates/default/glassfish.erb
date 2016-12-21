@@ -17,7 +17,7 @@ umask 0077
 start() {
   ulimit -n 30000
 #  ulimit -l  2>&1 > /dev/null
-  rm -rf <%= node.glassfish.base_dir %>/glassfish/domains/<%= @domain_name %>/osgi-cache/*
+  rm -rf <%= node.glassfish.domains_dir %>/<%= @domain_name %>/osgi-cache/*
   su -c "<%= node.glassfish.base_dir %>/versions/current/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> start-domain --debug false --upgrade false <%= @domain_name %>" <%= node.glassfish.user %> 
   return $?
 

@@ -75,6 +75,9 @@ Vagrant.configure("2") do |c|
           "install" => "true"
      },
      "ndb" => {
+          "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -92,6 +95,8 @@ Vagrant.configure("2") do |c|
           "enabled" => "true",
      },
      "hopsworks" => {
+          "dir" => "/srv/hops",
+          "domains_dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -100,11 +105,17 @@ Vagrant.configure("2") do |c|
         "twofactor_auth" => "false",
      },
      "zeppelin" => {
+          "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "elastic" => {
+          "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -112,6 +123,7 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
+                 "dir" => "/srv/hops",
 		 "use_hopsworks" => "true",
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
@@ -156,10 +168,14 @@ Vagrant.configure("2") do |c|
                  },
       },
      "flink"  =>    {
+          "dir" => "/srv/hops",
 	  "user" => "glassfish",
+          "group" => "glassfish",
      },
      "hadoop_spark" => {
 	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
@@ -168,16 +184,25 @@ Vagrant.configure("2") do |c|
           }
      },
      "kzookeeper" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "livy" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "epipe" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -193,6 +218,9 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "drelephant" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -203,12 +231,18 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "kagent" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
           "enabled" => "true",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "kkafka" => {
+	  "user" => "glassfish",
+          "group" => "glassfish",
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
