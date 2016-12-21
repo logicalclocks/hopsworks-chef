@@ -111,6 +111,10 @@ attribute "hopsworks/dir",
           :description => "Installation directory for the glassfish binaries",
           :type => 'string'
 
+attribute "hopsworks/domains_dir",
+          :description => "Installation directory for the glassfish domains",
+          :type => 'string'
+
 attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'

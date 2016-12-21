@@ -74,6 +74,9 @@ Vagrant.configure("2") do |c|
      "ntp" => {
           "install" => "true"
      },
+     "mysql" => {
+          "dir" => "/srv/hops"
+     },
      "ndb" => {
           "user" => "glassfish",
           "group" => "glassfish",
@@ -168,6 +171,11 @@ Vagrant.configure("2") do |c|
                  },
       },
      "flink"  =>    {
+          "dir" => "/srv/hops",
+	  "user" => "glassfish",
+          "group" => "glassfish",
+     },
+     "adam"  =>    {
           "dir" => "/srv/hops",
 	  "user" => "glassfish",
           "group" => "glassfish",
