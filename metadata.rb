@@ -111,6 +111,14 @@ attribute "hopsworks/dir",
           :description => "Installation directory for the glassfish binaries",
           :type => 'string'
 
+attribute "hopsworks/user",
+          :description => "Hopsworks/glassfish username to run service as",
+          :type => 'string'
+
+attribute "hopsworks/group",
+          :description => "Hopsworks/glassfish group to run service as",
+          :type => 'string'
+
 attribute "hopsworks/domains_dir",
           :description => "Installation directory for the glassfish domains",
           :type => 'string'
@@ -222,16 +230,152 @@ attribute "glassfish/package_url",
           :description => "Url for the Glassfish distribution zip file.",
           :type => 'string'
 
+attribute "ndb/user",
+          :description => "Username for the ndb services",
+          :type => 'string'
+
+attribute "ndb/group",
+          :description => "Groupname for the ndb services",
+          :type => 'string'
+
 attribute "ndb/dir",
-          :description => "Ndb Installation directory.",
+          :description => "ndb Installation directory.",
+          :type => 'string'
+
+attribute "kkafka/user",
+          :description => "Username for the kkafka services",
+          :type => 'string'
+
+attribute "kkafka/group",
+          :description => "Groupname for the kkafka services",
+          :type => 'string'
+
+attribute "kkafka/dir",
+          :description => "kkafka Installation directory.",
+          :type => 'string'
+
+attribute "kzookeeper/user",
+          :description => "Username for the kzookeeper services",
+          :type => 'string'
+
+attribute "kzookeeper/group",
+          :description => "Groupname for the kzookeeper services",
+          :type => 'string'
+
+attribute "kzookeeper/dir",
+          :description => "kzookeeper Installation directory.",
+          :type => 'string'
+
+attribute "livy/user",
+          :description => "Username for the livy services",
+          :type => 'string'
+
+attribute "livy/group",
+          :description => "Groupname for the livy services",
+          :type => 'string'
+
+attribute "livy/dir",
+          :description => "livy Installation directory.",
+          :type => 'string'
+
+attribute "epipe/user",
+          :description => "Username for the epipe services",
+          :type => 'string'
+
+attribute "epipe/group",
+          :description => "Groupname for the epipe services",
+          :type => 'string'
+
+attribute "epipe/dir",
+          :description => "epipe Installation directory.",
+          :type => 'string'
+
+attribute "elastic/user",
+          :description => "Username for the elastic services",
+          :type => 'string'
+
+attribute "elastic/group",
+          :description => "Groupname for the elastic services",
+          :type => 'string'
+
+attribute "elastic/dir",
+          :description => "elastic Installation directory.",
+          :type => 'string'
+
+attribute "zeppelin/user",
+          :description => "Username for the zeppelin services",
+          :type => 'string'
+
+attribute "zeppelin/group",
+          :description => "Groupname for the zeppelin services",
+          :type => 'string'
+
+attribute "zeppelin/dir",
+          :description => "zeppelin Installation directory.",
+          :type => 'string'
+
+attribute "kagent/user",
+          :description => "Username for the kagent services",
+          :type => 'string'
+
+attribute "kagent/group",
+          :description => "Groupname for the kagent services",
+          :type => 'string'
+
+attribute "kagent/dir",
+          :description => "kagent Installation directory.",
+          :type => 'string'
+
+attribute "drelephant/user",
+          :description => "Username for the drelephant services",
+          :type => 'string'
+
+attribute "drelephant/group",
+          :description => "Groupname for the drelephant services",
+          :type => 'string'
+
+attribute "drelephant/dir",
+          :description => "drelephant Installation directory.",
+          :type => 'string'
+
+attribute "dela/user",
+          :description => "Username for the dela services",
+          :type => 'string'
+
+attribute "dela/group",
+          :description => "Groupname for the dela services",
+          :type => 'string'
+
+attribute "dela/dir",
+          :description => "dela Installation directory.",
+          :type => 'string'
+
+attribute "hadoop_spark/user",
+          :description => "Username for the hadoop_spark services",
+          :type => 'string'
+
+attribute "hadoop_spark/group",
+          :description => "Groupname for the hadoop_spark services",
+          :type => 'string'
+
+attribute "hadoop_spark/dir",
+          :description => "hadoop_spark Installation directory.",
+          :type => 'string'
+
+attribute "flink/user",
+          :description => "Username for the flink services",
+          :type => 'string'
+
+attribute "flink/group",
+          :description => "Groupname for the flink services",
+          :type => 'string'
+
+attribute "flink/dir",
+          :description => "flink Installation directory.",
           :type => 'string'
 
 attribute "hops/dir",
           :description => "Ndb Installation directory.",
-          :type => 'string'
-
-attribute "hadoop_spark/dir",
-          :description => "Installation directory.",
           :type => 'string'
 
 attribute "hopsworks/kafka_num_replicas",
