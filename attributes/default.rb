@@ -10,8 +10,10 @@ include_attribute "kzookeeper"
 default.hopsworks.version                  = "0.1.0"
 
 node.default.glassfish.variant             = "payara"
-node.default.glassfish.user                = "glassfish"
-node.default.glassfish.group               = "glassfish"
+node.default.hopsworks.user                = "glassfish"
+node.default.glassfish.user                = node.hopsworks.user
+node.default.hopsworks.group               = "glassfish"
+node.default.glassfish.group               = node.hopsworks.group
 node.default.hopsworks.admin.port          = 4848
 node.default.hopsworks.port                = "8080"
 node.default.glassfish.admin.port          = node.hopsworks.admin.port
