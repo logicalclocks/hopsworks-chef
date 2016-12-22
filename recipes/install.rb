@@ -44,7 +44,7 @@ directory node.hopsworks.domains_dir  do
   mode "755"
   action :create
   recursive true
-  not_if "-d #{node.hopsworks.domains_dir}"
+  not_if "test -d #{node.hopsworks.domains_dir}"
 end
 
 
