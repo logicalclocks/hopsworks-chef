@@ -29,6 +29,24 @@ else
 end
 
 
+directory node.hopsworks.dir  do
+  owner node.hopsworks.user
+  group node.hopsworks.group
+  mode "755"
+  action :create
+  recursive true
+  not_if "-d #{node.hopsworks.dir}"
+end
+
+directory node.hopsworks.domains_dir  do
+  owner node.hopsworks.user
+  group node.hopsworks.group
+  mode "755"
+  action :create
+  recursive true
+  not_if "-d #{node.hopsworks.domains_dir}"
+end
+
 
 node.override = {
   'java' => {
