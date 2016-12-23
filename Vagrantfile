@@ -145,6 +145,7 @@ Vagrant.configure("2") do |c|
                  }
      },
      "apache_hadoop"  =>    {
+	        "dir" => "/srv/hops",
      	        "hdfs" => {
                       "user" => "glassfish"
                  },
