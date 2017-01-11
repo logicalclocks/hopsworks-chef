@@ -169,6 +169,7 @@ Vagrant.configure("2") do |c|
 		 "jhs" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
                  },
+                 "data_dir" => "/srv/hops/data",
       },
      "flink"  =>    {
           "dir" => "/srv/hops",
@@ -181,6 +182,7 @@ Vagrant.configure("2") do |c|
           "group" => "glassfish",
      },
      "hadoop_spark" => {
+	  "version" => "2.1.0",
 	  "user" => "glassfish",
           "group" => "glassfish",
           "dir" => "/srv/hops",
