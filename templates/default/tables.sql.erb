@@ -934,3 +934,39 @@ CREATE TABLE `zeppelin_interpreter_confs` (
   PRIMARY KEY (`project_name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+
+--
+-- Python Dependencies
+--
+
+CREATE TABLE `project_pythondeps` (
+  `project_id` INT(11) NOT NULL,
+  `dep_id` INT(10) NOT NULL,
+  PRIMARY KEY (`dep_id`, `project_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY KEY (project_id) */
+
+
+CREATE TABLE `python_dep` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `dependency` VARCHAR(128) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+
+--
+-- Kagent Asynchronous Commands
+--
+
+CREATE TABLE `kagent_commands` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `json_command` VARCHAR(1024) NOT NULL,
+  `host_id` INT(10) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_id` INT(11),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`hostid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
