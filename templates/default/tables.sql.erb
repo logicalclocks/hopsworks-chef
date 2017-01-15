@@ -942,10 +942,9 @@ CREATE TABLE `zeppelin_interpreter_confs` (
 CREATE TABLE `project_pythondeps` (
   `project_id` INT(11) NOT NULL,
   `dep_id` INT(10) NOT NULL,
-  PRIMARY KEY (`dep_id`, `project_id`),
+  PRIMARY KEY (`project_id`, `dep_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1
-/*!50100 PARTITION BY KEY (project_id) */
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (project_id) */;
 
 
 CREATE TABLE `python_dep` (
@@ -962,7 +961,7 @@ CREATE TABLE `python_dep` (
 CREATE TABLE `kagent_commands` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `json_command` VARCHAR(1024) NOT NULL,
-  `host_id` INT(10) NOT NULL,
+  `host_id` varchar(128) NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `project_id` INT(11),
   PRIMARY KEY (`id`),
