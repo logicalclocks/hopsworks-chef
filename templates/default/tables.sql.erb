@@ -939,6 +939,12 @@ CREATE TABLE `zeppelin_interpreter_confs` (
 -- Python Dependencies
 --
 
+CREATE TABLE `anaconda_repo` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `url` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 CREATE TABLE `project_pythondeps` (
   `project_id` INT(11) NOT NULL,
   `dep_id` INT(10) NOT NULL,
@@ -947,17 +953,12 @@ CREATE TABLE `project_pythondeps` (
   FOREIGN KEY (`dep_id`) REFERENCES `python_dep` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (project_id) */;
 
-CREATE TABLE `anaconda_repo` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `url` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
-
 CREATE TABLE `python_dep` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `dependency` VARCHAR(128) NOT NULL,
   `repo_url` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
+  KEY (`dependency`),
   FOREIGN KEY (`repo_url`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
