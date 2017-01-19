@@ -239,6 +239,7 @@ template "#{rows_path}" do
                 :logstash_ip => logstash_ip,
                 :grafana_ip => hopsmonitor_ip,
                 :graphite_ip => hopsmonitor_ip,
+                :anaconda_dir => node.anaconda.base_dir,
                 :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
@@ -466,36 +467,37 @@ glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.Request
 end
 
 
+#
+# Enable Single Sign on
+#
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-enabled=true'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-max-inactive-seconds=300'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-reap-interval-seconds=60'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+
+
 # Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
-
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-enabled=true'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-max-inactive-seconds=300'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-reap-interval-seconds=60'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
 
 
 # cluster="hopsworks"
@@ -565,6 +567,24 @@ end
 
 
 
+glassfish_deployable "hopsworks-ear" do
+  component_name "hopsworks-ear"
+  url node.hopsworks.ear_url
+#  context_root "/hopsworks"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :deploy
+  async_replication false
+  retries 1
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks-ear'"
+end
+
+
+
+
 glassfish_deployable "hopsworks" do
   component_name "hopsworks"
   url node.hopsworks.war_url
@@ -577,7 +597,7 @@ glassfish_deployable "hopsworks" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v 'hopsworks-ear | grep 'hopsworks'"
 end
 
 

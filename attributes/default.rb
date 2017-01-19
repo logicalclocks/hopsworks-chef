@@ -12,7 +12,7 @@ default.hopsworks.version                  = "0.1.0"
 node.default.glassfish.variant             = "payara"
 node.default.hopsworks.user                = "glassfish"
 node.default.glassfish.user                = node.hopsworks.user
-node.default.hopsworks.group               = "glassfish"
+node.default.hopsworks.group               = "glassfish" 
 node.default.glassfish.group               = node.hopsworks.group
 node.default.hopsworks.admin.port          = 4848
 node.default.hopsworks.port                = "8080"
@@ -39,7 +39,8 @@ node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
-default.hopsworks.war_url                  = "#{node.download_url}/hopsworks-#{node.hopsworks.version}.war"
+default.hopsworks.war_url                  = "#{node.download_url}/hopsworks-web-#{node.hopsworks.version}.war"
+default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks-ear-#{node.hopsworks.version}.ear"
 default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
 
 default.hopsworks.admin.user               = "adminuser"

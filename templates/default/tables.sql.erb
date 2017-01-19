@@ -948,6 +948,7 @@ CREATE TABLE `anaconda_repo` (
 CREATE TABLE `python_dep` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `dependency` VARCHAR(128) NOT NULL,
+  `version` VARCHAR(128) NOT NULL,
   `repo_url` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY (`dependency`),
