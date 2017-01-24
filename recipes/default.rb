@@ -236,8 +236,8 @@ template "#{rows_path}" do
                 :logstash_ip => logstash_ip,
                 :grafana_ip => grafana_ip,
                 :influxdb_ip => influxdb_ip,
-                :influxdb_user => node.influxdb.user,
-                :influxdb_password => node.influxdb.password,
+                :influxdb_user => node.influxdb.db_user,
+                :influxdb_password => node.influxdb.db_password,
                 :anaconda_dir => node.anaconda.base_dir,
                 :public_ip => public_ip
               })
