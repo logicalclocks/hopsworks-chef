@@ -234,8 +234,10 @@ template "#{rows_path}" do
                 :kafka_user => node.kkafka.user,
                 :kibana_ip => kibana_ip,
                 :logstash_ip => logstash_ip,
-                :grafana_ip => hopsmonitor_ip,
-                :graphite_ip => hopsmonitor_ip,
+                :grafana_ip => grafana_ip,
+                :influxdb_ip => influxdb_ip,
+                :influxdb_user => node.influxdb.user,
+                :influxdb_password => node.influxdb.password,
                 :anaconda_dir => node.anaconda.base_dir,
                 :public_ip => public_ip
               })
