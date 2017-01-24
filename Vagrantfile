@@ -222,9 +222,13 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "hopsmonitor" => {
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+     },
+     "hopslog" => {
+          "dir" => "/srv/hops",
      },
      "drelephant" => {
 	  "user" => "glassfish",
