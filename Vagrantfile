@@ -263,10 +263,8 @@ Vagrant.configure("2") do |c|
      }
 
       chef.add_recipe "kagent::install"
-      #chef.add_recipe "kibana::install"
-      #chef.add_recipe "hopsmonitor::install"      
-      #chef.add_recipe "kibana::default"
-      #chef.add_recipe "hopsmonitor::default"      
+      chef.add_recipe "hopslog::install"
+      chef.add_recipe "hopsmonitor::install"      
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
@@ -297,6 +295,8 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
       chef.add_recipe "livy::default"
+      chef.add_recipe "hopslog::default"
+      chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"

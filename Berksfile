@@ -21,9 +21,11 @@ cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
-cookbook 'kibana', github: "hopshadoop/kibana-chef", branch: "master"
 
+cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+
+
 #cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'

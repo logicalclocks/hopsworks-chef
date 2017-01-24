@@ -105,23 +105,20 @@ rescue
 end
 
 begin
-  kibana_ip = private_recipe_ip("kibana","default")
-rescue 
-  kibana_ip = node.hostname
-  Chef::Log.warn "could not find the kibana server ip!"
-end
-
-begin
-  logstash_ip = private_recipe_ip("simple-logstash","default")
+  logstash_ip = private_recipe_ip("hopslog","default")
+  kibana_ip = private_recipe_ip("hopslog","default")
 rescue 
   logstash_ip = node.hostname
+  kibana_ip = node.hostname
   Chef::Log.warn "could not find the logstash server ip!"
 end
 
 begin
-  hopsmonitor_ip = private_recipe_ip("hopsmonitor","default")
+  grafana_ip = private_recipe_ip("hopsmonitor","default")
+  influxdb_ip = private_recipe_ip("hopsmonitor","default")
 rescue 
-  hopsmonitor_ip = node.hostname
+  grafana_ip = node.hostname
+  influxdb_ip = node.hostname
   Chef::Log.warn "could not find the hopsmonitor server ip!"
 end
 
@@ -570,7 +567,7 @@ end
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear"
   url node.hopsworks.ear_url
-#  context_root "/hopsworks"
+  context_root "/hopsworks-api"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
