@@ -569,7 +569,6 @@ end
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear"
   url node.hopsworks.ear_url
-  context_root "/hopsworks-api"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
