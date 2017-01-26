@@ -656,7 +656,7 @@ if node.services.enabled != "true"
     service "glassfish-domain1" do
       provider Chef::Provider::Service::Systemd
       supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable, :restart
+      action :disable
     end
 
   else #sysv
@@ -664,7 +664,7 @@ if node.services.enabled != "true"
     service "glassfish-domain1" do
       provider Chef::Provider::Service::Init::Debian
       supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable, :restart
+      action :disable
     end
   end
 
