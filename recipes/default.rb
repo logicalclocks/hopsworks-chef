@@ -572,6 +572,7 @@ glassfish_deployable "hopsworks-ear" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
+#  virtual_servers ['server']
   admin_port admin_port
   secure false
   action :deploy
@@ -590,6 +591,7 @@ glassfish_deployable "hopsworks" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
+#  virtual_servers ['server']
   admin_port admin_port
   secure false
   action :deploy
@@ -654,7 +656,7 @@ if node.services.enabled != "true"
     service "glassfish-domain1" do
       provider Chef::Provider::Service::Systemd
       supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable
+      action :disable, :restart
     end
 
   else #sysv
@@ -662,7 +664,7 @@ if node.services.enabled != "true"
     service "glassfish-domain1" do
       provider Chef::Provider::Service::Init::Debian
       supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable
+      action :disable, :restart
     end
   end
 
