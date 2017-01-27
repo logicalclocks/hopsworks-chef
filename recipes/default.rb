@@ -572,7 +572,6 @@ glassfish_deployable "hopsworks-ear" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
-#  virtual_servers ['server']
   admin_port admin_port
   secure false
   action :deploy
@@ -585,13 +584,12 @@ end
 
 
 glassfish_deployable "hopsworks" do
-  component_name "hopsworks"
+  component_name "hopsworks-web"
   url node.hopsworks.war_url
-  context_root "/hopsworks"
+  context_root "/hopsworks-web-0.1.0"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
-#  virtual_servers ['server']
   admin_port admin_port
   secure false
   action :deploy
