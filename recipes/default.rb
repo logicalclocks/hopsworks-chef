@@ -586,7 +586,7 @@ end
 glassfish_deployable "hopsworks" do
   component_name "hopsworks-web"
   url node.hopsworks.war_url
-  context_root "/hopsworks-web-0.1.0"
+  context_root "/hopsworks-web"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
