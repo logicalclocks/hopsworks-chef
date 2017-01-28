@@ -39,8 +39,8 @@ node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
-default.hopsworks.war_url                  = "#{node.download_url}/#{node.hopsworks.version}/hopsworks.war"
-default.hopsworks.ear_url                  = "#{node.download_url}/#{node.hopsworks.version}/hopsworks-ear.ear"
+default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
+default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
 
 
 default.hopsworks.admin.user               = "adminuser"
