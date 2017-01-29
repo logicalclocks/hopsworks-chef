@@ -636,6 +636,27 @@ template "/bin/hopsworks-2fa" do
 
 
 
+# Add spark metrics.properties file to HDFS. Used by Grafana.
+
+template "/tmp/metrics.properties" do
+  source "metrics.properties.erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+               :private_ip => private_ip
+  })
+end
+
+apache_hadoop_hdfs_directory "/tmp/metrics.properties" do
+  action :put_as_superuser
+  owner node.hadoop_spark.user
+  group node.apache_hadoop.group
+  mode "1775"
+  dest "/user/" + node.glassfish.user + "/metrics.properties"
+end
+
+
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
