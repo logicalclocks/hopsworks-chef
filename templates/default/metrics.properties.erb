@@ -1,4 +1,4 @@
-	#
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -117,53 +117,18 @@
 #   prefix    EMPTY STRING  Prefix to prepend to every metric's name
 #   protocol  tcp           Protocol ("tcp" or "udp") to use
 
-## Examples
-# Enable JmxSink for all instances by class name
-#*.sink.jmx.class=org.apache.spark.metrics.sink.JmxSink
+*.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
+*.sink.graphite.host=localhost
+*.sink.graphite.port=<%= node.influxdb.graphite.port %>
+*.sink.graphite.period=1
 
-# Enable ConsoleSink for all instances by class name
-#*.sink.console.class=org.apache.spark.metrics.sink.ConsoleSink
-
-# Polling period for the ConsoleSink
-#*.sink.console.period=10
-# Unit of the polling period for the ConsoleSink
-#*.sink.console.unit=seconds
-
-# Polling period for the ConsoleSink specific for the master instance
-#master.sink.console.period=15
-# Unit of the polling period for the ConsoleSink specific for the master
-# instance
-#master.sink.console.unit=seconds
-
-# Enable CsvSink for all instances by class name
-#*.sink.csv.class=org.apache.spark.metrics.sink.CsvSink
-
-# Polling period for the CsvSink
-#*.sink.csv.period=1
-# Unit of the polling period for the CsvSink
-#*.sink.csv.unit=minutes
-
-# Polling directory for CsvSink
-#*.sink.csv.directory=/tmp/
-
-# Polling period for the CsvSink specific for the worker instance
-#worker.sink.csv.period=10
-# Unit of the polling period for the CsvSink specific for the worker instance
-#worker.sink.csv.unit=minutes
-
-# Enable Slf4jSink for all instances by class name
-#*.sink.slf4j.class=org.apache.spark.metrics.sink.Slf4jSink
-
-# Polling period for the Slf4JSink
-#*.sink.slf4j.period=1
-# Unit of the polling period for the Slf4jSink
-#*.sink.slf4j.unit=minutes
 
 # Enable JvmSource for instance master, worker, driver and executor
-#master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 
-#worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 
-#driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
 
-#executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+
