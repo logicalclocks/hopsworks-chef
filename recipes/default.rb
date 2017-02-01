@@ -494,6 +494,14 @@ glassfish_asadmin "set 'server-config.http-service.virtual-server.server.propert
    secure false
 end
 
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=50 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
 
 
 # Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
