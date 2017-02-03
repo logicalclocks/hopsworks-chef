@@ -213,7 +213,7 @@ template "#{rows_path}" do
                 :ndb_dir => node.ndb.dir + "/mysql-cluster",
                 :mysql_dir => node.mysql.dir + "/mysql",
                 :elastic_dir => node.elastic.dir + "/elastic",
-                :hopsworks_dir => node.glassfish.domains_dir,
+                :hopsworks_dir => domains_dir,
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :twofactor_exclude_groups => node.hopsworks.twofactor_exclude_groups,
                 :elastic_user => node.elastic.user,
@@ -685,6 +685,14 @@ apache_hadoop_hdfs_directory "/tmp/metrics.properties" do
   dest "/user/" + node.glassfish.user + "/metrics.properties"
 end
 
+
+template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
+  source "condasearch.sh.erb"
+  owner node.glassfish.user
+  owner node.kagent.user
+  mode 0750
+  action :create
+end
 
 
 #

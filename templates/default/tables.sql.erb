@@ -127,6 +127,7 @@ CREATE TABLE `project` (
   `retention_period` DATE DEFAULT NULL,
   `ethical_status` VARCHAR(30) DEFAULT NULL,
   `archived` TINYINT(1) DEFAULT '0',
+  `conda` TINYINT(1) DEFAULT '0',  
   `deleted` TINYINT(1) DEFAULT '0',
   `description` VARCHAR(2000) DEFAULT NULL,
   PRIMARY KEY (`id`),
