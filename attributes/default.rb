@@ -61,8 +61,6 @@ default.hopsworks.cert.c                   = "se"
 default.hopsworks.cert.password            = "changeit"
 default.hopsworks.master.password          = "adminpw"
 
-# default.bind_address                    = attribute?('cloud') ? cloud['local_ipv4' : ipaddress
-
 default.hopsworks.public_ips               = ['10.0.2.15']
 default.hopsworks.private_ips              = ['10.0.2.15']
 

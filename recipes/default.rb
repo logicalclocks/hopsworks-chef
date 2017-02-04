@@ -694,6 +694,15 @@ template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
+  source "condalist.sh.erb"
+  owner node.glassfish.user
+  owner node.kagent.user
+  mode 0750
+  action :create
+end
+
+
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
