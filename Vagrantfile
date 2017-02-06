@@ -22,6 +22,8 @@ Vagrant.configure("2") do |c|
   c.ssh.insert_key="false"
 # Ssh port on vagrant
   c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
+# Kagent REST API
+  c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
 
