@@ -105,3 +105,4 @@ default.hopsworks.dela.public_search_endpoint =  "hopsworks/api/elastic/publicda
 
 default.hopsworks.max_gpu_request_size        = 1
 default.hopsworks.max_cpu_request_size        = 1
+default.hops.hops_util.url                   = "http://snurran.sics.se/hops/hops-util-0.1.jar"
