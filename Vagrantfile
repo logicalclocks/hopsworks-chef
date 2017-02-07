@@ -21,10 +21,11 @@ Vagrant.configure("2") do |c|
    
   c.ssh.insert_key="false"
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>2223})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
+# Kagent REST API
+  c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
-
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
@@ -273,17 +274,17 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
-#      chef.add_recipe "flink::install"
-#      chef.add_recipe "zeppelin::install"
+      chef.add_recipe "flink::install"
+      chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
-#      chef.add_recipe "livy::install"
-#      chef.add_recipe "adam::install"
+      chef.add_recipe "livy::install"
+      chef.add_recipe "adam::install"
 #      chef.add_recipe "oozie::install"
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
-#      chef.add_recipe "tensorflow::install"
+      chef.add_recipe "tensorflow::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -294,22 +295,22 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::nm"
       chef.add_recipe "hops::jhs"
       chef.add_recipe "elastic::default"
-#      chef.add_recipe "zeppelin::default"
-#      chef.add_recipe "flink::yarn"
+      chef.add_recipe "zeppelin::default"
+      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
-#      chef.add_recipe "livy::default"
+      chef.add_recipe "livy::default"
       chef.add_recipe "hopslog::default"
       chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
-#      chef.add_recipe "adam::default"
+      chef.add_recipe "adam::default"
       chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::all"
       chef.add_recipe "kkafka::default"
-#      chef.add_recipe "tensorflow::default"
+      chef.add_recipe "tensorflow::default"
 #      chef.add_recipe "oozie::default"
 
   end 
