@@ -1,5 +1,4 @@
 
-
 Vagrant.configure("2") do |c|
   if Vagrant.has_plugin?("vagrant-omnibus")
 #    require 'vagrant-omnibus'
@@ -21,11 +20,11 @@ Vagrant.configure("2") do |c|
    
   c.ssh.insert_key="false"
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
-# Kagent REST API
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>2223})
   c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
+
   c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
 # HTTP webserver
   c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
@@ -48,7 +47,7 @@ Vagrant.configure("2") do |c|
 # Ooozie port
   c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
 # Dr Elephant
-  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
+#  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
   c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
 # Kibana Server
