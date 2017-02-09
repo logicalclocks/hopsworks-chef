@@ -991,17 +991,25 @@ CREATE TABLE `pythondep_host_status` (
 
 
 --
--- Kagent Asynchronous Commands
+-- Kagent Asynchronous Commands for Conda Operations
 --
 
-CREATE TABLE `kagent_commands` (
+CREATE TABLE `conda_commands` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `json_command` VARCHAR(1024) NOT NULL,
+  `project_id` INT(11) NOT NULL,  
+  `user` VARCHAR(52) NOT NULL,
+  `op` VARCHAR(52) NOT NULL,
+  `proj` VARCHAR(255) NOT NULL,
+  `channel_url` VARCHAR(255),
+  `arg` VARCHAR(255),
+  `lib` VARCHAR(255),
+  `version` VARCHAR(52),    
   `host_id` INT(11) NOT NULL,
+  `status` VARCHAR(52) NOT NULL,  
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `project_id` INT(11),
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY (`host_id`),  
+  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
