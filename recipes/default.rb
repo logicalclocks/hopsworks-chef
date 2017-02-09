@@ -683,8 +683,7 @@ apache_hadoop_hdfs_directory "/tmp/metrics.properties" do
   group node.apache_hadoop.group
   mode "1775"
   dest "/user/" + node.glassfish.user + "/metrics.properties"
-end
-
+end	
 
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
@@ -703,6 +702,24 @@ template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
 end
 
 
+
+hopsUtil=File.basename(node.hops.hops_util.url)
+ 
+remote_file "/tmp/#{hopsUtil}" do
+  source node.hops.hops_util.url
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "1775"
+  action :create
+end
+
+apache_hadoop_hdfs_directory "/tmp/hops-util-0.1.jar" do
+  action :put_as_superuser
+  owner node.glassfish.user
+  group node.apache_hadoop.group
+  mode "1755"
+  dest "/user/glassfish/hops-util-0.1.jar"
+end
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
