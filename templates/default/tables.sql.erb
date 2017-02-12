@@ -974,23 +974,6 @@ CREATE TABLE `project_pythondeps` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (project_id) */;
 
 
-CREATE TABLE `pythondep_host_status` (
-  `project_id` INT(11) NOT NULL,
-  `dep_id` INT(10) NOT NULL,
-  `repo_id` INT(11) NOT NULL,
-  `host_id` INT(11) NOT NULL,
-  `status` INT(11) NOT NULL,
-  `op` INT(11) NOT NULL,
-  PRIMARY KEY (`project_id`, `dep_id`, `repo_id`, `host_id`),
-  KEY (`status`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,    
-  FOREIGN KEY (`dep_id`) REFERENCES `python_dep` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 /*!50100 PARTITION BY KEY (project_id) */;
-
-
-
 --
 -- Kagent Asynchronous Commands for Conda Operations
 --
