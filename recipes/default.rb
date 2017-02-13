@@ -721,6 +721,24 @@ apache_hadoop_hdfs_directory "/tmp/hops-util-0.1.jar" do
   dest "/user/glassfish/hops-util-0.1.jar"
 end
 
+hopsKafkaJar=File.basename(node.hops.hops_spark_kafka_example.url)
+ 
+remote_file "/tmp/#{hopsKafkaJar}" do
+  source node.hops.hops_spark_kafka_example.url
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "1775"
+  action :create
+end
+
+apache_hadoop_hdfs_directory "/tmp/#{hopsKafkaJar}" do
+  action :put_as_superuser
+  owner node.glassfish.user
+  group node.apache_hadoop.group
+  mode "1755"
+  dest "/user/glassfish/#{hopsKafkaJar}"
+end
+
 #
 # Disable glassfish service, if node.services.enabled is not set to true
 #
