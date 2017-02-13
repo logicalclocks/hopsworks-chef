@@ -958,6 +958,7 @@ CREATE TABLE `python_dep` (
   `version` VARCHAR(128) NOT NULL,
   `repo_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
+  `preinstalled` TINYINT(1) DEFAULT '0',  
   PRIMARY KEY (`id`),
   UNIQUE KEY (`dependency`, `version`),
   KEY (`status`),    
