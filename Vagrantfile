@@ -106,6 +106,7 @@ Vagrant.configure("2") do |c|
 #	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
         "user_envs" => "false",
         "twofactor_auth" => "false",
+        "anaconda_enabled" => "false",        
      },
      "zeppelin" => {
           "user" => "glassfish",
