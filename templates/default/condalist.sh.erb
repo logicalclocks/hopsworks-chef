@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# conda list [-c $1]
+
+channel=
+if [ $# -eq 1  ]; then
+  channel="-c $1"
+fi
+
+# (glassfish) glassfish@vagrant:/opt/anaconda/anaconda/bin$ conda list | awk '{print $1","$2}' | grep -v "^#"
+# mkl,2017.0.1
+# numpy,1.11.3
+# openssl,1.0.2k
+# pandas,0.19.2
+# pandasql,0.7.3
+
+<%= node.anaconda.base_dir %>/bin/conda list $channel | awk '{print $1","$2}' | grep -v "^#"
+
+
+

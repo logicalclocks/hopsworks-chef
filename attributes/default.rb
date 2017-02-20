@@ -12,14 +12,14 @@ default.hopsworks.version                  = "0.1.0"
 node.default.glassfish.variant             = "payara"
 node.default.hopsworks.user                = "glassfish"
 node.default.glassfish.user                = node.hopsworks.user
-node.default.hopsworks.group               = "glassfish"
+node.default.hopsworks.group               = "glassfish" 
 node.default.glassfish.group               = node.hopsworks.group
 node.default.hopsworks.admin.port          = 4848
 node.default.hopsworks.port                = "8080"
 node.default.glassfish.admin.port          = node.hopsworks.admin.port
 node.default.glassfish.port                = node.hopsworks.port.to_i
 # payara-4.1.153.zip
-node.default.glassfish.version             = '4.1.1.163'
+node.default.glassfish.version             = '4.1.1.164'
 node.default.hopsworks.dir                 = "/usr/local"
 node.default.glassfish.install_dir         = node.hopsworks.dir
 node.default.glassfish.base_dir            = node.glassfish.install_dir + "/glassfish"
@@ -39,8 +39,9 @@ node.default.yarn.rm.web.port               ="8088"
 
 node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
-default.hopsworks.war_url                  = "#{node.download_url}/hopsworks-#{node.hopsworks.version}.war"
-default.hopsworks.guava_url                = "#{node.download_url}/guava-18.0.jar"
+default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
+default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
+
 
 default.hopsworks.admin.user               = "adminuser"
 default.hopsworks.admin.password           = "adminpw"
@@ -59,8 +60,6 @@ default.hopsworks.cert.c                   = "se"
 
 default.hopsworks.cert.password            = "changeit"
 default.hopsworks.master.password          = "adminpw"
-
-# default.bind_address                    = attribute?('cloud') ? cloud['local_ipv4' : ipaddress
 
 default.hopsworks.public_ips               = ['10.0.2.15']
 default.hopsworks.private_ips              = ['10.0.2.15']
@@ -104,3 +103,7 @@ default.hopsworks.dela.public_search_endpoint =  "hopsworks/api/elastic/publicda
 
 default.hopsworks.max_gpu_request_size        = 1
 default.hopsworks.max_cpu_request_size        = 1
+default.hops.hops_util.url                    = "#{node.download_url}/hops-util-0.1.jar"
+default.hops.hops_spark_kafka_example.url     = "#{node.download_url}/hops-spark-0.1.jar"
+
+default.hopsworks.anaconda_enabled            = "true"

@@ -28,12 +28,12 @@ INSERT INTO `meta_field_types` (`id`, `description`) VALUES
 --
 
 INSERT INTO `users` 
-(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `two_factor`) VALUES
-(10000, 'meb10000', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin@kth.se', 'Admin', 'Admin', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 30, 0);
+(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `two_factor`, `tours_enabled`) VALUES
+(10000, 'meb10000', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin@kth.se', 'Admin', 'Admin', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 30, 0, 0);
 
 INSERT INTO `users` 
-(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`) VALUES
-(10001, 'agent007', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'agent@hops.io', 'Agent', '007', '2015-05-15 10:22:36', 'Mrs', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 0);
+(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `tours_enabled`) VALUES
+(10001, 'agent007', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'agent@hops.io', 'Agent', '007', '2015-05-15 10:22:36', 'Mrs', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -169,6 +169,17 @@ INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu
 
 INSERT INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
 INSERT INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
-INSERT INTO variables VALUES ("grafana_ip", "<%= @graphana_ip %>");
+INSERT INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
+INSERT INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
+INSERT INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
+INSERT INTO variables VALUES ("influxdb_user", "<%= @influxdb_user %>");
+INSERT INTO variables VALUES ("influxdb_pw", "<%= @influxdb_password %>");
 INSERT INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
+INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
+--
+-- pyspark, python
+--
 
+INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node.kagent.user %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node.hopsworks.anaconda_enabled %>");

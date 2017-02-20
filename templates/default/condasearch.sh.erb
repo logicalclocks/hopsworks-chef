@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# conda search -c $1 $2
+
+if [ $# -ne 2  ]; then
+ echo "incorrect usage"
+ exit 2
+fi
+CHANNEL=
+if [ "$1" != "default" ] ; then
+   CHANNEL= "-c $1"
+fi    
+<%= node.anaconda.base_dir %>/bin/conda search $CHANNEL $2  | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"
