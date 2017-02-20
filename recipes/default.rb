@@ -105,23 +105,20 @@ rescue
 end
 
 begin
-  kibana_ip = private_recipe_ip("kibana","default")
-rescue 
-  kibana_ip = node.hostname
-  Chef::Log.warn "could not find the kibana server ip!"
-end
-
-begin
-  logstash_ip = private_recipe_ip("simple-logstash","default")
+  logstash_ip = private_recipe_ip("hopslog","default")
+  kibana_ip = private_recipe_ip("hopslog","default")
 rescue 
   logstash_ip = node.hostname
+  kibana_ip = node.hostname
   Chef::Log.warn "could not find the logstash server ip!"
 end
 
 begin
-  hopsmonitor_ip = private_recipe_ip("hopsmonitor","default")
+  grafana_ip = private_recipe_ip("hopsmonitor","default")
+  influxdb_ip = private_recipe_ip("hopsmonitor","default")
 rescue 
-  hopsmonitor_ip = node.hostname
+  grafana_ip = node.hostname
+  influxdb_ip = node.hostname
   Chef::Log.warn "could not find the hopsmonitor server ip!"
 end
 
@@ -216,7 +213,7 @@ template "#{rows_path}" do
                 :ndb_dir => node.ndb.dir + "/mysql-cluster",
                 :mysql_dir => node.mysql.dir + "/mysql",
                 :elastic_dir => node.elastic.dir + "/elastic",
-                :hopsworks_dir => node.glassfish.domains_dir,
+                :hopsworks_dir => domains_dir,
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :twofactor_exclude_groups => node.hopsworks.twofactor_exclude_groups,
                 :elastic_user => node.elastic.user,
@@ -237,8 +234,13 @@ template "#{rows_path}" do
                 :kafka_user => node.kkafka.user,
                 :kibana_ip => kibana_ip,
                 :logstash_ip => logstash_ip,
-                :grafana_ip => hopsmonitor_ip,
-                :graphite_ip => hopsmonitor_ip,
+                :grafana_ip => grafana_ip,
+                :influxdb_ip => influxdb_ip,
+                :influxdb_port => node.influxdb.http.port,
+                :influxdb_user => node.influxdb.db_user,
+                :influxdb_password => node.influxdb.db_password,
+                :graphite_port => node.influxdb.graphite.port,
+                :anaconda_dir => node.anaconda.base_dir,
                 :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
@@ -466,36 +468,45 @@ glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.Request
 end
 
 
+#
+# Enable Single Sign on
+#
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-enabled=true'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-max-inactive-seconds=300'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set 'server-config.http-service.virtual-server.server.property.sso-reap-interval-seconds=60'" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=50 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+
+
 # Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
-
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-enabled=true'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-max-inactive-seconds=300'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# Enable Single Sign on
-# glassfish_asadmin "set 'server-config.http-service.virtual-server.vsrv1.property.sso-reap-interval-seconds=60'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
 
 
 # cluster="hopsworks"
@@ -565,8 +576,25 @@ end
 
 
 
+glassfish_deployable "hopsworks-ear" do
+  component_name "hopsworks-ear"
+  url node.hopsworks.ear_url
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :deploy
+  async_replication false
+  retries 1
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks-ear'"
+end
+
+
+
+
 glassfish_deployable "hopsworks" do
-  component_name "hopsworks"
+  component_name "hopsworks-web"
   url node.hopsworks.war_url
   context_root "/hopsworks"
   domain_name domain_name
@@ -577,7 +605,7 @@ glassfish_deployable "hopsworks" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v 'hopsworks-ear | grep 'hopsworks'"
 end
 
 
@@ -618,6 +646,100 @@ template "/bin/hopsworks-2fa" do
 
 
 
+# Add spark log4j.properties file to HDFS. Used by Logstash.
+
+template "/tmp/log4j.properties" do
+  source "log4j.properties.erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+               :private_ip => private_ip
+  })
+end
+
+apache_hadoop_hdfs_directory "/tmp/log4j.properties" do
+  action :put_as_superuser
+  owner node.hadoop_spark.user
+  group node.apache_hadoop.group
+  mode "1775"
+  dest "/user/" + node.glassfish.user + "/log4j.properties"
+end
+
+
+# Add spark metrics.properties file to HDFS. Used by Grafana.
+
+template "/tmp/metrics.properties" do
+  source "metrics.properties.erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+               :private_ip => private_ip
+  })
+end
+
+apache_hadoop_hdfs_directory "/tmp/metrics.properties" do
+  action :put_as_superuser
+  owner node.hadoop_spark.user
+  group node.apache_hadoop.group
+  mode "1775"
+  dest "/user/" + node.glassfish.user + "/metrics.properties"
+end	
+
+template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
+  source "condasearch.sh.erb"
+  owner node.glassfish.user
+  owner node.kagent.user
+  mode 0750
+  action :create
+end
+
+template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
+  source "condalist.sh.erb"
+  owner node.glassfish.user
+  owner node.kagent.user
+  mode 0750
+  action :create
+end
+
+
+
+hopsUtil=File.basename(node.hops.hops_util.url)
+ 
+remote_file "/tmp/#{hopsUtil}" do
+  source node.hops.hops_util.url
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "1775"
+  action :create
+end
+
+apache_hadoop_hdfs_directory "/tmp/hops-util-0.1.jar" do
+  action :put_as_superuser
+  owner node.glassfish.user
+  group node.apache_hadoop.group
+  mode "1755"
+  dest "/user/glassfish/hops-util-0.1.jar"
+end
+
+hopsKafkaJar=File.basename(node.hops.hops_spark_kafka_example.url)
+ 
+remote_file "/tmp/#{hopsKafkaJar}" do
+  source node.hops.hops_spark_kafka_example.url
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "1775"
+  action :create
+end
+
+apache_hadoop_hdfs_directory "/tmp/#{hopsKafkaJar}" do
+  action :put_as_superuser
+  owner node.glassfish.user
+  group node.apache_hadoop.group
+  mode "1755"
+  dest "/user/glassfish/#{hopsKafkaJar}"
+end
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true

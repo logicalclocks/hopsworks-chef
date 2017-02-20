@@ -169,6 +169,17 @@ INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu
 
 INSERT INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
 INSERT INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
-INSERT INTO variables VALUES ("grafana_ip", "<%= @graphana_ip %>");
+INSERT INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
+INSERT INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
+INSERT INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
+INSERT INTO variables VALUES ("influxdb_user", "<%= @influxdb_user %>");
+INSERT INTO variables VALUES ("influxdb_pw", "<%= @influxdb_password %>");
 INSERT INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
+INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
+--
+-- pyspark, python
+--
 
+INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node.kagent.user %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node.hopsworks.anaconda_enabled %>");

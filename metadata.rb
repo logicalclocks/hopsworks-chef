@@ -32,10 +32,9 @@ depends 'drelephant'
 depends 'dela'
 depends 'java'
 depends 'tensorflow'
-depends 'kibana'
+depends 'hopslog'
 depends 'hopsmonitor'
-depends 'simple-logstash'
-#depends 'chef-grafana'
+
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
@@ -392,6 +391,10 @@ attribute "hopsworks/file_preview_image_size",
 
 attribute "hopsworks/file_preview_txt_size",
           :description => "Maximum size in lines of file that can be previewed in DataSets",
+          :type => 'string'
+
+attribute "hopsworks/anaconda_enabled",
+          :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
 attribute "java/jdk_version",
