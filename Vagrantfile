@@ -1,5 +1,4 @@
 
-
 Vagrant.configure("2") do |c|
   if Vagrant.has_plugin?("vagrant-omnibus")
 #    require 'vagrant-omnibus'
@@ -21,7 +20,8 @@ Vagrant.configure("2") do |c|
    
   c.ssh.insert_key="false"
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>50070})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>2223})
+  c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
 # MySQL Server
   c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
 
@@ -60,7 +60,7 @@ Vagrant.configure("2") do |c|
 #  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
   
   c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "13500"]
+    p.customize ["modifyvm", :id, "--memory", "15000"]
     p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     p.customize ["modifyvm", :id, "--nictype1", "virtio"]
@@ -103,9 +103,10 @@ Vagrant.configure("2") do |c|
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
+#	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
         "user_envs" => "false",
         "twofactor_auth" => "false",
+#        "anaconda_enabled" => "false",        
      },
      "zeppelin" => {
           "user" => "glassfish",
@@ -224,9 +225,13 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "hopsmonitor" => {
+          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
+     },
+     "hopslog" => {
+          "dir" => "/srv/hops",
      },
      "drelephant" => {
 	  "user" => "glassfish",
@@ -265,9 +270,8 @@ Vagrant.configure("2") do |c|
      }
 
       chef.add_recipe "kagent::install"
-      #chef.add_recipe "kibana::install"
-      #chef.add_recipe "hopsmonitor::install"      
-      #chef.add_recipe "kibana::default"
+      chef.add_recipe "hopslog::install"
+      chef.add_recipe "hopsmonitor::install"      
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hops::install"
@@ -298,14 +302,15 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
       chef.add_recipe "livy::default"
+      chef.add_recipe "hopslog::default"
+      chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
-#      chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
       chef.add_recipe "adam::default"
       chef.add_recipe "drelephant::default"
-      chef.add_recipe "kagent::default"
+      chef.add_recipe "kagent::all"
       chef.add_recipe "kkafka::default"
       chef.add_recipe "tensorflow::default"
 #      chef.add_recipe "oozie::default"

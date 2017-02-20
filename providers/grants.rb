@@ -8,12 +8,6 @@ notifying_action :reload_systemd do
     code <<-EOF
           systemctl daemon-reload
           service glassfish-domain1 restart
-#          systemctl stop glassfish-domain1.service
-#          pid=`ps | grep glassfish | awk 'NR==1{print $1}' | cut -d' ' -f1`
-#          if [ "$pid" != "" ] ; then
-#             kill $pid || true          
-#          fi 
-#          systemctl start glassfish-domain1.service
     EOF
   end
 

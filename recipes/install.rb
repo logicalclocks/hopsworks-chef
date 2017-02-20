@@ -374,22 +374,6 @@ template "/etc/sudoers.d/glassfish" do
   action :create
 end  
 
-# Fix for:
-#  https://java.net/jira/si/jira.issueviews:issue-html/GLASSFISH-20850/GLASSFISH-20850.html
-file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
-  owner "root"
-  action :delete
-end
- 
-remote_file "#{node.glassfish.install_dir}/glassfish/modules/guava.jar" do
-  user node.glassfish.user
-  group node.glassfish.group
-  source node.hopsworks.guava_url
-  mode 0644
-  action :create_if_missing
-end
-
-
 # Replace sysv with our version. It increases the max number of open files limit (ulimit -n)
 case node.platform
 when "ubuntu"
