@@ -502,6 +502,7 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
    username username
    admin_port admin_port
    secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
 
