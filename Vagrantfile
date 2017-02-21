@@ -250,6 +250,7 @@ Vagrant.configure("2") do |c|
 	  "user" => "glassfish",
           "group" => "glassfish",
           "dir" => "/srv/hops",
+          "allow_ssh_access" => "true",
           "enabled" => "true",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
