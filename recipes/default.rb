@@ -772,3 +772,19 @@ if node.services.enabled != "true"
   end
 
 end
+
+homedir = "/home/#{node.hopsworks.user}"
+
+kagent_keys "#{homedir}" do
+  cb_user node.hopsworks.user
+  cb_group node.hopsworks.group
+  action :generate  
+end  
+
+kagent_keys "#{homedir}" do
+  cb_user node.hopsworks.user
+  cb_group node.hopsworks.group
+  cb_name "hopsworks"
+  cb_recipe "default"  
+  action :return_publickey
+end  
