@@ -797,3 +797,7 @@ kagent_keys "#{homedir}" do
   cb_recipe "default"  
   action :return_publickey
 end  
+
+hopsworks_grants "restart_glassfish" do
+  action :reload_systemd
+end
