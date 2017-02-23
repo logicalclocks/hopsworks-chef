@@ -798,6 +798,6 @@ kagent_keys "#{homedir}" do
   action :return_publickey
 end  
 
-#hopsworks_grants "restart_glassfish" do
-#  action :reload_systemd
-#end
+hopsworks_grants "restart_glassfish" do
+  action :reload_systemd
+end

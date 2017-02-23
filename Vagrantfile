@@ -271,11 +271,11 @@ Vagrant.configure("2") do |c|
      }
 
       chef.add_recipe "kagent::install"
+      chef.add_recipe "hops::install"
       chef.add_recipe "hopslog::install"
       chef.add_recipe "hopsmonitor::install"      
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
-      chef.add_recipe "hops::install"
       chef.add_recipe "hadoop_spark::install"
       chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
