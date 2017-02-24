@@ -413,6 +413,15 @@ attribute "services/enabled",
           :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
           :type => "string"
 
+attribute "kagent/network/interface",
+          :description => "Define the network intefaces (eth0, enp0s3)",
+          :type => "string"
+
+attribute "ntp/install",
+          :description => "Install Network Time Protocol (default: false)",
+          :type => "string"
+
+
 #########################################################################
 #########################################################################
 ### BEGIN GENERATED CONTENT
