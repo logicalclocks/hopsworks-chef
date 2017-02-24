@@ -437,6 +437,19 @@ attribute "hopsmonitor/dir",
           :description => "hopslog Installation directory.",
           :type => 'string'
 
+attribute "apache_hadoop/nn/direct_memory_size",
+          :description => "Size of the direct memory size for the NameNode in MBs",
+          :type => 'string'
+
+attribute "apache_hadoop/hdfs/blocksize",
+          :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
+          :type => 'string'
+
+attribute "apache_hadoop/nn/heap_size",
+          :description => "Size of the NameNode heap in MBs",
+          :type => 'string'
+
+
 #########################################################################
 #########################################################################
 #########################################################################
