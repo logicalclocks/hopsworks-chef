@@ -449,6 +449,10 @@ attribute "apache_hadoop/nn/heap_size",
           :description => "Size of the NameNode heap in MBs",
           :type => 'string'
 
+attribute "hops/use_hopsworks",
+          :description => "'true'",
+          :type => 'string'
+
 
 #########################################################################
 #########################################################################
