@@ -413,6 +413,31 @@ attribute "services/enabled",
           :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
           :type => "string"
 
+attribute "hopslog/user",
+          :description => "Username for the hopslog services",
+          :type => 'string'
+
+attribute "hopslog/group",
+          :description => "Groupname for the hopslog services",
+          :type => 'string'
+
+attribute "hopslog/dir",
+          :description => "hopslog Installation directory.",
+          :type => 'string'
+
+attribute "hopsmonitor/user",
+          :description => "Username for the hopslog services",
+          :type => 'string'
+
+attribute "hopsmonitor/group",
+          :description => "Groupname for the hopslog services",
+          :type => 'string'
+
+attribute "hopsmonitor/dir",
+          :description => "hopslog Installation directory.",
+          :type => 'string'
+
+#########################################################################
 #########################################################################
 #########################################################################
 ### BEGIN GENERATED CONTENT
