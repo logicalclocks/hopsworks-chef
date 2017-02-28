@@ -53,6 +53,10 @@ bash 'certificateauthority' do
 	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
 
 	chmod 444 intermediate/certs/ca-chain.cert.pem
+        
+        #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
+        # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
+        echo "unique_subject = no \n" > intermediate/index.txt.attr
     EOF
  not_if { ::File.exists?("#{node.glassfish.domains_dir}/domain1/config/ca/intermediate/certs/ca-chain.cert.pem" ) }
 end
