@@ -82,7 +82,7 @@ default.hopsworks.max_num_proj_per_user    = "10"
 default.hopsworks.file_preview_image_size  = "10000000"
 default.hopsworks.file_preview_txt_size    = "100"
 
-node.default.apache_hadoop.user_envs       = "false"
+node.default.hops.user_envs       = "false"
 
 default.hopsworks.systemd                  = "true"
 
