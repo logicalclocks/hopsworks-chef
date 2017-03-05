@@ -1,5 +1,3 @@
-include_recipe "hops::wrap"
-
 case node.platform
 when "ubuntu"
  if node.platform_version.to_f <= 14.04
@@ -56,7 +54,7 @@ rescue
 end
 
 begin
-  jhs_ip = private_recipe_ip("apache_hadoop","jhs")
+  jhs_ip = private_recipe_ip("hops","jhs")
 rescue 
   jhs_ip = node.hostname
   Chef::Log.warn "could not find the MR job history server ip!"
@@ -200,12 +198,12 @@ template "#{rows_path}" do
                 :elastic_ip => elastic_ip,
                 :spark_dir => node.hadoop_spark.dir + "/spark",                
                 :spark_user => node.hadoop_spark.user,
-                :hadoop_dir => node.apache_hadoop.dir + "/hadoop",                                
-                :yarn_user => node.apache_hadoop.yarn.user,
-                :yarn_ui_ip => public_recipe_ip("apache_hadoop","rm"),
+                :hadoop_dir => node.hops.dir + "/hadoop",                                
+                :yarn_user => node.hops.yarn.user,
+                :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node.default.yarn.rm.web.port,
-                :hdfs_user => node.apache_hadoop.hdfs.user,
-                :mr_user => node.apache_hadoop.mr.user,
+                :hdfs_user => node.hops.hdfs.user,
+                :mr_user => node.hops.mr.user,
                 :flink_dir => node.flink.dir + "/flink",
                 :flink_user => node.flink.user,
                 :zeppelin_dir => node.zeppelin.dir + "/zeppelin",
@@ -668,10 +666,10 @@ template "/tmp/log4j.properties" do
   })
 end
 
-apache_hadoop_hdfs_directory "/tmp/log4j.properties" do
+hops_hdfs_directory "/tmp/log4j.properties" do
   action :put_as_superuser
   owner node.hadoop_spark.user
-  group node.apache_hadoop.group
+  group node.hops.group
   mode "1775"
   dest "/user/" + node.glassfish.user + "/log4j.properties"
 end
@@ -689,10 +687,10 @@ template "/tmp/metrics.properties" do
   })
 end
 
-apache_hadoop_hdfs_directory "/tmp/metrics.properties" do
+hops_hdfs_directory "/tmp/metrics.properties" do
   action :put_as_superuser
   owner node.hadoop_spark.user
-  group node.apache_hadoop.group
+  group node.hops.group
   mode "1775"
   dest "/user/" + node.glassfish.user + "/metrics.properties"
 end	
@@ -725,10 +723,10 @@ remote_file "/tmp/#{hopsUtil}" do
   action :create
 end
 
-apache_hadoop_hdfs_directory "/tmp/hops-util-0.1.jar" do
+hops_hdfs_directory "/tmp/hops-util-0.1.jar" do
   action :put_as_superuser
   owner node.glassfish.user
-  group node.apache_hadoop.group
+  group node.hops.group
   mode "1755"
   dest "/user/glassfish/hops-util-0.1.jar"
 end
@@ -743,10 +741,10 @@ remote_file "/tmp/#{hopsKafkaJar}" do
   action :create
 end
 
-apache_hadoop_hdfs_directory "/tmp/#{hopsKafkaJar}" do
+hops_hdfs_directory "/tmp/#{hopsKafkaJar}" do
   action :put_as_superuser
   owner node.glassfish.user
-  group node.apache_hadoop.group
+  group node.hops.group
   mode "1755"
   dest "/user/glassfish/#{hopsKafkaJar}"
 end
