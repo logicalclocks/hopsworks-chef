@@ -14,7 +14,7 @@ cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "hops"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "hops"
 
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "hops"
-cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
+cookbook 'adam', github: "biobankcloud/adam-chef", branch: "hops"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
