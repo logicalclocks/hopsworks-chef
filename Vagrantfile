@@ -143,7 +143,7 @@ Vagrant.configure("2") do |c|
                  },
 		 "jhs" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
-                 }
+                 },
      	        "hdfs" => {
                       "user" => "glassfish"
                  },
@@ -153,7 +153,7 @@ Vagrant.configure("2") do |c|
 		 "mr" => {
 		      "user" => "glassfish"
                  },
-                 "data_dir" => "/srv/hops/data",
+                 "data_dir" => "/srv/hops/hopsdata",
       },
      "flink"  =>    {
           "dir" => "/srv/hops",
