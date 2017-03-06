@@ -231,6 +231,9 @@ attribute "services/enabled",
           :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
           :type => "string"
 
+attribute "install/dir",
+          :description => "Default ''. Set to a base directory under which all hops services will be installed.",
+          :type => "string"
 
 
 ##
@@ -1339,5 +1342,4 @@ attribute "dela/group",
 attribute "dela/dir",
           :description => "dela Installation directory.",
           :type => 'string'
-
 

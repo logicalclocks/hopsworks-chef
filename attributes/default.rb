@@ -1,3 +1,4 @@
+include_attribute "kagent"
 include_attribute "ndb"
 include_attribute "hadoop_spark"
 include_attribute "flink"
@@ -20,24 +21,25 @@ node.default.glassfish.admin.port          = node.hopsworks.admin.port
 node.default.glassfish.port                = node.hopsworks.port.to_i
 # payara-4.1.153.zip
 node.default.glassfish.version             = '4.1.1.164'
-node.default.hopsworks.dir                 = "/usr/local"
-node.default.glassfish.install_dir         = node.hopsworks.dir
-node.default.glassfish.base_dir            = node.glassfish.install_dir + "/glassfish"
-node.default.hopsworks.domains_dir         = "/srv/glassfish"
-node.default.glassfish.domains_dir         = node.hopsworks.domains_dir
-default.hopsworks.max_mem                  = "3000"
-node.default.glassfish.max_mem             = node.hopsworks.max_mem.to_i
-default.hopsworks.min_mem                  = "1024"
-node.default.glassfish.min_mem             = node.hopsworks.min_mem.to_i
-default.hopsworks.max_stack_size           = "4000"
-node.default.glassfish.max_stack_size      = node.hopsworks.max_stack_size.to_i
-default.hopsworks.max_perm_size            = "1500"
-node.default.glassfish.max_perm_size       = node.hopsworks.max_perm_size.to_i
-default.hopsworks.max_stack_size            = "1500"
-node.default.glassfish.max_stack_size       = node.hopsworks.max_stack_size.to_i
-node.default.yarn.rm.web.port               ="8088"
 
-node.default.glassfish.package_url         = node.download_url + "/payara-#{node.glassfish.version}.zip"
+default.hopsworks.dir                      = node.install.dir.empty? ? node.install.dir :  "/usr/local" 
+default.glassfish.install_dir              = node.hopsworks.dir
+default.glassfish.base_dir                 = node.glassfish.install_dir + "/glassfish"
+default.hopsworks.domains_dir              = "/srv/glassfish"
+default.glassfish.domains_dir              = node.hopsworks.domains_dir
+default.hopsworks.max_mem                  = "3000"
+default.glassfish.max_mem                  = node.hopsworks.max_mem.to_i
+default.hopsworks.min_mem                  = "1024"
+default.glassfish.min_mem                  = node.hopsworks.min_mem.to_i
+default.hopsworks.max_stack_size           = "4000"
+default.glassfish.max_stack_size           = node.hopsworks.max_stack_size.to_i
+default.hopsworks.max_perm_size            = "1500"
+default.glassfish.max_perm_size            = node.hopsworks.max_perm_size.to_i
+default.hopsworks.max_stack_size           = "1500"
+default.glassfish.max_stack_size           = node.hopsworks.max_stack_size.to_i
+default.yarn.rm.web.port                   ="8088"
+
+default.glassfish.package_url              = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
 default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
@@ -45,7 +47,7 @@ default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{n
 
 default.hopsworks.admin.user               = "adminuser"
 default.hopsworks.admin.password           = "adminpw"
-node.default.glassfish.cert.password       = "#{node.hopsworks.admin.password}"
+default.glassfish.cert.password            = "#{node.hopsworks.admin.password}"
 default.hopsworks.twofactor_auth           = "false"
 default.hopsworks.twofactor_exclude_groups = "AGENT" #semicolon separated list of roles
 
@@ -82,7 +84,7 @@ default.hopsworks.max_num_proj_per_user    = "10"
 default.hopsworks.file_preview_image_size  = "10000000"
 default.hopsworks.file_preview_txt_size    = "100"
 
-node.default.hops.user_envs       = "false"
+default.hops.user_envs                     = "false"
 
 default.hopsworks.systemd                  = "true"
 
@@ -107,3 +109,5 @@ default.hops.hops_util.url                    = "#{node.download_url}/hops-util-
 default.hops.hops_spark_kafka_example.url     = "#{node.download_url}/hops-spark-0.1.jar"
 
 default.hopsworks.anaconda_enabled            = node.kagent.conda_enabled 
+
+
