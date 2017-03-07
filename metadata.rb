@@ -251,6 +251,10 @@ attribute "hadoop_spark/group",
           :description => "Groupname to run spark master/worker as",
           :type => 'string'
 
+attribute "hadoop_spark/dir",
+          :description => "Directory for installation",
+          :type => 'string'
+
 attribute "hadoop_spark/executor_memory",
           :description => "Executor memory (e.g., 512m)",
           :type => 'string'
@@ -352,6 +356,10 @@ attribute "livy/user",
           :description => "User to install/run as",
           :type => 'string'
 
+attribute "livy/group",
+          :description => "Group to install/run as",
+          :type => 'string'
+
 attribute "livy/dir",
           :description => "base dir for installation",
           :type => 'string'
@@ -425,6 +433,11 @@ attribute "drelephant/dir",
 attribute "drelephant/user",
           :description => "Username that runs the Dr Elephant server",
           :type => 'string'
+
+attribute "drelephant/group",
+          :description => "Groupname that runs the Dr Elephant server",
+          :type => 'string'
+
 
 attribute "drelephant/port",
           :description => "Port for running the Dr Elephant server",
@@ -601,11 +614,267 @@ attribute "cuda/accept_nvidia_download_terms",
 ##
 ##
 
+attribute "hops/dir",
+          :description => "Base installation directory for HopsFS",
+          :type => 'string'
+
+attribute "hops/use_hopsworks",
+          :description => "'true' or 'false' - true to enable HopsWorks support",
+          :type => 'string'
+
+attribute "hops/erasure_coding",
+          :description => "'true' or 'false' - true to enable erasure-coding replication",
+          :type => 'string'
+
+attribute "hops/nn/cache",
+          :description => "'true' or 'false' - true to enable the path cache in the NameNode",
+          :type => 'string'
+
+attribute "hops/nn/partition_key",
+          :description => "'true' or 'false' - true to enable the partition key when starting transactions. Distribution-aware transactions.",
+          :type => 'string'
+
+attribute "hops/yarn/resource_tracker",
+          :description => "Hadoop Resource Tracker enabled on this nodegroup",
+          :type => 'string'
+
+attribute "hops/install_db",
+          :description => "Install hops database and tables in MySQL Cluster ('true' (default) or 'false')",
+          :type => 'string'
+
+attribute "hops/use_systemd",
+          :description => "Use systemd startup scripts, default 'false'",
+          :type => "string"
+
+attribute "hops/format",
+          :description => "Format HDFS",
+          :type => 'string'
+
+attribute "hops/nm/log_dir",
+          :description => "The directory in which yarn node manager store containers logs",
+          :type => 'string'
+
+attribute "hops/yarn/memory_mbs",
+          :description => "Apache_Hadoop NodeManager Memory in MB",
+          :type => 'string'
+
+attribute "hops/yarn/nodemanager_ha_enabled",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/nodemanager_auto_failover_enabled",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/nodemanager_recovery_enabled",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/rm_heartbeat",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/nodemanager_rpc_batch_max_size",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/nodemanager_rpc_batch_max_duration",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/rm_distributed",
+          :description => "Set to 'true' to enable distributed RMs",
+          :type => "string"
+
+attribute "hops/yarn/nodemanager_rm_streaming_enabled",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/client_failover_sleep_base_ms",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/client_failover_sleep_max_ms",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/quota_enabled",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/quota_monitor_interval",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/quota_ticks_per_credit",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/quota_min_ticks_charge",
+          :description => "",
+          :type => "string"
+
+attribute "hops/yarn/quota_checkpoint_nbticks",
+          :description => "",
+          :type => "string"
+
+attribute "hops/trash/interval",
+          :description => "How long in minutes trash survives in /user/<glassfish>/.Trash/<interval-bucket>/...",
+          :type => "string"
+
+attribute "hops/trash/checkpoint/interval",
+          :description => "How long in minutes until a new directory bucket is created in /user/<glassfish>/.Trash with a timestamp. ",
+          :type => "string"
+
+attribute "hops/nn/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
+attribute "hops/rm/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
+# Needed to find the jar file for yan-spark-shuffle
+attribute "hadoop_spark/version",
+          :description => "Spark version",
+          :type => 'string'
+
+attribute "hops/yarn/vcores",
+          :description => "Hops NodeManager Number of Virtual Cores",
+          :type => 'string'
+
+attribute "hops/yarn/max_vcores",
+          :description => "Hadoop NodeManager Maximum Virtual Cores per container",
+          :type => 'string'
+
+attribute "hops/version",
+          :description => "Version of hops",
+          :type => 'string'
+
+attribute "hops/num_replicas",
+          :description => "Number of replicates for each file stored in HDFS",
+          :type => 'string'
+
+attribute "hops/container_cleanup_delay_sec",
+          :description => "The number of seconds container data is retained after termination",
+          :type => 'string'
+
+attribute "hops/group",
+          :description => "Group to run hdfs/yarn/mr as",
+          :type => 'string'
+
+attribute "hops/yarn/user",
+          :description => "Username to run yarn as",
+          :type => 'string'
+
+attribute "hops/mr/user",
+          :description => "Username to run mapReduce as",
+          :type => 'string'
+
+attribute "hops/hdfs/user",
+          :description => "Username to run hdfs as",
+          :type => 'string'
+
+attribute "hops/hdfs/blocksize",
+          :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
+          :type => 'string'
+
+attribute "hops/format",
+          :description => "Format HDFS, Run 'hdfs namenode -format",
+          :type => 'string'
+
+attribute "hops/tmp_dir",
+          :description => "The directory in which Hadoop stores temporary data, including container data",
+          :type => 'string'
+
+attribute "hops/nn/name_dir",
+          :description => "Directory for NameNode's state",
+          :type => 'string'
+
+attribute "hops/dn/data_dir",
+          :description => "The directory in which Hadoop's DataNodes store their data",
+          :type => 'string'
+
+attribute "hops/yarn/nodemanager_hb_ms",
+          :description => "Heartbeat Interval for NodeManager->ResourceManager in ms",
+          :type => 'string'
+
+attribute "hops/rm/scheduler_class",
+          :description => "Java Classname for the Yarn scheduler (fifo, capacity, fair)",
+          :type => 'string'
+
+attribute "hops/user_envs",
+          :description => "Update the PATH environment variable for the hdfs and yarn users to include hadoop/bin in the PATH ",
+          :type => 'string'
+
+attribute "hops/logging_level",
+          :description => "Log levels are: TRACE, DEBUG, INFO, WARN",
+          :type => 'string'
+
+attribute "hops/nn/heap_size",
+          :description => "Size of the NameNode heap in MBs",
+          :type => 'string'
+
+attribute "hops/nn/direct_memory_size",
+          :description => "Size of the direct memory size for the NameNode in MBs",
+          :type => 'string'
+
+attribute "hops/yarn/aux_services",
+          :description => "mapreduce_shuffle, spark_shuffle",
+          :type => "string"
+
+attribute "hops/capacity/max_ap",
+          :description => "Maximum number of applications that can be pending and running.",
+          :type => "string"
+attribute "hops/capacity/max_am_percent",
+          :description => "Maximum percent of resources in the cluster which can be used to run application masters i.e. controls number of concurrent running applications.",
+          :type => "string"
+attribute "hops/capacity/resource_calculator_class",
+          :description => "The ResourceCalculator implementation to be used to compare Resources in the scheduler. The default i.e. DefaultResourceCalculator only uses Memory while DominantResourceCalculator uses dominant-resource to compare multi-dimensional resources such as Memory, CPU etc.",
+          :type => "string"
+attribute "hops/capacity/root_queues",
+          :description => "The queues at the root level (root is the root queue).",
+          :type => "string"
+attribute "hops/capacity/default_capacity",
+          :description => "Default queue target capacity.",
+          :type => "string"
+attribute "hops/capacity/user_limit_factor",
+          :description => " Default queue user limit a percentage from 0.0 to 1.0.",
+          :type => "string"
+attribute "hops/capacity/default_max_capacity",
+          :description => "The maximum capacity of the default queue.",
+          :type => "string"
+attribute "hops/capacity/default_state",
+          :description => "The state of the default queue. State can be one of RUNNING or STOPPED.",
+          :type => "string"
+attribute "hops/capacity/default_acl_submit_applications",
+          :description => "The ACL of who can submit jobs to the default queue.",
+          :type => "string"
+attribute "hops/capacity/default_acl_administer_queue",
+          :description => "The ACL of who can administer jobs on the default queue.",
+          :type => "string"
+attribute "hops/capacity/queue_mapping",
+          :description => "A list of mappings that will be used to assign jobs to queues The syntax for this list is [u|g]:[name]:[queue_name][,next mapping]* Typically this list will be used to map users to queues, for example, u:%user:%user maps all users to queues with the same name as the user.",
+          :type => "string"
+attribute "hops/capacity/queue_mapping_override.enable",
+          :description => "If a queue mapping is present, will it override the value specified by the user? This can be used by administrators to place jobs in queues that are different than the one specified by the user. The default is false.",
+          :type => "string"
+
+
+
 ##
 ##
 ## Kafka
 ##
 ##
+attribute "kkafka/user",
+          :description => "User to install kafka as",
+          :type => 'string'
+
+attribute "kkafka/group",
+          :description => "Group to install kafka as",
+          :type => 'string'
+
 attribute "kkafka/dir",
           :description => "Base directory to install kafka (default: /opt)",
           :type => 'string'
@@ -877,6 +1146,14 @@ attribute "kkafka/broker/super/users",
 ##
 ##
 
+attribute "elastic/user",
+          :description =>  "Elastic user",
+          :type => 'string'
+
+attribute "elastic/group",
+          :description =>  "Elastic user",
+          :type => 'string'
+
 attribute "elastic/port",
           :description =>  "Port for elasticsearch service (default: 9200)",
           :type => 'string'
@@ -954,7 +1231,6 @@ attribute "zeppelin/group",
           :description => "Group to install/run zeppelin as",
           :type => 'string'
 
-
 attribute "zeppelin/dir",
           :description => "zeppelin base dir",
           :type => 'string'
@@ -986,6 +1262,10 @@ attribute "zeppelin/dir",
 
 attribute "kagent/user",
           :description => "Username to run kagent as",
+          :type => 'string'
+
+attribute "kagent/dir",
+          :description => "Dir to install kagent to",
           :type => 'string'
 
 attribute "kagent/dashboard/ip",
@@ -1342,4 +1622,6 @@ attribute "dela/group",
 attribute "dela/dir",
           :description => "dela Installation directory.",
           :type => 'string'
+
+
 

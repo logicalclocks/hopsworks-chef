@@ -22,7 +22,7 @@ node.default.glassfish.port                = node.hopsworks.port.to_i
 # payara-4.1.153.zip
 node.default.glassfish.version             = '4.1.1.164'
 
-default.hopsworks.dir                      = node.install.dir.empty? ? node.install.dir :  "/usr/local" 
+default.hopsworks.dir                      = node.install.dir.empty? ? "/usr/local" : node.install.dir
 default.glassfish.install_dir              = node.hopsworks.dir
 default.glassfish.base_dir                 = node.glassfish.install_dir + "/glassfish"
 default.hopsworks.domains_dir              = "/srv/glassfish"

@@ -28,6 +28,20 @@ else
   systemd = false
 end
 
+group node.hopsworks.group do
+  action :create
+  not_if "getent group #{node.hopsworks.group}"
+end
+
+user node.hopsworks.user do
+  home "/home/#{node.hopsworks.user}"
+  gid node.hopsworks.group
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node.hopsworks.user}"
+end
+
 
 directory node.hopsworks.dir  do
   owner node.hopsworks.user
