@@ -583,6 +583,7 @@ end
 
 
 
+node.override['glassfish']['asadmin']['timeout'] = 400
 
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear"
