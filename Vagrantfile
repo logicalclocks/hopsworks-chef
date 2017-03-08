@@ -74,13 +74,12 @@ Vagrant.configure("2") do |c|
      "ntp" => {
           "install" => "true"
      },
-     "mysql" => {
-          "dir" => "/srv/hops"
+     "install" => {
+          "dir" => "/opt/hops"
      },
      "ndb" => {
           "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -98,7 +97,6 @@ Vagrant.configure("2") do |c|
           "enabled" => "true",
      },
      "hopsworks" => {
-          "dir" => "/srv/hops",
           "domains_dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
@@ -111,7 +109,6 @@ Vagrant.configure("2") do |c|
      "zeppelin" => {
           "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -119,7 +116,6 @@ Vagrant.configure("2") do |c|
      "elastic" => {
           "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -127,7 +123,6 @@ Vagrant.configure("2") do |c|
      "public_ips" => ["10.0.2.15"],
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
-                 "dir" => "/srv/hops",
 		 "use_hopsworks" => "true",
 		 "rm" =>    { 
        	  	      "private_ips" => ["10.0.2.15"]
@@ -153,15 +148,12 @@ Vagrant.configure("2") do |c|
 		 "mr" => {
 		      "user" => "glassfish"
                  },
-                 "data_dir" => "/srv/hops/hopsdata",
       },
      "flink"  =>    {
-          "dir" => "/srv/hops",
 	  "user" => "glassfish",
           "group" => "glassfish",
      },
      "adam"  =>    {
-          "dir" => "/srv/hops",
 	  "user" => "glassfish",
           "group" => "glassfish",
      },
@@ -169,7 +161,6 @@ Vagrant.configure("2") do |c|
 	  "version" => "2.1.0",
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "master" =>    { 
        	 	      "private_ips" => ["10.0.2.15"]
           },
@@ -180,7 +171,6 @@ Vagrant.configure("2") do |c|
      "kzookeeper" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -188,7 +178,6 @@ Vagrant.configure("2") do |c|
      "livy" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -196,7 +185,6 @@ Vagrant.configure("2") do |c|
      "epipe" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -207,18 +195,15 @@ Vagrant.configure("2") do |c|
 	       },
      },
      "hopsmonitor" => {
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "hopslog" => {
-          "dir" => "/srv/hops",
      },
      "drelephant" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -231,7 +216,6 @@ Vagrant.configure("2") do |c|
      "kagent" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
           "allow_ssh_access" => "true",
           "enabled" => "true",
 	  "default" =>      { 
@@ -241,7 +225,6 @@ Vagrant.configure("2") do |c|
      "kkafka" => {
 	  "user" => "glassfish",
           "group" => "glassfish",
-          "dir" => "/srv/hops",
 	  "default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
@@ -292,7 +275,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
       chef.add_recipe "adam::default"
-      chef.add_recipe "drelephant::default"
+#      chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
       chef.add_recipe "tensorflow::default"
