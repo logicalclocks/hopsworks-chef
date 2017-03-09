@@ -48,7 +48,6 @@ directory node.hopsworks.dir  do
   group node.hopsworks.group
   mode "755"
   action :create
-  recursive true
   not_if "test -d #{node.hopsworks.dir}"
 
 end
@@ -58,7 +57,6 @@ directory node.hopsworks.domains_dir  do
   group node.hopsworks.group
   mode "755"
   action :create
-  recursive true
   not_if "test -d #{node.hopsworks.domains_dir}"
 end
 
@@ -272,7 +270,6 @@ if systemd == true
     group "root"
     mode "755"
     action :create
-    recursive true
   end
 
   template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
