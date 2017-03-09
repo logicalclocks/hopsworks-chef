@@ -266,6 +266,8 @@ admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 login_cnf="#{domains_dir}/#{domain_name}/config/login.conf"
+log4j_cnf="#{domains_dir}/#{domain_name}/config/log4j.properties"
+
 file "#{login_cnf}" do
    action :delete
 end
@@ -276,6 +278,17 @@ template "#{login_cnf}" do
   owner node.glassfish.user
   group node.glassfish.group
   mode "0600"
+end
+
+file "#{log4j_cnf}" do
+   action :delete
+end
+
+template "#{log4j_cnf}" do
+  cookbook 'hopsworks'
+  source "log4j.properties.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
 end
 
 
@@ -658,7 +671,7 @@ template "/bin/hopsworks-2fa" do
 # Add spark log4j.properties file to HDFS. Used by Logstash.
 
 template "/tmp/log4j.properties" do
-  source "log4j.properties.erb"
+  source "app.log4j.properties.erb"
   owner node.glassfish.user
   mode 0750
   action :create
