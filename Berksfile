@@ -29,7 +29,8 @@ cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
 
-cookbook 'glassfish', github: "realityforge/chef-glassfish", tag: "0.7.6"
+cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
+
 
 cookbook 'elasticsearch', '~> 2.4.0'
 
