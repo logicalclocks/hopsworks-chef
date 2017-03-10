@@ -1,7 +1,6 @@
 require 'json'
 require 'base64'
 
-#node.override.glassfish.user = node.hopsworks.user
 private_ip=my_private_ip()
 username=node.hopsworks.admin.user
 password=node.hopsworks.admin.password
@@ -11,7 +10,6 @@ admin_port = node.glassfish.admin.port
 web_port = node.glassfish.port
 mysql_user=node.mysql.user
 mysql_password=node.mysql.password
-#mysql_host = private_recipe_ip("ndb","mysqld")
 mysql_host = my_private_ip()
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
@@ -199,12 +197,9 @@ end
 #
 # This code is to enable ssh access
 #
-
 #node.default.authorization.sudo.include_sudoers_d = true
 #node.default.authorization.sudo.passwordless = true
-
 #include_recipe 'sudo'
-
 #sudo 'glassfish' do
 #  user    node.glassfish].user]
 #  commands  ['/srv/mkuser.sh', '/usr/sbin/deluser', '/usr/mount', '/usr/umount']
