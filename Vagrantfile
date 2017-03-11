@@ -72,14 +72,14 @@ Vagrant.configure("2") do |c|
      chef.cookbooks_path = "cookbooks"
      chef.json = {
      "ntp" => {
-          "install" => "true"
+          "install" => "true",
+#          "user" => "glassfish",
      },
      "install" => {
           "dir" => "/srv/hops"
      },
      "ndb" => {
-          "user" => "glassfish",
-          "group" => "glassfish",
+          "user" => "mysql",
           "mgmd" => { 
      	  	       "private_ips" => ["10.0.2.15"]
 	       },
