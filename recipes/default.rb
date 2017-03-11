@@ -238,7 +238,7 @@ template "#{rows_path}" do
                 :influxdb_user => node.influxdb.db_user,
                 :influxdb_password => node.influxdb.db_password,
                 :graphite_port => node.influxdb.graphite.port,
-                :anaconda_dir => node.anaconda.base_dir,
+                :anaconda_dir => node.conda.base_dir,
                 :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately

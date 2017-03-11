@@ -41,6 +41,6 @@ cookbook 'ntp', '~> 2.0.0'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
 
-cookbook 'anaconda', github: "hopshadoop/chef-continuum-anaconda", branch: "master"
+cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
 
 metadata
