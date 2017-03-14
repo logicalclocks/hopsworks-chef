@@ -1,7 +1,6 @@
 dependencies: 
   - recipe: hopsworks::install
     local:  
-      - ndb::install
       - hops::install
   - recipe: hopsworks::default
     global:  

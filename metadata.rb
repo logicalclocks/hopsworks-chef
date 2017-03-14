@@ -235,6 +235,10 @@ attribute "install/dir",
           :description => "Default ''. Set to a base directory under which all hops services will be installed.",
           :type => "string"
 
+attribute "install/user",
+          :description => "User to install the services as",
+          :type => "string"
+
 
 ##
 ##
@@ -1622,6 +1626,4 @@ attribute "dela/group",
 attribute "dela/dir",
           :description => "dela Installation directory.",
           :type => 'string'
-
-
 

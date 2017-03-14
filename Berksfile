@@ -31,6 +31,7 @@ cookbook 'simple-logstash', '~> 0.2.4'
 
 cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 
+
 cookbook 'elasticsearch', '~> 2.4.0'
 
 cookbook 'compat_resource', '~> 12.7.3'
@@ -39,5 +40,7 @@ cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
+
+cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
 
 metadata
