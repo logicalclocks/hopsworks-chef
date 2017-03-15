@@ -59,13 +59,13 @@ attribute "java/install_flavor",
           :display_name =>  "Oracle (default) or openjdk",
           :type => 'string'
 
-attribute "hopsworks/twofactor_auth",
-          :description => "twofactor_auth (default: false)",
-          :type => 'string',
-          :required => "required"
+attribute "kapacitor/notify/email",
+          :description => "Email address. Recommended to use a gmail account",
+          :required => "required",
+          :type => 'string'
 
 attribute "hopsworks/email",
-          :description => "Email address. Recommended to use a gmail account",
+          :description => "Email account to send notifications from. ",
           :required => "required",
           :type => 'string'
 

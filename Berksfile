@@ -22,7 +22,7 @@ cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
-cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "telegraf"
 
 
 #cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
@@ -35,7 +35,7 @@ cookbook 'glassfish', github: "realityforge/chef-glassfish", branch: "master"
 cookbook 'elasticsearch', '~> 2.4.0'
 
 cookbook 'compat_resource', '~> 12.7.3'
-cookbook 'ulimit2', '~> 0.2.0'
+cookbook 'ulimit', '~> 0.4.0'
 cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 

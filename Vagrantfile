@@ -274,6 +274,8 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopslog::default"
       chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
+      chef.add_recipe "hopsmonitor::telegraf"      
+      chef.add_recipe "hopsmonitor::kapacitor"      
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
