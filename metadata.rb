@@ -1627,3 +1627,33 @@ attribute "dela/dir",
           :description => "dela Installation directory.",
           :type => 'string'
 
+
+
+#
+#
+# SMTP
+#
+#
+
+
+attribute "smtp/host",
+          :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
+          :type => 'string'
+
+attribute "smtp/port",
+          :description => "Port of SMTP server (default is 587)",
+          :type => 'string'
+
+attribute "smtp/ssl_port",
+          :description => "SSL port of SMTP server (default is 465)",
+          :type => 'string'
+
+attribute "smtp/email",
+          :description => "Email account to send notifications from. ",
+          :required => "required",
+          :type => 'string'
+
+attribute "smtp/email_password",
+          :description => "Password for email account. ",
+          :required => "required",
+          :type => 'string'
