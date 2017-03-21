@@ -45,6 +45,7 @@ cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
 
 group :test do
   cookbook 'karamel', github: "hopshadoop/karamel-chef", branch: "master"
+  cookbook 'hostsfile', '~> 2.4.5'
 end
 
 
