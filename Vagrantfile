@@ -11,9 +11,9 @@ Vagrant.configure("2") do |c|
     c.cache.enable :apt
     c.cache.enable :gem    
   end
-  c.vm.box = "bento/ubuntu-16.04"
-#  c.vm.box = "opscode-ubuntu-14.04"
-#  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
+#  c.vm.box = "bento/ubuntu-16.04"
+  c.vm.box = "opscode-ubuntu-14.04"
+  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
 #   c.vm.box = "bento/centos-7.2"
 #  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
 #  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
@@ -21,42 +21,42 @@ Vagrant.configure("2") do |c|
    
   c.ssh.insert_key="false"
 # Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>2223})
-  c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
+  c.vm.network(:forwarded_port, {:guest=>22, :host=>27011})
+  c.vm.network(:forwarded_port, {:guest=>8090, :host=>26011})
 # MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
+  c.vm.network(:forwarded_port, {:guest=>9090, :host=>13011})
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
+  c.vm.network(:forwarded_port, {:guest=>3306, :host=>20011})
 # HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
+  c.vm.network(:forwarded_port, {:guest=>8080, :host=>14011})
 # HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
+  c.vm.network(:forwarded_port, {:guest=>8181, :host=>55011})
 # Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
+  c.vm.network(:forwarded_port, {:guest=>4848, :host=>16011})
 # HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
-# Datanode 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50079})
+  c.vm.network(:forwarded_port, {:guest=>50070, :host=>22011})
+# Datanode
+  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50011})
 # YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
+  c.vm.network(:forwarded_port, {:guest=>8088, :host=>17011})
 # Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
+  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9211})
 # Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
+  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9011})
 # Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9191})
+  c.vm.network(:forwarded_port, {:guest=>9009, :host=>19011})
 # Ooozie port
-  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
+  c.vm.network(:forwarded_port, {:guest=>11000, :host=>25011})
 # Dr Elephant
 #  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
 # Spark History Server
-  c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
+  c.vm.network(:forwarded_port, {:guest=>18080, :host=>18011})
 # Kibana Server
-  c.vm.network(:forwarded_port, {:guest=>5601, :host=>50070})
+  c.vm.network(:forwarded_port, {:guest=>5601, :host=>15011})
 # Grafana Server
-  c.vm.network(:forwarded_port, {:guest=>3000, :host=>50075})
+  c.vm.network(:forwarded_port, {:guest=>3000, :host=>23011})
 # Graphite WebServer
-  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
+  c.vm.network(:forwarded_port, {:guest=>3000, :host=>24011})
 # Logstash Server
 #  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
   
@@ -245,17 +245,17 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopsworks::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hadoop_spark::install"
-      chef.add_recipe "flink::install"
+#      chef.add_recipe "flink::install"
       chef.add_recipe "zeppelin::install"
       chef.add_recipe "elastic::install"
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
-      chef.add_recipe "livy::install"
-      chef.add_recipe "adam::install"
+#      chef.add_recipe "livy::install"
+#      chef.add_recipe "adam::install"
 #      chef.add_recipe "oozie::install"
       chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
-      chef.add_recipe "tensorflow::install"
+#      chef.add_recipe "tensorflow::install"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
@@ -267,26 +267,25 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hops::jhs"
       chef.add_recipe "elastic::default"
       chef.add_recipe "zeppelin::default"
-      chef.add_recipe "flink::yarn"
+#      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
-      chef.add_recipe "livy::default"
+#      chef.add_recipe "livy::default"
       chef.add_recipe "hopslog::default"
       chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsmonitor::telegraf"      
-      chef.add_recipe "hopsmonitor::kapacitor"      
+#      chef.add_recipe "hopsmonitor::kapacitor"      
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
-      chef.add_recipe "adam::default"
+#      chef.add_recipe "adam::default"
 #      chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
-      chef.add_recipe "tensorflow::default"
+#      chef.add_recipe "tensorflow::default"
 #      chef.add_recipe "oozie::default"
 
   end 
 
 end
-

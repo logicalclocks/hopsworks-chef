@@ -4,7 +4,7 @@ source 'https://supermarket.chef.io'
 
 cookbook 'java'
 cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "master"
-cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
+cookbook 'hops', github: "Fil0x/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
@@ -22,7 +22,7 @@ cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
-cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+cookbook 'hopsmonitor', github: "Fil0x/hopsmonitor-chef", branch: "master"
 
 
 #cookbook 'chef-grafana', github: "chef-cookbooks/chef-grafana", branch: "master"
