@@ -368,7 +368,7 @@ end
 
 template "#{node.glassfish.domains_dir}/#{domain_name}/bin/ndb_backup.sh" do
   source "ndb_backup.sh.erb"
-  owner node.hopsworks.user
+  owner node.glassfish.user
   group node.glassfish.group
   mode "754"
   action :create
