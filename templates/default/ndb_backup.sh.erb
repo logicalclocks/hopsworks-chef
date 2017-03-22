@@ -1,0 +1,37 @@
+#!/bin/bash
+
+help() {
+    echo ""
+    echo "usage: $0 backup|restore id|remove id "
+    echo ""
+    exit 1
+}
+
+if [ $# -lt 1  ]; then
+    help
+fi
+
+if [ $# -eq 2 ]; then
+  # Check that $2 is an int (and not some injection attack)
+  re='^[0-9]+$'
+  if ! [[ $2 =~ $re ]] ; then
+    echo "error: Not a number" >&2
+    help
+  fi
+fi
+
+if [ $# -gt 2 ]; then
+ help
+fi
+
+if [ "$1" = "backup" ] ; then
+    su <%= node.ndb.user %> -c "<%= node.ndb.scripts_dir %>/backup-start.sh"
+elif [ "$1" = "restore" ] ; then
+    su <%= node.ndb.user %> -c "<%= node.ndb.scripts_dir %>/backup-restore.sh $2"
+elif [ "$1" = "remove" ] ; then
+    su <%= node.ndb.user %> -c "<%= node.ndb.scripts_dir %>/backup-remove.sh $2"
+else
+    help
+fi
+
+exit $?

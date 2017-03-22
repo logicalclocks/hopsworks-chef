@@ -366,6 +366,15 @@ template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/de
   action :create
 end
 
+template "#{node.glassfish.domains_dir}/#{domain_name}/bin/ndb_backup.sh" do
+  source "ndb_backup.sh.erb"
+  owner node.glassfish.user
+  group node.glassfish.group
+  mode "754"
+  action :create
+end
+
+
 
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
@@ -376,7 +385,8 @@ template "/etc/sudoers.d/glassfish" do
                 :user => node.glassfish.user,
                 :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh",
                 :delete_usercert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh",
-                :delete_projectcert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh"
+                :delete_projectcert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh",
+                :ndb_backup =>  "#{node.glassfish.domains_dir}/#{domain_name}/bin/ndb_backup.sh"                
               })
   action :create
 end  
