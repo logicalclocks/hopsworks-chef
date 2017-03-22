@@ -10,10 +10,17 @@ if [ $# -ne 2  ]; then
     help
 fi
 
+# Check that $2 is an int (and not some injection attack)
+re='^[0-9]+$'
+if ! [[ $2 =~ $re ]] ; then
+    echo "error: Not a number" >&2
+    help
+fi
+
 if [ "$1" = "backup" ] ; then
-    <%= node.ndb.scripts_dir %>/bin/backup-start.sh $2
+    su <%= node.ndb.user %> -c "<%= node.ndb.scripts_dir %>/bin/backup-start.sh $2"
 elif [ "$1" = "restore" ] ; then
-    <%= node.ndb.scripts_dir %>/bin/backup-restore.sh $2    
+    su <%= node.ndb.user %> -c "<%= node.ndb.scripts_dir %>/bin/backup-restore.sh $2"
 else
     help
 fi
