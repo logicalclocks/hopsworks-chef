@@ -121,7 +121,7 @@
 *.sink.graphite.host=<%= @private_ip %>
 *.sink.graphite.port=<%= node.influxdb.graphite.port %>
 *.sink.graphite.period=1
-
+*.sink.graphite.prefix=spark
 
 # Enable JvmSource for instance master, worker, driver and executor
 master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
