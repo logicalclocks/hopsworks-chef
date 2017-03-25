@@ -1444,6 +1444,7 @@ end
     user "root"
     code <<-EOF
       sleep 10
+      curl --data "email=admin@kth.se&password=admin&otp=" http://localhost:8080/hopsworks-api/api/auth/login/
       curl --insecure --user #{username}:#{password} -s https://localhost:4848/asadmin
     EOF
   end
