@@ -74,6 +74,9 @@ attribute "hopsworks/email_password",
           :required => "required",
           :type => 'string'
 
+attribute "hopsworks/twofactor_auth",
+          :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
+          :type => 'string'
 
 attribute "hopsworks/smtp",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
