@@ -740,7 +740,7 @@ end
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
   owner node.glassfish.user
-  owner node.kagent.user
+  group node.glassfish.group
   mode 0750
   action :create
 end
@@ -748,7 +748,7 @@ end
 template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
   source "condalist.sh.erb"
   owner node.glassfish.user
-  owner node.kagent.user
+  group node.glassfish.group
   mode 0750
   action :create
 end
