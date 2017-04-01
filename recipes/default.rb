@@ -698,7 +698,7 @@ template "/bin/hopsworks-2fa" do
 
 # Add spark log4j.properties file to HDFS. Used by Logstash.
 
-template "/tmp/log4j.properties" do
+template "#{Chef::Config.file_cache_path}/log4j.properties" do
   source "app.log4j.properties.erb"
   owner node.glassfish.user
   mode 0750
@@ -708,7 +708,7 @@ template "/tmp/log4j.properties" do
   })
 end
 
-hops_hdfs_directory "/tmp/log4j.properties" do
+hops_hdfs_directory "#{Chef::Config.file_cache_path}/log4j.properties" do
   action :put_as_superuser
   owner node.hadoop_spark.user
   group node.hops.group
@@ -719,7 +719,7 @@ end
 
 # Add spark metrics.properties file to HDFS. Used by Grafana.
 
-template "/tmp/metrics.properties" do
+template "#{Chef::Config.file_cache_path}/metrics.properties" do
   source "metrics.properties.erb"
   owner node.glassfish.user
   mode 0750
@@ -729,7 +729,7 @@ template "/tmp/metrics.properties" do
   })
 end
 
-hops_hdfs_directory "/tmp/metrics.properties" do
+hops_hdfs_directory "#{Chef::Config.file_cache_path}/metrics.properties" do
   action :put_as_superuser
   owner node.hadoop_spark.user
   group node.hops.group
@@ -757,7 +757,7 @@ end
 
 hopsUtil=File.basename(node.hops.hops_util.url)
  
-remote_file "/tmp/#{hopsUtil}" do
+remote_file "#{Chef::Config.file_cache_path}/#{hopsUtil}" do
   source node.hops.hops_util.url
   owner node.glassfish.user
   group node.glassfish.group
@@ -765,7 +765,7 @@ remote_file "/tmp/#{hopsUtil}" do
   action :create
 end
 
-hops_hdfs_directory "/tmp/hops-util-0.1.jar" do
+hops_hdfs_directory "#{Chef::Config.file_cache_path}/hops-util-0.1.jar" do
   action :put_as_superuser
   owner node.glassfish.user
   group node.hops.group
@@ -775,7 +775,7 @@ end
 
 hopsKafkaJar=File.basename(node.hops.hops_spark_kafka_example.url)
  
-remote_file "/tmp/#{hopsKafkaJar}" do
+remote_file "#{Chef::Config.file_cache_path}/#{hopsKafkaJar}" do
   source node.hops.hops_spark_kafka_example.url
   owner node.glassfish.user
   group node.glassfish.group
@@ -783,12 +783,12 @@ remote_file "/tmp/#{hopsKafkaJar}" do
   action :create
 end
 
-hops_hdfs_directory "/tmp/#{hopsKafkaJar}" do
+hops_hdfs_directory "#{Chef::Config.file_cache_path}/#{hopsKafkaJar}" do
   action :put_as_superuser
   owner node.glassfish.user
   group node.hops.group
   mode "1755"
-  dest "/user/glassfish/#{hopsKafkaJar}"
+  dest "/user/" + node.glassfish.user + "/#{hopsKafkaJar}"
 end
 
 #
