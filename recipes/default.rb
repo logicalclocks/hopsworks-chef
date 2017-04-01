@@ -770,7 +770,7 @@ hops_hdfs_directory "/tmp/hops-util-0.1.jar" do
   owner node.glassfish.user
   group node.hops.group
   mode "1755"
-  dest "/user/glassfish/hops-util-0.1.jar"
+  dest "/user/" + node.glassfish.user + "/hops-util-0.1.jar"
 end
 
 hopsKafkaJar=File.basename(node.hops.hops_spark_kafka_example.url)
@@ -1084,7 +1084,8 @@ template "#{rows_path}" do
                 :influxdb_password => node.influxdb.db_password,
                 :graphite_port => node.influxdb.graphite.port,
                 :anaconda_dir => node.conda.base_dir,
-                :public_ip => public_ip
+                :public_ip => public_ip,
+                :hopsworks_ip => private_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
