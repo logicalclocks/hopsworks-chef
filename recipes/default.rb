@@ -1451,3 +1451,53 @@ end
   end
 
 
+
+#
+# https://github.com/jupyter-incubator/sparkmagic
+#
+bash "jupyter-sparkmagic" do
+    user "root"
+    code <<-EOF
+    set -e
+    pip install jupyter
+    pip install sparkmagic
+    jupyter nbextension enable --py --sys-prefix widgetsnbextension 
+EOF
+end
+
+pythondir=""
+case node['platform']
+ when 'debian', 'ubuntu'
+  pythondir="/usr/lib/python2.7/site-package"
+ when 'redhat', 'centos', 'fedora'
+  pythondir="/usr/lib/python2.7/site-package"
+end
+
+bash "jupyter-sparkmagic-kernels" do
+  user "root"
+  code <<-EOF
+    set -e
+    cd #{pythondir}
+    jupyter-kernelspec install sparkmagic/kernels/sparkkernel
+    jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
+    jupyter-kernelspec install sparkmagic/kernels/pyspark3kernel
+    jupyter-kernelspec install sparkmagic/kernels/sparkrkernel
+    
+    jupyter serverextension enable --py sparkmagic
+    mkdir -p #{node.hopsworks.domains_dir}/.sparkmagic
+    chown #{node.glassfish.user}:#{node.glassfish.group} #{node.hopsworks.domains_dir}/.sparkmagic
+   EOF
+end
+
+
+
+
+template "#{node.hopsworks.domains_dir}/.sparkmagic/config.json" do
+  source "config.json.erb"
+  owner node.glassfish.user
+  mode 0750
+  action :create
+  variables({
+               :livy_ip => livy_ip
+  })
+end
