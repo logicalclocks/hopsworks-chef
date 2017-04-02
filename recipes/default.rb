@@ -1468,9 +1468,9 @@ end
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
-  pythondir="/usr/lib/python2.7/site-package"
+  pythondir="/usr/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
-  pythondir="/usr/lib/python2.7/site-package"
+  pythondir="/usr/lib/python2.7/site-packages"
 end
 
 bash "jupyter-sparkmagic-kernels" do
