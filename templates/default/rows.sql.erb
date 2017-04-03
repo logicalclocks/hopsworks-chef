@@ -108,9 +108,15 @@ INSERT INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_si
 -- Kafka settings
 --
 
-INSERT INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
+INSERT INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
+
+INSERT INTO variables VALUES ("spark_user", "<%= @spark_user %>");
+
+INSERT INTO variables VALUES ("flink_user", "<%= @flink_user %>");
 
 INSERT INTO variables VALUES ("kafka_user", "<%= @kafka_user %>");
+
+INSERT INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
 
 INSERT INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
 

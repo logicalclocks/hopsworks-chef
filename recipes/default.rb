@@ -1057,6 +1057,7 @@ template "#{rows_path}" do
                 :mysql_dir => node.mysql.dir + "/mysql",
                 :elastic_dir => node.elastic.dir + "/elastic",
                 :hopsworks_dir => domains_dir,
+                :hopsworks_user => node.hopsworks.user,                
                 :twofactor_auth => node.hopsworks.twofactor_auth,
                 :twofactor_exclude_groups => node.hopsworks.twofactor_exclude_groups,
                 :elastic_user => node.elastic.user,
@@ -1468,7 +1469,8 @@ end
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
-  pythondir="/usr/lib/python2.7/dist-packages"
+# "/usr/lib/python2.7/dist-packages"
+  pythondir="/usr/local/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
   pythondir="/usr/lib/python2.7/site-packages"
 end

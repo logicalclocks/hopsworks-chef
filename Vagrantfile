@@ -11,10 +11,10 @@ Vagrant.configure("2") do |c|
     c.cache.enable :apt
     c.cache.enable :gem    
   end
-  c.vm.box = "bento/ubuntu-16.04"
+#  c.vm.box = "bento/ubuntu-16.04"
 #  c.vm.box = "opscode-ubuntu-14.04"
 #  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
-#   c.vm.box = "bento/centos-7.2"
+   c.vm.box = "bento/centos-7.2"
 #  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
 #  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
  
