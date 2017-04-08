@@ -1008,6 +1008,7 @@ CREATE TABLE `jupyter_project` (
   `port` INT(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,  
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `host_ip` VARCHAR(255) NOT NULL,
   `hashed_passwd` VARCHAR(255) NOT NULL,
   `pid` INT(11) NOT NULL,
   `project_id` INT(11) NOT NULL,
