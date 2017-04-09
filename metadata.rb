@@ -194,6 +194,10 @@ attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
           :type => 'string'
 
+attribute "hopsworks/ear_url",
+          :description => "Url for the hopsworks ear file",
+          :type => 'string'
+
 attribute "hopsworks/yarn_default_quota_mins",
           :description => "Default number of CPU mins availble per project",
           :type => 'string'
