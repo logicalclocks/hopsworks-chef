@@ -68,7 +68,7 @@ notifying_action :create_tables do
       set -e
       #{exec} #{db} < #{new_resource.views_path}
     EOF
-    not_if "#{exec} -e hopsworks \"show tables like 'users_groups'\" | grep users_groups"
+    not_if "#{exec} hopsworks -e \"show tables like 'users_groups'\" | grep users_groups"
   end
 
 end

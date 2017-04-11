@@ -68,11 +68,11 @@ default.hopsworks.private_ips              = ['10.0.2.15']
 
 default.kagent.enabled                     = "false"
 
-default.hopsworks.smtp                     = "smtp.gmail.com"
-default.hopsworks.smtp_port                = "587"
-default.hopsworks.smtp_ssl_port            = "465"
-default.hopsworks.email                    = "hopsworks@gmail.com"
-default.hopsworks.email_password           = "password"
+default.hopsworks.smtp                     = node.smtp.host
+default.hopsworks.smtp_port                = node.smtp.port
+default.hopsworks.smtp_ssl_port            = node.smtp.ssl_port
+default.hopsworks.email                    = node.smtp.email
+default.hopsworks.email_password           = node.smtp.email_password
 default.hopsworks.gmail.placeholder        = "http://snurran.sics.se/hops/hopsworks.email"
 
 # #quotas

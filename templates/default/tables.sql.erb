@@ -1005,13 +1005,27 @@ CREATE TABLE `conda_commands` (
 --
 
 CREATE TABLE `jupyter_project` (
-  `port` INT(11) NOT NULL AUTO_INCREMENT,
+  `port` INT(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,  
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hashed_passwd` VARCHAR(255) DEFAULT NULL,
+  `host_ip` VARCHAR(255) NOT NULL,
+  `hashed_passwd` VARCHAR(255) NOT NULL,
+  `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
   PRIMARY KEY (`port`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),  
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=20000;
+
+
+
+--
+-- Backups for MySQL Cluster
+--
+
+CREATE TABLE `ndb_backup` (
+  `backup_id` INT(11) NOT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`backup_id`)
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;

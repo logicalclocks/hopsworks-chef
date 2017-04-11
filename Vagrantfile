@@ -11,10 +11,10 @@ Vagrant.configure("2") do |c|
     c.cache.enable :apt
     c.cache.enable :gem    
   end
-  c.vm.box = "bento/ubuntu-16.04"
+#  c.vm.box = "bento/ubuntu-16.04"
 #  c.vm.box = "opscode-ubuntu-14.04"
 #  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
-#   c.vm.box = "bento/centos-7.2"
+   c.vm.box = "bento/centos-7.2"
 #  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
 #  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
  
@@ -153,8 +153,7 @@ Vagrant.configure("2") do |c|
 	  "user" => "glassfish",
           "group" => "glassfish",
      },
-     "adam"  =>    {
-	  "user" => "glassfish",
+     "adam"  =>    { "user" => "glassfish",
           "group" => "glassfish",
      },
      "hadoop_spark" => {
@@ -251,9 +250,9 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
-      chef.add_recipe "adam::install"
+#      chef.add_recipe "adam::install"
 #      chef.add_recipe "oozie::install"
-      chef.add_recipe "drelephant::install"
+#      chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
       chef.add_recipe "tensorflow::install"
       chef.add_recipe "ndb::mgmd"
@@ -274,10 +273,12 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopslog::default"
       chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
+      chef.add_recipe "hopsmonitor::telegraf"      
+      chef.add_recipe "hopsmonitor::kapacitor"      
       chef.add_recipe "hopsworks::dev"
       chef.add_recipe "epipe::default"
       chef.add_recipe "kzookeeper::default"
-      chef.add_recipe "adam::default"
+#      chef.add_recipe "adam::default"
 #      chef.add_recipe "drelephant::default"
       chef.add_recipe "kagent::default"
       chef.add_recipe "kkafka::default"
