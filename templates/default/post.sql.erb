@@ -1,0 +1,106 @@
+
+
+-- --------------------------------------------------------
+--
+-- Default settings
+--
+
+INSERT INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= @spark_dir %>"),  ("flink_dir", "<%= @flink_dir %>"), ("zeppelin_dir", "<%= @zeppelin_dir %>"), ("elastic_dir", "<%= @elastic_dir %>"),  ("mysql_dir", "<%= @mysql_dir %>"), ("ndb_dir", "<%= @ndb_dir %>"), ("hadoop_dir", "<%= @hadoop_dir %>"), ("hdfs_user", "<%= @hdfs_user %>"), ("yarn_user", "<%= @yarn_user %>"), ("mr_user","<%= @mr_user %>"), ("zeppelin_user","<%= @zeppelin_user %>"), ("elastic_user","<%= @elastic_user %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
+
+INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>");
+
+INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
+
+INSERT INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
+
+INSERT INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
+
+INSERT INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
+
+INSERT INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
+
+INSERT INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
+
+INSERT INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
+
+INSERT INTO variables VALUES ("yarn_ui_port", "<%= @yarn_ui_port %>");
+
+INSERT INTO variables VALUES ("file_preview_image_size", "<%= @file_preview_image_size %>");
+
+INSERT INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_size %>");
+
+
+-- ------
+-- Kafka settings
+--
+
+INSERT INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
+
+INSERT INTO variables VALUES ("spark_user", "<%= @spark_user %>");
+
+INSERT INTO variables VALUES ("flink_user", "<%= @flink_user %>");
+
+INSERT INTO variables VALUES ("kafka_user", "<%= @kafka_user %>");
+
+INSERT INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
+
+INSERT INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
+
+INSERT INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
+
+INSERT INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
+
+INSERT INTO variables VALUES ("drelephant_port", "<%= @drelephant_port %>");
+
+INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
+
+INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
+
+INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node.hopsworks.master.password %>");
+
+INSERT INTO variables VALUES ("glassfish_cert", "false");
+
+
+-- --------------------------------------------------------
+--
+-- dela
+--
+
+INSERT INTO variables VALUES ("domain","<%= node.hopsworks.dela.domain %>");
+
+INSERT INTO variables VALUES ("certificate","<%= node.hopsworks.dela.certifcate %>");
+
+INSERT INTO variables VALUES ("gvod_rest_endpoint","http://<%= @dela_ip %>:<%= @dela_port %>");
+
+INSERT INTO variables VALUES ("hops_site_base_uri","<%= node.hopsworks.dela.hops_site_base_uri %>");
+
+INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node.hopsworks.port %>/<%= node.hopsworks.dela.public_search_endpoint %>");
+
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node.hopsworks.port %>");
+
+INSERT INTO variables VALUES ("rest_port","<%= node.hopsworks.port %>");
+
+INSERT INTO variables VALUES ("max_gpu_request_size","<%= node.hopsworks.max_gpu_request_size %>");
+
+INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu_request_size %>");
+
+--
+-- kibana, logstash, grafana, graphite
+--
+
+INSERT INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
+INSERT INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
+INSERT INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
+INSERT INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
+INSERT INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
+INSERT INTO variables VALUES ("influxdb_user", "<%= @influxdb_user %>");
+INSERT INTO variables VALUES ("influxdb_pw", "<%= @influxdb_password %>");
+INSERT INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
+INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
+--
+-- pyspark, python
+--
+
+INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node.kagent.user %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node.hopsworks.anaconda_enabled %>");
