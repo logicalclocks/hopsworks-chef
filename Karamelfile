@@ -1,7 +1,8 @@
 dependencies: 
   - recipe: hopsworks::install
     local:  
-      - kagent::install
+      - hops::install
   - recipe: hopsworks::default
     global:  
       - ndb::mysqld
+      - hops::ndb
