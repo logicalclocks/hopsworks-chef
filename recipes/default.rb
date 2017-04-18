@@ -710,18 +710,6 @@ template "/bin/hopsworks-2fa" do
 
 
 
-# Add spark log4j.properties file to HDFS. Used by Logstash.
-
-template "#{Chef::Config.file_cache_path}/log4j.properties" do
-  source "app.log4j.properties.erb"
-  owner node.glassfish.user
-  mode 0750
-  action :create
-  variables({
-               :private_ip => private_ip
-  })
-end
-
 
 
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do

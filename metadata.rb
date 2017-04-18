@@ -43,6 +43,8 @@ recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application.
 
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 
+recipe  "hopsworks::hops", "Copies files into Hops, needs hopsFs to be running."
+
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
