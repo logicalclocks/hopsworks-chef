@@ -655,9 +655,23 @@ glassfish_deployable "hopsworks" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v 'hopsworks-ear | grep 'hopsworks'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v hopsworks-ear | grep hopsworks"
 end
 
+
+glassfish_deployable "hopsworks-ca" do
+  component_name "hopsworks-ca"
+  target "server"
+  url node.hopsworks.ca_url
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :deploy
+  retries 1
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
+end
 
 
 

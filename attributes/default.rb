@@ -43,6 +43,7 @@ default.glassfish.package_url              = node.download_url + "/payara-#{node
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
 default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
+default.hopsworks.ca_url                   = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ca.war"
 
 
 default.hopsworks.admin.user               = "adminuser"
