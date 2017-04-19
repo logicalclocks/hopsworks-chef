@@ -1441,3 +1441,9 @@ template "#{node.hopsworks.domains_dir}/.sparkmagic/config.json" do
                :livy_ip => livy_ip
   })
 end
+
+
+python_package "hdfscontents" do
+  action :install
+  version '0.3'
+end
