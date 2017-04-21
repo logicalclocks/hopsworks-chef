@@ -48,6 +48,8 @@ recipe  "hopsworks::slave", "Hopsworks master instance that will store only an i
 
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 
+recipe  "hopsworks::hops", "Copies files into Hops, needs hopsFs to be running."
+
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
@@ -201,6 +203,10 @@ attribute "hopsworks/war_url",
 
 attribute "hopsworks/ear_url",
           :description => "Url for the hopsworks ear file",
+          :type => 'string'
+
+attribute "hopsworks/ca_url",
+          :description => "Url for the hopsworks certificate authority war file",
           :type => 'string'
 
 attribute "hopsworks/yarn_default_quota_mins",

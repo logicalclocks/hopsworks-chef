@@ -10,17 +10,16 @@ include_attribute "kzookeeper"
 
 default.hopsworks.version                  = "0.1.0"
 
-node.default.glassfish.variant             = "payara"
-node.default.hopsworks.user                = node.install.user.empty? ? "glassfish" : node.install.user
-node.default.glassfish.user                = node.hopsworks.user
-node.default.hopsworks.group               = node.install.user.empty? ? "glassfish" : node.install.user
-node.default.glassfish.group               = node.hopsworks.group
-node.default.hopsworks.admin.port          = 4848
-node.default.hopsworks.port                = "8080"
-node.default.glassfish.admin.port          = node.hopsworks.admin.port
-node.default.glassfish.port                = node.hopsworks.port.to_i
-# payara-4.1.153.zip
-node.default.glassfish.version             = '4.1.1.171.0.1'
+default.glassfish.variant                  = "payara"
+default.hopsworks.user                     = node.install.user.empty? ? "glassfish" : node.install.user
+default.glassfish.user                     = node.hopsworks.user
+default.hopsworks.group                    = node.install.user.empty? ? "glassfish" : node.install.user
+default.glassfish.group                    = node.hopsworks.group
+default.hopsworks.admin.port               = 4848
+default.hopsworks.port                     = "8080"
+default.glassfish.admin.port               = node.hopsworks.admin.port
+default.glassfish.port                     = node.hopsworks.port.to_i
+default.glassfish.version                  = '4.1.1.171.0.1'
 
 default.hopsworks.dir                      = node.install.dir.empty? ? "/usr/local" : node.install.dir
 default.glassfish.install_dir              = node.hopsworks.dir
@@ -49,6 +48,7 @@ default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
 default.hopsworks.ca_url                   = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ca.war"
 default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
+default.hopsworks.ca_url                   = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ca.war"
 
 
 default.hopsworks.admin.user               = "adminuser"

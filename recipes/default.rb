@@ -651,7 +651,7 @@ glassfish_deployable "hopsworks" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v 'hopsworks-ear | grep 'hopsworks'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v hopsworks-ear | grep hopsworks"
 end
 
 
@@ -659,7 +659,6 @@ glassfish_deployable "hopsworks-ca" do
   component_name "hopsworks-ca"
   target "server"
   url node.hopsworks.ca_url
-  context_root "/hopsworks-ca"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -667,33 +666,8 @@ glassfish_deployable "hopsworks-ca" do
   secure false
   action :deploy
   async_replication false
-  retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks-ca"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
 end
-
-
-
-# directory "/srv/users" do
-#   owner node.glassfish.user
-
-#   group node.glassfish.group
-#   mode "0755"
-#   action :create
-#   recursive true
-# end
-
-
-# template "/srv/mkuser.sh" do
-# case node['platform']
-# when 'debian', 'ubuntu'
-#     source "mkuser.sh.erb"
-# when 'redhat', 'centos', 'fedora'
-#     source "mkuser.redhat.sh.erb"
-# end
-#   owner node.glassfish.user
-#   mode 0750
-#   action :create
-# end 
 
 template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"
@@ -708,46 +682,7 @@ template "/bin/hopsworks-2fa" do
 
 
 
-# Add spark log4j.properties file to HDFS. Used by Logstash.
 
-template "#{Chef::Config.file_cache_path}/log4j.properties" do
-  source "app.log4j.properties.erb"
-  owner node.glassfish.user
-  mode 0750
-  action :create
-  variables({
-               :private_ip => private_ip
-  })
-end
-
-hops_hdfs_directory "#{Chef::Config.file_cache_path}/log4j.properties" do
-  action :put_as_superuser
-  owner node.hadoop_spark.user
-  group node.hops.group
-  mode "1775"
-  dest "/user/" + node.glassfish.user + "/log4j.properties"
-end
-
-
-# Add spark metrics.properties file to HDFS. Used by Grafana.
-
-template "#{Chef::Config.file_cache_path}/metrics.properties" do
-  source "metrics.properties.erb"
-  owner node.glassfish.user
-  mode 0750
-  action :create
-  variables({
-               :private_ip => private_ip
-  })
-end
-
-hops_hdfs_directory "#{Chef::Config.file_cache_path}/metrics.properties" do
-  action :put_as_superuser
-  owner node.hadoop_spark.user
-  group node.hops.group
-  mode "1775"
-  dest "/user/" + node.glassfish.user + "/metrics.properties"
-end	
 
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
@@ -765,43 +700,6 @@ template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
   action :create
 end
 
-
-
-hopsUtil=File.basename(node.hops.hops_util.url)
- 
-remote_file "#{Chef::Config.file_cache_path}/#{hopsUtil}" do
-  source node.hops.hops_util.url
-  owner node.glassfish.user
-  group node.glassfish.group
-  mode "1775"
-  action :create
-end
-
-hops_hdfs_directory "#{Chef::Config.file_cache_path}/hops-util-0.1.jar" do
-  action :put_as_superuser
-  owner node.glassfish.user
-  group node.hops.group
-  mode "1755"
-  dest "/user/" + node.glassfish.user + "/hops-util-0.1.jar"
-end
-
-hopsKafkaJar=File.basename(node.hops.hops_spark_kafka_example.url)
- 
-remote_file "#{Chef::Config.file_cache_path}/#{hopsKafkaJar}" do
-  source node.hops.hops_spark_kafka_example.url
-  owner node.glassfish.user
-  group node.glassfish.group
-  mode "1775"
-  action :create
-end
-
-hops_hdfs_directory "#{Chef::Config.file_cache_path}/#{hopsKafkaJar}" do
-  action :put_as_superuser
-  owner node.glassfish.user
-  group node.hops.group
-  mode "1755"
-  dest "/user/" + node.glassfish.user + "/#{hopsKafkaJar}"
-end
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
@@ -1500,4 +1398,10 @@ template "#{node.hopsworks.domains_dir}/.sparkmagic/config.json" do
   variables({
                :livy_ip => livy_ip
   })
+end
+
+
+python_package "hdfscontents" do
+  action :install
+  version '0.3'
 end
