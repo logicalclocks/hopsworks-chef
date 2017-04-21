@@ -676,9 +676,9 @@ template "/bin/hopsworks-2fa" do
     action :create
  end 
 
- hopsworks_certs "generate-certs" do
-   action :generate
- end
+hopsworks_certs "generate-certs" do
+  action :generate
+end
 
 
 
@@ -1386,8 +1386,6 @@ bash "jupyter-sparkmagic-kernels" do
     chown #{node.glassfish.user}:#{node.glassfish.group} #{node.hopsworks.domains_dir}/.sparkmagic
    EOF
 end
-
-
 
 
 template "#{node.hopsworks.domains_dir}/.sparkmagic/config.json" do
