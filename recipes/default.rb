@@ -28,9 +28,6 @@ private_ip=my_private_ip()
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
-#mysql_user=node.mysql.user
-#mysql_pwd=node.mysql.password
-
 
 begin
   elastic_ip = private_recipe_ip("elastic","default")
@@ -395,7 +392,7 @@ glassfish_asadmin "set server.http-service.virtual-server.server.property.send-e
    secure false
 end
 
-# Disable SSLv3 on http-listener-2
+
 glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled=false" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -404,7 +401,6 @@ glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.
    secure false
 end
 
-# Disable SSLv3 on http-adminListener
 glassfish_asadmin "set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled=false" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -669,33 +665,9 @@ glassfish_deployable "hopsworks-ca" do
   admin_port admin_port
   secure false
   action :deploy
-  retries 1
+  async_replication false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
 end
-
-
-
-# directory "/srv/users" do
-#   owner node.glassfish.user
-
-#   group node.glassfish.group
-#   mode "0755"
-#   action :create
-#   recursive true
-# end
-
-
-# template "/srv/mkuser.sh" do
-# case node['platform']
-# when 'debian', 'ubuntu'
-#     source "mkuser.sh.erb"
-# when 'redhat', 'centos', 'fedora'
-#     source "mkuser.redhat.sh.erb"
-# end
-#   owner node.glassfish.user
-#   mode 0750
-#   action :create
-# end 
 
 template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"
@@ -811,9 +783,6 @@ private_ip=my_private_ip()
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
 realmname="kthfsrealm"
-#mysql_user=node.mysql.user
-#mysql_pwd=node.mysql.password
-
 
 begin
   elastic_ip = private_recipe_ip("elastic","default")
@@ -1094,10 +1063,6 @@ glassfish_secure_admin domain_name do
 end
 
 
-#end
-
-
-
 props =  { 
   'datasource-jndi' => jndiDB,
   'password-column' => 'password',
@@ -1276,15 +1241,6 @@ glassfish_asadmin "set server-config.http-service.virtual-server.server.property
    secure false
 end
 
-# glassfish_asadmin "set default-config.http-service.virtual-server.server.property.sso-enabled='true'" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-
 # glassfish_asadmin "set cluster.availability-service.web-container-availability.sso-failover-enabled=true" do
 #    domain_name domain_name
 #    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -1318,7 +1274,7 @@ glassfish_asadmin "set server-config.http-service.virtual-server.server.property
    secure false
 end
 
-glassfish_asadmin "set default-config.http-service.virtual-server.server.property.ssoCookieSecure=no" do
+glassfish_asadmin "set server-config.http-service.virtual-server.server.property.ssoCookieSecure=yes" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -1342,6 +1298,8 @@ end
 
 
 # cluster="hopsworks"
+
+
 
 # glassfish_asadmin "create-cluster #{cluster}" do
 #    domain_name domain_name

@@ -199,6 +199,7 @@ logger_stream_handler = logging.StreamHandler()
 logger_file_handler.setFormatter(logger_formatter)
 logger_stream_handler.setFormatter(logger_formatter)
 logger.addHandler(logger_file_handler)
+
 logger.addHandler(logger_stream_handler)
 logger.setLevel(logging.INFO)
 
@@ -215,7 +216,19 @@ if __name__ == '__main__':
     if not Cert.exist():
         (csr, key) = Cert.read_key_and_csr()
         Register(csr, key) # Registering with the dashboard
-        subprocess.call("<%= node[:kagent][:base_dir] %>/keystore.sh")
+
+
+	chmod 444 intermediate/certs/intermediate.cert.pem
+	#7 Verify the intermediate certificate
+	openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pem
+	#8 Create the certificate chain file
+	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
+	chmod 444 intermediate/certs/ca-chain.cert.pem
+        #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
+        # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
+        echo "unique_subject = no \n" > intermediate/index.txt.attr
+        
+#        subprocess.call("<%= node[:kagent][:base_dir] %>/keystore.sh")
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
 

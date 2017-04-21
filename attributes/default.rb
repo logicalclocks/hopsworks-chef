@@ -26,6 +26,11 @@ default.glassfish.install_dir              = node.hopsworks.dir
 default.glassfish.base_dir                 = node.glassfish.install_dir + "/glassfish"
 default.hopsworks.domains_dir              = node.install.dir.empty? ? node.hopsworks.dir + "/domains" : node.install.dir + "/domains"
 default.glassfish.domains_dir              = node.hopsworks.domains_dir
+default.hopsworks.jupyter_dir              = node.install.dir.empty? ? "/srv/jupyter" : node.install.dir + "/jupyter"
+
+default.hopsworks.certs_dir                = node.install.dir.empty? ? "/srv/glassfish/certs-dir" : node.install.dir + "/certs-dir"
+
+
 default.hopsworks.max_mem                  = "3000"
 default.glassfish.max_mem                  = node.hopsworks.max_mem.to_i
 default.hopsworks.min_mem                  = "1024"
@@ -41,6 +46,7 @@ default.yarn.rm.web.port                   ="8088"
 default.glassfish.package_url              = node.download_url + "/payara-#{node.glassfish.version}.zip"
 default.hopsworks.cauth_url                = "#{node.download_url}/otp-auth-2.0.jar"
 default.hopsworks.war_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks.war"
+default.hopsworks.ca_url                   = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ca.war"
 default.hopsworks.ear_url                  = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ear.ear"
 default.hopsworks.ca_url                   = "#{node.download_url}/hopsworks/#{node.hopsworks.version}/hopsworks-ca.war"
 
