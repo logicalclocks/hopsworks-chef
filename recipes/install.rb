@@ -47,7 +47,6 @@ directory node.hopsworks.dir  do
   mode "755"
   action :create
   not_if "test -d #{node.hopsworks.dir}"
-
 end
 
 directory node.hopsworks.domains_dir  do
@@ -57,6 +56,15 @@ directory node.hopsworks.domains_dir  do
   action :create
   recursive true
   not_if "test -d #{node.hopsworks.domains_dir}"
+end
+
+directory node.hopsworks.jupyter_dir  do
+  owner node.hopsworks.user
+  group node.hopsworks.group
+  mode "755"
+  action :create
+  recursive true
+  not_if "test -d #{node.hopsworks.jupyter_dir}"
 end
 
 
@@ -238,13 +246,12 @@ end
 
 case node.platform
 when "rhel"
-service_name = "glassfish-#{domain_name}"
 
-file "/etc/systemd/system/#{service_name}.service" do
-  owner "root"
-  action :delete
-end
-
+  service_name = "glassfish-#{domain_name}"
+  file "/etc/systemd/system/#{service_name}.service" do
+    owner "root"
+    action :delete
+  end
 
   template "/usr/lib/systemd/system/#{service_name}.service" do
     source 'systemd.service.erb'
@@ -257,6 +264,7 @@ end
               :authbind => requires_authbind,
               :listen_ports => [admin_port, node.glassfish.port])
   end
+
 end
 
 
@@ -284,17 +292,19 @@ if systemd == true
 
 end
 
-directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/" do
+ca_dir = node.hopsworks.certs_dir
+
+directory ca_dir do
     owner node.glassfish.user
     group node.glassfish.group
     mode "700"
     action :create
-  end
+end
 
 dirs = %w{certs crl newcerts private intermediate}
 
 for d in dirs 
-  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/#{d}" do
+  directory "#{ca_dir}/#{d}" do
     owner node.glassfish.user
     group node.glassfish.group
     mode "700"
@@ -305,7 +315,7 @@ end
 int_dirs = %w{certs crl csr newcerts private}
 
 for d in int_dirs 
-  directory "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/#{d}" do
+  directory "#{ca_dir}/intermediate/#{d}" do
     owner node.glassfish.user
     group node.glassfish.group
     mode "700"
@@ -313,55 +323,55 @@ for d in int_dirs
   end
 end
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/openssl-ca.cnf" do
+template "#{ca_dir}/openssl-ca.cnf" do
   source "caopenssl.cnf.erb"
   owner node.glassfish.user
   mode "600"
   variables({
-    :ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca"
+    :ca_dir =>  "#{ca_dir}"
   })
   action :create
 end 
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/openssl-intermediate.cnf" do
+template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node.glassfish.user
   mode "600"
     variables({
-                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate"
+                :int_ca_dir =>  "#{ca_dir}/intermediate"
               })
   action :create
 end 
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh" do
+template "#{ca_dir}/intermediate/createusercerts.sh" do
   source "createusercerts.sh.erb"
   owner "root"
   group node.glassfish.group
   mode "510"
  variables({
-                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+                :int_ca_dir =>  "#{ca_dir}/intermediate/"
               })
   action :create
 end
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh" do
+template "#{ca_dir}/intermediate/deleteusercerts.sh" do
   source "deleteusercerts.sh.erb"
   owner "root"
   group node.glassfish.group
   mode "510"
  variables({
-                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+                :int_ca_dir =>  "#{ca_dir}/intermediate/"
               })
   action :create
 end
 
-template "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh" do
+template "#{ca_dir}/intermediate/deleteprojectcerts.sh" do
   source "deleteprojectcerts.sh.erb"
   owner "root"
   group node.glassfish.group
   mode "510"
  variables({
-                :int_ca_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/"
+                :int_ca_dir =>  "#{ca_dir}/intermediate/"
               })
   action :create
 end
@@ -383,9 +393,9 @@ template "/etc/sudoers.d/glassfish" do
   mode "0440"
   variables({
                 :user => node.glassfish.user,
-                :int_sh_dir =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/createusercerts.sh",
-                :delete_usercert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteusercerts.sh",
-                :delete_projectcert =>  "#{node.glassfish.domains_dir}/#{domain_name}/config/ca/intermediate/deleteprojectcerts.sh",
+                :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
+                :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
+                :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
                 :ndb_backup =>  "#{node.glassfish.domains_dir}/#{domain_name}/bin/ndb_backup.sh"                
               })
   action :create

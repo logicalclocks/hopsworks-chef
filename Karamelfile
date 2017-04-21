@@ -5,5 +5,3 @@ dependencies:
   - recipe: hopsworks::default
     global:  
       - ndb::mysqld
-      - hops::rm
-      - hops::nn

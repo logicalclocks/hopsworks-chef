@@ -5,6 +5,10 @@ notifying_action :generate do
 bash 'certificateauthority' do
     user "root"
     code <<-EOF
+####
+# Done on CA server
+###
+
         set -eo pipefail
 
 	KEYSTOREPW=#{node.hopsworks.master.password}
@@ -24,6 +28,11 @@ bash 'certificateauthority' do
 	[ -f certs/ca.cert.pem ] || openssl req -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsRootCA" -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -key private/ca.key.pem -new -x509 -days 7300 -sha256 -extensions v3_ca -out certs/ca.cert.pem 
 
 	chmod 444 certs/ca.cert.pem
+
+####
+# Done on Intermediate server
+###
+        set -eo pipefail
 
 	#4 Prepare the intermediate directories
 	chmod 700 intermediate/private/
@@ -47,20 +56,21 @@ bash 'certificateauthority' do
 
 
 
-# Done on server (REST Call)
+# Done on server when signing intermediate certs on behalf of hopsworks instances (REST Call)
+
+        set -eo pipefail
+
+	KEYSTOREPW=#{node.hopsworks.master.password}
+
 	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config openssl-ca.cnf -extensions v3_intermediate_ca \
       -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem 
 
 	chmod 444 intermediate/certs/intermediate.cert.pem
-
 	#7 Verify the intermediate certificate
 	openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pem
-
 	#8 Create the certificate chain file
 	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
-
 	chmod 444 intermediate/certs/ca-chain.cert.pem
-        
         #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
