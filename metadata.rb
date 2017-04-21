@@ -40,16 +40,10 @@ recipe  "hopsworks::install", "Installs Glassfish"
 
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
-
 recipe  "hopsworks::master", "Hopsworks master instance that will store the certificate authtority".
-
 recipe  "hopsworks::slave", "Hopsworks master instance that will store only an intermediate certificate authtority".
-
-
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
-
 recipe  "hopsworks::hops", "Copies files into Hops, needs hopsFs to be running."
-
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
