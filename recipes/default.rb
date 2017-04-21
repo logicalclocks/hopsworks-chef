@@ -247,8 +247,8 @@ end
 # config glassfish
 ###############################################################################
 
-username=node.hopsworks.admin.user
-password=node.hopsworks.admin.password
+username=node["hopsworks"]["admin"]["user"]
+password=node["hopsworks"]["admin"]["password"]
 domain_name="domain1"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
@@ -257,7 +257,7 @@ mysql_host = private_recipe_ip("ndb","mysqld")
 jndiDB = "jdbc/hopsworks"
 timerDB = "jdbc/hopsworksTimers"
 
-asadmin = "#{node.glassfish.base_dir}/versions/current/bin/asadmin"
+asadmin = "#{node["glassfish"]["base_dir"]}/versions/current/bin/asadmin"
 admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
 
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"

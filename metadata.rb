@@ -235,6 +235,11 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/org_name",
+          :description => "Organization name for group running Hopsworks.",
+          :type => 'string'
+
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'

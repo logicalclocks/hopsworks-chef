@@ -207,7 +207,7 @@ end
     owner node["glassfish"]["user"]
     mode 0777
     variables({
-                :org_name => node["hopsworks"]["cert"].o
+                :org_name => node["hopsworks"]["org_name"]
               })
     action :create
  end 
@@ -247,7 +247,7 @@ when "rhel"
               :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
               :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
               :authbind => requires_authbind,
-              :listen_ports => [admin_port, node["glassfish"]["port"])
+              :listen_ports => [admin_port, node["glassfish"]["port"]])
   end
 
 end

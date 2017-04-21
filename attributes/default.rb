@@ -30,6 +30,7 @@ default["hopsworks"]["jupyter_dir"]              = node["install"]["dir"].empty?
 
 default["hopsworks"]["certs_dir"]                = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/certs-dir" : node["install"]["dir"] + "/certs-dir"
 
+default["hopsworks"]["org_name"]                 = "Hopsworks"
 
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
