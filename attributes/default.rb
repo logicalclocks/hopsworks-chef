@@ -71,14 +71,14 @@ default["hopsworks"]["master"]["password"]          = "adminpw"
 default["hopsworks"]["public_ips"]               = ['10.0.2.15']
 default["hopsworks"]["private_ips"]              = ['10.0.2.15']
 
-default.kagent.enabled                     = "false"
+default["kagent"]["enabled"]                     = "false"
 
-default["hopsworks"]["smtp"]                     = node.smtp.host
-default["hopsworks"]["smtp_port"]                = node.smtp.port
-default["hopsworks"]["smtp_ssl_port"]            = node.smtp.ssl_port
-default["hopsworks"]["email"]                    = node.smtp.email
-default["hopsworks"]["email_password"]           = node.smtp.email_password
-default["hopsworks"]["gmail.placeholder"]        = "http://snurran.sics.se/hops/hopsworks.email"
+default["hopsworks"]["smtp"]                     = node["smtp"]["host"]
+default["hopsworks"]["smtp_port"]                = node["smtp"]["port"]
+default["hopsworks"]["smtp_ssl_port"]            = node["smtp"]["ssl_port"]
+default["hopsworks"]["email"]                    = node["smtp"]["email"]
+default["hopsworks"]["email_password"]           = node["smtp"]["email_password"]
+default["hopsworks"]["gmail"]["placeholder"]        = "http://snurran.sics.se/hops/hopsworks.email"
 
 # #quotas
 default["hopsworks"]["yarn_default_quota_mins"]  = "10000"
@@ -113,6 +113,6 @@ default["hopsworks"]["max_cpu_request_size"]        = 1
 default["hops"]["hops_util"]["url"]                    = "#{node["download_url"]}/hops-util-0.1.jar"
 default["hops"]["hops_spark_kafka_example"]["url"]     = "#{node["download_url"]}/hops-spark-0.1.jar"
 
-default["hopsworks"]["anaconda_enabled"]            = node.kagent.conda_enabled 
+default["hopsworks"]["anaconda_enabled"]            = node["kagent"]["conda_enabled"]
 
 
