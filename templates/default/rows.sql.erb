@@ -156,33 +156,34 @@ INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
 INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
-INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node.hopsworks.master.password %>");
+INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node["hopsworks"]["master"]["password"] %>");
 
 INSERT INTO variables VALUES ("glassfish_cert", "false");
 
+INSERT INTO variables VALUES ("certs_dir", "<%= node["hopsworks"]["certs_dir"] %>");
 
 -- --------------------------------------------------------
 --
 -- dela
 --
 
-INSERT INTO variables VALUES ("domain","<%= node.hopsworks.dela.domain %>");
+INSERT INTO variables VALUES ("domain","<%= node["hopsworks"]["dela"]["domain"] %>");
 
-INSERT INTO variables VALUES ("certificate","<%= node.hopsworks.dela.certifcate %>");
+INSERT INTO variables VALUES ("certificate","<%= node["hopsworks"]["dela"]["certifcate"] %>");
 
 INSERT INTO variables VALUES ("gvod_rest_endpoint","http://<%= @dela_ip %>:<%= @dela_port %>");
 
-INSERT INTO variables VALUES ("hops_site_base_uri","<%= node.hopsworks.dela.hops_site_base_uri %>");
+INSERT INTO variables VALUES ("hops_site_base_uri","<%= node["hopsworks"]["dela"]["hops_site_base_uri"] %>");
 
-INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node.hopsworks.port %>/<%= node.hopsworks.dela.public_search_endpoint %>");
+INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node["hopsworks"]["port"] %>/<%= node["hopsworks"]["dela"]["public_search_endpoint"] %>");
 
-INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node.hopsworks.port %>");
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node["hopsworks"]["port"] %>");
 
-INSERT INTO variables VALUES ("rest_port","<%= node.hopsworks.port %>");
+INSERT INTO variables VALUES ("rest_port","<%= node["hopsworks"]["port"] %>");
 
-INSERT INTO variables VALUES ("max_gpu_request_size","<%= node.hopsworks.max_gpu_request_size %>");
+INSERT INTO variables VALUES ("max_gpu_request_size","<%= node["hopsworks"]["max_gpu_request_size"] %>");
 
-INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu_request_size %>");
+INSERT INTO variables VALUES ("max_cpu_request_size","<%= node["hopsworks"]["max_cpu_request_size"] %>");
 
 --
 -- kibana, logstash, grafana, graphite
@@ -202,5 +203,5 @@ INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
 --
 
 INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
-INSERT INTO variables VALUES ("anaconda_env", "<%= node.kagent.user %>");
-INSERT INTO variables VALUES ("anaconda_enabled", "<%= node.hopsworks.anaconda_enabled %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node["kagent"]["user"] %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anaconda_enabled"] %>");
