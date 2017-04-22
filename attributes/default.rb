@@ -30,8 +30,6 @@ default["hopsworks"]["jupyter_dir"]              = node["install"]["dir"].empty?
 
 default["hopsworks"]["certs_dir"]                = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/certs-dir" : node["install"]["dir"] + "/certs-dir"
 
-default["hopsworks"]["org_name"]                 = "Hopsworks"
-
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
 default["hopsworks"]["min_mem"]                  = "1024"
@@ -52,23 +50,23 @@ default["hopsworks"]["ear_url"]                  = "#{node["download_url"]}/hops
 default["hopsworks"]["ca_url"]                   = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ca.war"
 
 
-default["hopsworks"]["admin.user"]               = "adminuser"
-default["hopsworks"]["admin.password"]           = "adminpw"
-default["glassfish"]["cert.password"]            = "#{node["hopsworks"]["admin.password"]}"
+default["hopsworks"]["admin"]["user"]               = "adminuser"
+default["hopsworks"]["admin"]["password"]           = "adminpw"
+default["glassfish"]["cert"]["password"]            = "#{node["hopsworks"]["admin"]["password"]}"
 default["hopsworks"]["twofactor_auth"]           = "false"
 default["hopsworks"]["twofactor_exclude_groups"] = "AGENT" #semicolon separated list of roles
 
 default["hopsworks"]["mysql_connector_url"]      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
-default["hopsworks"]["cert.cn"]                  = "sics.se"
-default["hopsworks"]["cert.o"]                   = "swedish ict"
-default["hopsworks"]["cert.ou"]                  = "sics"
-default["hopsworks"]["cert.l"]                   = "kista"
-default["hopsworks"]["cert.s"]                   = "stockholm"
-default["hopsworks"]["cert.c"]                   = "se"
+default["hopsworks"]["cert"]["cn"]                  = "sics.se"
+default["hopsworks"]["cert"]["o"]                   = "swedish ict"
+default["hopsworks"]["cert"]["ou"]                  = "sics"
+default["hopsworks"]["cert"]["l"]                   = "kista"
+default["hopsworks"]["cert"]["s"]                   = "stockholm"
+default["hopsworks"]["cert"]["c"]                   = "se"
 
-default["hopsworks"]["cert.password"]            = "changeit"
-default["hopsworks"]["master.password"]          = "adminpw"
+default["hopsworks"]["cert"]["password"]            = "changeit"
+default["hopsworks"]["master"]["password"]          = "adminpw"
 
 default["hopsworks"]["public_ips"]               = ['10.0.2.15']
 default["hopsworks"]["private_ips"]              = ['10.0.2.15']

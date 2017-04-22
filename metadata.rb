@@ -125,32 +125,31 @@ attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
 
-# attribute "hopsworks/cert/password",
-#           :description => "hopsworks/cert/password",
-#           :type => 'string',
-#           :default => "changeit"
+attribute "hopsworks/cert/password",
+           :description => "password to glassfish certs",
+           :type => 'string'
 
-attribute "karamel/cert/cn",
+attribute "hopsworks/cert/cn",
           :description => "Certificate Name",
           :type => 'string'
 
-attribute "karamel/cert/o",
-          :description => "organization",
+attribute "hopsworks/cert/o",
+          :description => "organization name",
           :type => 'string'
 
-attribute "karamel/cert/ou",
+attribute "hopsworks/cert/ou",
           :description => "Organization unit",
           :type => 'string'
 
-attribute "karamel/cert/l",
+attribute "hopsworks/cert/l",
           :description => "Location",
           :type => 'string'
 
-attribute "karamel/cert/s",
+attribute "hopsworks/cert/s",
           :description => "City",
           :type => 'string'
 
-attribute "karamel/cert/c",
+attribute "hopsworks/cert/c",
           :description => "Country (2 letters)",
           :type => 'string'
 
@@ -234,11 +233,6 @@ attribute "hopsworks/file_preview_txt_size",
 attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
-
-attribute "hopsworks/org_name",
-          :description => "Organization name for group running Hopsworks.",
-          :type => 'string'
-
 
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
