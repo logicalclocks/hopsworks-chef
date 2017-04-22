@@ -1,6 +1,6 @@
-case node.platform
+case node["platform"]
 when "ubuntu"
- if node.platform_version.to_f <= 14.04
+ if node["platform_version"].to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
 end
@@ -173,7 +173,7 @@ end
 
 hosts = ""
 
-for h in node["kagent[:default][:private_ips]
+for h in node["kagent"]["default"]["private_ips"]
   hosts += "('" + h + "','" + h + "')" + ","
 end
 if h.length > 0 
@@ -747,7 +747,7 @@ bash "jupyter-sparkmagic-kernels" do
     
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
-    chown #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir"]}/.sparkmagic
+    chown #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}}/.sparkmagic
    EOF
 end
 
@@ -769,53 +769,14 @@ python_package "hdfscontents" do
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #
 # Disable glassfish service, if node.services.enabled is not set to true
 #
 if node["services"]["enabled"] != "true"
 
-  case node.platform
+  case node["platform"]
   when "ubuntu"
-    if node.platform_version.to_f <= 14.04
+    if node["platform_version"].to_f <= 14.04
       node.override["hopsworks"]["systemd"] = "false"
     end
   end
