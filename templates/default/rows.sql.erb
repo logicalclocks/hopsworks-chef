@@ -131,7 +131,7 @@ INSERT INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_si
 
 
 -- ------
--- Kafka settings
+-- More settings
 --
 
 INSERT INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
@@ -161,6 +161,8 @@ INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node["hopsworks"
 INSERT INTO variables VALUES ("glassfish_cert", "false");
 
 INSERT INTO variables VALUES ("certs_dir", "<%= node["hopsworks"]["certs_dir"] %>");
+
+INSERT INTO variables VALUES ("jupyter_dir", "<%= node["hopsworks"]["jupyter_dir"] %>");
 
 -- --------------------------------------------------------
 --
