@@ -723,7 +723,6 @@ bash "jupyter-sparkmagic" do
     export HADOOP_HOME=#{node[:hops][:base_dir]}
     pip install jupyter
     pip install sparkmagic
-    pip install hdfscontents
     jupyter nbextension enable --py --sys-prefix widgetsnbextension 
 EOF
 end
