@@ -720,6 +720,7 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
     pip install jupyter
     pip install sparkmagic
     pip install hdfscontents
@@ -741,6 +742,7 @@ bash "jupyter-sparkmagic-kernels" do
   code <<-EOF
     set -e
     cd #{pythondir}
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
     jupyter-kernelspec install sparkmagic/kernels/sparkkernel
     jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
     jupyter-kernelspec install sparkmagic/kernels/pyspark3kernel
