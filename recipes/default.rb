@@ -722,6 +722,7 @@ bash "jupyter-sparkmagic" do
     set -e
     pip install jupyter
     pip install sparkmagic
+    pip install hdfscontents
     jupyter nbextension enable --py --sys-prefix widgetsnbextension 
 EOF
 end
@@ -819,7 +820,6 @@ end
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
-
 
 
 
