@@ -787,11 +787,22 @@ template "#{homedir}/.sparkmagic/config.json" do
   })
 end
 
-
-python_package "hdfscontents" do
-  action :install
-  version '0.3'
+directory "#{homedir}/.jupyter/custom"  do
+  owner node["hopsworks"]["user"]
+  group node["hopsworks"]["group"]
+  mode "755"
+  action :create
+  recursive: true
 end
+
+template "#{homedir}/.jupyter/custom/config.json" do
+  cookbook 'hopsworks'
+  source "custom.js.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "0751"
+end
+
 
 
 #
