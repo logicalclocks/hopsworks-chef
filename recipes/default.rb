@@ -720,10 +720,9 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
-    export HADOOP_HOME=#{node[:hops][:base_dir]}
     pip install jupyter
     pip install sparkmagic
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension 
+    jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
 
@@ -754,13 +753,16 @@ bash "jupyter-sparkmagic-kernels" do
 end
 
 
-template "#{domains_dir}/.sparkmagic/config.json" do
+homedir = "/home/#{node["hopsworks"]["user"]}"
+
+template "#{homedir}/.sparkmagic/config.json" do
   source "config.json.erb"
   owner node["glassfish"]["user"]
   mode 0750
   action :create
   variables({
-               :livy_ip => livy_ip
+              :livy_ip => livy_ip,
+               :homedir => homedir
   })
 end
 
@@ -802,7 +804,7 @@ if node["services"]["enabled"] != "true"
 
 end
 
-homedir = "/home/#{node["hopsworks"]["user"]}"
+
 
 kagent_keys "#{homedir}" do
   cb_user node["hopsworks"]["user"]
