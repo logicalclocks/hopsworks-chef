@@ -12,6 +12,8 @@ else
 end
 
 
+include_recipe "java"
+
 ##
 ## default.rb
 ##
@@ -35,6 +37,14 @@ rescue
   elastic_ip = ""
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
 end
+
+begin
+  hopsworks_ip = private_recipe_ip("hopsworks","default")
+rescue 
+  hopsworks_ip = ""
+  Chef::Log.warn "could not find the hopsworks server ip for HopsWorks!"
+end
+
 
 begin
   spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
@@ -192,6 +202,7 @@ template "#{rows_path}" do
                 :jhs_ip => jhs_ip,
                 :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
+                :hopsworks_ip => hopsworks_ip,
                 :elastic_ip => elastic_ip,
                 :spark_dir => node["hadoop_spark"]["dir"] + "/spark",                
                 :spark_user => node["hadoop_spark"]["user"],
@@ -219,6 +230,7 @@ template "#{rows_path}" do
 		:file_preview_txt_size => node["hopsworks"]["file_preview_txt_size"],
                 :zk_ip => zk_ip,
                 :dela_ip => dela_ip,
+                :java_home => node["java"]["java_home"],
                 :dela_port => node["dela"]["http_port"],
                 :kafka_ip => kafka_ip,                
                 :kafka_num_replicas => node["hopsworks"]["kafka_num_replicas"],
