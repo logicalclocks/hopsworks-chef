@@ -13,8 +13,8 @@ bash 'certificateauthority' do
 
 	KEYSTOREPW=#{node.hopsworks.master.password}
 
-	cd "#{node.glassfish.domains_dir}/domain1/config/ca"
-        BASEDIR="#{node.glassfish.domains_dir}/domain1/config/ca"
+	cd "#{node.hopsworks.certs_dir}"
+        BASEDIR="#{node.hopsworks.certs_dir}"
 	chmod 700 private
 	touch index.txt
 	echo 1000 > serial
@@ -75,7 +75,7 @@ bash 'certificateauthority' do
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
     EOF
- not_if { ::File.exists?("#{node.glassfish.domains_dir}/domain1/config/ca/intermediate/certs/ca-chain.cert.pem" ) }
+ not_if { ::File.exists?("#{node.hopsworks.certs_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
 
 end
