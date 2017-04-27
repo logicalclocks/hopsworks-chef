@@ -755,6 +755,15 @@ end
 
 homedir = "/home/#{node["hopsworks"]["user"]}"
 
+
+directory "#{homedir}/.sparkmagic"  do
+  owner node["hopsworks"]["user"]
+  group node["hopsworks"]["group"]
+  mode "755"
+  action :create
+end
+
+
 template "#{homedir}/.sparkmagic/config.json" do
   source "config.json.erb"
   owner node["glassfish"]["user"]
