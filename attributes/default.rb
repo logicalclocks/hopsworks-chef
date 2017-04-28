@@ -10,6 +10,7 @@ include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "conda"
+include_attribute "hive2"
 
 default['hopsworks']['version']                  = "0.1.0"
 
@@ -61,6 +62,7 @@ default['hopsworks']['admin']['password']           = "adminpw"
 default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
 default['hopsworks']['twofactor_auth']           = "false"
 default['hopsworks']['twofactor_exclude_groups'] = "AGENT" #semicolon separated list of roles
+
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
 ## s: seconds
@@ -96,6 +98,7 @@ default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "10000"
 default['hopsworks']['hdfs_default_quota_mbs']   = "200000"
+default['hopsworks']['hive_default_quota_mbs']   = "50000"
 default['hopsworks']['max_num_proj_per_user']    = "10"
 
 # file preview
@@ -131,7 +134,7 @@ default['hopsworks']['dela']['cluster_http_port']      = "42000"
 default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 
 #
-# Hops-site 
+# Hops-site
 #
 default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
 default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "50081"
@@ -153,7 +156,7 @@ default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
 
 #
-# Dela 
+# Dela
 #
 
 default['hopssite']['cert']['email']                   = node['hopsworks']['email']
