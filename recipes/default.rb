@@ -735,6 +735,8 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade pip
     pip install jupyter
     pip install sparkmagic
+    pip install urllib3
+    pip install --upgrade requests
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
