@@ -1453,18 +1453,6 @@ end
 
 
 
-#
-# https://github.com/jupyter-incubator/sparkmagic
-#
-bash "jupyter-sparkmagic" do
-    user "root"
-    code <<-EOF
-    set -e
-    pip install jupyter
-    pip install sparkmagic
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension 
-EOF
-end
 
 pythondir=""
 case node['platform']
@@ -1475,10 +1463,15 @@ case node['platform']
   pythondir="/usr/lib/python2.7/site-packages"
 end
 
+# https://github.com/jupyter-incubator/sparkmagic
 bash "jupyter-sparkmagic-kernels" do
   user "root"
   code <<-EOF
     set -e
+    pip install --upgrade pip
+    pip install jupyter
+    pip install sparkmagic
+    jupyter nbextension enable --py --sys-prefix widgetsnbextension 
     cd #{pythondir}
     jupyter-kernelspec install sparkmagic/kernels/sparkkernel
     jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
@@ -1487,7 +1480,7 @@ bash "jupyter-sparkmagic-kernels" do
     
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{node.hopsworks.domains_dir}/.sparkmagic
-    chown #{node.glassfish.user}:#{node.glassfish.group} #{node.hopsworks.domains_dir}/.sparkmagic
+    chown -R #{node.glassfish.user}:#{node.glassfish.group} #{node.hopsworks.domains_dir}/.sparkmagic
    EOF
 end
 
