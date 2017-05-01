@@ -128,6 +128,11 @@ rescue
 end
 
 
+vagrant_enabled = 0
+if node["hopsworks"]["user"] == "vagrant"
+  vagrant_enabled = 1
+end  
+
 tables_path = "#{domains_dir}/tables.sql"
 views_path = "#{domains_dir}/views.sql"
 rows_path = "#{domains_dir}/rows.sql"
@@ -248,6 +253,7 @@ template "#{rows_path}" do
                 :influxdb_password => node["influxdb"]["db_password"],
                 :graphite_port => node["influxdb"]["graphite"]["port"],
                 :anaconda_dir => node["conda"]["base_dir"],
+                :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
