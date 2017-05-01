@@ -1013,11 +1013,16 @@ CREATE TABLE `jupyter_project` (
   `hashed_passwd` VARCHAR(255) NOT NULL,
   `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
+  `driver_cores` INT(11) NOT NULL DEFAULT 1,
+  `executor_cores` INT(11) NOT NULL DEFAULT 1,
+  `driver_memory` VARCHAR(32) NOT NULL DEFAULT '500M',
+  `executor_memory` VARCHAR(32) NOT NULL DEFAULT '500M',
+  `gpus` INT(11) NOT NULL DEFAULT 0,  
   PRIMARY KEY (`port`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),  
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=20000;
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
 
