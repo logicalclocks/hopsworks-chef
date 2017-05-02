@@ -3,7 +3,7 @@ source 'https://supermarket.chef.io'
 
 
 cookbook 'java'
-cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "ssl"
+cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "master"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "ssl"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "ssl"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "ssl"
