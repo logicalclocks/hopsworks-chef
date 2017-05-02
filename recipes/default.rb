@@ -725,7 +725,7 @@ template "#{Chef::Config.file_cache_path}/metrics.properties" do
   mode 0750
   action :create
   variables({
-               :private_ip => private_ip
+               :influxdb_ip => influxdb_ip
   })
 end
 
