@@ -74,6 +74,32 @@ INSERT INTO `people_group` (`uid`, `gid`) VALUES (10000, 1005);
 -- Agent user now has an agent role
 INSERT INTO `people_group` (`uid`, `gid`) VALUES (10001, 1007);
 
+
+
+-- --------------------------------------------------------
+--
+-- For enabling two facto authentication
+--
+
+INSERT INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
+INSERT INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_exclude_groups %>");
+
+-- kmon
+
+INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
+
+
+
+
+
+-- --------------------------------------------------------
+-- --------------------------------------------------------
+-- --------------------------------------------------------
+-- --------------------------------------------------------
+
+
+
+
 -- --------------------------------------------------------
 --
 -- Default settings
@@ -105,7 +131,7 @@ INSERT INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_si
 
 
 -- ------
--- Kafka settings
+-- More settings
 --
 
 INSERT INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
@@ -130,46 +156,40 @@ INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
 INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
-INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node.hopsworks.master.password %>");
+INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node["hopsworks"]["master"]["password"] %>");
 
 INSERT INTO variables VALUES ("glassfish_cert", "false");
 
--- --------------------------------------------------------
---
--- For enabling two facto authentication
---
+INSERT INTO variables VALUES ("certs_dir", "<%= node["hopsworks"]["certs_dir"] %>");
 
-INSERT INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
-INSERT INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_exclude_groups %>");
+INSERT INTO variables VALUES ("jupyter_dir", "<%= node["hopsworks"]["jupyter_dir"] %>");
 
--- kmon
-
-INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
+INSERT INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
 
 -- --------------------------------------------------------
 --
 -- dela
 --
 
-INSERT INTO variables VALUES ("domain","<%= node.hopsworks.dela.domain %>");
+INSERT INTO variables VALUES ("domain","<%= node["hopsworks"]["dela"]["domain"] %>");
 
-INSERT INTO variables VALUES ("certificate","<%= node.hopsworks.dela.certifcate %>");
+INSERT INTO variables VALUES ("certificate","<%= node["hopsworks"]["dela"]["certifcate"] %>");
 
 INSERT INTO variables VALUES ("gvod_rest_endpoint","http://<%= @dela_ip %>:<%= @dela_port %>");
 
-INSERT INTO variables VALUES ("hops_site_base_uri","<%= node.hopsworks.dela.hops_site_base_uri %>");
+INSERT INTO variables VALUES ("hops_site_base_uri","<%= node["hopsworks"]["dela"]["hops_site_base_uri"] %>");
 
--- INSERT INTO variables VALUES ("cluster_mail","johsn@kth.se");
+INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node["hopsworks"]["port"] %>/<%= node["hopsworks"]["dela"]["public_search_endpoint"] %>");
 
-INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node.hopsworks.port %>/<%= node.hopsworks.dela.public_search_endpoint %>");
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node["hopsworks"]["port"] %>");
 
-INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node.hopsworks.port %>");
+INSERT INTO variables VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
 
-INSERT INTO variables VALUES ("rest_port","<%= node.hopsworks.port %>");
+INSERT INTO variables VALUES ("rest_port","<%= node["hopsworks"]["port"] %>");
 
-INSERT INTO variables VALUES ("max_gpu_request_size","<%= node.hopsworks.max_gpu_request_size %>");
+INSERT INTO variables VALUES ("max_gpu_request_size","<%= node["hopsworks"]["max_gpu_request_size"] %>");
 
-INSERT INTO variables VALUES ("max_cpu_request_size","<%= node.hopsworks.max_cpu_request_size %>");
+INSERT INTO variables VALUES ("max_cpu_request_size","<%= node["hopsworks"]["max_cpu_request_size"] %>");
 
 --
 -- kibana, logstash, grafana, graphite
@@ -189,5 +209,7 @@ INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
 --
 
 INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
-INSERT INTO variables VALUES ("anaconda_env", "<%= node.kagent.user %>");
-INSERT INTO variables VALUES ("anaconda_enabled", "<%= node.hopsworks.anaconda_enabled %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node["kagent"]["user"] %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anaconda_enabled"] %>");
+
+INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");

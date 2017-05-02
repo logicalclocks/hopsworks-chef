@@ -5,12 +5,16 @@ notifying_action :generate do
 bash 'certificateauthority' do
     user "root"
     code <<-EOF
+####
+# Done on CA server
+###
+
         set -eo pipefail
 
 	KEYSTOREPW=#{node.hopsworks.master.password}
 
-	cd "#{node.glassfish.domains_dir}/domain1/config/ca"
-        BASEDIR="#{node.glassfish.domains_dir}/domain1/config/ca"
+	cd "#{node.hopsworks.certs_dir}"
+        BASEDIR="#{node.hopsworks.certs_dir}"
 	chmod 700 private
 	touch index.txt
 	echo 1000 > serial
@@ -25,6 +29,11 @@ bash 'certificateauthority' do
 
 	chmod 444 certs/ca.cert.pem
 
+####
+# Done on Intermediate server
+###
+        set -eo pipefail
+
 	#4 Prepare the intermediate directories
 	chmod 700 intermediate/private/
 	touch intermediate/index.txt
@@ -38,27 +47,35 @@ bash 'certificateauthority' do
 	chmod 440 intermediate/private/intermediate.key.pem
 
 	#6 Create the intermediate certificate 
+# Done on client
 	[ -f intermediate/csr/intermediate.csr.pem ] || openssl req -new -sha256 -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermedtiateCA" \
       -key intermediate/private/intermediate.key.pem -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -out intermediate/csr/intermediate.csr.pem
+
+
+
+
+
+
+# Done on server when signing intermediate certs on behalf of hopsworks instances (REST Call)
+
+        set -eo pipefail
+
+	KEYSTOREPW=#{node.hopsworks.master.password}
 
 	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config openssl-ca.cnf -extensions v3_intermediate_ca \
       -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem 
 
 	chmod 444 intermediate/certs/intermediate.cert.pem
-
 	#7 Verify the intermediate certificate
 	openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pem
-
 	#8 Create the certificate chain file
 	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
-
 	chmod 444 intermediate/certs/ca-chain.cert.pem
-        
         #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
     EOF
- not_if { ::File.exists?("#{node.glassfish.domains_dir}/domain1/config/ca/intermediate/certs/ca-chain.cert.pem" ) }
+ not_if { ::File.exists?("#{node.hopsworks.certs_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
 
 end

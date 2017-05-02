@@ -1007,16 +1007,27 @@ CREATE TABLE `conda_commands` (
 CREATE TABLE `jupyter_project` (
   `port` INT(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,  
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `host_ip` VARCHAR(255) NOT NULL,
-  `hashed_passwd` VARCHAR(255) NOT NULL,
+  `token` VARCHAR(255) NOT NULL,
   `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
+  `driver_cores` INT(11) NOT NULL DEFAULT 1,
+  `driver_memory` VARCHAR(32) NOT NULL DEFAULT '500M',  
+  `num_executors` INT(11) NOT NULL DEFAULT 1,
+  `executor_cores` INT(11) NOT NULL DEFAULT 1,
+  `executor_memory` VARCHAR(32) NOT NULL DEFAULT '500M',
+  `gpus` INT(11) NOT NULL DEFAULT 0,
+  `archives` VARCHAR(3000) NOT NULL DEFAULT '',
+  `jars` VARCHAR(3000) NOT NULL DEFAULT '',
+  `files` VARCHAR(3000) NOT NULL DEFAULT '',
+  `pyFiles` VARCHAR(3000) NOT NULL DEFAULT '',    
   PRIMARY KEY (`port`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),  
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 AUTO_INCREMENT=20000;
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
 

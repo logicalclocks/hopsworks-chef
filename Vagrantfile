@@ -77,7 +77,8 @@ Vagrant.configure("2") do |c|
 #          "user" => "glassfish",
      },
      "install" => {
-          "dir" => "/srv/hops"
+          "dir" => "/srv/hops",
+#          "user" => "vagrant"
      },
      "ndb" => {
           "user" => "mysql",
@@ -101,7 +102,8 @@ Vagrant.configure("2") do |c|
 	"default" =>      { 
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-#	"war_url" => "http://snurran.sics.se/hops/hopsworks-0.1.0.war",
+	"war_url" => "http://snurran.sics.se/hops/hopsworks/0.1.0/hopsworks-jim.war",
+	"ear_url" => "http://snurran.sics.se/hops/hopsworks/0.1.0/hopsworks-ear-jim.ear",        
         "user_envs" => "false",
         "twofactor_auth" => "false",
 #        "anaconda_enabled" => "false",        
@@ -214,7 +216,7 @@ Vagrant.configure("2") do |c|
      },
      "kagent" => {
           "network" => {
-                   "interface" => "enp0s3"
+                   "interface" => "eth0"
           },
 	  "user" => "glassfish",
           "group" => "glassfish",
@@ -273,6 +275,7 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "hopslog::default"
       chef.add_recipe "hopsmonitor::default"      
       chef.add_recipe "hopsworks::default"
+      chef.add_recipe "hopsworks::dev"
       chef.add_recipe "hopsmonitor::telegraf"      
       chef.add_recipe "hopsmonitor::kapacitor"      
       chef.add_recipe "hopsworks::dev"
