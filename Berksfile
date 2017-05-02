@@ -5,11 +5,11 @@ source 'https://supermarket.chef.io'
 cookbook 'java'
 cookbook 'kagent', github: "karamelchef/kagent-chef", branch: "master"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
-cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "ssl"
-cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "ssl"
+cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
+cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
-cookbook 'livy', github: "hopshadoop/livy-chef", branch: "ssl"
+cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
 
