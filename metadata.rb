@@ -40,9 +40,9 @@ recipe  "hopsworks::install", "Installs Glassfish"
 
 #link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
-
+recipe  "hopsworks::master", "Hopsworks master instance that will store the certificate authtority."
+recipe  "hopsworks::slave", "Hopsworks master instance that will store only an intermediate certificate authtority."
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
-
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
@@ -124,32 +124,31 @@ attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
 
-# attribute "hopsworks/cert/password",
-#           :description => "hopsworks/cert/password",
-#           :type => 'string',
-#           :default => "changeit"
+attribute "hopsworks/cert/password",
+           :description => "password to glassfish certs",
+           :type => 'string'
 
-attribute "karamel/cert/cn",
+attribute "hopsworks/cert/cn",
           :description => "Certificate Name",
           :type => 'string'
 
-attribute "karamel/cert/o",
-          :description => "organization",
+attribute "hopsworks/cert/o",
+          :description => "organization name",
           :type => 'string'
 
-attribute "karamel/cert/ou",
+attribute "hopsworks/cert/ou",
           :description => "Organization unit",
           :type => 'string'
 
-attribute "karamel/cert/l",
+attribute "hopsworks/cert/l",
           :description => "Location",
           :type => 'string'
 
-attribute "karamel/cert/s",
+attribute "hopsworks/cert/s",
           :description => "City",
           :type => 'string'
 
-attribute "karamel/cert/c",
+attribute "hopsworks/cert/c",
           :description => "Country (2 letters)",
           :type => 'string'
 
@@ -196,6 +195,10 @@ attribute "hopsworks/war_url",
 
 attribute "hopsworks/ear_url",
           :description => "Url for the hopsworks ear file",
+          :type => 'string'
+
+attribute "hopsworks/ca_url",
+          :description => "Url for the hopsworks certificate authority war file",
           :type => 'string'
 
 attribute "hopsworks/yarn_default_quota_mins",
