@@ -116,3 +116,8 @@ default["hopsworks"]["max_cpu_request_size"]        = 1
 default["hopsworks"]["anaconda_enabled"]            = node["kagent"]["conda_enabled"]
 
 
+#
+# Jupyter
+#
+default["jupyter"]["user"]                          = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
+default["jupyter"]["group"]                         = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]

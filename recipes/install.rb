@@ -31,6 +31,12 @@ group node["hopsworks"]["group"] do
   not_if "getent group #{node["hopsworks"]["group"]}"
 end
 
+group node["jupyter"]["group"] do
+  action :create
+  not_if "getent group #{node["jupyter"]["group"]}"
+end
+
+
 user node["hopsworks"]["user"] do
   home "/home/#{node["hopsworks"]["user"]}"
   gid node["hopsworks"]["group"]
@@ -40,6 +46,11 @@ user node["hopsworks"]["user"] do
   not_if "getent passwd #{node["hopsworks"]["user"]}"
 end
 
+group node["jupyter"]["group"] do
+  action :modify
+  members ["#{node["hopsworks"]["user"]}"]
+  append true
+end
 
 directory node["hopsworks"]["dir"]  do
   owner node["hopsworks"]["user"]
@@ -56,15 +67,6 @@ directory domains_dir  do
   action :create
   recursive true
   not_if "test -d #{domains_dir}"
-end
-
-directory node["hopsworks"]["jupyter_dir"]  do
-  owner node["hopsworks"]["user"]
-  group node["hopsworks"]["group"]
-  mode "755"
-  action :create
-  recursive true
-  not_if "test -d #{node["hopsworks"]["jupyter_dir"]}"
 end
 
 
@@ -369,6 +371,14 @@ template "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/jupyter.sh" do
+  source "jupyter.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "550"
+  action :create
+end
+
 
 
 template "/etc/sudoers.d/glassfish" do
@@ -381,7 +391,8 @@ template "/etc/sudoers.d/glassfish" do
                 :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
                 :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
                 :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
-                :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh"                
+                :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh"
+                :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh"                
               })
   action :create
 end  
@@ -408,3 +419,40 @@ when "ubuntu"
 
 end
 
+
+
+#
+# Jupyter Configuration
+#
+
+
+user node["jupyter"]["user"] do
+  home node["jupyter"]["base_dir"]
+  gid node["jupyter"]["group"]  
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node["jupyter"]["user"]}"
+end
+
+group node["kagent"]["certs_group"] do
+  action :modify
+  members ["#{node["jupyter"]["user"]}"]
+  append true
+end
+
+# Hopsworks user should own the directory so that hopsworks code
+# can create the template files needed for Jupyter.
+# Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
+# The jupyter user will be able to read the files and write to the directories due to group permissions
+directory node["jupyter"]["base_dir"]  do
+  owner node["hopsworks"]["user"]
+  group node["jupyter"]["group"]
+  mode "775"
+  action :create
+  recursive true
+  not_if "test -d #{node["jupyter"]["base_dir"]}"
+end
+
+
+include_recipe "livy::install"
