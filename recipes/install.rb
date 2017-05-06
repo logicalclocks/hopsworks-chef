@@ -391,7 +391,7 @@ template "/etc/sudoers.d/glassfish" do
                 :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
                 :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
                 :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
-                :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh"
+                :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh",
                 :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh"                
               })
   action :create
