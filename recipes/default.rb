@@ -852,4 +852,3 @@ end
 
 
 
-include_recipe "livy::default"

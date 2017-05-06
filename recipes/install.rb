@@ -455,4 +455,3 @@ directory node["jupyter"]["base_dir"]  do
 end
 
 
-include_recipe "livy::install"
