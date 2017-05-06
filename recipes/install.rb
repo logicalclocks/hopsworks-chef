@@ -379,6 +379,14 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/kill-jupyter.sh" do
+  source "kill-jupyter.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["jupyter"]["group"]
+  mode "550"
+  action :create
+end
+
 
 
 template "/etc/sudoers.d/glassfish" do

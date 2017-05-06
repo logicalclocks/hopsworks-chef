@@ -2,25 +2,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start hdfsuser logfile] | [stop pid] "
+    echo "usage: $0 [start logfile] | [stop pid] "
     echo ""
     exit 1
 }
 
 PORT=0
-
-function kill_named {
-    PID=`ps aux | grep -i jupyter | grep $PORT | awk 'NR==1{print $2}'`
-    if [ "$PID" != "" ] ; then
-	kill -9 $PID > /dev/null 2>&1
-        res=$?
-    else
-	res=$NOT_FOUND
-    fi
-    return $res
-}
-
-
 
 if [ "$1" == "stop" ] ; then
 
@@ -35,18 +22,15 @@ if [ "$1" == "stop" ] ; then
       help
     fi
 
-    su <%= node["jupyter"]["user"] %> -c "kill_named.sh $2"
+    su -m -l <%= node["jupyter"]["user"] %> -c "./kill-jupyter.sh $2"
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 3 ]; then
+    if [ $# -ne 2 ]; then
 	help
     fi
 
-proj="$( cut -d '__' -f 1 <<< "$1" )"
-basedir=$2
-
-# Check $2 is a valid filename, owned by Jupyter user
+#proj="$( cut -d '__' -f 1 <<< "$2" )"
 
 # use '-m' to preserve the environment varibables that were set in the Java program
 # that starts the notebook server
