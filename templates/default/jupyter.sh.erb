@@ -40,10 +40,10 @@ elif [ "$1" == "start" ] ; then
 	exit 3
     fi
     # Should look like 'name-4444.log', where '4444' is the port number for the server
-    if [[ $4 =~ ^[a-z]{3,255}\-[0-9]+\.log ]] ; then
+    if [[ $4 =~ ^[a-zA-Z0-9]{3,255}__[a-zA-Z0-9]{3,32}\-[0-9]+\.log ]] ; then
 	echo "logfile ok"
     else
-	echo "Invalid logfile parameter: $3"
+	echo "Invalid logfile parameter: $4"
 	exit 4
     fi
 

@@ -60,7 +60,7 @@ timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
 	sleep 1
 	grep 'token' $LOGFILE
-        if [ $? -ne 0 ] ; then 
+        if [ $? -eq 0 ] ; then 
           break
         fi
 	echo -n "."
