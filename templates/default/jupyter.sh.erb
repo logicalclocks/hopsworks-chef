@@ -26,7 +26,7 @@ if [ "$1" == "stop" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 5 ]; then
+    if [ $# -ne 7 ]; then
 	help
     fi
 
@@ -44,7 +44,7 @@ elif [ "$1" == "start" ] ; then
 	exit 3
     fi
 
-    if [ ! -f "${5}" ] ; then
+    if [ ! -d "${5}" ] ; then
 	echo "Invalid Anaconda environment directory: $5"
 	exit 3
     fi
@@ -64,7 +64,10 @@ elif [ "$1" == "start" ] ; then
 	exit 4
     fi
 
-    # '-m' means preserve environment variables in process launched
+    # Make the group of the files, the jupyter group so that they can write to the files
+    chgrp -R <%= node["jupyter"]["group"] %> $2
+
+    # Launch the jupyter notebook
     su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7"
 else
   help

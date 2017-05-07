@@ -5,18 +5,19 @@ JUPYTER_HOME=$1
 export HADOOP_HOME=$2
 export JAVA_HOME=$3
 export ANACONDA_ENV=$4
-LOGFILE=${JUPYTER_HOME}/logs/$5
-PORT=$6
+PORT=$5
+LOGFILE=${JUPYTER_HOME}/logs/$6
+
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV LOGFILE"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE"
     echo ""
     exit 1
 }
 
 function kill_named {
-    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep -v grep | awk '{print $2}'`
+    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep $PORT | grep -v grep | awk '{print $2}'`
     if [ "$PID" != "" ] ; then
 	kill -9 $PID > /dev/null 2>&1
         res=$?
@@ -27,7 +28,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
   help
 fi
 

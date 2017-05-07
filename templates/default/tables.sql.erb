@@ -1011,6 +1011,7 @@ CREATE TABLE `jupyter_project` (
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `host_ip` VARCHAR(255) NOT NULL,
   `token` VARCHAR(255) NOT NULL,
+  `secret` VARCHAR(64) NOT NULL,  
   `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
   `driver_cores` INT(11) NOT NULL DEFAULT 1,
