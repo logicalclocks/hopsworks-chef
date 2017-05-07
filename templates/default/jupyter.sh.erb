@@ -22,7 +22,7 @@ if [ "$1" == "stop" ] ; then
       help
     fi
 
-    su <%= node["jupyter"]["user"] %> -c "./jupyter-kill.sh $2"
+    su -m <%= node["jupyter"]["user"] %> -c "./jupyter-kill.sh $2"
     
 elif [ "$1" == "start" ] ; then
 
@@ -46,8 +46,9 @@ elif [ "$1" == "start" ] ; then
 	echo "Invalid logfile parameter: $3"
 	exit 4
     fi
-    
-    su <%= node["jupyter"]["user"] %> -c "./jupyter-launch.sh $2 $3 $4"
+
+    # '-m' means preserve environment variables in process launched
+    su -m <%= node["jupyter"]["user"] %> -c "./jupyter-launch.sh $2 $3 $4"
 else
   help
 fi
