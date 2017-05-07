@@ -2,7 +2,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home logfile] | [stop jupyter_home] "
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home] "
     echo ""
     exit 1
 }
@@ -43,16 +43,29 @@ elif [ "$1" == "start" ] ; then
 	echo "Invalid JAVA_HOME directory: $4"
 	exit 3
     fi
+
+    if [ ! -f "${5}" ] ; then
+	echo "Invalid Anaconda environment directory: $5"
+	exit 3
+    fi
+    
+    re='^[0-9]+$'
+    if ! [[ $6 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+
     # Should look like 'name-4444.log', where '4444' is the port number for the server
-    if [[ $5 =~ ^[a-zA-Z0-9]{3,255}__[a-zA-Z0-9]{3,32}\-[0-9]+\.log ]] ; then
+    if [[ $7 =~ ^[a-zA-Z0-9]{3,255}__[a-zA-Z0-9]{3,32}\-[0-9]+\.log ]] ; then
 	echo "logfile ok"
     else
-	echo "Invalid logfile parameter: $5"
+	echo "Invalid logfile parameter: $7"
 	exit 4
     fi
 
     # '-m' means preserve environment variables in process launched
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5"
+    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7"
 else
   help
 fi

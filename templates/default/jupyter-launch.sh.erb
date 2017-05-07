@@ -4,11 +4,13 @@ WAIT_START=20
 JUPYTER_HOME=$1
 export HADOOP_HOME=$2
 export JAVA_HOME=$3
-LOGFILE=${JUPYTER_HOME}/logs/$4
+export ANACONDA_ENV=$4
+LOGFILE=${JUPYTER_HOME}/logs/$5
+PORT=$6
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME LOGFILE"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV LOGFILE"
     echo ""
     exit 1
 }
@@ -25,7 +27,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 5 ]; then
   help
 fi
 
@@ -35,8 +37,11 @@ export JUPYTER_PATH=${JUPYTER_HOME}
 export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
 export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
 export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native/
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64
 export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
+
+export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
+export PYLIB=${ANACONDA_ENV}/lib
 
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 
@@ -50,7 +55,7 @@ if [ -f $PID_FILE ] ; then
  fi
 fi
 
-nohup jupyter notebook 2>&1 > $LOGFILE &
+nohup jupyter notebook --NotebookApp.port=$PORT 2>&1 > $LOGFILE &
 
 echo $! > $PID_FILE
 
