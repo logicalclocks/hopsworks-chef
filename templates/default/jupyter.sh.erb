@@ -2,7 +2,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start logfile] | [stop pid] "
+    echo "usage: $0 [start jupyter_home hadoop_home logfile] | [stop jupyter_home] "
     echo ""
     exit 1
 }
@@ -11,7 +11,7 @@ PORT=0
 
 if [ "$1" == "stop" ] ; then
 
-    if [ $# -ne 2 ]; then
+    if [ $# -ne 3 ]; then
 	help
     fi
 
@@ -22,25 +22,35 @@ if [ "$1" == "stop" ] ; then
       help
     fi
 
-    su -m -l <%= node["jupyter"]["user"] %> -c "./kill-jupyter.sh $2"
+    su <%= node["jupyter"]["user"] %> -c "./jupyter-kill.sh $2"
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 2 ]; then
+    if [ $# -ne 4 ]; then
 	help
     fi
 
-#proj="$( cut -d '__' -f 1 <<< "$2" )"
-
-# use '-m' to preserve the environment varibables that were set in the Java program
-# that starts the notebook server
-    su -m -l <%= node["jupyter"]["user"] %> -c "nohup jupyter notebook 2>&1 > $2 &"
-
+    # Sanity checks for injection attacks
+    if [ ! -d "$2" ] ; then
+	echo "Invalid JUPYTER_HOME directory: $2"
+	exit 3
+    fi
+    if [ ! -d "$3" ] ; then
+	echo "Invalid HADOOP_HOME directory: $2"
+	exit 3
+    fi
+    # Should look like 'name-4444.log', where '4444' is the port number for the server
+    if [[ $4 =~ ^[a-z]{3,255}\-[0-9]+\.log ]] ; then
+	echo "logfile ok"
+    else
+	echo "Invalid logfile parameter: $3"
+	exit 4
+    fi
+    
+    su <%= node["jupyter"]["user"] %> -c "./jupyter-launch.sh $2 $3 $4"
 else
   help
 fi
-
-
 
 
 exit $?

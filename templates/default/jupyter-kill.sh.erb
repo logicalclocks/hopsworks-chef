@@ -1,0 +1,42 @@
+#!/bin/bash
+
+help() {
+    echo ""
+    echo "usage: $0 kill port"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 1 ]; then
+  help
+fi
+
+JUPYTER_HOME=$1
+
+
+function kill_named {
+    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep -v grep | awk '{print $2}'`
+    if [ "$PID" != "" ] ; then
+	kill -9 $PID > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return $res
+}
+
+PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+
+if [ -f $PID_FILE ] ; then
+  PID=`cat $PID_FILE`
+  kill $PID 2>&1 > /dev/null
+  if [ $? -ne 0 ] ; then
+    kill_named
+  fi
+else
+    kill_named
+fi    
+
+
+exit $?

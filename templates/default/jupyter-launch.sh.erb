@@ -1,0 +1,81 @@
+#!/bin/bash
+
+WAIT_START=20
+JUPYTER_HOME=$1
+export HADOOP_HOME=$2
+LOGFILE=${JUPYTER_HOME}/logs/$3
+
+help() {
+    echo ""
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME LOGFILE"
+    echo ""
+    exit 1
+}
+
+function kill_named {
+    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep -v grep | awk '{print $2}'`
+    if [ "$PID" != "" ] ; then
+	kill -9 $PID > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return $res
+}
+
+
+if [ $# -ne 3 ]; then
+  help
+fi
+
+
+export JUPYTER_DATA_DIR=${JUPYTER_HOME}
+export JUPYTER_PATH=${JUPYTER_HOME}
+export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
+export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
+export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native/
+export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
+
+PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+
+
+if [ -f $PID_FILE ] ; then
+ PID=`cat $PID_FILE`
+ kill -0 $PID 2>&1 > /dev/null
+ if [ $? -eq 0 ] ; then
+     echo "A jupyter notebook is already running here. Kill it first."
+     exit 1
+ fi
+fi
+
+nohup jupyter notebook 2>&1 > $LOGFILE &
+
+echo $! > $PID_FILE
+
+
+# Check that the token is written to the logfile, return when we see it.
+token=0
+timeout=0
+while [ $timeout -lt $WAIT_START ] ; do
+	sleep 1
+	grep 'token' $LOGFILE
+        if [ $? -ne 0 ] ; then 
+          break
+        fi
+	echo -n "."
+	timeout=`expr $timeout + 1`
+done
+echo ""
+
+# If the timeout was exceeded, kill jupyter notebook
+if [ $timeout -eq $WAIT_START ] ; then
+ PID=`cat $PID_FILE`
+ kill $PID 2>&1 > /dev/null
+ if [ $? -ne 0 ] ; then
+     kill_named
+ fi
+fi
+
+
+exit $?
