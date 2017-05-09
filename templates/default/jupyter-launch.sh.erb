@@ -56,7 +56,8 @@ if [ -f $PID_FILE ] ; then
  fi
 fi
 
-nohup jupyter notebook --NotebookApp.port=$PORT 2>&1 > $LOGFILE &
+# setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
+setsid jupyter notebook --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
 
 echo $! > $PID_FILE
 
