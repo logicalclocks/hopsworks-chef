@@ -2,21 +2,22 @@
 
 help() {
     echo ""
-    echo "usage: $0 kill port"
+    echo "usage: $0 JUPYTER_HOME PORT"
     echo ""
     exit 1
 }
 
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
   help
 fi
 
 JUPYTER_HOME=$1
+PORT=$2
 
 
 function kill_named {
-    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep -v grep | awk '{print $2}'`
+    PID=`ps aux | grep -i jupyter | grep ${PORT} | grep -v grep | awk '{print $2}'`
     if [ "$PID" != "" ] ; then
 	kill -9 $PID > /dev/null 2>&1
         res=$?
