@@ -2,18 +2,19 @@
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME PORT"
+    echo "usage: $0 JUPYTER_HOME PID PORT"
     echo ""
     exit 1
 }
 
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
   help
 fi
 
 JUPYTER_HOME=$1
-PORT=$2
+PID=$2
+PORT=$3
 
 
 function kill_named {
@@ -27,18 +28,19 @@ function kill_named {
     return $res
 }
 
-PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
-
-if [ -f $PID_FILE ] ; then
-  PID=`cat $PID_FILE`
-  echo "Killing pid: $PID"
-  kill $PID 2>&1 > /dev/null
-  if [ $? -ne 0 ] ; then
-    kill_named
-  fi
-else
-    kill_named
-fi    
-
-
+echo "Killing input pid: $PID"
+kill $PID 2>&1 > /dev/null
+if [ $? -ne 0 ] ; then
+    PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+    if [ -f $PID_FILE ] ; then
+	PID=`cat $PID_FILE`
+	echo "Killing pid: $PID"
+	kill $PID 2>&1 > /dev/null
+	if [ $? -ne 0 ] ; then
+	    kill_named
+	fi
+    else
+	kill_named
+    fi    
+fi
 exit $?

@@ -2,7 +2,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home port] "
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] "
     echo ""
     exit 1
 }
@@ -21,14 +21,21 @@ if [ "$1" == "stop" ] ; then
 	exit 1
     fi
 
-    # Check that $2 is an int (and not some injection attack)
+    # Check that the port is an int (and not some injection attack)
     re='^[0-9]+$'
      if ! [[ $3 =~ $re ]] ; then
       echo "error: Not a number" >&2
       help
     fi
 
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3"
+    re='^[0-9]+$'
+     if ! [[ $4 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+     
+    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
     
 elif [ "$1" == "start" ] ; then
 
