@@ -1,0 +1,90 @@
+#!/bin/bash
+
+help() {
+    echo ""
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] "
+    echo ""
+    exit 1
+}
+
+PORT=0
+
+if [ "$1" == "stop" ] ; then
+
+    if [ $# -ne 3 ]; then
+	help
+    fi
+
+    # Sanity checks for injection attacks
+    if [ ! -d "$2" ] ; then
+	echo "Invalid JUPYTER_HOME directory: $2"
+	exit 1
+    fi
+
+    # Check that the port is an int (and not some injection attack)
+    re='^[0-9]+$'
+     if ! [[ $3 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+    re='^[0-9]+$'
+     if ! [[ $4 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+     
+    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    
+elif [ "$1" == "start" ] ; then
+
+    if [ $# -ne 7 ]; then
+	help
+    fi
+
+    # Sanity checks for injection attacks
+    if [ ! -d "$2" ] ; then
+	echo "Invalid JUPYTER_HOME directory: $2"
+	exit 1
+    fi
+    if [ ! -d "$3" ] ; then
+	echo "Invalid HADOOP_HOME directory: $3"
+	exit 2
+    fi
+    if [ ! -f "${4}/bin/java" ] ; then
+	echo "Invalid JAVA_HOME directory: $4"
+	exit 3
+    fi
+
+    if [ ! -d "${5}" ] ; then
+	echo "Invalid Anaconda environment directory: $5"
+	exit 3
+    fi
+    
+    re='^[0-9]+$'
+    if ! [[ $6 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+
+    # Should look like 'name-4444.log', where '4444' is the port number for the server
+    if [[ $7 =~ ^[a-zA-Z0-9]{3,255}__[a-zA-Z0-9]{3,32}\-[0-9]+\.log ]] ; then
+	echo "logfile ok"
+    else
+	echo "Invalid logfile parameter: $7"
+	exit 4
+    fi
+
+    # Make the group of the files, the jupyter group so that they can write to the files
+    chgrp -R <%= node["jupyter"]["group"] %> $2
+
+    # Launch the jupyter notebook
+    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7"
+else
+  help
+fi
+
+
+exit $?
