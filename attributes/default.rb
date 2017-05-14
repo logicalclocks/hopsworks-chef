@@ -12,12 +12,12 @@ default["hopsworks"]["version"]                  = "0.1.0"
 
 default["glassfish"]["variant"]                  = "payara"
 default["hopsworks"]["user"]                     = node["install"]["user"].empty? ? "glassfish" : node["install"]["user"]
-node.override["glassfish"]["user"]               = node["hopsworks"]["user"]
+defualt["glassfish"]["user"]                     = node["hopsworks"]["user"]
 default["hopsworks"]["group"]                    = node["install"]["user"].empty? ? "glassfish" : node["install"]["user"]
-node.override["glassfish"]["group"]              = node["hopsworks"]["group"]
+default["glassfish"]["group"]                    = node["hopsworks"]["group"]
 default["hopsworks"]["admin"]["port"]            = 4848
 default["hopsworks"]["port"]                     = "8080"
-default["glassfish"]["admin"]["port"]               = node["hopsworks"]["admin"]["port"]
+default["glassfish"]["admin"]["port"]            = node["hopsworks"]["admin"]["port"]
 default["glassfish"]["port"]                     = node["hopsworks"]["port"].to_i
 default["glassfish"]["version"]                  = '4.1.1.171.0.1'
 
