@@ -253,6 +253,9 @@ template "#{rows_path}" do
                 :influxdb_password => node["influxdb"]["db_password"],
                 :graphite_port => node["influxdb"]["graphite"]["port"],
                 :anaconda_dir => node["conda"]["base_dir"],
+                :org_name => node["hopsworks"]["org_name"],
+                :org_domain => node["hopsworks"]["org_domain"],
+                :org_email => node["hopsworks"]["org_email"],                
                 :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip
               })

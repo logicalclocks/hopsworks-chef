@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -ne 1  ]; then
- echo "incorrect usage"
+if [ $# -ne 6  ]; then
+ echo "Usage: $0 service countryCode city organization_name email_address orcid "
  exit 1
 fi
 
@@ -9,6 +9,13 @@ set -e
 
 #Variables
 DOMAIN="$1"
+COUNTRY_CODE="$2"
+CITY="$3"
+ORG="$4"
+EMAIL="$5"
+ORCID="$6"
+
+
 
 # the cert passwd is: <%= node.hopsworks.cert.password %>
 # default should be 'adminpw'
@@ -23,7 +30,7 @@ chmod 400 private/${DOMAIN}.key.pem
 
 #2 Create a user certificate
 openssl req -config ../openssl-ca.cnf \
-	  -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=${DOMAIN}" \
+	-subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}/emailAddress=${EMAIL}" \
 	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
       -key private/${DOMAIN}.key.pem \
       -new -sha256 -out csr/${DOMAIN}.csr.pem

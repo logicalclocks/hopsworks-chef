@@ -10,6 +10,7 @@ include_attribute "kzookeeper"
 
 default["hopsworks"]["version"]                  = "0.1.0"
 
+
 default["glassfish"]["variant"]                  = "payara"
 default["hopsworks"]["user"]                     = node["install"]["user"].empty? ? "glassfish" : node["install"]["user"]
 default["glassfish"]["user"]                     = node["hopsworks"]["user"]
@@ -104,20 +105,25 @@ default["glassfish"]["ciphersuite"]				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA2
 # Dela
 #
 
+default["hopsworks"]["org_name"]                       = "hopsworks"
+default["hopsworks"]["org_domain"]                     = "www.hops.io"
+default["hopsworks"]["org_email"]                      = "www.hops.io"
+
+
 default["hopsworks"]["dela"]["domain"]                 = "bbc1.sics.se"
 default["hopsworks"]["dela"]["certifcate"]             = "DummyCert25100"
 default["hopsworks"]["dela"]["hops_site_base_uri"]     = "http://bbc1.sics.se:25100/hops-site/webresources"
 default["hopsworks"]["dela"]["public_search_endpoint"] =  "hopsworks/api/elastic/publicdatasets/"
 
-default["hopsworks"]["max_gpu_request_size"]        = 1
-default["hopsworks"]["max_cpu_request_size"]        = 1
+default["hopsworks"]["max_gpu_request_size"]           = 1
+default["hopsworks"]["max_cpu_request_size"]           = 1
 
-default["hopsworks"]["anaconda_enabled"]            = node["kagent"]["conda_enabled"]
+default["hopsworks"]["anaconda_enabled"]               = node["kagent"]["conda_enabled"]
 
 
 #
 # Jupyter
 #
-default["jupyter"]["base_dir"]                      = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/jupyter" : node["install"]["dir"] + "/jupyter"
-default["jupyter"]["user"]                          = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
-default["jupyter"]["group"]                         = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
+default["jupyter"]["base_dir"]                         = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/jupyter" : node["install"]["dir"] + "/jupyter"
+default["jupyter"]["user"]                             = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
+default["jupyter"]["group"]                            = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
