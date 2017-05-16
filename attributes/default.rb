@@ -15,9 +15,9 @@ default["hopsworks"]["user"]                     = node["install"]["user"].empty
 default["glassfish"]["user"]                     = node["hopsworks"]["user"]
 default["hopsworks"]["group"]                    = node["install"]["user"].empty? ? "glassfish" : node["install"]["user"]
 default["glassfish"]["group"]                    = node["hopsworks"]["group"]
-default["hopsworks"]["admin"]["port"]               = 4848
+default["hopsworks"]["admin"]["port"]            = 4848
 default["hopsworks"]["port"]                     = "8080"
-default["glassfish"]["admin"]["port"]               = node["hopsworks"]["admin"]["port"]
+default["glassfish"]["admin"]["port"]            = node["hopsworks"]["admin"]["port"]
 default["glassfish"]["port"]                     = node["hopsworks"]["port"].to_i
 default["glassfish"]["version"]                  = '4.1.1.171.0.1'
 
@@ -26,11 +26,10 @@ default["glassfish"]["install_dir"]              = node["hopsworks"]["dir"]
 default["glassfish"]["base_dir"]                 = node["glassfish"]["install_dir"] + "/glassfish"
 default["hopsworks"]["domains_dir"]              = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/domains" : node["install"]["dir"] + "/domains"
 default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_dir"]
-default["hopsworks"]["jupyter_dir"]              = node["install"]["dir"].empty? ? "/srv/jupyter" : node["install"]["dir"] + "/jupyter"
+
 
 default["hopsworks"]["certs_dir"]                = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/certs-dir" : node["install"]["dir"] + "/certs-dir"
 
-default["hopsworks"]["jupyter_dir"]              = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/jupyter" : node["install"]["dir"] + "/jupyter"
 
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
@@ -116,3 +115,9 @@ default["hopsworks"]["max_cpu_request_size"]        = 1
 default["hopsworks"]["anaconda_enabled"]            = node["kagent"]["conda_enabled"]
 
 
+#
+# Jupyter
+#
+default["jupyter"]["base_dir"]                      = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/jupyter" : node["install"]["dir"] + "/jupyter"
+default["jupyter"]["user"]                          = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
+default["jupyter"]["group"]                         = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]

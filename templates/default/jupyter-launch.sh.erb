@@ -1,0 +1,89 @@
+#!/bin/bash
+
+WAIT_START=20
+JUPYTER_HOME=$1
+export HADOOP_HOME=$2
+export JAVA_HOME=$3
+export ANACONDA_ENV=$4
+PORT=$5
+LOGFILE=${JUPYTER_HOME}/logs/$6
+
+
+help() {
+    echo ""
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE"
+    echo ""
+    exit 1
+}
+
+function kill_named {
+    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep $PORT | grep -v grep | awk '{print $2}'`
+    if [ "$PID" != "" ] ; then
+	kill -9 $PID > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return $res
+}
+
+
+if [ $# -ne 6 ]; then
+  help
+fi
+
+
+export JUPYTER_DATA_DIR=${JUPYTER_HOME}
+export JUPYTER_PATH=${JUPYTER_HOME}
+export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
+export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
+export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64
+export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
+
+export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
+export PYLIB=${ANACONDA_ENV}/lib
+
+PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+
+
+if [ -f $PID_FILE ] ; then
+ PID=`cat $PID_FILE`
+ kill -0 $PID 2>&1 > /dev/null
+ if [ $? -eq 0 ] ; then
+     echo "A jupyter notebook is already running here. Kill it first."
+     exit 1
+ fi
+fi
+
+# setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
+setsid jupyter notebook --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
+
+echo $! > $PID_FILE
+
+
+# Check that the token is written to the logfile, return when we see it.
+token=0
+timeout=0
+while [ $timeout -lt $WAIT_START ] ; do
+	sleep 1
+	grep 'token' $LOGFILE
+        if [ $? -eq 0 ] ; then 
+          break
+        fi
+	echo -n "."
+	timeout=`expr $timeout + 1`
+done
+echo ""
+
+# If the timeout was exceeded, kill jupyter notebook
+if [ $timeout -eq $WAIT_START ] ; then
+ PID=`cat $PID_FILE`
+ kill $PID 2>&1 > /dev/null
+ if [ $? -ne 0 ] ; then
+     kill_named
+ fi
+fi
+
+
+exit $?
