@@ -2,7 +2,7 @@ use_inline_resources
 
 notifying_action :generate do
 
-ca_dir=node["certs"]["dir"}
+ca_dir=node["certs"]["dir"]
   
 bash 'certificateauthority' do
     user "root"
