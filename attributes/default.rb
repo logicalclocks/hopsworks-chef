@@ -28,9 +28,6 @@ default["hopsworks"]["domains_dir"]              = node["install"]["dir"].empty?
 default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_dir"]
 
 
-default["hopsworks"]["certs_dir"]                = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/certs-dir" : node["install"]["dir"] + "/certs-dir"
-
-
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
 default["hopsworks"]["min_mem"]                  = "1024"

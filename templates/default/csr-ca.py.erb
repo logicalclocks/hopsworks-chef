@@ -144,9 +144,9 @@ config_mutex = Lock()
 HTTP_OK = 200
 
 LOG_FILE = "<%= node[:kagent][:base_dir] %>/csr.log"
-CERT_FILE = "<%= node[:kagent][:certs_dir] %>/pub.pem"
-CA_FILE = "<%= node[:kagent][:certs_dir] %>/ca_pub.pem"
-KEY_FILE = "<%= node[:kagent][:certs_dir] %>/priv.key"
+CERT_FILE = "<%= node[:certs][:dir] %>/pub.pem"
+CA_FILE = "<%= node[:certs][:dir] %>/ca_pub.pem"
+KEY_FILE = "<%= node[:certs][:dir] %>/priv.key"
 SERVER_KEYSTORE = "<%= node.kagent.keystore_dir %>/node_server_keystore.jks"
 SERVER_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_server_truststore.jks"
 CLIENT_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_client_truststore.jks"

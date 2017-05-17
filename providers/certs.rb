@@ -2,6 +2,8 @@ use_inline_resources
 
 notifying_action :generate do
 
+ca_dir=node["certs"]["dir"}
+  
 bash 'certificateauthority' do
     user "root"
     code <<-EOF
@@ -13,8 +15,8 @@ bash 'certificateauthority' do
 
 	KEYSTOREPW=#{node.hopsworks.master.password}
 
-	cd "#{node.hopsworks.certs_dir}"
-        BASEDIR="#{node.hopsworks.certs_dir}"
+	cd "#{ca_dir}"
+        BASEDIR="#{ca_dir}"
 	chmod 700 private
 	touch index.txt
 	echo 1000 > serial
@@ -60,7 +62,7 @@ bash 'certificateauthority' do
 
         set -eo pipefail
 
-	KEYSTOREPW=#{node.hopsworks.master.password}
+	KEYSTOREPW=#{node["hopsworks"]["master"]["password"]}
 
 	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config openssl-ca.cnf -extensions v3_intermediate_ca \
       -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem 
@@ -75,7 +77,7 @@ bash 'certificateauthority' do
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
     EOF
- not_if { ::File.exists?("#{node.hopsworks.certs_dir}/intermediate/certs/ca-chain.cert.pem" ) }
+ not_if { ::File.exists?("#{ca_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
 
 end
