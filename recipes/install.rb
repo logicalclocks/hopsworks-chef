@@ -279,7 +279,7 @@ if systemd == true
 
 end
 
-ca_dir = node["hopsworks"]["certs_dir"]
+ca_dir = node["certs"]["dir"]
 
 directory ca_dir do
     owner node["glassfish"]["user"]

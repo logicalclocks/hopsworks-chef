@@ -160,7 +160,7 @@ INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node["hopsworks"
 
 INSERT INTO variables VALUES ("glassfish_cert", "false");
 
-INSERT INTO variables VALUES ("certs_dir", "<%= node["hopsworks"]["certs_dir"] %>");
+INSERT INTO variables VALUES ("certs_dir", "<%= node["certs"]["dir"] %>");
 
 INSERT INTO variables VALUES ("jupyter_dir", "<%= node["hopsworks"]["jupyter_dir"] %>");
 
