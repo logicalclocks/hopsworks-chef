@@ -1632,8 +1632,12 @@ attribute "hopsworks/org_domain",
           :description => "Domain name for this organization",
           :type => 'string'
 
-attribute "hopsworks/org_email",
-          :description => "Contact email for this organization",
+attribute "hopsworks/org_city",
+          :description => "City  for this organization",
+          :type => 'string'
+
+attribute "hopsworks/org_country_code",
+          :description => "2-Letter Country code for this organization ('us', 'se', 'uk', etc)",
           :type => 'string'
 
 attribute "dela/user",

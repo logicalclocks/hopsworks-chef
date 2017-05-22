@@ -59,9 +59,9 @@ CREATE TABLE `address` (
     `address1` VARCHAR(100) DEFAULT '-',
     `address2` VARCHAR(100) DEFAULT '-',
     `address3` VARCHAR(100) DEFAULT '-',
-    `city` VARCHAR(40) DEFAULT '-',
-    `state` VARCHAR(50) DEFAULT '-',
-    `country` VARCHAR(40) DEFAULT '-',
+    `city` VARCHAR(40) DEFAULT 'San Francisco',
+    `state` VARCHAR(50) DEFAULT 'CA',
+    `country` VARCHAR(40) DEFAULT 'US',
     `postalcode` VARCHAR(10) DEFAULT '-',
     PRIMARY KEY (`address_id`),
     FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION

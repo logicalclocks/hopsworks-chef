@@ -107,7 +107,9 @@ default["glassfish"]["ciphersuite"]				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA2
 
 default["hopsworks"]["org_name"]                       = "hopsworks"
 default["hopsworks"]["org_domain"]                     = "www.hops.io"
-default["hopsworks"]["org_email"]                      = "www.hops.io"
+default["hopsworks"]["org_email"]                      = "user@hops.site"
+default["hopsworks"]["org_country_code"]               = "SE"
+default["hopsworks"]["org_city"]                       = "Stockholm"
 
 
 default["hopsworks"]["dela"]["domain"]                 = "bbc1.sics.se"

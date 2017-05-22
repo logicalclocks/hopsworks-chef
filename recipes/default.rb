@@ -255,7 +255,9 @@ template "#{rows_path}" do
                 :anaconda_dir => node["conda"]["base_dir"],
                 :org_name => node["hopsworks"]["org_name"],
                 :org_domain => node["hopsworks"]["org_domain"],
-                :org_email => node["hopsworks"]["org_email"],                
+                :org_email => node["hopsworks"]["org_email"],
+                :org_country_code => node["hopsworks"]["org_country_code"],
+                :org_city => node["hopsworks"]["org_city"],                
                 :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip
               })
