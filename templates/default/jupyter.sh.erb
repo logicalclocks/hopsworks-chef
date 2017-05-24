@@ -36,6 +36,7 @@ if [ "$1" == "stop" ] ; then
 
      
     su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    rm -rf ${2}/..
     
 elif [ "$1" == "start" ] ; then
 
