@@ -186,10 +186,26 @@ end
 
 
 
+require 'resolv'
+hostf = Resolv::Hosts.new
+dns = Resolv::DNS.new
+
 hosts = ""
 
 for h in node["kagent"]["default"]["private_ips"]
-  hosts += "('" + h + "','" + h + "')" + ","
+
+  # Try and resolve hostname first using /etc/hosts, then use DNS
+  begin
+    hname = hostf.getname("#{h}")
+  rescue
+    begin
+      hname = dns.getname("#{h}")
+    rescue
+      raise "Cannot resolve the hostname for IP address: #{h}"
+    end
+  end
+  
+  hosts += "('" + hname + "','" + h + "')" + ","
 end
 if h.length > 0 
   hosts = hosts.chop!
