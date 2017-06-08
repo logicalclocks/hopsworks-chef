@@ -77,6 +77,12 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
+    pid=$(ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
+
+    if [ "$pid" != "" ] ; then
+        su vagrant -c "/srv/hops/domains/domain1/bin/jupyter-kill.sh $2 $pid $6"
+	sleep 5
+    fi
 
     # Should look like 'name-4444.log', where '4444' is the port number for the server
     if [[ $7 =~ ^[a-zA-Z0-9]{3,255}__[a-zA-Z0-9]{3,32}\-[0-9]+\.log ]] ; then
