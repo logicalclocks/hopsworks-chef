@@ -741,16 +741,50 @@ end
 
 
 
-  bash 'enable_sso' do
-    user "root"
-    code <<-EOF
+bash 'enable_sso' do
+  user "root"
+  code <<-EOF
       sleep 10
       curl --data "email=admin@kth.se&password=admin&otp=" http://localhost:8080/hopsworks-api/api/auth/login/
       curl --insecure --user #{username}:#{password} -s https://localhost:4848/asadmin
     EOF
-  end
+end
 
 
+
+bash "pip_upgrade" do
+    user "root"
+    code <<-EOF
+      set -e
+      pip install --upgrade pip
+    EOF
+end
+
+package "scala" do
+end
+
+scala_home=
+case node['platform']
+ when 'debian', 'ubuntu'
+  scala_home="/usr/share/scala-2.11"
+ when 'redhat', 'centos', 'fedora'
+  scala_home="/usr/share/scala-2.11"
+end
+
+
+# Pixiedust is a visualization library for Jupyter
+pixiedust_home="#{domains_dir}/#{domain_name}/pixiedust"
+bash "jupyter-pixiedust" do
+    user "root"
+    code <<-EOF
+      set -e
+      mkdir #{pixiedust_home}
+      export PIXIEDUST_HOME=#{pixiedust_home}
+      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
+      export SCALA_HOME=#{scala_home}
+      pip install pixiedust
+    EOF
+end
 
 #
 # https://github.com/jupyter-incubator/sparkmagic
@@ -759,7 +793,6 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
-    pip install --upgrade pip
     pip install jupyter
     pip install sparkmagic
     pip install urllib3
