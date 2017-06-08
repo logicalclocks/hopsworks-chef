@@ -1,8 +1,14 @@
 #!/bin/bash
 
+# This script allows Hopsworks to start/stop/ping (check if alive) a Jupyter Notebook Server.
+# There will be 1 notebook-server per ProjectUser.
+# This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
+# it changes user to 'jupyter' to run the command as user 'jupyter'.
+#
+
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] "
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] | [ping pid]"
     echo ""
     exit 1
 }
@@ -11,7 +17,7 @@ PORT=0
 
 if [ "$1" == "stop" ] ; then
 
-    if [ $# -ne 3 ]; then
+    if [ $# -ne 4 ]; then
 	help
     fi
 
@@ -36,7 +42,9 @@ if [ "$1" == "stop" ] ; then
 
      
     su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
-    rm -rf ${2}/..
+
+    # Remove all the directories in the home jupyter folder for this project-user.
+    rm -rf ${2}/*
     
 elif [ "$1" == "start" ] ; then
 
@@ -83,6 +91,12 @@ elif [ "$1" == "start" ] ; then
 
     # Launch the jupyter notebook
     su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7"
+
+elif [ "$1" == "ping" ] ; then
+    if [ $# -ne 2 ]; then
+	help
+    fi
+    kill -0 $2
 else
   help
 fi
