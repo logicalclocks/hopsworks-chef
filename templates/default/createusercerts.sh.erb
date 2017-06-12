@@ -28,11 +28,12 @@ openssl genrsa \
 chmod 400 private/${DOMAIN}.key.pem
 
 #2 Create a user certificate
+#	-subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}/emailAddress=${EMAIL}" \
 openssl req -config ../openssl-ca.cnf \
-	-subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}/emailAddress=${EMAIL}" \
-	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
-      -key private/${DOMAIN}.key.pem \
-      -new -sha256 -out csr/${DOMAIN}.csr.pem
+       -subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}" \
+       -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
+       -key private/${DOMAIN}.key.pem \
+       -new -sha256 -out csr/${DOMAIN}.csr.pem
 
 openssl ca -batch -config openssl-intermediate.cnf \
       -passin pass:$KEYSTOREPW \
