@@ -1,0 +1,17 @@
+#!/usr/bin/expect
+
+spawn "jupyter pixiedust install"
+# Step 1: PIXIEDUST_HOME: /srv/hops/domains/domain1/pixiedust/
+expect 'Step 1: PIXIEDUST_HOME: *'
+send "\r"
+# Step 2: SPARK_HOME: /srv/hops/spark
+expect 'Step 2: SPARK_HOME: *'
+send "\r"
+# Step 3: SCALA_HOME: /usr/share/scala-2.11/
+expect 'Step 3: SCALA_HOME: *'
+send "\r"
+# Step 4: Kernel Name: Python with Pixiedust (Spark 2.1)
+expect 'Step 4: Kernel Name: *'
+send "\r"
+
+expect eof

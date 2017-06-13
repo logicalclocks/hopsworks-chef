@@ -772,20 +772,6 @@ case node['platform']
 end
 
 
-# Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{domains_dir}/#{domain_name}/pixiedust"
-bash "jupyter-pixiedust" do
-    user "root"
-    code <<-EOF
-      set -e
-      mkdir #{pixiedust_home}
-      export PIXIEDUST_HOME=#{pixiedust_home}
-      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
-      export SCALA_HOME=#{scala_home}
-      pip install pixiedust
-    EOF
-end
-
 #
 # https://github.com/jupyter-incubator/sparkmagic
 #
@@ -800,6 +786,39 @@ bash "jupyter-sparkmagic" do
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
+
+
+template "/tmp/install-pixiedust.sh" do
+  source "install-pixiedust.sh.erb"
+  owner "root"
+  mode 0750
+  action :create
+end
+
+
+# Pixiedust is a visualization library for Jupyter
+pixiedust_home="#{domains_dir}/pixiedust"
+bash "jupyter-pixiedust" do
+    user "root"
+    code <<-EOF
+      set -e
+      mkdir -p #{pixiedust_home}/bin
+      cd #{pixiedust_home}/bin
+      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/cloudant-spark-v2.0.0-185.jar
+      chown #{node["hadoop_spark"]["user"]} cloudant-spark-v2.0.0-185.jar
+      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+
+      export PIXIEDUST_HOME=#{pixiedust_home}
+      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
+      export SCALA_HOME=#{scala_home}
+      pip install matplotlib
+      pip install pixiedust
+      /tmp/install-pixiedust.sh
+      jupyter-kernelspect install /root/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+    EOF
+end
+
+
 
 pythondir=""
 case node['platform']
