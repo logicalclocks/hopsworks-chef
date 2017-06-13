@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-spawn "jupyter pixiedust install"
+spawn "/tmp/jupyter-pixiedust.sh"
 # Step 1: PIXIEDUST_HOME: /srv/hops/domains/domain1/pixiedust/
 expect 'Step 1: PIXIEDUST_HOME: *'
 send "\r"

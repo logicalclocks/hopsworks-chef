@@ -788,6 +788,13 @@ EOF
 end
 
 
+template "/tmp/jupyter-pixiedust.sh" do
+  source "jupyter-pixiedust.sh.erb"
+  owner "root"
+  mode 0750
+  action :create
+end
+
 template "/tmp/install-pixiedust.sh" do
   source "install-pixiedust.sh.erb"
   owner "root"
