@@ -821,7 +821,8 @@ bash "jupyter-pixiedust" do
       pip install matplotlib
       pip install pixiedust
       /tmp/install-pixiedust.sh
-      jupyter-kernelspect install /root/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+# pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
+      jupyter-kernelspec install /root/.local/share/jupyter/kernels
     EOF
 end
 
