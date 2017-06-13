@@ -379,6 +379,14 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh" do
+  source "jupyter-project-cleanup.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "550"
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/jupyter-kill.sh" do
   source "jupyter-kill.sh.erb"
   owner node["glassfish"]["user"]
@@ -407,7 +415,8 @@ template "/etc/sudoers.d/glassfish" do
                 :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
                 :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
                 :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh",
-                :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh"                
+                :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh",
+                :jupyter_cleanup =>  "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh"                                
               })
   action :create
 end  
