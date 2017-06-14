@@ -827,7 +827,7 @@ bash "jupyter-pixiedust" do
       mkdir -p #{pixiedust_home}/bin
       cd #{pixiedust_home}/bin
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/cloudant-spark-v2.0.0-185.jar
-      chown #{node["hadoop_spark"]["user"]} cloudant-spark-v2.0.0-185.jar
+      #chown #{node["jupyter"]["user"]} cloudant-spark-v2.0.0-185.jar
       chown #{node['jupyter']['user']} -R #{pixiedust_home}
 
       export PIXIEDUST_HOME=#{pixiedust_home}
@@ -838,7 +838,7 @@ bash "jupyter-pixiedust" do
       jupyter pixiedust install --silent
 
 # pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
-      jupyter-kernelspec install /root/.local/share/jupyter/kernels
+      jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
     EOF
 end
 
