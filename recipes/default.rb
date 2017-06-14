@@ -818,14 +818,6 @@ template "/tmp/jupyter-pixiedust.sh" do
   action :create
 end
 
-template "/tmp/install-pixiedust.sh" do
-  source "install-pixiedust.sh.erb"
-  owner "root"
-  mode 0750
-  action :create
-end
-
-
 # Pixiedust is a visualization library for Jupyter
 pixiedust_home="#{domains_dir}/pixiedust"
 bash "jupyter-pixiedust" do
@@ -843,7 +835,6 @@ bash "jupyter-pixiedust" do
       export SCALA_HOME=#{scala_home}
       pip install matplotlib
       pip install pixiedust
-#      /tmp/install-pixiedust.sh
       jupyter pixiedust install --silent
 
 # pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
