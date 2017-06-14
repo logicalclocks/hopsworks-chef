@@ -820,7 +820,9 @@ bash "jupyter-pixiedust" do
       export SCALA_HOME=#{scala_home}
       pip install matplotlib
       pip install pixiedust
-      /tmp/install-pixiedust.sh
+#      /tmp/install-pixiedust.sh
+      jupyter pixiedust install --silent
+
 # pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
       jupyter-kernelspec install /root/.local/share/jupyter/kernels
     EOF
