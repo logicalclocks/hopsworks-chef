@@ -7,7 +7,7 @@ export JAVA_HOME=$3
 export ANACONDA_ENV=$4
 PORT=$5
 LOGFILE=${JUPYTER_HOME}/logs/$6
-
+HDFS_USER=`echo $JUPYTER_HOME | awk -F/ '{print $6}'`
 
 help() {
     echo ""
@@ -57,7 +57,7 @@ if [ -f $PID_FILE ] ; then
 fi
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid jupyter notebook --debug --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
+setsid jupyter notebook --debug --NotebookApp.port=$PORT --NotebookApp.hdfsuser=$HDFS_USER </dev/zero &> $LOGFILE  &
 
 echo $! > $PID_FILE
 
