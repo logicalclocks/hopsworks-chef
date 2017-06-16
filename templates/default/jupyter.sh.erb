@@ -16,7 +16,7 @@ help() {
 PORT=0
 
 
-if [ "$1" == "kill" ] ; then
+if [ "$1" == "stop" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
@@ -29,7 +29,7 @@ if [ "$1" == "kill" ] ; then
     # Remove all the directories in the home jupyter folder for this project-user.
     sudo rm -rf <%= node["hopsworks"]["dir"] %>/srv/hops/jupyter/Projects/${proj}/${2}
     
-elif [ "$1" == "stop" ] ; then
+elif [ "$1" == "kill" ] ; then
 
     if [ $# -ne 4 ]; then
 	help
