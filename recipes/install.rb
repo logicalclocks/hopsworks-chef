@@ -401,6 +401,14 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-kill.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/jupyter-stop.sh" do
+  source "jupyter-stop.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["jupyter"]["group"]
+  mode "550"
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/jupyter-launch.sh" do
   source "jupyter-launch.sh.erb"
   owner node["glassfish"]["user"]

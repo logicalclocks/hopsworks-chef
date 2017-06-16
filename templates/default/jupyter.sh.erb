@@ -8,14 +8,25 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] | [ping pid]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile] | [stop jupyter_home pid port] | [kill hdfs_user] | [ping pid]"
     echo ""
     exit 1
 }
 
 PORT=0
 
-if [ "$1" == "stop" ] ; then
+
+if [ "$1" == "kill" ] ; then
+    if [ $# -ne 1 ]; then
+	help
+    fi
+
+    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-stop.sh $1"
+    proj=`cut -d'__' -f 1`
+    # Remove all the directories in the home jupyter folder for this project-user.
+    sudo rm -rf <%= node["hopsworks"]["dir"] %>/srv/hops/jupyter/Projects/${proj}/${1}
+    
+elif [ "$1" == "stop" ] ; then
 
     if [ $# -ne 4 ]; then
 	help
