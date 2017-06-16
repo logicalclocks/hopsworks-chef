@@ -186,10 +186,26 @@ end
 
 
 
+require 'resolv'
+hostf = Resolv::Hosts.new
+dns = Resolv::DNS.new
+
 hosts = ""
 
 for h in node["kagent"]["default"]["private_ips"]
-  hosts += "('" + h + "','" + h + "')" + ","
+
+  # Try and resolve hostname first using /etc/hosts, then use DNS
+  begin
+    hname = hostf.getname("#{h}")
+  rescue
+    begin
+      hname = dns.getname("#{h}")
+    rescue
+      raise "Cannot resolve the hostname for IP address: #{h}"
+    end
+  end
+  
+  hosts += "('" + hname + "','" + h + "')" + ","
 end
 if h.length > 0 
   hosts = hosts.chop!
@@ -253,6 +269,11 @@ template "#{rows_path}" do
                 :influxdb_password => node["influxdb"]["db_password"],
                 :graphite_port => node["influxdb"]["graphite"]["port"],
                 :anaconda_dir => node["conda"]["base_dir"],
+                :org_name => node["hopsworks"]["org_name"],
+                :org_domain => node["hopsworks"]["org_domain"],
+                :org_email => node["hopsworks"]["org_email"],
+                :org_country_code => node["hopsworks"]["org_country_code"],
+                :org_city => node["hopsworks"]["org_city"],                
                 :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip
               })
@@ -743,15 +764,35 @@ end
 
 
 
-  bash 'enable_sso' do
-    user "root"
-    code <<-EOF
+bash 'enable_sso' do
+  user "root"
+  code <<-EOF
       sleep 10
       curl --data "email=admin@kth.se&password=admin&otp=" http://localhost:8080/hopsworks-api/api/auth/login/
       curl --insecure --user #{username}:#{password} -s https://localhost:4848/asadmin
     EOF
-  end
+end
 
+
+
+bash "pip_upgrade" do
+    user "root"
+    code <<-EOF
+      set -e
+      pip install --upgrade pip
+    EOF
+end
+
+package "scala" do
+end
+
+scala_home=
+case node['platform']
+ when 'debian', 'ubuntu'
+  scala_home="/usr/share/scala-2.11"
+ when 'redhat', 'centos', 'fedora'
+  scala_home="/usr/share/scala-2.11"
+end
 
 
 #
@@ -761,7 +802,6 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
-    pip install --upgrade pip
     pip install jupyter
     pip install sparkmagic
     pip install urllib3
@@ -769,6 +809,40 @@ bash "jupyter-sparkmagic" do
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
+
+
+template "/tmp/jupyter-pixiedust.sh" do
+  source "jupyter-pixiedust.sh.erb"
+  owner "root"
+  mode 0750
+  action :create
+end
+
+# Pixiedust is a visualization library for Jupyter
+pixiedust_home="#{domains_dir}/pixiedust"
+bash "jupyter-pixiedust" do
+    user "root"
+    code <<-EOF
+      set -e
+      mkdir -p #{pixiedust_home}/bin
+      cd #{pixiedust_home}/bin
+      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/cloudant-spark-v2.0.0-185.jar
+      #chown #{node["jupyter"]["user"]} cloudant-spark-v2.0.0-185.jar
+      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+
+      export PIXIEDUST_HOME=#{pixiedust_home}
+      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
+      export SCALA_HOME=#{scala_home}
+      pip install matplotlib
+      pip install pixiedust
+      jupyter pixiedust install --silent
+
+# pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
+      jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+    EOF
+end
+
+
 
 pythondir=""
 case node['platform']

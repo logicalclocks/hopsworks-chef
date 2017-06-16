@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -ne 1  ]; then
- echo "incorrect usage"
+if [ $# -ne 6  ]; then
+ echo "Usage: $0 service countryCode city organization_name email_address orcid "
  exit 1
 fi
 
@@ -9,10 +9,16 @@ set -e
 
 #Variables
 DOMAIN="$1"
+COUNTRY_CODE="$2"
+CITY="$3"
+ORG="$4"
+EMAIL="$5"
+ORCID="$6"
 
-# the cert passwd is: <%= node.hopsworks.cert.password %>
-# default should be 'adminpw'
-KEYSTOREPW=<%= node.hopsworks.master.password %>
+
+
+# default password should be 'adminpw'
+KEYSTOREPW=<%= node["hopsworks"]["master"]["password"] %>
 cd <%= @int_ca_dir %>
 
 #1 Create a user key
@@ -22,11 +28,12 @@ openssl genrsa \
 chmod 400 private/${DOMAIN}.key.pem
 
 #2 Create a user certificate
+#	-subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}/emailAddress=${EMAIL}" \
 openssl req -config ../openssl-ca.cnf \
-	  -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=${DOMAIN}" \
-	  -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
-      -key private/${DOMAIN}.key.pem \
-      -new -sha256 -out csr/${DOMAIN}.csr.pem
+       -subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}" \
+       -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
+       -key private/${DOMAIN}.key.pem \
+       -new -sha256 -out csr/${DOMAIN}.csr.pem
 
 openssl ca -batch -config openssl-intermediate.cnf \
       -passin pass:$KEYSTOREPW \
@@ -45,7 +52,7 @@ keytool -importkeystore -destkeystore ${DOMAIN}__kstore.jks -srckeystore cert_an
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__kstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 
-chown -R <%= node.glassfish.user %>:<%= node.glassfish.group %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
+chown -R <%= node["glassfish"]["user"] %>:<%= node["glassfish"]["group"] %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
 mv  ${DOMAIN}__kstore.jks /tmp/${DOMAIN}__kstore.jks
 mv  ${DOMAIN}__tstore.jks /tmp/${DOMAIN}__tstore.jks
 rm cert_and_key.p12
