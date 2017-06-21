@@ -417,6 +417,15 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-launch.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
+  source "unzip-hdfs-files.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "550"
+  action :create
+end
+
+
 
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
