@@ -42,7 +42,7 @@ INSERT INTO `users`
 --
 
 INSERT INTO `organization` (`id`, `uid`, `org_name`, `website`, `contact_person`, `contact_email`, `department`, `phone`, `fax`) VALUES
-(1, 10000, 'KI', 'www.ki.se', 'Admin Admin', 'admin@kth.se', 'MEB', '+4670080010', '+4670080015');
+(1, 10000, "<%= @org_name %>", "<%= @org_domain %>", 'Admin', "<%= @org_email %>", 'DataScience', '+4670080010', '+4670080015');
 
 
 
@@ -52,7 +52,7 @@ INSERT INTO `organization` (`id`, `uid`, `org_name`, `website`, `contact_person`
 --   Adding a new address entry for admin user
 --
 
-insert into address (uid, address1,address2,address3,city,state,country,postalcode) values (10000, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', 'Stockholm', 'Svergie', '10044');
+insert into address (uid, address1,address2,address3,city,state,country,postalcode) values (10000, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', "<%= @org_city %>", "<%= @org_country_code %>", '10044');
 
 
 
