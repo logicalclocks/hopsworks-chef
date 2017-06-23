@@ -22,6 +22,13 @@ template "/home/#{node['glassfish']['user']}/.config/autostart/google-chrome.des
     action :create
 end
 
+template "/home/#{node['glassfish']['user']}/.config/autostart/hops-services.desktop" do
+    source "virtualbox/hops-services.desktop.erb"
+    owner node["glassfish"]["user"]
+    mode 0774
+    action :create
+end
+
 
   
 template "/etc/init/tty1.conf" do
