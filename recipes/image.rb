@@ -7,9 +7,10 @@ package 'ubuntu-desktop'
 package "mingetty"
 
 bash 'mkdir_autostart' do
-  user node["glassfish"]["user"]
+  user 'root'  
   code <<-EOF
        mkdir -p /home/#{node["glassfish"]["user"]}/.config/autostart
+       chown -R #{node["glassfish"]["user"]}  /home/#{node["glassfish"]["user"]}/.config
     EOF
 end
 
