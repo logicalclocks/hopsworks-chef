@@ -18,6 +18,9 @@ when "ubuntu"
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
+
+ # Needed by sparkmagic
+ package "libkrb5-dev"
 end
 
 if node["hopsworks"]["systemd"] === "true" 
@@ -240,6 +243,10 @@ end
 case node.platform
 when "rhel"
 
+ # Needed by sparkmagic
+ package "krb5-libs"
+ package "krb5-devel"
+ 
   service_name = "glassfish-#{domain_name}"
   file "/etc/systemd/system/#{service_name}.service" do
     owner "root"
