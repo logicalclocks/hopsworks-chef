@@ -15,8 +15,8 @@ bash 'mkdir_autostart' do
 end
 
   
-template "/home/#{node['glassfish']['user']}/.config/autostart/google-chrome.desktop" do
-    source "virtualbox/google-chrome.desktop.erb"
+template "/home/#{node['glassfish']['user']}/.config/autostart/firefox.desktop" do
+    source "virtualbox/firefox.desktop.erb"
     owner node["glassfish"]["user"]
     mode 0774
     action :create
