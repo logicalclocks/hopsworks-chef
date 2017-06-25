@@ -868,7 +868,7 @@ bash "jupyter-sparkmagic-kernels" do
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
     chown -R #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}/.sparkmagic
-    chown -R #{node['glassfish']['user']}:#[node['glassfish']['group']} /home/#{node['hopsworks']['user']}/.config
+    chown -R #{node['glassfish']['user']}:#{node['glassfish']['group']} /home/#{node['hopsworks']['user']}/.config
    EOF
 end
 
