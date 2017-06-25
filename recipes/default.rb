@@ -839,6 +839,7 @@ bash "jupyter-pixiedust" do
 
 # pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
       jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+
     EOF
 end
 
@@ -866,7 +867,8 @@ bash "jupyter-sparkmagic-kernels" do
     
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
-    chown #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}/.sparkmagic
+    chown -R #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}/.sparkmagic
+    chown -R #{node['glassfish']['user']}:#[node['glassfish']['group']} /home/#{node['hopsworks']['user']}/.config
    EOF
 end
 
