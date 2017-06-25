@@ -1,0 +1,75 @@
+#!/bin/bash
+
+set -e
+
+help() {
+  echo "usage: $0 localWorkdir srcFileInHdfs"
+  exit 1
+}
+
+
+if [ $# -ne 3 ] ; then
+  help
+fi
+
+hdfsFile=$1
+workdir=$2
+
+cd $workdir
+freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
+freespace=$(($freespace * 1000))
+
+filesize=`/srv/hops/hadoop/bin/hadoop fs -du -s $hdfsFile | awk  '{print $1}'`
+# Amount of space needed to download and decompress the file
+filesize=$(($filesize * 3))
+
+if [ $filesize -gt $freespace ] ; then
+  echo "Not enough free space on the local harddisk"
+  exit 2
+fi  
+
+file=$(basename $hdfsFile)
+dir=$(dirname "${hdfsFile}")
+
+
+#zips=$(hadoop fs -ls /yourpath/*.zip | awk '{print $8}')
+
+hdfs dfs -copyToLocal $hdfsfile $workdir
+
+stripped=""
+case "$file" in 
+  *.tar.gz)
+     stripped=$(basename $hdfsFile .tar.gz)
+     mkdir -p $stripped
+     tar zxf $file -C ./$stripped
+    ;;
+  *.bz2)
+     stripped=$(basename $hdfsFile .bz2)
+     mkdir -p $stripped
+     tar jxf $file -C ./$stripped
+    ;;
+  *.tar)
+     stripped=$(basename $hdfsFile .tar)
+     mkdir -p $stripped
+     tar xf $file -C ./$stripped
+    ;;
+  *.gz)
+     stripped=$(basename $hdfsFile .tar)
+     mkdir -p $stripped
+     gunzip -c $file > ./$stripped
+    ;;
+  *.zip)
+     stripped=$(basename $hdfsFile .tar)
+     mkdir -p $stripped
+     unzip $file -d ./$stripped
+    ;;
+  *)
+    help
+    ;;
+esac
+
+   hdfs dfs -copyFromLocal ./$stripped $dir
+   rm $file
+   rm -rf ./$stripped
+
+echo "Done copying from $file to $dir"
