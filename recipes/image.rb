@@ -14,8 +14,12 @@ bash 'mkdir_autostart' do
     EOF
 end
 
-  
-template "/home/#{node['glassfish']['user']}/.config/autostart/firefox.desktop" do
+
+#
+# Firefox desktop entry should start after hops-services.desktop.
+# Change firefox name to 'x' so that it starts last.
+#  
+template "/home/#{node['glassfish']['user']}/.config/autostart/x-firefox.desktop" do
     source "virtualbox/firefox.desktop.erb"
     owner node["glassfish"]["user"]
     mode 0774
