@@ -8,3 +8,6 @@ dependencies:
   - recipe: hopsworks::dev
     global:  
       - hopsworks::default
+  - recipe: hopsworks::image
+    global:  
+      - hopsworks::dev
