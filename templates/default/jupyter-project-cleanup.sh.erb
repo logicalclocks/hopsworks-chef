@@ -17,7 +17,8 @@ help() {
 if [ $# -ne 1 ]; then
     help
 fi
-base="#{node['jupyter']['base_dir']}/Projects/$1"
+
+base="<%= node['jupyter']['base_dir'] %>/Projects/$1"
 # Sanity checks for injection attacks
 if [ ! -d "$base" ] ; then
     echo "Invalid JUPYTER_HOME directory: $base"
