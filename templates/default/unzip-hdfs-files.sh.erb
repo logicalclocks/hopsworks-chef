@@ -3,7 +3,7 @@
 set -e
 
 help() {
-  echo "usage: $0 localWorkdir srcFileInHdfs"
+  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER"
   exit 1
 }
 
@@ -14,6 +14,7 @@ fi
 
 hdfsFile=$1
 workdir=$2
+HDFS_USER=$3
 
 cd $workdir
 freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
@@ -36,40 +37,80 @@ dir=$(dirname "${hdfsFile}")
 
 ${HADOOP_DIR}/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
 
-stripped=""
-case "$file" in 
-  *.tar.gz)
-     stripped=$(basename $hdfsFile .tar.gz)
-     mkdir -p $stripped
-     tar zxf $file -C ./$stripped
-    ;;
-  *.bz2)
-     stripped=$(basename $hdfsFile .bz2)
-     mkdir -p $stripped
-     tar jxf $file -C ./$stripped
-    ;;
-  *.tar)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     tar xf $file -C ./$stripped
-    ;;
-  *.gz)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     gunzip -c $file > ./$stripped
-    ;;
-  *.zip)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     unzip $file -d ./$stripped
-    ;;
-  *)
-    help
-    ;;
-esac
+# State Machine State Change. File now staged to local FS.
+# Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
+
+
+# http://manpages.ubuntu.com/manpages/trusty/en/man1/dtrx.1.html
+# , everything will be written to  a  dedicated  directory  that's named  after  the  archive.
+# dtrx will also change the permissions to  ensure that the owner can read and write all those files.
+
+dtrx -o -n $hdfsFile
+
+# State Machine State Change. File now extracted to local FS.
+# Java program checks if this file is written to see if this directory exists:  $workdir/$(basename $hdfsfile)
+
+
+filedir="${file%%.*}"
+stripped=${dir}/${filedir}
+
+# case "$file" in 
+#   *.tar.gz)
+#      stripped=$(basename $hdfsFile .tar.gz)
+#      mkdir -p $stripped
+#      tar zxf $file -C ./$stripped
+#     ;;
+#   *.bz2)
+#      stripped=$(basename $hdfsFile .bz2)
+#      mkdir -p $stripped
+#      tar jxf $file -C ./$stripped
+#     ;;
+#   *.bzip2)
+#      stripped=$(basename $hdfsFile .bz2)
+#      mkdir -p $stripped
+#      tar jxf $file -C ./$stripped
+#     ;;
+#   *.tgz)
+#      stripped=$(basename $hdfsFile .tgz)
+#      mkdir -p $stripped
+#      tar zxf $file -C ./$stripped
+#     ;;
+#   *.gz)
+#      stripped=$(basename $hdfsFile .gz)
+#      mkdir -p $stripped
+#      gunzip -d -c $file > ./$stripped
+#     ;;
+#   *.7z)
+#      stripped=$(basename $hdfsFile .7z)
+#      mkdir -p $stripped
+#      7z x  $file  -o${stripped}
+#     ;;
+#   *.rar)
+#      stripped=$(basename $hdfsFile .rar)
+#      mkdir -p $stripped
+#      7z x  $file  -o${stripped}
+#     ;;
+#   *.zip)
+#      stripped=$(basename $hdfsFile .zip)
+#      mkdir -p $stripped
+#      unzip $file -d ./$stripped
+#     ;;
+#   *)
+#     help
+#     ;;
+# esac
 
    ${HADOOP_DIR}/bin/hdfs dfs -copyFromLocal ./$stripped $dir
+   ${HADOOP_DIR}/bin/hdfs dfs -chown -R ${HDFS_USER} $dir
+
+# State Machine State Change. File now copied to HDFS.
+# Java program checks if this file is written to see if this directory exists:  /Projects/PROJ/Dataset/$(basename $hdfsfile)
+
    rm $file
    rm -rf ./$stripped
 
+# State Machine State Change. File is now cleaned up from local staging directory
+# Java program checks if this file is written to see if this directory does not exist
+
+   
 echo "Done copying from $file to $dir"

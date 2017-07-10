@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+help() {
+  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER"
+  exit 1
+}
+
+
+if [ $# -ne 3 ] ; then
+  help
+fi
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+filename=$(basename "$2")
+
+nohup ${DIR}/unzip-hdfs-files.sh $1 $2 $3 > $1/${filename}.log &
+

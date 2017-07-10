@@ -13,6 +13,10 @@ mysql_password=node["mysql"]["password"]
 mysql_host = my_private_ip()
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
+
+# For unzipping files
+package "dtrx"
+
 case node.platform
 when "ubuntu"
  if node.platform_version.to_f <= 14.04
@@ -21,6 +25,9 @@ when "ubuntu"
 
  # Needed by sparkmagic
  package "libkrb5-dev"
+
+# package "p7zip-full"
+# package "p7zip-rar"
 end
 
 if node["hopsworks"]["systemd"] === "true" 
@@ -426,6 +433,14 @@ end
 
 template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "550"
+  action :create
+end
+
+template "#{domains_dir}/#{domain_name}/bin/unzip-backgroud.sh" do
+  source "unzip-background.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
   mode "550"
