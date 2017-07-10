@@ -234,6 +234,10 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/staging_dir",
+          :description => "Default is '/tmp'. Override to use a path on a disk volume with plenty of available space.",
+          :type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'

@@ -34,7 +34,7 @@ dir=$(dirname "${hdfsFile}")
 
 #zips=$(hadoop fs -ls /yourpath/*.zip | awk '{print $8}')
 
-hdfs dfs -copyToLocal $hdfsfile $workdir
+${HADOOP_DIR}/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
 
 stripped=""
 case "$file" in 
@@ -68,7 +68,7 @@ case "$file" in
     ;;
 esac
 
-   hdfs dfs -copyFromLocal ./$stripped $dir
+   ${HADOOP_DIR}/bin/hdfs dfs -copyFromLocal ./$stripped $dir
    rm $file
    rm -rf ./$stripped
 
