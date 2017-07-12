@@ -838,7 +838,10 @@ bash "jupyter-pixiedust" do
       jupyter pixiedust install --silent
 
 # pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
-      jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+      if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
+         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
+      fi
 
     EOF
 end
