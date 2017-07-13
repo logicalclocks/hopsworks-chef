@@ -300,6 +300,13 @@ CREATE TABLE `job_input_files` (
   FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
+CREATE TABLE `files_to_remove` (
+  `execution_id` INT(11) NOT NULL,
+  `path` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`execution_id`,`path`),
+  FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
 
 CREATE TABLE `organization` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -329,7 +336,7 @@ CREATE TABLE `meta_field_types` (
   `id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+ ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `meta_tables` (
   `tableid` INT(11) NOT NULL AUTO_INCREMENT,
