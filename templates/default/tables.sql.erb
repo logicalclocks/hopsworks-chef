@@ -336,7 +336,7 @@ CREATE TABLE `meta_field_types` (
   `id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`)
- ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 CREATE TABLE `meta_tables` (
   `tableid` INT(11) NOT NULL AUTO_INCREMENT,
