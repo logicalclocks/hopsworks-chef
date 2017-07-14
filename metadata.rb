@@ -254,6 +254,10 @@ attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
 
+attribute "hopsworks/monitor_max_status_poll_try",
+          :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
+          :type => 'string'
+
 
 ##
 ##
