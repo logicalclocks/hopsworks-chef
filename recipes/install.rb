@@ -439,7 +439,7 @@ template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/unzip-backgroud.sh" do
+template "#{domains_dir}/#{domain_name}/bin/unzip-background.sh" do
   source "unzip-background.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
