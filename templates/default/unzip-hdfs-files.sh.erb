@@ -7,14 +7,31 @@ help() {
   exit 1
 }
 
-
 if [ $# -ne 3 ] ; then
   help
 fi
 
-hdfsFile=$1
-workdir=$2
+workdir=$1
+hdfsFile=$2
 HDFS_USER=$3
+
+prefix='hdfs://'
+normalizedPath=${hdfsFile#${prefix}}
+
+file=$(basename $normalizedPath)
+dir=$(dirname "${normalizedPath}")
+
+filedir="${file%%.*}"
+hdfsDir=${dir}/${filedir}
+
+outputHdfsDir=${hdfsFile#${file}}
+
+cleanup() {
+   cd $workdir
+   rm $file
+   rm -rf ./$filedir
+}
+
 
 cd $workdir
 freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
@@ -29,13 +46,10 @@ if [ $filesize -gt $freespace ] ; then
   exit 2
 fi  
 
-file=$(basename $hdfsFile)
-dir=$(dirname "${hdfsFile}")
-
 
 #zips=$(hadoop fs -ls /yourpath/*.zip | awk '{print $8}')
 
-${HADOOP_DIR}/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
 
 # State Machine State Change. File now staged to local FS.
 # Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
@@ -45,14 +59,15 @@ ${HADOOP_DIR}/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
 # , everything will be written to  a  dedicated  directory  that's named  after  the  archive.
 # dtrx will also change the permissions to  ensure that the owner can read and write all those files.
 
-dtrx -o -n $hdfsFile
+cd $workdir
+dtrx -o -n $file
 
 # State Machine State Change. File now extracted to local FS.
 # Java program checks if this file is written to see if this directory exists:  $workdir/$(basename $hdfsfile)
 
 
-filedir="${file%%.*}"
-stripped=${dir}/${filedir}
+#filedir="${file%%.*}"
+#stripped=${dir}/${filedir}
 
 # case "$file" in 
 #   *.tar.gz)
@@ -100,8 +115,8 @@ stripped=${dir}/${filedir}
 #     ;;
 # esac
 
-   ${HADOOP_DIR}/bin/hdfs dfs -copyFromLocal ./$stripped $dir
-   ${HADOOP_DIR}/bin/hdfs dfs -chown -R ${HDFS_USER} $dir
+   <%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal ./$filedir $outputHdfsDir
+   <%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} $outputHdfsDir
 
 # State Machine State Change. File now copied to HDFS.
 # Java program checks if this file is written to see if this directory exists:  /Projects/PROJ/Dataset/$(basename $hdfsfile)

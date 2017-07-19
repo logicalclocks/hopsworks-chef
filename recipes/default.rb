@@ -849,19 +849,6 @@ bash "jupyter-pixiedust" do
 end
 
 
-bash "google-facets-install" do
-    user "root"
-    code <<-EOF
-    git clone https://github.com/PAIR-code/facets
-    cd facets
-    pip install protobuf
-    jupyter nbextension install facets-dist/ --user 
-EOF
-end
-
-
-
-
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
