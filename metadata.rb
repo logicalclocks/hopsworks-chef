@@ -254,6 +254,14 @@ attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
 
+attribute "install/ssl",
+          :description => "Is SSL turned on for all services?",
+          :type => "string"
+
+attribute "install/cleanup_downloads",
+          :description => "Remove any zipped binaries that were downloaded and used to install services",
+          :type => "string"
+
 attribute "hopsworks/monitor_max_status_poll_try",
           :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
           :type => 'string'

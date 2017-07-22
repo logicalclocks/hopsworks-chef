@@ -24,8 +24,6 @@ dir=$(dirname "${normalizedPath}")
 filedir="${file%%.*}"
 hdfsDir=${dir}/${filedir}
 
-outputHdfsDir=${hdfsFile#${file}}
-
 cleanup() {
    cd $workdir
    rm $file
@@ -49,7 +47,7 @@ fi
 
 #zips=$(hadoop fs -ls /yourpath/*.zip | awk '{print $8}')
 
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal $hdfsfile $workdir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal $hdfsFile $workdir
 
 # State Machine State Change. File now staged to local FS.
 # Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
@@ -115,17 +113,20 @@ dtrx -o -n $file
 #     ;;
 # esac
 
-   <%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal ./$filedir $outputHdfsDir
-   <%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} $outputHdfsDir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal ./$filedir $dir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} $hdfsDir
 
 # State Machine State Change. File now copied to HDFS.
 # Java program checks if this file is written to see if this directory exists:  /Projects/PROJ/Dataset/$(basename $hdfsfile)
 
-   rm $file
-   rm -rf ./$stripped
+#   rm -rf ./$stripped
 
 # State Machine State Change. File is now cleaned up from local staging directory
 # Java program checks if this file is written to see if this directory does not exist
 
    
 echo "Done copying from $file to $dir"
+
+cleanup
+
+echo "Done cleaning up"
