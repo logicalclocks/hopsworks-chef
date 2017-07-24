@@ -10,7 +10,7 @@ if [ $# -ne 3 ] ; then
 fi
 
 workdir=$1
-hdfsFile=$2
+hdfsFile="$2"
 HDFS_USER=$3
 
 #FSM states: STAGING, UNZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
@@ -33,22 +33,18 @@ prefix='hdfs://'
 normalizedPath=${hdfsFile#${prefix}}
 check_error
 
-file=$(basename $normalizedPath)
+file=$(basename "$normalizedPath")
 check_error
-dir=$(dirname "${normalizedPath}")
+dir=$(dirname "$normalizedPath")
 check_error
-
-#filedir="${file%%.*}"
-check_error
-hdfsDir=${dir}/${filedir}
 
 cd $workdir
 check_error
 
-filename=$(basename "$2")
+filename=$(basename "$hdfsFile")
 
 echo "STAGING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal $hdfsFile $workdir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
 check_error
 
 echo "UNZIPPING" > $fsmFile
@@ -62,7 +58,7 @@ echo "UNZIPPING" > $fsmFile
 # dtrx will also change the permissions to  ensure that the owner can read and write all those files.
 
 cd $workdir
-dtrx -o -n $file
+dtrx -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
@@ -73,40 +69,46 @@ filedir="${file%%.*}"
 
 case "$file" in 
   *.tar.gz)
-     filedir=$(basename $hdfsFile .tar.gz)
+     filedir=$(basename "$hdfsFile" .tar.gz)
     ;;
   *.bz2)
-     filedir=$(basename $hdfsFile .bz2)
+     filedir=$(basename "$hdfsFile" .bz2)
     ;;
   *.bzip2)
-     filedir=$(basename $hdfsFile .bz2)
+     filedir=$(basename "$hdfsFile" .bz2)
     ;;
   *.tgz)
-     filedir=$(basename $hdfsFile .tgz)
+     filedir=$(basename "$hdfsFile" .tgz)
     ;;
   *.gz)
-     filedir=$(basename $hdfsFile .gz)
+     filedir=$(basename "$hdfsFile" .gz)
     ;;
   *.7z)
-     filedir=$(basename $hdfsFile .7z)
+     filedir=$(basename "$hdfsFile" .7z)
     ;;
   *.rar)
-     filedir=$(basename $hdfsFile .rar)
+     filedir=$(basename "$hdfsFile" .rar)
     ;;
   *.zip)
-     filedir=$(basename $hdfsFile .zip)
+     filedir=$(basename "$hdfsFile" .zip)
     ;;
   *)
     help
     ;;
 esac
 
+
+#replace any spaces in the directory name with '_'
+#Hadoop doesnt like spaces in paths.
+escapedFiledir=${filedir// /_}
+mv "$filedir" $escapedFiledir
+
 echo "UPLOADING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal ./$filedir $dir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal $escapedFiledir "$dir"
 check_error
 
 echo "CHOWNING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} $dir
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} "$dir"
 check_error
 
 echo "SUCCESS" > $fsmFile

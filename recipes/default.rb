@@ -935,6 +935,14 @@ if node["services"]["enabled"] != "true"
 end
 
 
+directory node["hopsworks"]["staging_dir"]  do
+  owner node["hopsworks"]["user"]
+  group node["hopsworks"]["group"]
+  mode "750"
+  action :create
+end
+
+
 
 kagent_keys "#{homedir}" do
   cb_user node["hopsworks"]["user"]

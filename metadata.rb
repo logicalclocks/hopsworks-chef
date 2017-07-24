@@ -235,7 +235,7 @@ attribute "hopsworks/anaconda_enabled",
           :type => 'string'
 
 attribute "hopsworks/staging_dir",
-          :description => "Default is '/tmp'. Override to use a path on a disk volume with plenty of available space.",
+          :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
           :type => 'string'
 
 attribute "vagrant",

@@ -15,7 +15,7 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-filename=$(basename "$2")
+filename="$(basename "$2")"
 
 cd $1
 freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
@@ -32,5 +32,5 @@ if [ $filesize -gt $freespace ] ; then
 fi
 
 
-nohup ${DIR}/unzip-hdfs-files.sh $1 $2 $3 > $1/${filename}.log &
+nohup ${DIR}/unzip-hdfs-files.sh $1 "$2" $3 > "$1/$filename".log &
 
