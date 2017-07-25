@@ -781,7 +781,7 @@ bash "pip_upgrade" do
     user "root"
     code <<-EOF
       set -e
-      pip install --upgrade pip
+      pip install --upgrade pip --user
     EOF
 end
 
@@ -804,10 +804,10 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
-    pip install jupyter
-    pip install sparkmagic
-    pip install urllib3
-    pip install --upgrade requests
+    pip install jupyter --user
+    pip install sparkmagic --user
+    pip install urllib3 --user
+    pip install --upgrade requests --user
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
@@ -835,8 +835,8 @@ bash "jupyter-pixiedust" do
       export PIXIEDUST_HOME=#{pixiedust_home}
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
-      pip install matplotlib
-      pip install pixiedust
+      pip install matplotlib --user
+      pip install pixiedust --user
       jupyter pixiedust install --silent
 
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
