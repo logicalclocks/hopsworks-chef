@@ -729,6 +729,7 @@ glassfish_deployable "hopsworks-ca" do
   secure false
   action :deploy
   async_replication false
+  retries 1  
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
 end
 
@@ -838,12 +839,15 @@ bash "jupyter-pixiedust" do
       pip install pixiedust
       jupyter pixiedust install --silent
 
-# pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
-      jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+# pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
+      if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
+#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
+         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark22
+#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
+      fi
 
     EOF
 end
-
 
 
 pythondir=""
@@ -928,6 +932,14 @@ if node["services"]["enabled"] != "true"
     end
   end
 
+end
+
+
+directory node["hopsworks"]["staging_dir"]  do
+  owner node["hopsworks"]["user"]
+  group node["hopsworks"]["group"]
+  mode "750"
+  action :create
 end
 
 

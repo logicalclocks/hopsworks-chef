@@ -28,6 +28,7 @@ default["glassfish"]["base_dir"]                 = node["glassfish"]["install_di
 default["hopsworks"]["domains_dir"]              = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/domains" : node["install"]["dir"] + "/domains"
 default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_dir"]
 
+default["hopsworks"]["staging_dir"]              = node["hopsworks"]["domains_dir"] + "/domain1/staging"
 
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
