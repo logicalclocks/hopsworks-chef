@@ -892,8 +892,10 @@ bash "jupyter-sparkmagic-kernels" do
     
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
-    chown -R #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}/.sparkmagic
-    chown -R #{node['glassfish']['user']}:#{node['glassfish']['group']} /home/#{node['hopsworks']['user']}/.config
+    chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
+    if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
+      chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
+    fi
    EOF
 end
 
@@ -911,7 +913,7 @@ end
 
 template "#{homedir}/.sparkmagic/config.json" do
   source "config.json.erb"
-  owner node["glassfish"]["user"]
+  owner node["hopsworks"]["user"]
   mode 0750
   action :create
   variables({
