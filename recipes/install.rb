@@ -15,19 +15,40 @@ password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 
 # For unzipping files
-package "dtrx"
 
-case node.platform
-when "ubuntu"
+case node["platform_family"]
+when "debian"
+ package "dtrx"
+  
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
 
- # Needed by sparkmagic
  package "libkrb5-dev"
 
-# package "p7zip-full"
-# package "p7zip-rar"
+when "rhel"
+  package "krb5-libs"
+  
+  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz"
+    user node["glassfish"]["user"]
+    group node["glassfish"]["group"]
+    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
+    mode 0755
+    action :create
+  end
+  
+  bash "unpack_dtrx" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{Chef::Config[:file_cache_path]}
+    tar -xzf dtrx.tar.gz
+    cd dtrx-7.1
+    python setup.py install --prefix=/usr/local
+  EOF
+  not_if "which dtrx"
+  end
+  
 end
 
 if node["hopsworks"]["systemd"] === "true" 
