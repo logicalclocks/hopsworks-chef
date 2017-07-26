@@ -18,18 +18,17 @@ password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 case node["platform_family"]
 when "debian"
- package "dtrx"
   
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
-
+ package "dtrx"
  package "libkrb5-dev"
 
 when "rhel"
   package "krb5-libs"
   
-  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz"
+  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz" do
     user node["glassfish"]["user"]
     group node["glassfish"]["group"]
     source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
