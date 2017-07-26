@@ -785,14 +785,26 @@ bash "pip_upgrade" do
     EOF
 end
 
-package "scala" do
-end
-
 scala_home=
 case node['platform']
  when 'debian', 'ubuntu'
-  scala_home="/usr/share/scala-2.11"
+   scala_home="/usr/share/scala-2.11"
+   package "scala" do
+   end
  when 'redhat', 'centos', 'fedora'
+
+  bash 'gmail' do
+    user "root"
+    code <<-EOF
+       cd #{Chef::Config["file_cache_path"]}
+       wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.rpm
+       sudo yum install scala-2.11.8.rpm
+       rm scala-2.11.8.rpm
+    EOF
+    not_if "which scala"
+  end
+
+   
   scala_home="/usr/share/scala-2.11"
 end
 
@@ -805,11 +817,12 @@ bash "jupyter-sparkmagic" do
     code <<-EOF
     set -e
     # --user --no-cache-dir 
-    pip install jupyter 
-    pip install sparkmagic
     pip install urllib3
     pip install --upgrade requests 
+    pip install jupyter 
+    pip install sparkmagic
 EOF
+    not_if "which jupyter"
 end
 
 bash "jupyter-sparkmagic-enable" do
@@ -827,6 +840,7 @@ template "/tmp/jupyter-pixiedust.sh" do
   action :create
 end
 
+cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
 pixiedust_home="#{domains_dir}/pixiedust"
 bash "jupyter-pixiedust" do
@@ -835,10 +849,6 @@ bash "jupyter-pixiedust" do
       set -e
       mkdir -p #{pixiedust_home}/bin
       cd #{pixiedust_home}/bin
-      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/cloudant-spark-v2.0.0-185.jar
-      #chown #{node["jupyter"]["user"]} cloudant-spark-v2.0.0-185.jar
-      chown #{node['jupyter']['user']} -R #{pixiedust_home}
-
       export PIXIEDUST_HOME=#{pixiedust_home}
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
@@ -846,14 +856,17 @@ bash "jupyter-pixiedust" do
       pip install pixiedust
       jupyter pixiedust install --silent
 
+      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
+      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
 #         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
          jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark22
 #         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
       fi
-
     EOF
+    not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
 end
 
 
