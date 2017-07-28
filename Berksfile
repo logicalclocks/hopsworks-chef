@@ -11,7 +11,7 @@ cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
-cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
+cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "centos_cuda"
 
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
