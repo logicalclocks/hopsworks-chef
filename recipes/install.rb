@@ -14,22 +14,40 @@ mysql_host = my_private_ip()
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 
-case node.platform
-when "ubuntu"
+# For unzipping files
 
+case node["platform_family"]
+when "debian"
+  
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
-
-# For unzipping files
-package "dtrx"
-
- 
- # Needed by sparkmagic
+ package "dtrx"
  package "libkrb5-dev"
 
-# package "p7zip-full"
-# package "p7zip-rar"
+when "rhel"
+  package "krb5-libs"
+  
+  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz" do
+    user node["glassfish"]["user"]
+    group node["glassfish"]["group"]
+    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
+    mode 0755
+    action :create
+  end
+  
+  bash "unpack_dtrx" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{Chef::Config[:file_cache_path]}
+    tar -xzf dtrx.tar.gz
+    cd dtrx-7.1
+    python setup.py install --prefix=/usr/local
+  EOF
+  not_if "which dtrx"
+  end
+  
 end
 
 if node["hopsworks"]["systemd"] === "true" 
