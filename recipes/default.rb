@@ -788,7 +788,7 @@ bash "pip_upgrade" do
     user "root"
     code <<-EOF
       set -e
-      pip install --upgrade pip # --user
+      pip install --upgrade pip
     EOF
 end
 
@@ -823,6 +823,7 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
+
     # --user --no-cache-dir 
     pip install urllib3
     pip install --upgrade requests 
@@ -860,7 +861,7 @@ bash "jupyter-pixiedust" do
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
       pip install matplotlib
-      pip install pixiedust
+      pip install pixiedust 
       jupyter pixiedust install --silent
 
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
@@ -869,7 +870,7 @@ bash "jupyter-pixiedust" do
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
 #         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
-         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark22
+         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
 #         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
       fi
     EOF
