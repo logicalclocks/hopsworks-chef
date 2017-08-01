@@ -14,15 +14,17 @@ mysql_host = my_private_ip()
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 
-# For unzipping files
-package "dtrx"
-
 case node.platform
 when "ubuntu"
+
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
 
+# For unzipping files
+package "dtrx"
+
+ 
  # Needed by sparkmagic
  package "libkrb5-dev"
 
