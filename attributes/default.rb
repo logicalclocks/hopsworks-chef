@@ -55,6 +55,13 @@ default["hopsworks"]["admin"]["password"]           = "adminpw"
 default["glassfish"]["cert"]["password"]            = "#{node["hopsworks"]["admin"]["password"]}"
 default["hopsworks"]["twofactor_auth"]           = "false"
 default["hopsworks"]["twofactor_exclude_groups"] = "AGENT" #semicolon separated list of roles
+## Suffix can be: (defaults to minutes if omitted)
+## ms: milliseconds
+## s: seconds
+## m: minutes (default)
+## h: hours
+## d: days
+default["hopsworks"]["cert_mater_delay"]         = "3m"
 
 default["hopsworks"]["mysql_connector_url"]      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
