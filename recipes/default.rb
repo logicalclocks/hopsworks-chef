@@ -211,6 +211,11 @@ if h.length > 0
   hosts = hosts.chop!
 end
 
+hops_rpc_tls_val = "false"
+if node["hops"]["rpc"]["ssl_enabled"].eql? "true"
+  hops_rpc_tls_val = "true"
+end
+
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node["glassfish"]["user"]
@@ -243,6 +248,8 @@ template "#{rows_path}" do
                 :hopsworks_dir => domains_dir,
                 :twofactor_auth => node["hopsworks"]["twofactor_auth"],
                 :twofactor_exclude_groups => node["hopsworks"]["twofactor_exclude_groups"],
+                :hops_rpc_tls => hops_rpc_tls_val,
+                :cert_mater_delay => node["hopsworks"]["cert_mater_delay"],
                 :elastic_user => node["elastic"]["user"],
                 :yarn_default_quota => node["hopsworks"]["yarn_default_quota_mins"].to_i * 60,
                 :hdfs_default_quota => node["hopsworks"]["hdfs_default_quota_mbs"].to_i,
@@ -983,6 +990,3 @@ end
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
-
-
-
