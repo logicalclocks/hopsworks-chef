@@ -493,13 +493,13 @@ glassfish_asadmin "set configs.config.server-config.network-config.protocols.pro
 end
 
 # Restrict ciphersuite
-glassfish_asadmin "set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
 
 # Needed by Shibboleth
