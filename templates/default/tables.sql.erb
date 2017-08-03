@@ -537,7 +537,7 @@ CREATE TABLE `user_certs` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `service_certs` (
-  `service_name` varchar(20) NOT NULL,
+  `service_name` varchar(50) NOT NULL,
   `service_key` varbinary(7000) DEFAULT NULL,
   `service_cert` varbinary(3000) DEFAULT NULL,
   PRIMARY KEY (`service_name`)
