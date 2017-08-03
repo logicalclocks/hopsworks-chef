@@ -14,11 +14,11 @@ CITY="$3"
 ORG="$4"
 EMAIL="$5"
 ORCID="$6"
-
+KEYSTOREPW="$7"
 
 
 # default password should be 'adminpw'
-KEYSTOREPW=<%= node["hopsworks"]["master"]["password"] %>
+MASTERPW=<%= node["hopsworks"]["master"]["password"] %>
 cd <%= @int_ca_dir %>
 
 #1 Create a user key
@@ -36,7 +36,7 @@ openssl req -config ../openssl-ca.cnf \
        -new -sha256 -out csr/${DOMAIN}.csr.pem
 
 openssl ca -batch -config openssl-intermediate.cnf \
-      -passin pass:$KEYSTOREPW \
+      -passin pass:$MASTERPW \
       -extensions usr_cert -days 365 -notext -md sha256 \
       -in csr/${DOMAIN}.csr.pem \
       -out certs/${DOMAIN}.cert.pem
@@ -50,7 +50,7 @@ chmod 444 certs/${DOMAIN}.cert.pem
 openssl pkcs12 -export -in certs/${DOMAIN}.cert.pem -inkey private/${DOMAIN}.key.pem -out cert_and_key.p12 -name $DOMAIN -CAfile certs/intermediate.cert.pem -caname root -password pass:$KEYSTOREPW
 keytool -importkeystore -destkeystore ${DOMAIN}__kstore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias $DOMAIN -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__kstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $MASTERPW -destkeypass $MASTERPW
 
 chown -R <%= node["glassfish"]["user"] %>:<%= node["glassfish"]["group"] %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
 mv  ${DOMAIN}__kstore.jks /tmp/${DOMAIN}__kstore.jks
