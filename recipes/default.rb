@@ -970,6 +970,7 @@ directory node["hopsworks"]["staging_dir"]  do
   group node["hopsworks"]["group"]
   mode "750"
   action :create
+  recursive true
 end
 
 
