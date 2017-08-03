@@ -457,22 +457,22 @@ glassfish_asadmin "set server.network-config.protocols.protocol.sec-admin-listen
 end
 
 # Disable SSLv3 on iiop-listener.ssl
-glassfish_asadmin "set server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+#glassfish_asadmin "set server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled=false" do
+#   domain_name domain_name
+#   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#   username username
+#   admin_port admin_port
+#   secure false
+#end
 
 # Disable SSLv3 on iiop-muth_listener.ssl
-glassfish_asadmin "set server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+#glassfish_asadmin "set server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled=false" do
+#   domain_name domain_name
+#   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#   username username
+#   admin_port admin_port
+#   secure false
+#end
 
 # Restrict ciphersuite
 glassfish_asadmin "set configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
