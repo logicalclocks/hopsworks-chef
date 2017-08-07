@@ -38,6 +38,7 @@ cookbook 'compat_resource', '~> 12.7.3'
 cookbook 'ulimit', '~> 0.4.0'
 cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
+cookbook 'sysctl', '~> 0.10.0'
 
 #cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
 

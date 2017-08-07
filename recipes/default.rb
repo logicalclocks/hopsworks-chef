@@ -169,12 +169,18 @@ end
 timerTable = "ejbtimer_mysql.sql"
 timerTablePath = "#{Chef::Config["file_cache_path"]}/#{timerTable}"
 
+# Need to delete the sql file so that the create_timers action is triggered
+file timerTablePath do
+  action :delete
+  ignore_failure true
+end
+
+
 hopsworks_grants "timers_tables" do
   tables_path  "#{timerTablePath}"
   rows_path  ""
   action :nothing
 end 
-
 
 template timerTablePath do
   source File.basename("#{timerTablePath}") + ".erb"
