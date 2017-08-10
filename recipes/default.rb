@@ -836,6 +836,7 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade requests 
     pip install jupyter 
     pip install sparkmagic
+    export HADOOP_HOME=#{node['hops']['base_dir']}
     pip install hdfscontents
 EOF
     not_if "which jupyter"
