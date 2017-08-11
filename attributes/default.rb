@@ -30,6 +30,8 @@ default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_di
 
 default["hopsworks"]["staging_dir"]              = node["hopsworks"]["domains_dir"] + "/domain1/staging"
 
+default["hopsworks"]["jupyter_dir"]              = node["hopsworks"]["dir"] + "/jupyter"
+
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
 default["hopsworks"]["min_mem"]                  = "1024"
