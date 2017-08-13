@@ -894,7 +894,9 @@ attribute "hops/capacity/queue_mapping",
 attribute "hops/capacity/queue_mapping_override.enable",
           :description => "If a queue mapping is present, will it override the value specified by the user? This can be used by administrators to place jobs in queues that are different than the one specified by the user. The default is false.",
           :type => "string"
-
+attribute "hops/cgroups",
+          :description => "'true' to enable cgroups, else (default) 'false'",
+          :type => "string"
 
 
 ##
