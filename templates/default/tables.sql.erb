@@ -843,6 +843,8 @@ CREATE TABLE `roles` (
   `status` int(11) NOT NULL,
   `uptime` bigint(20) DEFAULT NULL,
   `webport` int(11) DEFAULT NULL,
+  `startTime` bigint(20) DEFAULT NULL,
+  `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
