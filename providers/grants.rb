@@ -7,6 +7,7 @@ notifying_action :reload_systemd do
     user "root"
     retries 1
     code <<-EOF
+          systemctl enable glassfish-domain1 
           systemctl daemon-reload
           service glassfish-domain1 restart
     EOF
