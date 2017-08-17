@@ -47,8 +47,15 @@ when "rhel"
   EOF
   not_if "which dtrx"
   end
-  
 end
+
+bash "systemd_reload_for_glassfish_failures" do
+  user "root"
+  code <<-EOF
+    systemctl daemon-reload
+  EOF
+end
+
 
 if node["hopsworks"]["systemd"] === "true" 
   systemd = true
