@@ -977,9 +977,16 @@ end
 directory node["hopsworks"]["staging_dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "750"
+  mode "755"
   action :create
   recursive true
+end
+
+directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
+  owner node["jupyter"]["user"]
+  group node["jupyter"]["group"]
+  mode "600"
+  action :create
 end
 
 
