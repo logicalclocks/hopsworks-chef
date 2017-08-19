@@ -189,7 +189,7 @@ CREATE TABLE `jupyter_settings` (
   `archives` VARCHAR(2500) NOT NULL DEFAULT '',
   `jars` VARCHAR(2500) NOT NULL DEFAULT '',
   `files` VARCHAR(2500) NOT NULL DEFAULT '',
-  `pyFiles` VARCHAR(2500) NOT NULL DEFAULT '',
+  `py_files` VARCHAR(2500) NOT NULL DEFAULT '',
   PRIMARY KEY (`project_id`,`team_member`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
