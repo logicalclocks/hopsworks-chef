@@ -174,8 +174,8 @@ CREATE TABLE `project_team` (
 CREATE TABLE `jupyter_settings` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
-  `num_tf_ps` INT(11) NOT NULL DEFAULT '1',
-  `num_tf_gpus` INT(11) NOT NULL DEFAULT '1',
+  `num_tf_ps` INT(11) NOT NULL DEFAULT '0',
+  `num_tf_gpus` INT(11) NOT NULL DEFAULT '0',
   `appmaster_cores` INT(11) NOT NULL DEFAULT '1',
   `appmaster_memory` INT(11) NOT NULL DEFAULT '1',
   `num_executors` INT(11) NOT NULL DEFAULT '1',
@@ -186,6 +186,7 @@ CREATE TABLE `jupyter_settings` (
   `dynamic_max_executors` INT(11) NOT NULL DEFAULT '1',
   `secret` VARCHAR(255) NOT NULL,
   `mode` VARCHAR(32) NOT NULL,
+  `advanced` tinyint(1) NOT NULL DEFAULT '0',
   `archives` VARCHAR(2500) NOT NULL DEFAULT '',
   `jars` VARCHAR(2500) NOT NULL DEFAULT '',
   `files` VARCHAR(2500) NOT NULL DEFAULT '',
