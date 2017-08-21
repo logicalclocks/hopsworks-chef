@@ -1,75 +1,115 @@
 #!/bin/bash
 
-set -e
-
 help() {
-  echo "usage: $0 localWorkdir srcFileInHdfs"
+  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER"
   exit 1
 }
-
 
 if [ $# -ne 3 ] ; then
   help
 fi
 
-hdfsFile=$1
-workdir=$2
+workdir=$1
+hdfsFile="$2"
+HDFS_USER=$3
+
+#FSM states: STAGING, UNZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
+fsmFile="$(dirname $1)/fsm-$(basename $1).txt"
+
+function finish {
+    rm -rf $workdir
+}
+trap finish EXIT
+
+function check_error {
+    if [ $? -ne 0 ] ; then
+      echo "FAILED" > $fsmFile
+      exit 1	
+    fi
+}
+
+
+prefix='hdfs://'
+normalizedPath=${hdfsFile#${prefix}}
+check_error
+
+file=$(basename "$normalizedPath")
+check_error
+dir=$(dirname "$normalizedPath")
+check_error
 
 cd $workdir
-freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
-freespace=$(($freespace * 1000))
+check_error
 
-filesize=`/srv/hops/hadoop/bin/hadoop fs -du -s $hdfsFile | awk  '{print $1}'`
-# Amount of space needed to download and decompress the file
-filesize=$(($filesize * 3))
+filename=$(basename "$hdfsFile")
 
-if [ $filesize -gt $freespace ] ; then
-  echo "Not enough free space on the local harddisk"
-  exit 2
-fi  
+echo "STAGING" > $fsmFile
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
+check_error
 
-file=$(basename $hdfsFile)
-dir=$(dirname "${hdfsFile}")
+echo "UNZIPPING" > $fsmFile
+
+# State Machine State Change. File now staged to local FS.
+# Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
 
 
-#zips=$(hadoop fs -ls /yourpath/*.zip | awk '{print $8}')
+# http://manpages.ubuntu.com/manpages/trusty/en/man1/dtrx.1.html
+# , everything will be written to  a  dedicated  directory  that's named  after  the  archive.
+# dtrx will also change the permissions to  ensure that the owner can read and write all those files.
 
-hdfs dfs -copyToLocal $hdfsfile $workdir
+cd $workdir
+dtrx -o -n "$file"
+check_error
 
-stripped=""
+# State Machine State Change. File now extracted to local FS.
+# Java program checks if this file is written to see if this directory exists:  $workdir/$(basename $hdfsfile)
+
+
+filedir="${file%%.*}"
+
 case "$file" in 
   *.tar.gz)
-     stripped=$(basename $hdfsFile .tar.gz)
-     mkdir -p $stripped
-     tar zxf $file -C ./$stripped
+     filedir=$(basename "$hdfsFile" .tar.gz)
     ;;
   *.bz2)
-     stripped=$(basename $hdfsFile .bz2)
-     mkdir -p $stripped
-     tar jxf $file -C ./$stripped
+     filedir=$(basename "$hdfsFile" .bz2)
     ;;
-  *.tar)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     tar xf $file -C ./$stripped
+  *.bzip2)
+     filedir=$(basename "$hdfsFile" .bz2)
+    ;;
+  *.tgz)
+     filedir=$(basename "$hdfsFile" .tgz)
     ;;
   *.gz)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     gunzip -c $file > ./$stripped
+     filedir=$(basename "$hdfsFile" .gz)
+    ;;
+  *.7z)
+     filedir=$(basename "$hdfsFile" .7z)
+    ;;
+  *.rar)
+     filedir=$(basename "$hdfsFile" .rar)
     ;;
   *.zip)
-     stripped=$(basename $hdfsFile .tar)
-     mkdir -p $stripped
-     unzip $file -d ./$stripped
+     filedir=$(basename "$hdfsFile" .zip)
     ;;
   *)
     help
     ;;
 esac
 
-   hdfs dfs -copyFromLocal ./$stripped $dir
-   rm $file
-   rm -rf ./$stripped
 
-echo "Done copying from $file to $dir"
+#replace any spaces in the directory name with '_'
+#Hadoop doesnt like spaces in paths.
+escapedFiledir=${filedir// /_}
+mv "$filedir" $escapedFiledir
+
+echo "UPLOADING" > $fsmFile
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal $escapedFiledir "$dir"
+check_error
+
+echo "CHOWNING" > $fsmFile
+<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} "$dir"
+check_error
+
+echo "SUCCESS" > $fsmFile
+

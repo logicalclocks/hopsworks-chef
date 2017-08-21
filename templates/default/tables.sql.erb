@@ -271,9 +271,11 @@ CREATE TABLE `executions` (
   `submission_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user` VARCHAR(150) NOT NULL,
   `state` VARCHAR(128) NOT NULL,
-  `execution_duration` BIGINT(20) DEFAULT NULL,
+  `execution_start` BIGINT(20) DEFAULT NULL,
+  `execution_stop` BIGINT(20) DEFAULT NULL,
   `stdout_path` VARCHAR(255) DEFAULT NULL,
   `stderr_path` VARCHAR(255) DEFAULT NULL,
+  `hdfs_user` VARCHAR(255) DEFAULT NULL,
   `app_id` CHAR(30) DEFAULT NULL,
   `job_id` INT(11) NOT NULL,
   `finalStatus` VARCHAR(128) NOT NULL DEFAULT 'UNDEFINED',
@@ -529,13 +531,14 @@ CREATE TABLE `user_certs` (
 	`username` VARCHAR(10)  NOT NULL,
 	`user_key` VARBINARY(7000),
 	`user_cert` VARBINARY(3000),
+        `user_key_pwd` varchar(200) DEFAULT NULL,
 	PRIMARY KEY (`projectname`, `username`),
 	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
 	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `service_certs` (
-  `service_name` varchar(20) NOT NULL,
+  `service_name` varchar(50) NOT NULL,
   `service_key` varbinary(7000) DEFAULT NULL,
   `service_cert` varbinary(3000) DEFAULT NULL,
   PRIMARY KEY (`service_name`)
@@ -840,6 +843,8 @@ CREATE TABLE `roles` (
   `status` int(11) NOT NULL,
   `uptime` bigint(20) DEFAULT NULL,
   `webport` int(11) DEFAULT NULL,
+  `startTime` bigint(20) DEFAULT NULL,
+  `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 

@@ -20,7 +20,7 @@ default["hopsworks"]["admin"]["port"]            = 4848
 default["hopsworks"]["port"]                     = "8080"
 default["glassfish"]["admin"]["port"]            = node["hopsworks"]["admin"]["port"]
 default["glassfish"]["port"]                     = node["hopsworks"]["port"].to_i
-default["glassfish"]["version"]                  = '4.1.1.171.0.1'
+default["glassfish"]["version"]                  = '4.1.2.172'
 
 default["hopsworks"]["dir"]                      = node["install"]["dir"].empty? ? "/usr/local" : node["install"]["dir"]
 default["glassfish"]["install_dir"]              = node["hopsworks"]["dir"]
@@ -28,6 +28,9 @@ default["glassfish"]["base_dir"]                 = node["glassfish"]["install_di
 default["hopsworks"]["domains_dir"]              = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/domains" : node["install"]["dir"] + "/domains"
 default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_dir"]
 
+default["hopsworks"]["staging_dir"]              = node["hopsworks"]["domains_dir"] + "/domain1/staging"
+
+default["hopsworks"]["jupyter_dir"]              = node["hopsworks"]["dir"] + "/jupyter"
 
 default["hopsworks"]["max_mem"]                  = "3000"
 default["glassfish"]["max_mem"]                  = node["hopsworks"]["max_mem"].to_i
@@ -54,6 +57,13 @@ default["hopsworks"]["admin"]["password"]           = "adminpw"
 default["glassfish"]["cert"]["password"]            = "#{node["hopsworks"]["admin"]["password"]}"
 default["hopsworks"]["twofactor_auth"]           = "false"
 default["hopsworks"]["twofactor_exclude_groups"] = "AGENT" #semicolon separated list of roles
+## Suffix can be: (defaults to minutes if omitted)
+## ms: milliseconds
+## s: seconds
+## m: minutes (default)
+## h: hours
+## d: days
+default["hopsworks"]["cert_mater_delay"]         = "3m"
 
 default["hopsworks"]["mysql_connector_url"]      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 

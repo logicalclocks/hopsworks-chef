@@ -13,15 +13,49 @@ mysql_password=node["mysql"]["password"]
 mysql_host = my_private_ip()
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
-case node.platform
-when "ubuntu"
+
+# For unzipping files
+
+case node["platform_family"]
+when "debian"
+  
  if node.platform_version.to_f <= 14.04
    node.override["hopsworks"]["systemd"] = "false"
  end
-
- # Needed by sparkmagic
+ package "dtrx"
  package "libkrb5-dev"
+
+when "rhel"
+  package "krb5-libs"
+  
+  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz" do
+    user node["glassfish"]["user"]
+    group node["glassfish"]["group"]
+    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
+    mode 0755
+    action :create
+  end
+  
+  bash "unpack_dtrx" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{Chef::Config[:file_cache_path]}
+    tar -xzf dtrx.tar.gz
+    cd dtrx-7.1
+    python setup.py install --prefix=/usr/local
+  EOF
+  not_if "which dtrx"
+  end
 end
+
+bash "systemd_reload_for_glassfish_failures" do
+  user "root"
+  code <<-EOF
+    systemctl daemon-reload
+  EOF
+end
+
 
 if node["hopsworks"]["systemd"] === "true" 
   systemd = true
@@ -426,6 +460,14 @@ end
 
 template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "550"
+  action :create
+end
+
+template "#{domains_dir}/#{domain_name}/bin/unzip-background.sh" do
+  source "unzip-background.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
   mode "550"

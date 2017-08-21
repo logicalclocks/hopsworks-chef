@@ -79,6 +79,10 @@ attribute "hopsworks/twofactor_auth",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
 
+attribute "hopsworks/cert_mater_delay",
+          :description => "Delay for the Certificate Materialization service of Hopsworks to delete the certificates from the local fs",
+          :type => 'string'
+
 attribute "hopsworks/smtp",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
@@ -234,6 +238,10 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/staging_dir",
+          :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
+          :type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
@@ -248,6 +256,14 @@ attribute "install/dir",
 
 attribute "install/user",
           :description => "User to install the services as",
+          :type => "string"
+
+attribute "install/ssl",
+          :description => "Is SSL turned on for all services?",
+          :type => "string"
+
+attribute "install/cleanup_downloads",
+          :description => "Remove any zipped binaries that were downloaded and used to install services",
           :type => "string"
 
 attribute "hopsworks/monitor_max_status_poll_try",
@@ -878,7 +894,9 @@ attribute "hops/capacity/queue_mapping",
 attribute "hops/capacity/queue_mapping_override.enable",
           :description => "If a queue mapping is present, will it override the value specified by the user? This can be used by administrators to place jobs in queues that are different than the one specified by the user. The default is false.",
           :type => "string"
-
+attribute "hops/cgroups",
+          :description => "'true' to enable cgroups, else (default) 'false'",
+          :type => "string"
 
 
 ##

@@ -169,12 +169,18 @@ end
 timerTable = "ejbtimer_mysql.sql"
 timerTablePath = "#{Chef::Config["file_cache_path"]}/#{timerTable}"
 
+# Need to delete the sql file so that the create_timers action is triggered
+file timerTablePath do
+  action :delete
+  ignore_failure true
+end
+
+
 hopsworks_grants "timers_tables" do
   tables_path  "#{timerTablePath}"
   rows_path  ""
   action :nothing
 end 
-
 
 template timerTablePath do
   source File.basename("#{timerTablePath}") + ".erb"
@@ -211,6 +217,11 @@ if h.length > 0
   hosts = hosts.chop!
 end
 
+hops_rpc_tls_val = "false"
+if node["hops"]["rpc"]["ssl_enabled"].eql? "true"
+  hops_rpc_tls_val = "true"
+end
+
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node["glassfish"]["user"]
@@ -243,6 +254,8 @@ template "#{rows_path}" do
                 :hopsworks_dir => domains_dir,
                 :twofactor_auth => node["hopsworks"]["twofactor_auth"],
                 :twofactor_exclude_groups => node["hopsworks"]["twofactor_exclude_groups"],
+                :hops_rpc_tls => hops_rpc_tls_val,
+                :cert_mater_delay => node["hopsworks"]["cert_mater_delay"],
                 :elastic_user => node["elastic"]["user"],
                 :yarn_default_quota => node["hopsworks"]["yarn_default_quota_mins"].to_i * 60,
                 :hdfs_default_quota => node["hopsworks"]["hdfs_default_quota_mbs"].to_i,
@@ -268,6 +281,7 @@ template "#{rows_path}" do
                 :influxdb_user => node["influxdb"]["db_user"],
                 :influxdb_password => node["influxdb"]["db_password"],
                 :graphite_port => node["influxdb"]["graphite"]["port"],
+                :cuda_dir => node["cuda"]["base_dir"],
                 :anaconda_dir => node["conda"]["base_dir"],
                 :org_name => node["hopsworks"]["org_name"],
                 :org_domain => node["hopsworks"]["org_domain"],
@@ -450,22 +464,22 @@ glassfish_asadmin "set server.network-config.protocols.protocol.sec-admin-listen
 end
 
 # Disable SSLv3 on iiop-listener.ssl
-glassfish_asadmin "set server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+#glassfish_asadmin "set server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled=false" do
+#   domain_name domain_name
+#   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#   username username
+#   admin_port admin_port
+#   secure false
+#end
 
 # Disable SSLv3 on iiop-muth_listener.ssl
-glassfish_asadmin "set server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+#glassfish_asadmin "set server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled=false" do
+#   domain_name domain_name
+#   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#   username username
+#   admin_port admin_port
+#   secure false
+#end
 
 # Restrict ciphersuite
 glassfish_asadmin "set configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
@@ -486,13 +500,13 @@ glassfish_asadmin "set configs.config.server-config.network-config.protocols.pro
 end
 
 # Restrict ciphersuite
-glassfish_asadmin "set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers=#{node.glassfish.ciphersuite}" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
 
 # Needed by Shibboleth
@@ -729,6 +743,7 @@ glassfish_deployable "hopsworks-ca" do
   secure false
   action :deploy
   async_replication false
+  retries 1  
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
 end
 
@@ -784,14 +799,26 @@ bash "pip_upgrade" do
     EOF
 end
 
-package "scala" do
-end
-
 scala_home=
 case node['platform']
  when 'debian', 'ubuntu'
-  scala_home="/usr/share/scala-2.11"
+   scala_home="/usr/share/scala-2.11"
+   package "scala" do
+   end
  when 'redhat', 'centos', 'fedora'
+
+  bash 'gmail' do
+    user "root"
+    code <<-EOF
+       cd #{Chef::Config["file_cache_path"]}
+       wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.rpm
+       sudo yum install scala-2.11.8.rpm
+       rm scala-2.11.8.rpm
+    EOF
+    not_if "which scala"
+  end
+
+   
   scala_home="/usr/share/scala-2.11"
 end
 
@@ -803,10 +830,21 @@ bash "jupyter-sparkmagic" do
     user "root"
     code <<-EOF
     set -e
-    pip install jupyter
-    pip install sparkmagic
+
+    # --user --no-cache-dir 
     pip install urllib3
-    pip install --upgrade requests
+    pip install --upgrade requests 
+    pip install jupyter 
+    pip install sparkmagic
+    export HADOOP_HOME=#{node['hops']['base_dir']}
+    pip install hdfscontents
+EOF
+    not_if "which jupyter"
+end
+
+bash "jupyter-sparkmagic-enable" do
+    user "root"
+    code <<-EOF
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
@@ -819,6 +857,7 @@ template "/tmp/jupyter-pixiedust.sh" do
   action :create
 end
 
+cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
 pixiedust_home="#{domains_dir}/pixiedust"
 bash "jupyter-pixiedust" do
@@ -827,23 +866,25 @@ bash "jupyter-pixiedust" do
       set -e
       mkdir -p #{pixiedust_home}/bin
       cd #{pixiedust_home}/bin
-      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/cloudant-spark-v2.0.0-185.jar
-      #chown #{node["jupyter"]["user"]} cloudant-spark-v2.0.0-185.jar
-      chown #{node['jupyter']['user']} -R #{pixiedust_home}
-
       export PIXIEDUST_HOME=#{pixiedust_home}
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
       pip install matplotlib
-      pip install pixiedust
+      pip install pixiedust 
       jupyter pixiedust install --silent
 
-# pythonwithpixiedustspark21 - install in /usr/local/share/jupyter/kernels
-      jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark21
+      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
+      chown #{node['jupyter']['user']} -R #{pixiedust_home}
 
+# pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
+      if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
+#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
+         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
+#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
+      fi
     EOF
+    not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
 end
-
 
 
 pythondir=""
@@ -868,8 +909,10 @@ bash "jupyter-sparkmagic-kernels" do
     
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
-    chown -R #{node["glassfish"]["user"]}:#{node["glassfish"]["group"]} #{domains_dir}/.sparkmagic
-    chown -R #{node['glassfish']['user']}:#{node['glassfish']['group']} /home/#{node['hopsworks']['user']}/.config
+    chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
+    if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
+      chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
+    fi
    EOF
 end
 
@@ -887,7 +930,7 @@ end
 
 template "#{homedir}/.sparkmagic/config.json" do
   source "config.json.erb"
-  owner node["glassfish"]["user"]
+  owner node["hopsworks"]["user"]
   mode 0750
   action :create
   variables({
@@ -931,6 +974,15 @@ if node["services"]["enabled"] != "true"
 end
 
 
+directory node["hopsworks"]["staging_dir"]  do
+  owner node["hopsworks"]["user"]
+  group node["hopsworks"]["group"]
+  mode "750"
+  action :create
+  recursive true
+end
+
+
 
 kagent_keys "#{homedir}" do
   cb_user node["hopsworks"]["user"]
@@ -949,6 +1001,3 @@ end
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
-
-
-
