@@ -1063,6 +1063,18 @@ CREATE TABLE `jupyter_project` (
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+--
+-- Mapping of jupyter notebook servers to Livy interpreters
+--
+CREATE TABLE `jupyter_interpreter` (
+  `port` INT(11) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,  
+  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`port`,`name`),
+  FOREIGN KEY (`port`) REFERENCES `jupyter_project` (`port`) ON DELETE CASCADE ON UPDATE NO ACTION
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 
 
 --
