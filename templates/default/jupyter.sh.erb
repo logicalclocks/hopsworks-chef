@@ -107,12 +107,12 @@ elif [ "$1" == "start" ] ; then
 	exit 4
     fi
 
-    if [[ $8 =~ ^\/$|(^(?=\/)|^\.|^\.\.)(\/(?=[^/\0])[^/\0]+)*\/?$ ]] ; then
-	echo "secret_dir looks like a path has, ok"
-    else
-	echo "Invalid secret_dir parameter, doesn't look like a path: $8"
-	exit 4
-    fi
+#    if [[ $8 =~ ^\/$|(^(?=\/)|^\.|^\.\.)(\/(?=[^/\0])[^/\0]+)*\/?$ ]] ; then
+#	echo "secret_dir looks like a path has, ok"
+#    else
+#	echo "Invalid secret_dir parameter, doesn't look like a path: $8"
+#	exit 4
+#    fi
 
     
     # Make the group of the files, the jupyter group so that they can write to the files
