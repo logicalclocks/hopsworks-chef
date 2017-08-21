@@ -114,6 +114,15 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
 
+     sudo mkdir -p $8
+     sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $8
+
+     #if [ ! -d $8 ] ; then
+     #  echo "Couldn't find data_dir: $8"
+     #  exit 1
+     #fi
+
+
     
     # Make the group of the files, the jupyter group so that they can write to the files
     chgrp -R <%= node["jupyter"]["group"] %> $2

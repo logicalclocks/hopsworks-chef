@@ -985,7 +985,7 @@ end
 directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
   owner node["jupyter"]["user"]
   group node["jupyter"]["group"]
-  mode "600"
+  mode "0300"
   action :create
 end
 

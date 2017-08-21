@@ -58,13 +58,6 @@ if [ -f $PID_FILE ] ; then
  fi
 fi
 
-mkdir -p $SECRET_DIR
-
-if [ ! -d $SECRET_DIR ] ; then
- echo "Couldn't find data_dir: $SECRET_DIR"
- exit 1
-fi
-
 cd $SECRET_DIR
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
