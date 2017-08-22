@@ -229,9 +229,9 @@ INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
 --
 -- pyspark, python
 --
+INSERT INTO variables VALUES ("python_kernel", "<%= @python_kernel %>");
 
 INSERT INTO variables VALUES ("cuda_dir", "<%= @cuda_dir %>");
-
 INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
 INSERT INTO variables VALUES ("anaconda_env", "<%= node["kagent"]["user"] %>");
 INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anaconda_enabled"] %>");
