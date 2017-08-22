@@ -250,6 +250,8 @@ template "#{rows_path}" do
                 :yarn_user => node["hops"]["yarn"]["user"],
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
+                :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+                :hdfs_ui_port => node["hops"]["nn"]["http_port"],
                 :hdfs_user => node["hops"]["hdfs"]["user"],
                 :mr_user => node["hops"]["mr"]["user"],
                 :flink_dir => node["flink"]["dir"] + "/flink",
