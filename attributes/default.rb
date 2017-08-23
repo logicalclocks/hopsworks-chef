@@ -138,3 +138,4 @@ default["hopsworks"]["anaconda_enabled"]               = node["kagent"]["conda_e
 default["jupyter"]["base_dir"]                         = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/jupyter" : node["install"]["dir"] + "/jupyter"
 default["jupyter"]["user"]                             = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
 default["jupyter"]["group"]                            = node["install"]["user"].empty? ? "jupyter" : node["install"]["user"]
+default["jupyter"]["python"]                           = "true"

@@ -128,6 +128,14 @@ rescue
 end
 
 
+begin
+  python_kernel = "#{node['jupyter']['python']}".downcase 
+rescue
+  python_kernel = "true"
+  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
+end
+
+
 vagrant_enabled = 0
 if node["hopsworks"]["user"] == "vagrant"
   vagrant_enabled = 1
@@ -242,6 +250,8 @@ template "#{rows_path}" do
                 :yarn_user => node["hops"]["yarn"]["user"],
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
+                :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+                :hdfs_ui_port => node["hops"]["nn"]["http_port"],
                 :hdfs_user => node["hops"]["hdfs"]["user"],
                 :mr_user => node["hops"]["mr"]["user"],
                 :flink_dir => node["flink"]["dir"] + "/flink",
@@ -275,6 +285,7 @@ template "#{rows_path}" do
                 :kafka_user => node["kkafka"]["user"],
                 :kibana_ip => kibana_ip,
                 :logstash_ip => logstash_ip,
+                :python_kernel => python_kernel,
                 :grafana_ip => grafana_ip,
                 :influxdb_ip => influxdb_ip,
                 :influxdb_port => node["influxdb"]["http"]["port"],
@@ -977,9 +988,16 @@ end
 directory node["hopsworks"]["staging_dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "750"
+  mode "755"
   action :create
   recursive true
+end
+
+directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
+  owner node["jupyter"]["user"]
+  group node["jupyter"]["group"]
+  mode "0300"
+  action :create
 end
 
 

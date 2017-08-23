@@ -169,6 +169,37 @@ CREATE TABLE `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+
+
+CREATE TABLE `jupyter_settings` (
+  `project_id` INT(11) NOT NULL,
+  `team_member` VARCHAR(150) NOT NULL,
+  `num_tf_ps` INT(11) NOT NULL DEFAULT '0',
+  `num_tf_gpus` INT(11) NOT NULL DEFAULT '0',
+  `appmaster_cores` INT(11) NOT NULL DEFAULT '1',
+  `appmaster_memory` INT(11) NOT NULL DEFAULT '1',
+  `num_executors` INT(11) NOT NULL DEFAULT '1',
+  `num_executor_cores` INT(11) NOT NULL DEFAULT '1',
+  `executor_memory` INT(11) NOT NULL DEFAULT '1',
+  `dynamic_initial_executors` INT(11) NOT NULL DEFAULT '1',
+  `dynamic_min_executors` INT(11) NOT NULL DEFAULT '1',
+  `dynamic_max_executors` INT(11) NOT NULL DEFAULT '1',
+  `secret` VARCHAR(255) NOT NULL,
+  `mode` VARCHAR(32) NOT NULL,
+  `advanced` tinyint(1) NOT NULL DEFAULT '0',
+  `archives` VARCHAR(2500) NOT NULL DEFAULT '',
+  `jars` VARCHAR(2500) NOT NULL DEFAULT '',
+  `files` VARCHAR(2500) NOT NULL DEFAULT '',
+  `py_files` VARCHAR(2500) NOT NULL DEFAULT '',
+  PRIMARY KEY (`project_id`,`team_member`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  KEY secret_idx(`secret`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+
+
 CREATE TABLE `schema_topics` (
   `name` VARCHAR(255) NOT NULL,
   `version` INT(11) NOT NULL,
@@ -1026,20 +1057,22 @@ CREATE TABLE `jupyter_project` (
   `secret` VARCHAR(64) NOT NULL,  
   `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
-  `driver_cores` INT(11) NOT NULL DEFAULT 1,
-  `driver_memory` VARCHAR(32) NOT NULL DEFAULT '500M',  
-  `num_executors` INT(11) NOT NULL DEFAULT 1,
-  `executor_cores` INT(11) NOT NULL DEFAULT 1,
-  `executor_memory` VARCHAR(32) NOT NULL DEFAULT '500M',
-  `gpus` INT(11) NOT NULL DEFAULT 0,
-  `archives` VARCHAR(3000) NOT NULL DEFAULT '',
-  `jars` VARCHAR(3000) NOT NULL DEFAULT '',
-  `files` VARCHAR(3000) NOT NULL DEFAULT '',
-  `pyFiles` VARCHAR(3000) NOT NULL DEFAULT '',    
   PRIMARY KEY (`port`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),  
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+--
+-- Mapping of jupyter notebook servers to Livy interpreters
+--
+CREATE TABLE `jupyter_interpreter` (
+  `port` INT(11) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,  
+  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`port`,`name`),
+  FOREIGN KEY (`port`) REFERENCES `jupyter_project` (`port`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
