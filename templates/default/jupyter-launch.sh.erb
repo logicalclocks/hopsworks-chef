@@ -7,11 +7,11 @@ export JAVA_HOME=$3
 export ANACONDA_ENV=$4
 PORT=$5
 LOGFILE=${JUPYTER_HOME}/logs/$6
-HDFS_USER=`echo $JUPYTER_HOME | awk -F/ '{print $7}'`
+SECRET_DIR=$7
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR"
     echo ""
     exit 1
 }
@@ -28,13 +28,14 @@ function kill_named {
 }
 
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 7 ]; then
   help
 fi
 
 
-export JUPYTER_DATA_DIR=${JUPYTER_HOME}
-export JUPYTER_PATH=${JUPYTER_HOME}
+export JUPYTER_DATA_DIR=$JUPYTER_HOME
+export PDIR=$SECRET_DIR
+export JUPYTER_PATH=$JUPYTER_HOME
 export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
 export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
 export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
@@ -56,11 +57,11 @@ if [ -f $PID_FILE ] ; then
  fi
 fi
 
+cd $SECRET_DIR
+
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid jupyter notebook --debug --NotebookApp.port=$PORT --NotebookApp.hdfsuser=$HDFS_USER </dev/zero &> $LOGFILE  &
-
+setsid jupyter notebook --debug --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
-
 
 # Check that the token is written to the logfile, return when we see it.
 token=0

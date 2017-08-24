@@ -128,6 +128,14 @@ rescue
 end
 
 
+begin
+  python_kernel = "#{node['jupyter']['python']}".downcase 
+rescue
+  python_kernel = "true"
+  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
+end
+
+
 vagrant_enabled = 0
 if node["hopsworks"]["user"] == "vagrant"
   vagrant_enabled = 1
@@ -242,6 +250,8 @@ template "#{rows_path}" do
                 :yarn_user => node["hops"]["yarn"]["user"],
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
+                :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+                :hdfs_ui_port => node["hops"]["nn"]["http_port"],
                 :hdfs_user => node["hops"]["hdfs"]["user"],
                 :mr_user => node["hops"]["mr"]["user"],
                 :flink_dir => node["flink"]["dir"] + "/flink",
@@ -275,6 +285,7 @@ template "#{rows_path}" do
                 :kafka_user => node["kkafka"]["user"],
                 :kibana_ip => kibana_ip,
                 :logstash_ip => logstash_ip,
+                :python_kernel => python_kernel,
                 :grafana_ip => grafana_ip,
                 :influxdb_ip => influxdb_ip,
                 :influxdb_port => node["influxdb"]["http"]["port"],
@@ -591,31 +602,31 @@ glassfish_asadmin "set default-config.http-service.virtual-server.server.propert
    secure false
 end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.maximum-pool-size=2800" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.maximum-pool-size=2800" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.task-queue-capacity=10000" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.task-queue-capacity=10000" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=50 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -977,9 +988,16 @@ end
 directory node["hopsworks"]["staging_dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "750"
+  mode "755"
   action :create
   recursive true
+end
+
+directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
+  owner node["jupyter"]["user"]
+  group node["jupyter"]["group"]
+  mode "0300"
+  action :create
 end
 
 
