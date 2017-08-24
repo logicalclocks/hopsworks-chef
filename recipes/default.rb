@@ -870,7 +870,7 @@ end
 
 cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{domains_dir}/pixiedust"
+pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
     user "root"
     code <<-EOF
@@ -889,9 +889,7 @@ bash "jupyter-pixiedust" do
 
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
          jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
@@ -901,7 +899,6 @@ end
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
-# "/usr/lib/python2.7/dist-packages"
   pythondir="/usr/local/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
   pythondir="/usr/lib/python2.7/site-packages"
@@ -949,9 +946,6 @@ template "#{homedir}/.sparkmagic/config.json" do
                :homedir => homedir
   })
 end
-
-
-
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true

@@ -108,7 +108,6 @@ directory domains_dir  do
   group node["hopsworks"]["group"]
   mode "750"
   action :create
-  recursive true
   not_if "test -d #{domains_dir}"
 end
 
@@ -549,11 +548,11 @@ user node["jupyter"]["user"] do
   not_if "getent passwd #{node["jupyter"]["user"]}"
 end
 
-group node["kagent"]["certs_group"] do
-  action :modify
-  members ["#{node["jupyter"]["user"]}"]
-  append true
-end
+# group node["kagent"]["certs_group"] do
+#   action :modify
+#   members ["#{node["jupyter"]["user"]}"]
+#   append true
+# end
 
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
@@ -564,7 +563,6 @@ directory node["jupyter"]["base_dir"]  do
   group node["jupyter"]["group"]
   mode "775"
   action :create
-  recursive true
   not_if "test -d #{node["jupyter"]["base_dir"]}"
 end
 
