@@ -229,7 +229,7 @@ if __name__ == '__main__':
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
         
-#        subprocess.call("<%= node[:kagent][:base_dir] %>/keystore.sh")
+        subprocess.call("<%= node[:hopsworks][:domains_dir] %>/domain1/bin/ca-keystore.sh")
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
 

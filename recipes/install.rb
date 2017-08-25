@@ -582,6 +582,12 @@ end
 #   mode 0750
 #   action :create
 # end
+# template "#{theDomain}/bin/ca-keystore.sh" do
+#   source "ca-keystore.sh.erb"
+#   owner node["glassfish"]["user"]
+#   mode 0750
+#   action :create
+# end
 
 # if node['hopssite']['user'].isEmpty? == false
 #   hopsworks_certs "sign-ca-with-root-hopssite-ca" do
