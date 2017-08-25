@@ -95,6 +95,12 @@ group node["hops"]["group"] do
   append true
 end
 
+group node["hops"]["hdfs"]["user"] do
+  action :modify
+  members ["#{node["hopsworks"]["user"]}"]
+  append true
+end
+
 directory node["hopsworks"]["dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
