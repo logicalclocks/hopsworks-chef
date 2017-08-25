@@ -6,12 +6,14 @@ username=node["hopsworks"]["admin"]["user"]
 password=node["hopsworks"]["admin"]["password"]
 domain_name="domain1"
 domains_dir = node["hopsworks"]["domains_dir"]
+theDomain="#{domains_dir}/#{domain_name}"
 admin_port = node["glassfish"]["admin"]["port"]
 web_port = node["glassfish"]["port"]
 mysql_user=node["mysql"]["user"]
 mysql_password=node["mysql"]["password"]
 mysql_host = my_private_ip()
-password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
+password_file = "#{theDomain}_admin_passwd"
+
 
 
 # For unzipping files
@@ -247,7 +249,7 @@ if ::File.exists?( "#{installed}" ) == false
 
   cauth = File.basename(node["hopsworks"]["cauth_url"])
 
-  remote_file "#{domains_dir}/#{domain_name}/lib/#{cauth}"  do
+  remote_file "#{theDomain}/lib/#{cauth}"  do
     user node["glassfish"]["user"]
     group node["glassfish"]["group"]
     source node["hopsworks"]["cauth_url"]
@@ -264,7 +266,7 @@ if node["glassfish"]["install_dir"].include?("versions") == false
 end
 
 
-template "#{domains_dir}/#{domain_name}/docroot/404.html" do
+template "#{theDomain}/docroot/404.html" do
   source "404.html.erb"
   owner node["glassfish"]["user"]
   mode 0777
@@ -274,7 +276,7 @@ template "#{domains_dir}/#{domain_name}/docroot/404.html" do
   action :create
 end 
 
-cookbook_file"#{domains_dir}/#{domain_name}/docroot/obama-smoked-us.gif" do
+cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   source 'obama-smoked-us.gif'
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -427,7 +429,7 @@ template "#{ca_dir}/intermediate/deleteprojectcerts.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh" do
+template "#{theDomain}/bin/ndb_backup.sh" do
   source "ndb_backup.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -435,7 +437,7 @@ template "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/jupyter.sh" do
+template "#{theDomain}/bin/jupyter.sh" do
   source "jupyter.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -443,7 +445,7 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh" do
+template "#{theDomain}/bin/jupyter-project-cleanup.sh" do
   source "jupyter-project-cleanup.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -451,7 +453,7 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/jupyter-kill.sh" do
+template "#{theDomain}/bin/jupyter-kill.sh" do
   source "jupyter-kill.sh.erb"
   owner node["glassfish"]["user"]
   group node["jupyter"]["group"]
@@ -459,7 +461,7 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-kill.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/jupyter-stop.sh" do
+template "#{theDomain}/bin/jupyter-stop.sh" do
   source "jupyter-stop.sh.erb"
   owner node["glassfish"]["user"]
   group node["jupyter"]["group"]
@@ -467,7 +469,7 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-stop.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/jupyter-launch.sh" do
+template "#{theDomain}/bin/jupyter-launch.sh" do
   source "jupyter-launch.sh.erb"
   owner node["glassfish"]["user"]
   group node["jupyter"]["group"]
@@ -475,7 +477,7 @@ template "#{domains_dir}/#{domain_name}/bin/jupyter-launch.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
+template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -483,7 +485,7 @@ template "#{domains_dir}/#{domain_name}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/unzip-background.sh" do
+template "#{theDomain}/bin/unzip-background.sh" do
   source "unzip-background.sh.erb"
   owner node["glassfish"]["user"]
   group node["glassfish"]["group"]
@@ -503,9 +505,9 @@ template "/etc/sudoers.d/glassfish" do
               :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
               :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
-              :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh",
-              :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh",
-              :jupyter_cleanup =>  "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh"                                
+              :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
+              :jupyter =>  "#{theDomain}/bin/jupyter.sh",
+              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh"                                
             })
   action :create
 end  
@@ -567,3 +569,22 @@ directory node["jupyter"]["base_dir"]  do
 end
 
 
+template "#{theDomain}/config/ca.ini" do
+  source "ca.ini.erb"
+  owner node["glassfish"]["user"]
+  mode 0750
+  action :create
+end
+
+# template "#{theDomain}/bin/csr-ca.py" do
+#   source "csr-ca.py"
+#   owner node["glassfish"]["user"]
+#   mode 0750
+#   action :create
+# end
+
+# if node['hopssite']['user'].isEmpty? == false
+#   hopsworks_certs "sign-ca-with-root-hopssite-ca" do
+#     action :sign_hopssite
+#   end
+# end

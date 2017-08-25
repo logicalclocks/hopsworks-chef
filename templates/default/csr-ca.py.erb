@@ -143,6 +143,7 @@ config_mutex = Lock()
 
 HTTP_OK = 200
 
+CONFIG_FILE = "<%= node['hopsworks']['domains_dir'] %>/domain1/config/ca.ini"
 LOG_FILE = "<%= node[:kagent][:base_dir] %>/csr.log"
 CERT_FILE = "<%= node[:kagent][:certs_dir] %>/pub.pem"
 CA_FILE = "<%= node[:kagent][:certs_dir] %>/ca_pub.pem"

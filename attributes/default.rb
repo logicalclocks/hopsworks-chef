@@ -28,7 +28,7 @@ default["glassfish"]["base_dir"]                 = node["glassfish"]["install_di
 default["hopsworks"]["domains_dir"]              = node["install"]["dir"].empty? ? node["hopsworks"]["dir"] + "/domains" : node["install"]["dir"] + "/domains"
 default["glassfish"]["domains_dir"]              = node["hopsworks"]["domains_dir"]
 
-default["hopsworks"]["staging_dir"]              = node["hopsworks"]["domains_dir"] + "/domain1/staging"
+default["hopsworks"]["staging_dir"]              = node["hopsworks"]["dir"] + "/staging"
 
 default["hopsworks"]["jupyter_dir"]              = node["hopsworks"]["dir"] + "/jupyter"
 
@@ -49,7 +49,13 @@ default["hopsworks"]["cauth_url"]                = "#{node["download_url"]}/otp-
 default["hopsworks"]["war_url"]                  = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks.war"
 default["hopsworks"]["ca_url"]                   = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ca.war"
 default["hopsworks"]["ear_url"]                  = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ear.ear"
-default["hopsworks"]["ca_url"]                   = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ca.war"
+
+#
+# hops.site settings
+#
+default["hopssite"]["url"]                       = "https://www.hops.site"
+default["hopssite"]["user"]                      = "agent@hops.io"
+default["hopssite"]["password"]                  = "admin"
 
 
 default["hopsworks"]["admin"]["user"]               = "adminuser"
