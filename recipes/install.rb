@@ -19,11 +19,11 @@ password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 case node["platform_family"]
 when "debian"
   
- if node.platform_version.to_f <= 14.04
-   node.override["hopsworks"]["systemd"] = "false"
- end
- package "dtrx"
- package "libkrb5-dev"
+  if node.platform_version.to_f <= 14.04
+    node.override["hopsworks"]["systemd"] = "false"
+  end
+  package "dtrx"
+  package "libkrb5-dev"
 
 when "rhel"
   package "krb5-libs"
@@ -45,7 +45,7 @@ when "rhel"
     cd dtrx-7.1
     python setup.py install --prefix=/usr/local
   EOF
-  not_if "which dtrx"
+    not_if "which dtrx"
   end
 end
 
@@ -112,9 +112,8 @@ end
 directory domains_dir  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "755"
+  mode "750"
   action :create
-  recursive true
   not_if "test -d #{domains_dir}"
 end
 
@@ -172,6 +171,24 @@ node.override = {
             'maxqueuesize' => 256
           }
         },
+        'managed_thread_factories' => {
+          'concurrent/hopsThreadFactory' => {
+            'threadpriority' => 12,
+            'description' => 'Hopsworks Thread Factory'
+          }
+        },
+        'managed_executor_services' => {
+          'concurrent/hopsExecutorService' => {
+            'threadpriority' => 12,
+            'description' => 'Hopsworks Executor Service'
+          }
+        },
+        'managed_scheduled_executor_services' => {
+          'concurrent/hopsScheduledExecutorService' => {
+            'corepoolsize' => 12,
+            'description' => 'Hopsworks Executor Service'
+          }
+        },        
         'jdbc_connection_pools' => {
           'hopsworksPool' => {
             'config' => {
@@ -253,15 +270,15 @@ if node["glassfish"]["install_dir"].include?("versions") == false
 end
 
 
- template "#{domains_dir}/#{domain_name}/docroot/404.html" do
-    source "404.html.erb"
-    owner node["glassfish"]["user"]
-    mode 0777
-    variables({
-                :org_name => node["hopsworks"]["org_name"]
-              })
-    action :create
- end 
+template "#{domains_dir}/#{domain_name}/docroot/404.html" do
+  source "404.html.erb"
+  owner node["glassfish"]["user"]
+  mode 0777
+  variables({
+              :org_name => node["hopsworks"]["org_name"]
+            })
+  action :create
+end 
 
 cookbook_file"#{domains_dir}/#{domain_name}/docroot/obama-smoked-us.gif" do
   source 'obama-smoked-us.gif'
@@ -283,10 +300,10 @@ end
 case node.platform
 when "rhel"
 
- # Needed by sparkmagic
- package "krb5-libs"
- package "krb5-devel"
- 
+  # Needed by sparkmagic
+  package "krb5-libs"
+  package "krb5-devel"
+  
   service_name = "glassfish-#{domain_name}"
   file "/etc/systemd/system/#{service_name}.service" do
     owner "root"
@@ -298,11 +315,11 @@ when "rhel"
     mode '0741'
     cookbook 'hopsworks'
     variables(
-              :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
-              :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
-              :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
-              :authbind => requires_authbind,
-              :listen_ports => [admin_port, node["glassfish"]["port"]])
+      :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
+      :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
+      :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
+      :authbind => requires_authbind,
+      :listen_ports => [admin_port, node["glassfish"]["port"]])
   end
 
 end
@@ -323,22 +340,22 @@ if systemd == true
     action :create
   end 
 
-    hopsworks_grants "reload_systemd" do
-      tables_path  ""
-      views_path ""
-      rows_path  ""
-      action :reload_systemd
-    end 
+  hopsworks_grants "reload_systemd" do
+    tables_path  ""
+    views_path ""
+    rows_path  ""
+    action :reload_systemd
+  end 
 
 end
 
 ca_dir = node["certs"]["dir"]
 
 directory ca_dir do
-    owner node["glassfish"]["user"]
-    group node["glassfish"]["group"]
-    mode "700"
-    action :create
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode "700"
+  action :create
 end
 
 dirs = %w{certs crl newcerts private intermediate}
@@ -368,8 +385,8 @@ template "#{ca_dir}/openssl-ca.cnf" do
   owner node["glassfish"]["user"]
   mode "600"
   variables({
-    :ca_dir =>  "#{ca_dir}"
-  })
+              :ca_dir =>  "#{ca_dir}"
+            })
   action :create
 end 
 
@@ -377,9 +394,9 @@ template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   source "intermediateopenssl.cnf.erb"
   owner node["glassfish"]["user"]
   mode "600"
-    variables({
-                :int_ca_dir =>  "#{ca_dir}/intermediate"
-              })
+  variables({
+              :int_ca_dir =>  "#{ca_dir}/intermediate"
+            })
   action :create
 end 
 
@@ -388,9 +405,9 @@ template "#{ca_dir}/intermediate/createusercerts.sh" do
   owner "root"
   group node["glassfish"]["group"]
   mode "510"
- variables({
-                :int_ca_dir =>  "#{ca_dir}/intermediate/"
-              })
+  variables({
+              :int_ca_dir =>  "#{ca_dir}/intermediate/"
+            })
   action :create
 end
 
@@ -399,9 +416,9 @@ template "#{ca_dir}/intermediate/deleteusercerts.sh" do
   owner "root"
   group node["glassfish"]["group"]
   mode "510"
- variables({
-                :int_ca_dir =>  "#{ca_dir}/intermediate/"
-              })
+  variables({
+              :int_ca_dir =>  "#{ca_dir}/intermediate/"
+            })
   action :create
 end
 
@@ -410,9 +427,9 @@ template "#{ca_dir}/intermediate/deleteprojectcerts.sh" do
   owner "root"
   group node["glassfish"]["group"]
   mode "510"
- variables({
-                :int_ca_dir =>  "#{ca_dir}/intermediate/"
-              })
+  variables({
+              :int_ca_dir =>  "#{ca_dir}/intermediate/"
+            })
   action :create
 end
 
@@ -488,14 +505,14 @@ template "/etc/sudoers.d/glassfish" do
   group "root"
   mode "0440"
   variables({
-                :user => node["glassfish"]["user"],
-                :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
-                :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
-                :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
-                :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh",
-                :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh",
-                :jupyter_cleanup =>  "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh"                                
-              })
+              :user => node["glassfish"]["user"],
+              :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
+              :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
+              :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
+              :ndb_backup =>  "#{domains_dir}/#{domain_name}/bin/ndb_backup.sh",
+              :jupyter =>  "#{domains_dir}/#{domain_name}/bin/jupyter.sh",
+              :jupyter_cleanup =>  "#{domains_dir}/#{domain_name}/bin/jupyter-project-cleanup.sh"                                
+            })
   action :create
 end  
 
@@ -507,17 +524,17 @@ when "ubuntu"
     action :delete
   end
 
- template "/etc/init.d/glassfish-#{domain_name}" do
+  template "/etc/init.d/glassfish-#{domain_name}" do
     source "glassfish.erb"
     owner "root"
     mode 0744
     action :create
-  variables({
-       :domain_name =>  domain_name,
-       :password_file => password_file
-   })
+    variables({
+                :domain_name =>  domain_name,
+                :password_file => password_file
+              })
 
- end 
+  end 
 
 end
 
@@ -537,11 +554,11 @@ user node["jupyter"]["user"] do
   not_if "getent passwd #{node["jupyter"]["user"]}"
 end
 
-group node["kagent"]["certs_group"] do
-  action :modify
-  members ["#{node["jupyter"]["user"]}"]
-  append true
-end
+# group node["kagent"]["certs_group"] do
+#   action :modify
+#   members ["#{node["jupyter"]["user"]}"]
+#   append true
+# end
 
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
@@ -552,7 +569,6 @@ directory node["jupyter"]["base_dir"]  do
   group node["jupyter"]["group"]
   mode "775"
   action :create
-  recursive true
   not_if "test -d #{node["jupyter"]["base_dir"]}"
 end
 

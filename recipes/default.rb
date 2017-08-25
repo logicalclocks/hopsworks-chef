@@ -602,31 +602,31 @@ glassfish_asadmin "set default-config.http-service.virtual-server.server.propert
    secure false
 end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.maximum-pool-size=2800" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.maximum-pool-size=2800" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.task-queue-capacity=10000" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.task-queue-capacity=10000" do
+#    domain_name domain_name
+#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+#    username username
+#    admin_port admin_port
+#    secure false
+# end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=50 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -870,7 +870,7 @@ end
 
 cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{domains_dir}/pixiedust"
+pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
     user "root"
     code <<-EOF
@@ -889,9 +889,7 @@ bash "jupyter-pixiedust" do
 
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
          jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
@@ -901,7 +899,6 @@ end
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
-# "/usr/lib/python2.7/dist-packages"
   pythondir="/usr/local/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
   pythondir="/usr/lib/python2.7/site-packages"
@@ -949,9 +946,6 @@ template "#{homedir}/.sparkmagic/config.json" do
                :homedir => homedir
   })
 end
-
-
-
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
