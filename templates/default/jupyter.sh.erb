@@ -114,18 +114,23 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
 
-     sudo mkdir -p $8
-     sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $8
+    sudo mkdir -p $8
+    if [ $? -ne 0 ] ; then
+	echo "Error: could not create private_dir: $8"
+	exit 1
+    fi
+    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $8
 
-     #if [ ! -d $8 ] ; then
-     #  echo "Couldn't find data_dir: $8"
-     #  exit 1
-     #fi
-
-
-    
+    # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
+    #    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
     # Make the group of the files, the jupyter group so that they can write to the files
     chgrp -R <%= node["jupyter"]["group"] %> $2
+    if [ $? -ne 0 ] ; then
+	echo "Error: could not change ownership of config_dir for Jupyter: $2"
+	exit 1
+    fi
+     
+    
 
     # Launch the jupyter notebook
     su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"

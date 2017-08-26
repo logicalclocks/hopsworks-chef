@@ -989,8 +989,8 @@ end
 
 directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
   owner node["jupyter"]["user"]
-  group node["jupyter"]["group"]
-  mode "0300"
+  group node["hopsworks"]["group"]
+  mode "0330"
   action :create
 end
 
@@ -999,7 +999,7 @@ end
 kagent_keys "#{homedir}" do
   cb_user node["hopsworks"]["user"]
   cb_group node["hopsworks"]["group"]
-  action :generate  
+  action :generate
 end  
 
 kagent_keys "#{homedir}" do
