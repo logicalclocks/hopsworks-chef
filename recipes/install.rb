@@ -547,14 +547,6 @@ end
 #
 
 
-user node["jupyter"]["user"] do
-  home node["jupyter"]["base_dir"]
-  gid node["jupyter"]["group"]  
-  action :create
-  shell "/bin/bash"
-  manage_home true
-  not_if "getent passwd #{node["jupyter"]["user"]}"
-end
 
 # group node["kagent"]["certs_group"] do
 #   action :modify
@@ -567,13 +559,20 @@ end
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
 # The jupyter user will be able to read the files and write to the directories due to group permissions
 directory node["jupyter"]["base_dir"]  do
-  owner node["hopsworks"]["user"]
+  owner node["jupyter"]["user"]  
   group node["jupyter"]["group"]
-  mode "775"
+  mode "770"
   action :create
-  not_if "test -d #{node["jupyter"]["base_dir"]}"
 end
 
+user node["jupyter"]["user"] do
+  home node["jupyter"]["base_dir"]
+  gid node["jupyter"]["group"]  
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node["jupyter"]["user"]}"
+end
 
 template "#{theDomain}/config/ca.ini" do
   source "ca.ini.erb"
