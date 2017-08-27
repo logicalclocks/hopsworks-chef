@@ -558,12 +558,6 @@ end
 # can create the template files needed for Jupyter.
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
 # The jupyter user will be able to read the files and write to the directories due to group permissions
-directory node["jupyter"]["base_dir"]  do
-  owner node["jupyter"]["user"]  
-  group node["jupyter"]["group"]
-  mode "770"
-  action :create
-end
 
 user node["jupyter"]["user"] do
   home node["jupyter"]["base_dir"]
@@ -572,6 +566,14 @@ user node["jupyter"]["user"] do
   shell "/bin/bash"
   manage_home true
   not_if "getent passwd #{node["jupyter"]["user"]}"
+end
+
+#update permissions of base_dir to 770
+directory node["jupyter"]["base_dir"]  do
+  owner node["jupyter"]["user"]  
+  group node["jupyter"]["group"]
+  mode "770"
+  action :create
 end
 
 template "#{theDomain}/config/ca.ini" do
