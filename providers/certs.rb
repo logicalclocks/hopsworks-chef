@@ -81,3 +81,36 @@ bash 'certificateauthority' do
 end
 
 end
+
+
+notifying_action :sign_hopssite do
+
+
+  signed = "#{node.hopsworks.domains_dir}/.hops_site_keystore_signed"
+
+  bash "sign-global-csr-key" do
+    user node.hopsworks.user
+    group node.hopsworks.group 
+    code <<-EOF
+      set -eo pipefail 
+      export PYTHON_EGG_CACHE=/tmp
+      #{node.hopsworks.domains_dir}/domain1/bin/csr-ca.py
+      touch #{signed}
+  EOF
+    not_if { ::File.exists?( "#{signed}" ) }
+  end
+
+
+  # bash "chown-certificates" do
+  #   user "root"
+  #   code <<-EOH
+  #     set -eo pipefail 
+  #     cd #{node.kagent.certs_dir}
+  #     chown root:#{node.kagent.certs_group} .
+  #     chown -R root:#{node.kagent.certs_group} #{node.kagent.keystore_dir}
+  #     chown root:#{node.kagent.group} pub.pem ca_pub.pem priv.key
+  #   EOH
+  # end
+  
+
+end  

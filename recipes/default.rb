@@ -848,7 +848,7 @@ bash "jupyter-sparkmagic" do
     pip install jupyter 
     pip install sparkmagic
     export HADOOP_HOME=#{node['hops']['base_dir']}
-    pip install hdfscontents
+    pip install --upgrade hdfscontents
 EOF
     not_if "which jupyter"
 end
@@ -870,7 +870,7 @@ end
 
 cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{domains_dir}/pixiedust"
+pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
     user "root"
     code <<-EOF
@@ -889,9 +889,7 @@ bash "jupyter-pixiedust" do
 
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/
          jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
-#         chown #{node['hopsworks']['user']} -R /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
@@ -901,7 +899,6 @@ end
 pythondir=""
 case node['platform']
  when 'debian', 'ubuntu'
-# "/usr/lib/python2.7/dist-packages"
   pythondir="/usr/local/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
   pythondir="/usr/lib/python2.7/site-packages"
@@ -950,9 +947,6 @@ template "#{homedir}/.sparkmagic/config.json" do
   })
 end
 
-
-
-
 #
 # Disable glassfish service, if node.services.enabled is not set to true
 #
@@ -995,8 +989,8 @@ end
 
 directory node["hopsworks"]["staging_dir"] + "/private_dirs"  do
   owner node["jupyter"]["user"]
-  group node["jupyter"]["group"]
-  mode "0300"
+  group node["hopsworks"]["group"]
+  mode "0330"
   action :create
 end
 
@@ -1005,7 +999,7 @@ end
 kagent_keys "#{homedir}" do
   cb_user node["hopsworks"]["user"]
   cb_group node["hopsworks"]["group"]
-  action :generate  
+  action :generate
 end  
 
 kagent_keys "#{homedir}" do

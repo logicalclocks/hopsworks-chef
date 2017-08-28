@@ -810,6 +810,10 @@ attribute "hops/hdfs/user",
           :description => "Username to run hdfs as",
           :type => 'string'
 
+attribute "hops/hdfs/superuser_group",
+          :description => "Group for users with hdfs superuser privileges",
+          :type => 'string'
+
 attribute "hops/hdfs/blocksize",
           :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
           :type => 'string'
@@ -1715,3 +1719,21 @@ attribute "smtp/email_password",
           :description => "Password for email account. ",
           :required => "required",
           :type => 'string'
+
+
+#
+# hops.site settings
+#
+
+attribute "hopssite/url",
+          :description => "Url to the global Hops Certificate Authority",
+          :type => 'string'
+
+attribute "hopssite/user",
+          :description => "To register your Hopsworks Cluster, you need to register a username at www.hops.site. This is the username for hops.site.",
+          :type => 'string'
+
+attribute "hopssite/password",
+          :description => "Password for the registered username at www.hops.site.",
+          :type => 'string'
+

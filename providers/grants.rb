@@ -102,6 +102,7 @@ notifying_action :insert_rows do
     code <<-EOF
       set -e
       #{exec} hopsworks < #{new_resource.rows_path}
+      chmod 750 #{new_resource.rows_path}
       touch "#{node.glassfish.base_dir}/.hopsworks_rows.sql"
     EOF
     not_if { ::File.exists?("#{node.glassfish.base_dir}/.hopsworks_rows.sql") }
