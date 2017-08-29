@@ -982,7 +982,7 @@ end
 directory node["hopsworks"]["staging_dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "755"
+  mode "775"
   action :create
   recursive true
 end
