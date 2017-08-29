@@ -226,7 +226,7 @@ if h.length > 0
 end
 
 hops_rpc_tls_val = "false"
-if node["hops"]["rpc"]["ssl_enabled"].eql? "true"
+if node["hops"]["rpc"]["ssl"].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
