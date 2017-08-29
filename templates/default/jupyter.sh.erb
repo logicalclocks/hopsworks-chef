@@ -146,7 +146,7 @@ elif [ "$1" == "ping" ] ; then
     kill -0 $2
 elif [ "$1" == "list" ] ; then
 
-    sudo ps -ef | grep jupyter-notebook | awk '{print $2}') > /tmp/jupyterNotebookServer.pids
+    sudo ps -ef | grep jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 elif [ "$1" == "killhard" ] ; then
 
     sudo kill -9 $PID 2>&1 > /dev/null
