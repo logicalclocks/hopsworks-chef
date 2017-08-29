@@ -80,7 +80,7 @@ end
 #
 group node.hops.hdfs.user do
   action :create
-  not_if "getent group #{node.hops.hfds.user}"
+  not_if "getent group #{node.hops.hdfs.user}"
 end
 
 user node["hopsworks"]["user"] do
