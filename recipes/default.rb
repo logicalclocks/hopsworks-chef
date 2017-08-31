@@ -226,7 +226,7 @@ if h.length > 0
 end
 
 hops_rpc_tls_val = "false"
-if node["hops"]["rpc"]["ssl_enabled"].eql? "true"
+if node["hops"]["rpc"]["ssl"].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
@@ -982,7 +982,7 @@ end
 directory node["hopsworks"]["staging_dir"]  do
   owner node["hopsworks"]["user"]
   group node["hopsworks"]["group"]
-  mode "755"
+  mode "775"
   action :create
   recursive true
 end

@@ -16,7 +16,7 @@ CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectna
 
 CREATE VIEW `projects_last_payment` AS
   select `project_payments_history`.`projectname` AS `projectname`,
-         max(`project_payments_history`.`transaction_date`) AS `max(transaction_date)`
+         max(`project_payments_history`.`transaction_date`) AS `transaction_date`
   from `project_payments_history`
   where (`project_payments_history`.`action` = 'DEPOSIT_MONEY')
   group by `project_payments_history`.`projectname`

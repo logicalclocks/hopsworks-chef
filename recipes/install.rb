@@ -75,6 +75,13 @@ group node["jupyter"]["group"] do
   not_if "getent group #{node["jupyter"]["group"]}"
 end
 
+#
+# hdfs superuser group is 'hdfs'
+#
+group node.hops.hdfs.user do
+  action :create
+  not_if "getent group #{node.hops.hdfs.user}"
+end
 
 user node["hopsworks"]["user"] do
   home "/home/#{node["hopsworks"]["user"]}"
@@ -91,13 +98,14 @@ group node["jupyter"]["group"] do
   append true
 end
 
-group node["hops"]["group"] do
+# Add to the hdfs superuser group
+group node["hops"]["hdfs"]["user"] do
   action :modify
   members ["#{node["hopsworks"]["user"]}"]
   append true
 end
 
-group node["hops"]["hdfs"]["user"] do
+group node["hops"]["group"] do
   action :modify
   members ["#{node["hopsworks"]["user"]}"]
   append true
