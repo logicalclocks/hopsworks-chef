@@ -480,6 +480,7 @@ CREATE TABLE `dataset` (
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
   `shared` TINYINT(1) NOT NULL DEFAULT '0',
+  `dstype` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
   KEY `inode_id` (`inode_id`),
