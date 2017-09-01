@@ -21,17 +21,3 @@ CREATE VIEW `projects_last_payment` AS
   where (`project_payments_history`.`action` = 'DEPOSIT_MONEY')
   group by `project_payments_history`.`projectname`
   order by max(`project_payments_history`.`transaction_date`);
-
-CREATE VIEW `projects_management` AS
-  select
-    `b`.`projectname` AS `projectname`,
-    `a`.`quota_remaining` AS `yarn_quota_remaining`,
-    `a`.`total` AS `yarn_quota_total`,
-    `b`.`username` AS `username`,
-    `b`.`retention_period` AS `retention_period`,
-    `b`.`archived` AS `disabled`,
-    `c`.`max(transaction_date)` AS `last_paid_at`
-  from
-    ((`hops`.`yarn_projects_quota` `a` join `hopsworks`.`project` `b`) join `hopsworks`.`projects_last_payment` `c`)
-  where
-    ((`a`.`projectname` = `b`.`projectname`) and (`b`.`projectname` = `c`.`projectname`));
