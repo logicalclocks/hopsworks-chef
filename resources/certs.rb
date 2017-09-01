@@ -1,4 +1,4 @@
-actions :generate
+actions :generate, :sign_hopssite
 
 
 

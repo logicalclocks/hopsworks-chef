@@ -125,6 +125,10 @@ INSERT INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
 
 INSERT INTO variables VALUES ("yarn_ui_port", "<%= @yarn_ui_port %>");
 
+INSERT INTO variables VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
+
+INSERT INTO variables VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
+
 INSERT INTO variables VALUES ("file_preview_image_size", "<%= @file_preview_image_size %>");
 
 INSERT INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_size %>");
@@ -162,11 +166,31 @@ INSERT INTO variables VALUES ("glassfish_cert", "false");
 
 INSERT INTO variables VALUES ("certs_dir", "<%= node["certs"]["dir"] %>");
 
+-- --------------------------------------------------------
+--
+-- For enabling TLS support in RPCs
+--
+
+INSERT INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
+
+-- --------------------------------------------------------
+--
+-- Certificate Materializer delay for removing cryptographic material from the local fs
+--
+
+INSERT INTO variables VALUES ("cert_mater_delay", "<%= @cert_mater_delay %>");
+
+-- --------------------------------------------------------
+
 INSERT INTO variables VALUES ("jupyter_dir", "<%= node["hopsworks"]["jupyter_dir"] %>");
 
 INSERT INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
 
+INSERT INTO variables VALUES ("staging_dir", "<%= node["hopsworks"]["staging_dir"] %>");
+
 INSERT INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_poll_try %>");
+
+INSERT INTO variables VALUES ("hopsutil_version", "<%= node["hops"]["util_version"] %>");
 
 -- --------------------------------------------------------
 --
@@ -209,9 +233,12 @@ INSERT INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
 --
 -- pyspark, python
 --
+INSERT INTO variables VALUES ("python_kernel", "<%= @python_kernel %>");
 
+INSERT INTO variables VALUES ("cuda_dir", "<%= @cuda_dir %>");
+INSERT INTO variables VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
 INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
-INSERT INTO variables VALUES ("anaconda_env", "<%= node["kagent"]["user"] %>");
+INSERT INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
 INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anaconda_enabled"] %>");
 
 INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");

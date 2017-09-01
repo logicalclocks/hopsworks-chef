@@ -10,12 +10,24 @@ DOMAIN="$1"
 KEYSTOREPW=<%= node.hopsworks.admin.password %>
 cd <%= @int_ca_dir %>
 
-#1 revoc the certificat
-openssl ca -batch -config openssl-intermediate.cnf \
-	-passin pass:$KEYSTOREPW \
-	-revoke certs/${DOMAIN}__*.cert.pem   
+# First revoke the certificate
+function revoke {
+    openssl ca -batch -config openssl-intermediate.cnf \
+	    -passin pass:$KEYSTOREPW \
+	    -revoke certs/$1.cert.pem   
+}
 
-#2 remove the files
-rm -f <%= @int_ca_dir %>/private/${DOMAIN}__*.key.pem
-rm -f <%= @int_ca_dir %>/certs/${DOMAIN}__*.cert.pem
-rm -f <%= @int_ca_dir %>/csr/${DOMAIN}__*.csr.pem
+# Then delete them from the file system
+function delete {
+    rm -f <%= @int_ca_dir %>/private/$1.key.pem
+    rm -f <%= @int_ca_dir %>/certs/$1.cert.pem
+    rm -f <%= @int_ca_dir %>/csr/$1.csr.pem
+}
+
+# Revoke and delete the certificates for the project specific users
+revoke "${DOMAIN}__*"
+delete "${DOMAIN}__*"
+
+# Revoke and delete the generic project certificate
+revoke ${DOMAIN}
+delete ${DOMAIN}

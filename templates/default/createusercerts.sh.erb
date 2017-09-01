@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -ne 6  ]; then
+if [ $# -ne 7  ]; then
  echo "Usage: $0 service countryCode city organization_name email_address orcid "
  exit 1
 fi
@@ -14,11 +14,11 @@ CITY="$3"
 ORG="$4"
 EMAIL="$5"
 ORCID="$6"
-
+KEYSTOREPW="$7"
 
 
 # default password should be 'adminpw'
-KEYSTOREPW=<%= node["hopsworks"]["master"]["password"] %>
+MASTERPW=<%= node["hopsworks"]["master"]["password"] %>
 cd <%= @int_ca_dir %>
 
 #1 Create a user key
@@ -36,7 +36,7 @@ openssl req -config ../openssl-ca.cnf \
        -new -sha256 -out csr/${DOMAIN}.csr.pem
 
 openssl ca -batch -config openssl-intermediate.cnf \
-      -passin pass:$KEYSTOREPW \
+      -passin pass:$MASTERPW \
       -extensions usr_cert -days 365 -notext -md sha256 \
       -in csr/${DOMAIN}.csr.pem \
       -out certs/${DOMAIN}.cert.pem

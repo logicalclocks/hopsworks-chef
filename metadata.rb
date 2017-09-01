@@ -79,6 +79,10 @@ attribute "hopsworks/twofactor_auth",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
 
+attribute "hopsworks/cert_mater_delay",
+          :description => "Delay for the Certificate Materialization service of Hopsworks to delete the certificates from the local fs",
+          :type => 'string'
+
 attribute "hopsworks/smtp",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
@@ -234,6 +238,10 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/staging_dir",
+          :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
+          :type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
@@ -248,6 +256,14 @@ attribute "install/dir",
 
 attribute "install/user",
           :description => "User to install the services as",
+          :type => "string"
+
+attribute "install/ssl",
+          :description => "Is SSL turned on for all services?",
+          :type => "string"
+
+attribute "install/cleanup_downloads",
+          :description => "Remove any zipped binaries that were downloaded and used to install services",
           :type => "string"
 
 attribute "hopsworks/monitor_max_status_poll_try",
@@ -794,6 +810,10 @@ attribute "hops/hdfs/user",
           :description => "Username to run hdfs as",
           :type => 'string'
 
+attribute "hops/hdfs/superuser_group",
+          :description => "Group for users with hdfs superuser privileges",
+          :type => 'string'
+
 attribute "hops/hdfs/blocksize",
           :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
           :type => 'string'
@@ -877,6 +897,13 @@ attribute "hops/capacity/queue_mapping",
           :type => "string"
 attribute "hops/capacity/queue_mapping_override.enable",
           :description => "If a queue mapping is present, will it override the value specified by the user? This can be used by administrators to place jobs in queues that are different than the one specified by the user. The default is false.",
+          :type => "string"
+attribute "hops/cgroups",
+          :description => "'true' to enable cgroups, else (default) 'false'",
+          :type => "string"
+
+attribute "hops/rpc/ssl",
+          :description => "'true' to enable ssl, 'false' to disable 'ssl'",
           :type => "string"
 
 
@@ -1269,7 +1296,17 @@ attribute "zeppelin/dir",
 ##
 ##
 
+attribute "jupyter/user",
+          :description => "Jupyter username to run notebook servers as",
+          :type => 'string'
 
+attribute "jupyter/group",
+          :description => "Jupyter group to run notebook servers as",
+          :type => 'string'
+
+attribute "jupyter/python",
+          :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
+          :type => 'string'
 
 
 ##
@@ -1687,3 +1724,21 @@ attribute "smtp/email_password",
           :description => "Password for email account. ",
           :required => "required",
           :type => 'string'
+
+
+#
+# hops.site settings
+#
+
+attribute "hopssite/url",
+          :description => "Url to the global Hops Certificate Authority",
+          :type => 'string'
+
+attribute "hopssite/user",
+          :description => "To register your Hopsworks Cluster, you need to register a username at www.hops.site. This is the username for hops.site.",
+          :type => 'string'
+
+attribute "hopssite/password",
+          :description => "Password for the registered username at www.hops.site.",
+          :type => 'string'
+

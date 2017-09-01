@@ -3,8 +3,19 @@ use_inline_resources
 
 notifying_action :reload_systemd do
 
+if node.services.enabled == "true"
+  bash 'enable_systemd' do
+    user "root"
+    ignore_failure true
+    code <<-EOF
+          systemctl enable glassfish-domain1 
+    EOF
+  end
+end
+
   bash 'reload_systemd' do
     user "root"
+    retries 1
     code <<-EOF
           systemctl daemon-reload
           service glassfish-domain1 restart
@@ -91,6 +102,7 @@ notifying_action :insert_rows do
     code <<-EOF
       set -e
       #{exec} hopsworks < #{new_resource.rows_path}
+      chmod 750 #{new_resource.rows_path}
       touch "#{node.glassfish.base_dir}/.hopsworks_rows.sql"
     EOF
     not_if { ::File.exists?("#{node.glassfish.base_dir}/.hopsworks_rows.sql") }
