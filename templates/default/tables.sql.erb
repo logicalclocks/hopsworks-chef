@@ -131,6 +131,7 @@ CREATE TABLE `project` (
   `conda` TINYINT(1) DEFAULT '0',  
   `logs` TINYINT(1) DEFAULT '0',
   `deleted` TINYINT(1) DEFAULT '0',
+  `python_version` VARCHAR(25) DEFAULT NULL,    
   `description` VARCHAR(2000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
