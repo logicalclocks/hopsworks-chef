@@ -1013,3 +1013,11 @@ end
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
+
+
+template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
+  source "letsencrypt.sh.erb"
+  owner node["glassfish"]["user"]
+  mode 0770
+  action :create
+end 

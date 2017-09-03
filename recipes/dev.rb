@@ -15,6 +15,10 @@
        service glassfish-domain1 stop
        sleep 1
        service glassfish-domain1 start
+
+
+       cd #{node['hopsworks']['domains_dir']}/domain1/bin
+       ./letsencypt.sh #{node['hopsworks']['cert']['password']} 0001 
     EOF
   end
 
