@@ -12,9 +12,10 @@
        perl -pi -e "s/--debug false/--debug true/g" /etc/systemd/system/glassfish-domain1.service
        perl -pi -e "s/--debug false/--debug true/g" /lib/systemd/system/glassfish-domain1.service
        chown -R #{node['hopsworks']['user']} /home/#{node['hopsworks']['user']}/.config
-       service glassfish-domain1 stop
+       systemctl daemon-reload
+       systemctl stop glassfish-domain1
        sleep 1
-       service glassfish-domain1 start
+       systemctl start glassfish-domain1
 
 
        cd #{node['hopsworks']['domains_dir']}/domain1/bin
