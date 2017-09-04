@@ -81,6 +81,19 @@ rescue
   Chef::Log.warn "could not find the Resource Manager Port!"
 end
 
+begin
+  logstash_ip = private_recipe_ip("hopslog","default")
+rescue 
+  logstash_ip = node["hostname"]
+  Chef::Log.warn "could not find the Logstash ip!"
+end
+
+begin
+  logstash_port = node['logstash']['http']['port']
+rescue 
+  logstash_port = 3456
+  Chef::Log.warn "could not find the Logstash Port!"
+end
 
 begin
   livy_ip = private_recipe_ip("livy","default")
@@ -125,10 +138,8 @@ rescue
 end
 
 begin
-  logstash_ip = private_recipe_ip("hopslog","default")
   kibana_ip = private_recipe_ip("hopslog","default")
 rescue 
-  logstash_ip = node["hostname"]
   kibana_ip = node["hostname"]
   Chef::Log.warn "could not find the logstash server ip!"
 end
@@ -257,6 +268,8 @@ template "#{rows_path}" do
                 :jhs_ip => jhs_ip,
                 :rm_ip => rm_ip,
                 :rm_port => rm_port,                
+                :logstash_ip => logstash_ip,
+                :logstash_port => logstash_port,                
                 :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :hopsworks_ip => hopsworks_ip,
@@ -301,7 +314,6 @@ template "#{rows_path}" do
                 :drelephant_ip => drelephant_ip,
                 :kafka_user => node["kkafka"]["user"],
                 :kibana_ip => kibana_ip,
-                :logstash_ip => logstash_ip,
                 :python_kernel => python_kernel,
                 :grafana_ip => grafana_ip,
                 :influxdb_ip => influxdb_ip,
