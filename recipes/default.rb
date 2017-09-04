@@ -68,6 +68,13 @@ rescue
 end
 
 begin
+  rm_ip = private_recipe_ip("hops","rm")
+rescue 
+  rm_ip = node["hostname"]
+  Chef::Log.warn "could not find the Resource Manager ip!"
+end
+
+begin
   livy_ip = private_recipe_ip("livy","default")
 rescue 
   livy_ip = node["hostname"]
@@ -240,6 +247,7 @@ template "#{rows_path}" do
                 :epipe_ip => epipe_ip,
                 :livy_ip => livy_ip,
                 :jhs_ip => jhs_ip,
+                :rm_ip => rm_ip,
                 :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :hopsworks_ip => hopsworks_ip,
