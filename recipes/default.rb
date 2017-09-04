@@ -75,6 +75,14 @@ rescue
 end
 
 begin
+  rm_port = node['hops']['rm']['http_port']
+rescue 
+  rm_port = 8088
+  Chef::Log.warn "could not find the Resource Manager Port!"
+end
+
+
+begin
   livy_ip = private_recipe_ip("livy","default")
 rescue 
   livy_ip = node["hostname"]
@@ -248,6 +256,7 @@ template "#{rows_path}" do
                 :livy_ip => livy_ip,
                 :jhs_ip => jhs_ip,
                 :rm_ip => rm_ip,
+                :rm_port => rm_port,                
                 :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :hopsworks_ip => hopsworks_ip,
