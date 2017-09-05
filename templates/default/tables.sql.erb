@@ -186,7 +186,7 @@ CREATE TABLE `jupyter_settings` (
   `dynamic_min_executors` INT(11) NOT NULL DEFAULT '1',
   `dynamic_max_executors` INT(11) NOT NULL DEFAULT '1',
   `secret` VARCHAR(255) NOT NULL,
-  `log_level` VARCHAR(32) NOT NULL DEFAULT 'INFO',
+  `log_level` VARCHAR(32) NULL DEFAULT 'INFO',
   `mode` VARCHAR(32) NOT NULL,
   `advanced` tinyint(1) NOT NULL DEFAULT '0',
   `archives` VARCHAR(2500) NOT NULL DEFAULT '',
