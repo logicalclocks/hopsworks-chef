@@ -276,7 +276,7 @@ template "#{rows_path}" do
                 :elastic_ip => elastic_ip,
                 :spark_dir => node["hadoop_spark"]["dir"] + "/spark",                
                 :spark_user => node["hadoop_spark"]["user"],
-                :hadoop_dir => node["hops"]["dir"] + "/hadoop",                                
+                :hadoop_dir => node["hops"]["dir"] + "/hadoop",
                 :yarn_user => node["hops"]["yarn"]["user"],
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
