@@ -117,6 +117,12 @@ INSERT INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
 
 INSERT INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
 
+INSERT INTO variables VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
+
+INSERT INTO variables VALUES ("rm_ip", "<%= @rm_ip %>");
+
+INSERT INTO variables VALUES ("rm_port", "<%= @rm_port %>");
+
 INSERT INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
 
 INSERT INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
@@ -190,7 +196,7 @@ INSERT INTO variables VALUES ("staging_dir", "<%= node["hopsworks"]["staging_dir
 
 INSERT INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_poll_try %>");
 
-INSERT INTO variables VALUES ("hopsutil_version", "<%= node["hops"]["util_version"] %>");
+INSERT INTO variables VALUES ("hopsutil_version", "<%= node["hops"]["hopsutil_version"] %>");
 
 -- --------------------------------------------------------
 --
@@ -223,6 +229,7 @@ INSERT INTO variables VALUES ("max_cpu_request_size","<%= node["hopsworks"]["max
 
 INSERT INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
 INSERT INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
+INSERT INTO variables VALUES ("logstash_port", "<%= @logstash_port %>");
 INSERT INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
 INSERT INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
 INSERT INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");

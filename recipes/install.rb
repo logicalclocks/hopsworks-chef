@@ -67,12 +67,12 @@ end
 
 group node["hopsworks"]["group"] do
   action :create
-  not_if "getent group #{node["hopsworks"]["group"]}"
+  not_if "getent group #{node['hopsworks']['group']}"
 end
 
 group node["jupyter"]["group"] do
   action :create
-  not_if "getent group #{node["jupyter"]["group"]}"
+  not_if "getent group #{node['jupyter']['group']}"
 end
 
 #
@@ -84,31 +84,48 @@ group node.hops.hdfs.user do
 end
 
 user node["hopsworks"]["user"] do
-  home "/home/#{node["hopsworks"]["user"]}"
+  home "/home/#{node['hopsworks']['user']}"
   gid node["hopsworks"]["group"]
   action :create
   shell "/bin/bash"
   manage_home true
-  not_if "getent passwd #{node["hopsworks"]["user"]}"
+  not_if "getent passwd #{node['hopsworks']['user']}"
 end
 
 group node["jupyter"]["group"] do
   action :modify
-  members ["#{node["hopsworks"]["user"]}"]
+  members ["#{node['hopsworks']['user']}"]
   append true
 end
 
 # Add to the hdfs superuser group
 group node["hops"]["hdfs"]["user"] do
   action :modify
-  members ["#{node["hopsworks"]["user"]}"]
+  members ["#{node['hopsworks']['user']}"]
   append true
+end
+
+user node["jupyter"]["user"] do
+  home node["jupyter"]["base_dir"]
+  gid node["jupyter"]["group"]  
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node["jupyter"]["user"]}"
 end
 
 group node["hops"]["group"] do
   action :modify
-  members ["#{node["hopsworks"]["user"]}"]
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
   append true
+end
+
+#update permissions of base_dir to 770
+directory node["jupyter"]["base_dir"]  do
+  owner node["jupyter"]["user"]  
+  group node["jupyter"]["group"]
+  mode "770"
+  action :create
 end
 
 directory node["hopsworks"]["dir"]  do
@@ -116,7 +133,7 @@ directory node["hopsworks"]["dir"]  do
   group node["hopsworks"]["group"]
   mode "755"
   action :create
-  not_if "test -d #{node["hopsworks"]["dir"]}"
+  not_if "test -d #{node['hopsworks']['dir']}"
 end
 
 directory domains_dir  do
@@ -566,23 +583,6 @@ end
 # can create the template files needed for Jupyter.
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
 # The jupyter user will be able to read the files and write to the directories due to group permissions
-
-user node["jupyter"]["user"] do
-  home node["jupyter"]["base_dir"]
-  gid node["jupyter"]["group"]  
-  action :create
-  shell "/bin/bash"
-  manage_home true
-  not_if "getent passwd #{node["jupyter"]["user"]}"
-end
-
-#update permissions of base_dir to 770
-directory node["jupyter"]["base_dir"]  do
-  owner node["jupyter"]["user"]  
-  group node["jupyter"]["group"]
-  mode "770"
-  action :create
-end
 
 template "#{theDomain}/config/ca.ini" do
   source "ca.ini.erb"
