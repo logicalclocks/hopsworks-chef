@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script allows Hopsworks to start/stop/ping (check if alive) a Jupyter Notebook Server.
+# This script allows Hopsworks to start/kill/ping (check if alive) a Jupyter Notebook Server.
 # There will be 1 notebook-server per ProjectUser.
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 # it changes user to 'jupyter' to run the command as user 'jupyter'.
@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [stop hdfs_user] | [ping pid] | [list] [killhard pid]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] [killhard pid]"
     echo ""
     exit 1
 }
@@ -16,20 +16,7 @@ help() {
 PORT=0
 
 
-if [ "$1" == "stop" ] ; then
-    if [ $# -ne 2 ]; then
-	help
-    fi
-
-    echo "Trying to kill jupyter notebook with name $proj"
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-stop.sh $2"
-    proj=`echo $2 | awk -F__ '{print $1}'`
-   
-
-    # Remove all the directories in the home jupyter folder for this project-user.
-    sudo rm -rf ${2}
-    
-elif [ "$1" == "kill" ] ; then
+if [ "$1" == "kill" ] ; then
 
     if [ $# -ne 4 ]; then
 	help
