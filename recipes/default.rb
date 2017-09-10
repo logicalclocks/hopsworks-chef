@@ -867,41 +867,34 @@ end
 # https://github.com/jupyter-incubator/sparkmagic
 #
 bash "jupyter-sparkmagic" do
-    user "root"
+  user node['jupyter']['user']
+    retries 1
     code <<-EOF
     set -e
-
-    # --user --no-cache-dir 
-    pip install urllib3
+    pip install --upgrade urllib3
     pip install --upgrade requests 
-    pip install jupyter 
-    pip install sparkmagic
+    pip install --upgrade jupyter 
+    pip install --upgrade sparkmagic
     export HADOOP_HOME=#{node['hops']['base_dir']}
+    unset HADOOP_CONF_DIR
+    unset HADOOP_VERSION
     pip install --upgrade hdfscontents
 EOF
-    not_if "which jupyter"
 end
 
 bash "jupyter-sparkmagic-enable" do
-    user "root"
+    user node['jupyter']['user']
     code <<-EOF
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
 end
 
 
-template "/tmp/jupyter-pixiedust.sh" do
-  source "jupyter-pixiedust.sh.erb"
-  owner "root"
-  mode 0750
-  action :create
-end
-
 cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
 pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
-    user "root"
+    user node['jupyter']['user']
     code <<-EOF
       set -e
       mkdir -p #{pixiedust_home}/bin
@@ -912,13 +905,11 @@ bash "jupyter-pixiedust" do
       pip install matplotlib
       pip install pixiedust 
       jupyter pixiedust install --silent
-
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
       chown #{node['jupyter']['user']} -R #{pixiedust_home}
-
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
-         jupyter-kernelspec install /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
+         jupyter-kernelspec install /home/#{node["jupyter"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
@@ -933,7 +924,7 @@ case node['platform']
   pythondir="/usr/lib/python2.7/site-packages"
 end
 
-bash "jupyter-sparkmagic-kernels" do
+bash "jupyter-kernels" do
   user "root"
   code <<-EOF
     set -e
@@ -943,7 +934,15 @@ bash "jupyter-sparkmagic-kernels" do
     jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
     jupyter-kernelspec install sparkmagic/kernels/pyspark3kernel
     jupyter-kernelspec install sparkmagic/kernels/sparkrkernel
-    
+   EOF
+end
+
+bash "jupyter-sparkmagic-kernel" do
+  user "root"
+  code <<-EOF
+    set -e
+    cd #{pythondir}
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
     jupyter serverextension enable --py sparkmagic
     mkdir -p #{domains_dir}/.sparkmagic
     chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
