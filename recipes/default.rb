@@ -867,20 +867,20 @@ end
 # https://github.com/jupyter-incubator/sparkmagic
 #
 bash "jupyter-sparkmagic" do
-  user node['jupyter']['user']
+  user "root"
     retries 1
     code <<-EOF
     set -e
-    pip install --upgrade urllib3
-    pip install --upgrade requests 
-    pip install --upgrade jupyter 
-    pip install --upgrade sparkmagic
+    sudo -H pip install --upgrade urllib3
+    sudo -H pip install --upgrade requests 
+    sudo -H pip install --upgrade jupyter 
+    sudo -H pip install --upgrade sparkmagic
 EOF
 end
 
 
 bash "pydoop" do
-  user node['jupyter']['user']
+  user "root"
     retries 1
     ignore_failure true
     code <<-EOF
@@ -888,7 +888,7 @@ bash "pydoop" do
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
-    pip install --upgrade hdfscontents
+    sudo -H pip install --upgrade hdfscontents
 EOF
   not_if "python -c 'import pydoop'"
 end
@@ -907,8 +907,9 @@ cloudant="cloudant-spark-v2.0.0-185.jar"
 # Pixiedust is a visualization library for Jupyter
 pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
-    user node['jupyter']['user']
+    user "root"
     retries 1
+    ignore_failure true    
     code <<-EOF
       set -e
       mkdir -p #{pixiedust_home}/bin
@@ -916,11 +917,11 @@ bash "jupyter-pixiedust" do
       export PIXIEDUST_HOME=#{pixiedust_home}
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
-      pip install matplotlib
-      pip install pixiedust 
+      sudo -H pip install matplotlib
+      sudo -H pip install pixiedust 
       jupyter pixiedust install --silent
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-#      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+      chown #{node['jupyter']['user']} -R #{pixiedust_home}
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
          jupyter-kernelspec install /home/#{node["jupyter"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
