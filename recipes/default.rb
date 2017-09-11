@@ -867,20 +867,20 @@ end
 # https://github.com/jupyter-incubator/sparkmagic
 #
 bash "jupyter-sparkmagic" do
-  user node['jupyter']['user']
+  user 'root'
     retries 1
     code <<-EOF
     set -e
-    pip install --no-cache-dir --upgrade urllib3
-    pip install --no-cache-dir --upgrade requests 
-    pip install --no-cache-dir --upgrade jupyter 
-    pip install --no-cache-dir --upgrade sparkmagic
+    sudo -H pip install --upgrade urllib3
+    sudo -H pip install --upgrade requests 
+    sudo -H pip install --upgrade jupyter 
+    sudo -H pip install --no-cache-dir --upgrade sparkmagic
 EOF
 end
 
 
 bash "pydoop" do
-  user node['jupyter']['user']
+  user 'root'
     retries 1
     ignore_failure true
     code <<-EOF
@@ -888,7 +888,7 @@ bash "pydoop" do
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
-    pip install --no-cache-dir --upgrade hdfscontents
+    sudo -H pip install --no-cache-dir --upgrade hdfscontents
 EOF
   not_if "python -c 'import pydoop'"
 end
