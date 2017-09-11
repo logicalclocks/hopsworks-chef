@@ -8,6 +8,8 @@ if node.services.enabled == "true"
     user "root"
     ignore_failure true
     code <<-EOF
+          systemctl daemon-reload
+          systemctl reset-failed
           systemctl enable glassfish-domain1 
     EOF
   end

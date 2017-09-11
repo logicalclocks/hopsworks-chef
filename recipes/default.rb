@@ -875,15 +875,28 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade requests 
     pip install --upgrade jupyter 
     pip install --upgrade sparkmagic
+EOF
+end
+
+
+bash "pydoop" do
+  user node['jupyter']['user']
+    retries 1
+    ignore_failure true
+    code <<-EOF
+    set -e
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
     pip install --upgrade hdfscontents
 EOF
+  not_if "python -c 'import pydoop'"
 end
 
+
+
 bash "jupyter-sparkmagic-enable" do
-    user node['jupyter']['user']
+    user "root"
     code <<-EOF
     jupyter nbextension enable --py --sys-prefix widgetsnbextension
 EOF
@@ -895,6 +908,7 @@ cloudant="cloudant-spark-v2.0.0-185.jar"
 pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
 bash "jupyter-pixiedust" do
     user node['jupyter']['user']
+    retries 1
     code <<-EOF
       set -e
       mkdir -p #{pixiedust_home}/bin
@@ -906,7 +920,7 @@ bash "jupyter-pixiedust" do
       pip install pixiedust 
       jupyter pixiedust install --silent
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+#      chown #{node['jupyter']['user']} -R #{pixiedust_home}
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
          jupyter-kernelspec install /home/#{node["jupyter"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
