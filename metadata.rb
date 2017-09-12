@@ -194,6 +194,10 @@ attribute "hopsworks/reinstall",
           :description => "Enter 'true' if this is a reinstallation",
           :type => 'string'
 
+attribute "hopsworks/pixiedust",
+          :description => "Enter 'true' to install pixiedust, 'false' otherwise",
+          :type => 'string'
+
 attribute "hopsworks/war_url",
           :description => "Url for the hopsworks war file",
           :type => 'string'

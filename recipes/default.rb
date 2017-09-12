@@ -882,13 +882,12 @@ end
 bash "pydoop" do
   user 'root'
     retries 1
-    ignore_failure true
     code <<-EOF
     set -e
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
-    sudo -H pip install --no-cache-dir --upgrade hdfscontents
+    sudo -H pip install --no-cache-dir hdfscontents
 EOF
   not_if "python -c 'import pydoop'"
 end
@@ -903,10 +902,11 @@ EOF
 end
 
 
-cloudant="cloudant-spark-v2.0.0-185.jar"
-# Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
-bash "jupyter-pixiedust" do
+if node['hopsworks']['pixiedust'].eql("true") 
+  cloudant="cloudant-spark-v2.0.0-185.jar"
+  # Pixiedust is a visualization library for Jupyter
+  pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
+  bash "jupyter-pixiedust" do
     user node['jupyter']['user']
     retries 1
     ignore_failure true    
@@ -928,8 +928,9 @@ bash "jupyter-pixiedust" do
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
-end
+  end
 
+end
 
 pythondir=""
 case node['platform']
