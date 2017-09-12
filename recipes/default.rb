@@ -891,7 +891,7 @@ bash "pydoop" do
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
-    sudo -H pip install --no-cache-dir hdfscontents
+    pip install --no-cache-dir hdfscontents
 EOF
   not_if "python -c 'import pydoop'"
 end
