@@ -188,6 +188,12 @@ template views_path do
               })
 end
 
+# Need to delete the sql file so that the action is triggered
+file tables_path do
+  action :delete
+  ignore_failure true
+end
+
 Chef::Log.info("Could not find previously defined #{tables_path} resource")
 template tables_path do
   source File.basename("#{tables_path}") + ".erb"
@@ -209,7 +215,6 @@ file timerTablePath do
   ignore_failure true
 end
 
-
 hopsworks_grants "timers_tables" do
   tables_path  "#{timerTablePath}"
   rows_path  ""
@@ -223,7 +228,6 @@ template timerTablePath do
   action :create
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end 
-
 
 
 require 'resolv'
