@@ -20,7 +20,7 @@ default["hopsworks"]["admin"]["port"]            = 4848
 default["hopsworks"]["port"]                     = "8080"
 default["glassfish"]["admin"]["port"]            = node["hopsworks"]["admin"]["port"]
 default["glassfish"]["port"]                     = node["hopsworks"]["port"].to_i
-default["glassfish"]["version"]                  = '4.1.2.172'
+default["glassfish"]["version"]                  = '4.1.2.173'
 
 default["hopsworks"]["dir"]                      = node["install"]["dir"].empty? ? "/usr/local" : node["install"]["dir"]
 default["glassfish"]["install_dir"]              = node["hopsworks"]["dir"]
@@ -50,6 +50,8 @@ default["hopsworks"]["war_url"]                  = "#{node["download_url"]}/hops
 default["hopsworks"]["ca_url"]                   = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ca.war"
 default["hopsworks"]["ear_url"]                  = "#{node["download_url"]}/hopsworks/#{node["hopsworks"]["version"]}/hopsworks-ear.ear"
 
+
+default["hopsworks"]["pixiedust"]                = "false"
 #
 # hops.site settings
 #

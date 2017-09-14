@@ -188,6 +188,12 @@ template views_path do
               })
 end
 
+# Need to delete the sql file so that the action is triggered
+file tables_path do
+  action :delete
+  ignore_failure true
+end
+
 Chef::Log.info("Could not find previously defined #{tables_path} resource")
 template tables_path do
   source File.basename("#{tables_path}") + ".erb"
@@ -209,7 +215,6 @@ file timerTablePath do
   ignore_failure true
 end
 
-
 hopsworks_grants "timers_tables" do
   tables_path  "#{timerTablePath}"
   rows_path  ""
@@ -223,7 +228,6 @@ template timerTablePath do
   action :create
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end 
-
 
 
 require 'resolv'
@@ -867,28 +871,27 @@ end
 # https://github.com/jupyter-incubator/sparkmagic
 #
 bash "jupyter-sparkmagic" do
-  user "root"
+  user 'root'
     retries 1
     code <<-EOF
     set -e
     sudo -H pip install --upgrade urllib3
     sudo -H pip install --upgrade requests 
     sudo -H pip install --upgrade jupyter 
-    sudo -H pip install --upgrade sparkmagic
+    sudo -H pip install --no-cache-dir --upgrade sparkmagic
 EOF
 end
 
 
 bash "pydoop" do
-  user "root"
+  user 'root'
     retries 1
-    ignore_failure true
     code <<-EOF
     set -e
     export HADOOP_HOME=#{node['hops']['base_dir']}
     unset HADOOP_CONF_DIR
     unset HADOOP_VERSION
-    sudo -H pip install --upgrade hdfscontents
+    pip install --no-cache-dir hdfscontents
 EOF
   not_if "python -c 'import pydoop'"
 end
@@ -903,11 +906,12 @@ EOF
 end
 
 
-cloudant="cloudant-spark-v2.0.0-185.jar"
-# Pixiedust is a visualization library for Jupyter
-pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
-bash "jupyter-pixiedust" do
-    user "root"
+if node['hopsworks']['pixiedust'].eql?("true") 
+  cloudant="cloudant-spark-v2.0.0-185.jar"
+  # Pixiedust is a visualization library for Jupyter
+  pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
+  bash "jupyter-pixiedust" do
+    user node['jupyter']['user']
     retries 1
     ignore_failure true    
     code <<-EOF
@@ -917,19 +921,20 @@ bash "jupyter-pixiedust" do
       export PIXIEDUST_HOME=#{pixiedust_home}
       export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
       export SCALA_HOME=#{scala_home}
-      sudo -H pip install matplotlib
-      sudo -H pip install pixiedust 
+      pip --no-cache-dir install matplotlib
+      pip --no-cache-dir install pixiedust 
       jupyter pixiedust install --silent
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+#      chown #{node['jupyter']['user']} -R #{pixiedust_home}
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node["hopsworks"]["user"]}/.local/share/jupyter/kernels ] ; then
          jupyter-kernelspec install /home/#{node["jupyter"]["user"]}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
-end
+  end
 
+end
 
 pythondir=""
 case node['platform']
@@ -959,11 +964,11 @@ bash "jupyter-sparkmagic-kernel" do
     cd #{pythondir}
     export HADOOP_HOME=#{node[:hops][:base_dir]}
     jupyter serverextension enable --py sparkmagic
-    mkdir -p #{domains_dir}/.sparkmagic
-    chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
-    if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
-      chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
-    fi
+    # mkdir -p #{domains_dir}/.sparkmagic
+    # chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
+    # if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
+    #   chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
+    # fi
    EOF
 end
 
@@ -971,24 +976,24 @@ end
 homedir = "/home/#{node["hopsworks"]["user"]}"
 
 
-directory "#{homedir}/.sparkmagic"  do
-  owner node["hopsworks"]["user"]
-  group node["hopsworks"]["group"]
-  mode "755"
-  action :create
-end
+# directory "#{homedir}/.sparkmagic"  do
+#   owner node["hopsworks"]["user"]
+#   group node["hopsworks"]["group"]
+#   mode "755"
+#   action :create
+# end
 
 
-template "#{homedir}/.sparkmagic/config.json" do
-  source "config.json.erb"
-  owner node["hopsworks"]["user"]
-  mode 0750
-  action :create
-  variables({
-              :livy_ip => livy_ip,
-               :homedir => homedir
-  })
-end
+# template "#{homedir}/.sparkmagic/config.json" do
+#   source "config.json.erb"
+#   owner node["hopsworks"]["user"]
+#   mode 0750
+#   action :create
+#   variables({
+#               :livy_ip => livy_ip,
+#                :homedir => homedir
+#   })
+# end
 
 #
 # Disable glassfish service, if node.services.enabled is not set to true
