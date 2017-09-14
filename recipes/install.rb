@@ -15,42 +15,6 @@ mysql_host = my_private_ip()
 password_file = "#{theDomain}_admin_passwd"
 
 
-
-# For unzipping files
-
-case node["platform_family"]
-when "debian"
-  
-  if node.platform_version.to_f <= 14.04
-    node.override["hopsworks"]["systemd"] = "false"
-  end
-  package "dtrx"
-  package "libkrb5-dev"
-
-when "rhel"
-  package "krb5-libs"
-  
-  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz" do
-    user node["glassfish"]["user"]
-    group node["glassfish"]["group"]
-    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
-    mode 0755
-    action :create
-  end
-  
-  bash "unpack_dtrx" do
-    user "root"
-    code <<-EOF
-    set -e
-    cd #{Chef::Config[:file_cache_path]}
-    tar -xzf dtrx.tar.gz
-    cd dtrx-7.1
-    python setup.py install --prefix=/usr/local
-  EOF
-    not_if "which dtrx"
-  end
-end
-
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   code <<-EOF
@@ -143,6 +107,47 @@ directory domains_dir  do
   action :create
   not_if "test -d #{domains_dir}"
 end
+
+
+# For unzipping files
+
+case node["platform_family"]
+when "debian"
+  
+  if node.platform_version.to_f <= 14.04
+    node.override["hopsworks"]["systemd"] = "false"
+  end
+  package "dtrx"
+  package "libkrb5-dev"
+
+when "rhel"
+  package "krb5-libs"
+  
+  remote_file "#{Chef::Config[:file_cache_path]}/dtrx.tar.gz" do
+    user node["glassfish"]["user"]
+    group node["glassfish"]["group"]
+    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
+    mode 0755
+    action :create
+  end
+  
+  bash "unpack_dtrx" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{Chef::Config[:file_cache_path]}
+    tar -xzf dtrx.tar.gz
+    cd dtrx-7.1
+    python setup.py install --prefix=/usr/local
+  EOF
+    not_if "which dtrx"
+  end
+end
+
+
+
+
+
 
 
 node.override = {
