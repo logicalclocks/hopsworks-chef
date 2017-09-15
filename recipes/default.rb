@@ -1069,3 +1069,10 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   mode 0770
   action :create
 end 
+
+template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
+  source "convert-ipython-notebook.sh.erb"
+  owner node["glassfish"]["user"]
+  mode 0750
+  action :create
+end 
