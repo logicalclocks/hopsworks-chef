@@ -851,13 +851,16 @@ case node['platform']
    end
  when 'redhat', 'centos', 'fedora'
 
-  bash 'gmail' do
+  bash 'scala-install-redhat' do
     user "root"
     code <<-EOF
        cd #{Chef::Config["file_cache_path"]}
        wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.rpm
        sudo yum install scala-2.11.8.rpm
        rm scala-2.11.8.rpm
+       
+       # needed for jupyter sparkmagic
+       pip install backports.shutil_get_terminal_size
     EOF
     not_if "which scala"
   end
