@@ -958,20 +958,20 @@ bash "jupyter-kernels" do
    EOF
 end
 
-bash "jupyter-sparkmagic-kernel" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{pythondir}
-    export HADOOP_HOME=#{node[:hops][:base_dir]}
-    jupyter serverextension enable --py sparkmagic
-    # mkdir -p #{domains_dir}/.sparkmagic
-    # chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
-    # if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
-    #   chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
-    # fi
-   EOF
-end
+
+#
+# (Optional) Enable the server extension so that clusters can be programatically changed
+#
+
+# bash "jupyter-sparkmagic-kernel" do
+#   user "root"
+#   code <<-EOF
+#     set -e
+#     cd #{pythondir}
+#     export HADOOP_HOME=#{node[:hops][:base_dir]}
+#     jupyter serverextension enable --py sparkmagic
+#    EOF
+# end
 
 
 homedir = "/home/#{node["hopsworks"]["user"]}"
