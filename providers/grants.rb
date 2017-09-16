@@ -89,15 +89,6 @@ end
 notifying_action :insert_rows do
   Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
   exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
-#  timerTable = "ejbtimer_mysql.sql"
-#  timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
-
- # template timerTablePath do
- #    source "#{timerTable}.erb"
- #    owner node.glassfish.user
- #    mode 0750
- #    action :create
- #  end 
 
   bash 'insert_hopsworks_rows' do
     user "root"

@@ -1686,6 +1686,9 @@ attribute "hopsworks/org_country_code",
           :description => "2-Letter Country code for this organization ('us', 'se', 'uk', etc)",
           :type => 'string'
 
+#
+# Dela
+#
 attribute "dela/user",
           :description => "Username for the dela services",
           :type => 'string'
@@ -1698,6 +1701,57 @@ attribute "dela/dir",
           :description => "dela Installation directory.",
           :type => 'string'
 
+attribute "dela/log_level",
+          :description => "Default: WARN. Can be INFO or DEBUG or TRACE or ERROR.",
+          :type => "string"
+
+attribute "dela/id",
+          :description => "id for the dela instance. Randomly generated, but can be ovverriden here.",
+          :type => "string"
+
+attribute "dela/seed",
+          :description => "seed for the dela instance. Randomly generated, but can be ovverriden here.",
+          :type => "string"
+
+attribute "dela/stun_port1",
+          :description => "1st Client port used by stun client in Dela.",
+          :type => "string"
+
+attribute "dela/stun_port2",
+          :description => "2nd Client port used by stun client in Dela.",
+          :type => "string"
+
+attribute "dela/port",
+	    :description => "Dela Client application port.",
+	    :type => "string"
+
+attribute "dela/stun_client_port2",
+          :description => "2nd Client port used by stun client in Dela.",
+          :type => "string"
+
+attribute "dela/port",
+          :description => "Dela Client application port.",
+          :type => "string"
+
+attribute "dela/http_port",
+          :description => "Dela Client http port.",
+	    :type => "string"
+
+attribute "dela/stun_servers_ip",
+          :description => "Dela Client stun connections(ips).",
+          :type => "array"
+
+attribute "dela/stun_servers_id",
+          :description => "Dela Client stun connections(ids).",
+          :type => "array"
+
+attribute "dela/hops/storage/type",
+          :description => "Dela Client storage type(HDFS/DISK).",
+          :type => "string"
+          
+attribute "dela/hops/library/type",
+          :description => "Dela Client library type(MYSQL/DISK).",
+          :type => "string"
 
 
 #

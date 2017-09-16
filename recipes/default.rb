@@ -286,6 +286,7 @@ template "#{rows_path}" do
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
                 :hdfs_ui_port => node["hops"]["nn"]["http_port"],
+                :hopsworks_user => node["hopsworks"]["user"],
                 :hdfs_user => node["hops"]["hdfs"]["user"],
                 :mr_user => node["hops"]["mr"]["user"],
                 :flink_dir => node["flink"]["dir"] + "/flink",
@@ -1070,5 +1071,12 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   source "letsencrypt.sh.erb"
   owner node["glassfish"]["user"]
   mode 0770
+  action :create
+end 
+
+template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
+  source "convert-ipython-notebook.sh.erb"
+  owner node["glassfish"]["user"]
+  mode 0750
   action :create
 end 

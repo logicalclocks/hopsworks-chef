@@ -1,0 +1,65 @@
+#!/bin/bash
+
+#
+# This script converts ipython notebooks to/from python programs
+#
+
+help() {
+    echo ""
+    echo "usage: $0 path hdfs_username"
+    echo ""
+    exit 1
+}
+
+if [ "$#" -ne 2 ] ; then
+    help
+fi
+
+cd <%= node['hopsworks']['staging_dir'] %>
+if [ $? -ne 0 ] ; then
+    echo "The staging directory does not exist. Cannot continue. Missing dir: <%= node['hopsworks']['staging_dir'] %>"
+    exit 2
+fi    
+mkdir -p ipython_conversions
+if [ $? -ne 0 ] ; then
+    echo "Could not create directory in the staging directory for converting iPython notebook. Problem dir: <%= node['hopsworks']['staging_dir'] %>/ipython_conversions as user $USER"
+    exit 2
+fi    
+cd ipython_conversions
+
+filename=$(basename $1)
+dirname=$(dirname $1)
+
+base=$(echo $filename | cut -f 1 -d '.')
+
+# Remove any old versions that may be here
+rm -f ${base}.py
+rm -f $filename
+
+# Stage the jupyter notebook before converting locally and uploading back to hdfs
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal $1
+if [ $? -ne 0 ] ; then
+    echo "Problem staging from hdfs ipython notebook: $1"
+    exit 4
+fi    
+jupyter nbconvert --to python $filename
+if [ $? -ne 0 ] ; then
+    echo "Problem converting ipython notebook to python program: $1"
+    exit 5
+fi    
+
+# Over-write any old version up on hdfs
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f ${base}.py $dirname
+if [ $? -ne 0 ] ; then
+    echo "Problem copying converted ipython program back to hdfs: $dirname/${base}.py"
+    exit 6
+fi    
+
+# Current user should have hdfs superuser privileges
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown $2 $dirname/${base}.py
+if [ $? -ne 0 ] ; then
+    echo "Problem changing ownersihp of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
+    exit 5
+fi    
+
+
