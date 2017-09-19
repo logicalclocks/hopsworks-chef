@@ -251,10 +251,6 @@ INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anacon
 INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
 
 
---
--- Add 'glassfish' to 'hdfs' superusers group
---
 
-insert into hops.hdfs_users_groups values((select id from hops.hdfs_users where name="<%= @hopsworks_user %>"), (select id from hops.hdfs_groups where name="<%= @hdfs_user %>"));
 
 
