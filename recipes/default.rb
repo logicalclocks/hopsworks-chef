@@ -963,15 +963,32 @@ end
 # (Optional) Enable the server extension so that clusters can be programatically changed
 #
 
-# bash "jupyter-sparkmagic-kernel" do
-#   user "root"
-#   code <<-EOF
-#     set -e
-#     cd #{pythondir}
-#     export HADOOP_HOME=#{node[:hops][:base_dir]}
-#     jupyter serverextension enable --py sparkmagic
-#    EOF
-# end
+case node['platform']
+when 'debian', 'ubuntu'
+
+  bash "jupyter-sparkmagic-kernel" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{pythondir}
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
+    jupyter serverextension enable --py sparkmagic
+   EOF
+  end
+when 'redhat', 'centos', 'fedora'
+
+  bash "jupyter-sparkmagic-kernel" do
+    user "root"
+    code <<-EOF
+    set -e
+    # https://github.com/conda/conda/issues/4823
+    pip install 'configparser===3.5.0b2'
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
+    jupyter serverextension enable --py sparkmagic
+   EOF
+  end
+
+end
 
 
 homedir = "/home/#{node["hopsworks"]["user"]}"
