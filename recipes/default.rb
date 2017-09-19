@@ -286,6 +286,7 @@ template "#{rows_path}" do
                 :yarn_ui_port => node["hops"]["rm"]["http_port"],
                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
                 :hdfs_ui_port => node["hops"]["nn"]["http_port"],
+                :hopsworks_user => node["hopsworks"]["user"],
                 :hdfs_user => node["hops"]["hdfs"]["user"],
                 :mr_user => node["hops"]["mr"]["user"],
                 :flink_dir => node["flink"]["dir"] + "/flink",
@@ -957,19 +958,36 @@ bash "jupyter-kernels" do
    EOF
 end
 
-bash "jupyter-sparkmagic-kernel" do
-  user "root"
-  code <<-EOF
+
+#
+# (Optional) Enable the server extension so that clusters can be programatically changed
+#
+
+case node['platform']
+when 'debian', 'ubuntu'
+
+  bash "jupyter-sparkmagic-kernel" do
+    user "root"
+    code <<-EOF
     set -e
     cd #{pythondir}
     export HADOOP_HOME=#{node[:hops][:base_dir]}
     jupyter serverextension enable --py sparkmagic
-    # mkdir -p #{domains_dir}/.sparkmagic
-    # chown -R #{node["hopsworks"]["user"]}:#{node["hopsworks"]["group"]} #{domains_dir}/.sparkmagic
-    # if [ -d /home/#{node['hopsworks']['user']}/.config ] ; then
-    #   chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} /home/#{node['hopsworks']['user']}/.config
-    # fi
    EOF
+  end
+when 'redhat', 'centos', 'fedora'
+
+  bash "jupyter-sparkmagic-kernel" do
+    user "root"
+    code <<-EOF
+    set -e
+    # https://github.com/conda/conda/issues/4823
+    pip install 'configparser===3.5.0b2'
+    export HADOOP_HOME=#{node[:hops][:base_dir]}
+    jupyter serverextension enable --py sparkmagic
+   EOF
+  end
+
 end
 
 
@@ -1067,5 +1085,12 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   source "letsencrypt.sh.erb"
   owner node["glassfish"]["user"]
   mode 0770
+  action :create
+end 
+
+template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
+  source "convert-ipython-notebook.sh.erb"
+  owner node["glassfish"]["user"]
+  mode 0750
   action :create
 end 
