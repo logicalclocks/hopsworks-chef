@@ -859,9 +859,6 @@ case node['platform']
        wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.rpm
        sudo yum install scala-2.11.8.rpm
        rm scala-2.11.8.rpm
-       
-       # needed for jupyter sparkmagic
-       pip install backports.shutil_get_terminal_size
     EOF
     not_if "which scala"
   end
@@ -974,7 +971,7 @@ when 'debian', 'ubuntu'
     code <<-EOF
     set -e
     cd #{pythondir}
-    # workaround for 
+    # workaround for https://github.com/ipython/ipython/issues/9656
     pip uninstall -y backports.shutil_get_terminal_size
     pip install --upgrade backports.shutil_get_terminal_size 
     export HADOOP_HOME=#{node[:hops][:base_dir]}
@@ -987,6 +984,9 @@ when 'redhat', 'centos', 'fedora'
     user "root"
     code <<-EOF
     set -e
+    # workaround for https://github.com/ipython/ipython/issues/9656
+    pip uninstall -y backports.shutil_get_terminal_size
+    pip install --upgrade backports.shutil_get_terminal_size 
     # https://github.com/conda/conda/issues/4823
     pip install 'configparser===3.5.0b2'
     export HADOOP_HOME=#{node[:hops][:base_dir]}
