@@ -966,6 +966,9 @@ bash "jupyter-sparkmagic-kernel" do
   code <<-EOF
     set -e
     cd #{pythondir}
+    # workaround for 
+    pip uninstall -y backports.shutil_get_terminal_size
+    pip install --upgrade backports.shutil_get_terminal_size 
     export HADOOP_HOME=#{node[:hops][:base_dir]}
     jupyter serverextension enable --py sparkmagic
     # mkdir -p #{domains_dir}/.sparkmagic
