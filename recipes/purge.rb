@@ -10,8 +10,8 @@
         if [ $pid != "" ] ; then
            kill $pid
         fi
-        rm -rf #{node["glassfish"]["domains_dir"]}
-        rm -rf #{node["glassfish"]["install_dir"]}/glassfish
+        rm -rf #{node['glassfish']['domains_dir']}
+        rm -rf #{node['glassfish']['install_dir']}/glassfish
         rm -f /etc/init.d/glassfish-domain1
         rm -f /usr/lib/systemd/system/glassfish-domain1.service
         rm -f /lib/systemd/system/glassfish-domain1.service
@@ -19,13 +19,13 @@
     EOF
   end
 
-directory "#{node["glassfish"]["install_dir"]}/glassfish" do
+directory "#{node['glassfish']['install_dir']}/glassfish" do
   recursive true
   action :delete
   ignore_failure true
 end
 
-directory "#{node["glassfish"]["domains_dir"]}" do
+directory "#{node['glassfish']['domains_dir']}" do
   recursive true
   action :delete
   ignore_failure true

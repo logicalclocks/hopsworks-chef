@@ -7,7 +7,7 @@ fi
 
 DOMAIN="$1"
 
-KEYSTOREPW=<%= node.hopsworks.admin.password %>
+KEYSTOREPW=<%= node['hopsworks']['admin']['password'] %>
 cd <%= @int_ca_dir %>
 
 #1 revoc the certificat
