@@ -186,6 +186,13 @@ INSERT INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
 
 INSERT INTO variables VALUES ("cert_mater_delay", "<%= @cert_mater_delay %>");
 
+--
+-- Comma-separated list of user emails that their login attempt should not be
+-- persisted in the database for auditing reasons
+--
+
+INSERT INTO variables VALUES ("whitelist_users", "agent@hops.io");
+
 -- --------------------------------------------------------
 
 INSERT INTO variables VALUES ("jupyter_dir", "<%= node['hopsworks']['jupyter_dir'] %>");
