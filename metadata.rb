@@ -1800,3 +1800,20 @@ attribute "hopssite/password",
           :description => "Password for the registered username at www.hops.site.",
           :type => 'string'
 
+
+
+#
+# Airflow settings
+#
+
+attribute "airflow/dir",
+          :description => "Installation directory for the airflow binaries/config files",
+          :type => 'string'
+
+attribute "airflow/user",
+          :description => "Airflow username to run service as",
+          :type => 'string'
+
+attribute "airflow/group",
+          :description => "Airflow group to run service as",
+          :type => 'string'
