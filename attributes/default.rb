@@ -117,20 +117,18 @@ default["hopsworks"]["dela"]["enabled"]                = "true"
 default["hopsworks"]["dela"]["cluster_http_port"]      = "8080"
 default["hopsworks"]["dela"]["public_hopsworks_port"]  = "8080"
 
-default["hopsworks"]["dela"]["certificate"]            = "DummyCert25100"
-
 #
 # Hops-site 
 #
-default["hopsworks"]["dela"]["hops_site"]["domain"]    = "hops.site"
-default["hopsworks"]["dela"]["hops_site"]["port"]      = "50081"
-default["hopsworks"]["dela"]["hops_site"]["base_uri"]  = "https://" + node["hopsworks"]["dela"]["hops_site"]["domain"] + ":" + node["hopsworks"]["dela"]["hops_site"]["port"]  + "/hops-site/api"
-
+default["hopsworks"]["hopssite"]["domain"]    = "hops.site"
+default["hopsworks"]["hopssite"]["port"]      = "50081"
+default["hopsworks"]["hopssite"]["base_uri"]  = "https://" + node["hopsworks"]["hopssite"]["domain"] + ":" + node["hopsworks"]["hopssite"]["port"]  + "/hops-site/api"
+default["hopsworks"]["hopssite"]["heartbeat"] = "600000"
 #
 # hops.site settings for cert signing
 #
 default["hopssite"]["manual_register"]                 = "false"
-default["hopssite"]["url"]                             = "https://" + node["hopsworks"]["dela"]["hops_site"]["domain"] + ":" + node["hopsworks"]["port"]
+default["hopssite"]["url"]                             = "https://" + node["hopsworks"]["dela"]["hopssite"]["domain"] + ":" + node["hopsworks"]["port"]
 default["hopssite"]["user"]                            = "agent@hops.io"
 default["hopssite"]["password"]                        = "admin"
 default["hopssite"]["base_dir"]                        = node["hopsworks"]["domains_dir"] + "/domain1"

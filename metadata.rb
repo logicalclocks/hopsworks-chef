@@ -1710,12 +1710,16 @@ attribute "hopsworks/org_country_code",
           :type => 'string'
 # Hops site
 
-attribute "hopsworks/dela/hops_site/domain",
+attribute "hopsworks/hopssite/domain",
           :description => "Dela hops site public domain",
           :type => 'string'
 
-attribute "hopsworks/dela/hops_site/port",
+attribute "hopsworks/hopssite/port",
           :description => "Dela hops site port",
+          :type => 'string'
+
+attribute "hopsworks/hopssite/heartbeat",
+          :description => "Dela hops site heartbeat",
           :type => 'string'
 
 attribute "hopssite/cert/cn",

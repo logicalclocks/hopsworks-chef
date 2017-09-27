@@ -213,11 +213,11 @@ INSERT INTO variables VALUES ("dela_enabled","<%= @dela_enabled %>");
 
 -- dela old
 
-INSERT INTO variables VALUES ("hopsworks_certificate","<%= node["hopsworks"]["dela"]["certificate"] %>");
+INSERT INTO variables VALUES ("hops_site_endpoint","<%= node["hopsworks"]["hopssite"]["base_uri"] %>");
 
-INSERT INTO variables VALUES ("hops_site_endpoint","<%= node["hopsworks"]["dela"]["hops_site"]["base_uri"] %>");
+INSERT INTO variables VALUES ("hops_site_host","<%= node["hopsworks"]["hopssite"]["domain"] %>");
 
-INSERT INTO variables VALUES ("hops_site_host","<%= node["hopsworks"]["dela"]["hops_site"]["domain"] %>");
+INSERT INTO variables VALUES ("hopssite_heartbeat_interval","<%= node["hopsworks"]["hopssite"]["heartbeat"] %>");
 
 --
 
