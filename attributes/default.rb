@@ -134,8 +134,8 @@ default['hopsworks']['hopssite']['heartbeat'] = "600000"
 # hops.site settings for cert signing
 #
 default['hopssite']['manual_register']                 = "false"
-default['hopssite']['url']                             = "https://" + node['hopsworks']['dela']['hopssite']['domain'] + ":" + node['hopsworks']['port']
-default['hopssite']['user']                            = "agent@hops.io"'
+default['hopssite']['url']                             = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
+default['hopssite']['user']                            = "agent@hops.io"
 default['hopssite']['password']                        = "admin"
 default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
