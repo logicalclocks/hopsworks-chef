@@ -71,37 +71,40 @@ class Register:
 
     @staticmethod
     def register(csr, key):
-        try:
-            json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
-            form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
-            payload = {}
-            payload["csr"] = csr
-            payload["agent-password"] = ""
-            logger.info("Registering with HopsWorks...")
-            session = requests.Session()
-            session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
-            resp = session.post(sign_cert_url, data=json.dumps(payload), headers=json_headers, verify=False)
-            if not resp.status_code == HTTP_OK:
-                raise Exception('Could not register: Unknown host id or internal error on the dashboard (Status code: {0}).'.format(resp.status_code))
+            try:
+		json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
+        	form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
+		payload = {}
+                payload['csr'] = csr
+                payload["agent-password"] = ""
+                payload["host-id"] = host_id
+                logger.info("Registering with HopsWorks...")
+                logger.info("Password: {0}".format(agent_password))                
+		session = requests.Session()
+		session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
+		resp = session.post(register_url, data=json.dumps(payload), headers=json_headers, verify=False)
+		if not resp.status_code == HTTP_OK:
+               		raise Exception('Could not register: Unknown host id or internal error on the dashboard (Status code: {0}).'.format(resp.status_code))
 
-            jData = json.loads(resp.content)
-            cert = jData['pubAgentCert']
-            caCert = jData['caPubCert']
+                # Loads (Load String) takes a Json file and converts into python data structure (dict or list, depending on JSON)
+                # jData = json.loads(myResponse.content)
+                jData = json.loads(resp.content)
+                cert = jData['pubAgentCert']
+                caCert = jData['caPubCert']
 
-            cert_dir = os.path.dirname(os.path.abspath(__file__))
-            with open(join(cert_dir, CA_FILE), "wt") as f:
-                f.write(caCert)
-            logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
+                cert_dir = os.path.dirname(os.path.abspath(__file__))
+                with open(join(cert_dir, CA_FILE), "wt") as f:
+                    f.write(caCert)
+                logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
 
-            logger.info("Registered successfully.")
-            return cert
-        except Exception as err:
-            if retry_count + 1 < retries:
+                logger.info("Registered successfully.")
+                return cert
+            except Exception as err:
+                if retry_count + 1 < retries:
                 logger.error("{0}. Number of retries left {1}. Retrying in {2} seconds...".format(err, retries - (retry_count + 1), retry_interval))
             return None
 
-
-class Cert:
+class Cert():
 
     @staticmethod
     def get_dir():
@@ -158,13 +161,13 @@ config_mutex = Lock()
 
 HTTP_OK = 200
 
-CONFIG_FILE = "<%= node[:hopssite][:base_dir] %>/config/ca.ini"
-LOG_FILE = "<%= node[:hopssite][:certs_dir] %>/csr.log"
-CERT_FILE = "<%= node[:hopssite][:certs_dir] %>/pub.pem"
-CA_FILE = "<%= node[:hopssite][:certs_dir] %>/ca_pub.pem"
-KEY_FILE = "<%= node[:hopssite][:certs_dir] %>/priv.key"
-SERVER_KEYSTORE = "<%= node[:hopssite][:keystore_dir] %>/keystore.jks"
-SERVER_TRUSTSTORE = "<%= node[:hopssite][:keystore_dir] %>/truststore.jks"
+CONFIG_FILE = "<%= node['hopssite']['base_dir'] %>/config/ca.ini"
+LOG_FILE = "<%= node['hopssite']['certs_dir'] %>/csr.log"
+CERT_FILE = "<%= node['hopssite']['certs_dir'] %>/pub.pem"
+CA_FILE = "<%= node['hopssite']['certs_dir'] %>/ca_pub.pem"
+KEY_FILE = "<%= node['hopssite']['certs_dir'] %>/priv.key"
+SERVER_KEYSTORE = "<%= node['hopssite']['keystore_dir'] %>/keystore.jks"
+SERVER_TRUSTSTORE = "<%= node['hopssite']['keystore_dir'] %>/truststore.jks"
 
 # reading config
 try:
@@ -219,4 +222,3 @@ if __name__ == '__main__':
         subprocess.call("<%= node[:hopssite][:base_dir] %>/bin/ca-keystore.sh")
     else:
         logger.info('Keystore files found.')
-

@@ -1,9 +1,7 @@
-use_inline_resources
+action :generate do
 
-notifying_action :generate do
+ca_dir=node['certs']['dir']
 
-ca_dir=node["certs"]["dir"]
-  
 bash 'certificateauthority' do
     user "root"
     code <<-EOF
@@ -13,7 +11,7 @@ bash 'certificateauthority' do
 
         set -eo pipefail
 
-	KEYSTOREPW=#{node.hopsworks.master.password}
+	KEYSTOREPW=#{node['hopsworks']['master']['password']}
 
 	cd "#{ca_dir}"
         BASEDIR="#{ca_dir}"
@@ -27,7 +25,7 @@ bash 'certificateauthority' do
 	chmod 400 private/ca.key.pem
 
 	#3 Create the root certificate
-	[ -f certs/ca.cert.pem ] || openssl req -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsRootCA" -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -key private/ca.key.pem -new -x509 -days 7300 -sha256 -extensions v3_ca -out certs/ca.cert.pem 
+	[ -f certs/ca.cert.pem ] || openssl req -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsRootCA" -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -key private/ca.key.pem -new -x509 -days 7300 -sha256 -extensions v3_ca -out certs/ca.cert.pem
 
 	chmod 444 certs/ca.cert.pem
 
@@ -43,12 +41,12 @@ bash 'certificateauthority' do
 	echo 1000 > intermediate/crlnumber
 
 	#5 Create the intermediate key
-	[ -f intermediate/private/intermediate.key.pem ] || openssl genrsa -aes256 -out intermediate/private/intermediate.key.pem -passout pass:${KEYSTOREPW} 4096 
+	[ -f intermediate/private/intermediate.key.pem ] || openssl genrsa -aes256 -out intermediate/private/intermediate.key.pem -passout pass:${KEYSTOREPW} 4096
 
-	chown #{node.glassfish.user}:#{node.glassfish.group} intermediate/private/intermediate.key.pem
+	chown #{node['glassfish']['user']}:#{node['glassfish']['group']} intermediate/private/intermediate.key.pem
 	chmod 440 intermediate/private/intermediate.key.pem
 
-	#6 Create the intermediate certificate 
+	#6 Create the intermediate certificate
 # Done on client
 	[ -f intermediate/csr/intermediate.csr.pem ] || openssl req -new -sha256 -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermedtiateCA" \
       -key intermediate/private/intermediate.key.pem -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -out intermediate/csr/intermediate.csr.pem
@@ -62,10 +60,10 @@ bash 'certificateauthority' do
 
         set -eo pipefail
 
-	KEYSTOREPW=#{node["hopsworks"]["master"]["password"]}
+	KEYSTOREPW=#{node['hopsworks']['master']['password']}
 
 	[ -f intermediate/certs/intermediate.cert.pem ] || openssl ca -batch -config openssl-ca.cnf -extensions v3_intermediate_ca \
-      -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem 
+      -days 3650 -notext -md sha256 -passin pass:${KEYSTOREPW} -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem
 
 	chmod 444 intermediate/certs/intermediate.cert.pem
 	#7 Verify the intermediate certificate
@@ -83,18 +81,17 @@ end
 end
 
 
-notifying_action :sign_hopssite do
+action :sign_hopssite do
 
-
-  signed = "#{node.hopsworks.domains_dir}/.hops_site_keystore_signed"
+  signed = "#{node['hopsworks']['domains_dir']}/.hops_site_keystore_signed"
 
   bash "sign-global-csr-key" do
-    user node.hopsworks.user
-    group node.hopsworks.group 
+    user node['hopsworks']['user']
+    group node['hopsworks']['group']
     code <<-EOF
-      set -eo pipefail 
+      set -eo pipefail
       export PYTHON_EGG_CACHE=/tmp
-      #{node.hopsworks.domains_dir}/domain1/bin/csr-ca.py
+      #{node['hopsworks']['domains_dir']}/domain1/bin/csr-ca.py
       touch #{signed}
   EOF
     not_if { ::File.exists?( "#{signed}" ) }
@@ -104,13 +101,13 @@ notifying_action :sign_hopssite do
   # bash "chown-certificates" do
   #   user "root"
   #   code <<-EOH
-  #     set -eo pipefail 
-  #     cd #{node.kagent.certs_dir}
-  #     chown root:#{node.kagent.certs_group} .
-  #     chown -R root:#{node.kagent.certs_group} #{node.kagent.keystore_dir}
-  #     chown root:#{node.kagent.group} pub.pem ca_pub.pem priv.key
+  #     set -eo pipefail
+  #     cd #{node['kagent']['certs_dir']}
+  #     chown root:#{node['kagent']['certs_group']} .
+  #     chown -R root:#{node['kagent']['certs_group']} #{node['kagent']['keystore_dir']}
+  #     chown root:#{node['kagent']['group']} pub.pem ca_pub.pem priv.key
   #   EOH
   # end
-  
 
-end  
+
+end

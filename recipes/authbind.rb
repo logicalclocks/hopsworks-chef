@@ -1,7 +1,7 @@
-if node.glassfish.port == 80
+if node['glassfish']['port'] == 80
 
 
-    case node.platform_family
+    case node['platform_family']
     when "redhat"
       bash "authbind-centos" do
         user "root"
@@ -16,7 +16,7 @@ if node.glassfish.port == 80
          mkdir -p /etc/authbind/byport
          touch /etc/authbind/byport/80
          chmod 550 /etc/authbind/byport/80
-         perl -pi -e 's/8080/80/g' #{node.glassfish.domains_dir}/domain1/config/domain.xml
+         perl -pi -e 's/8080/80/g' #{node['glassfish']['domains_dir']}/domain1/config/domain.xml
      EOF
       end
       
@@ -24,9 +24,9 @@ if node.glassfish.port == 80
       bash "authbind-common" do
         user "root"
         code <<-EOF
-         perl -pi -e 's/8181/443/g' #{node.glassfish.domains_dir}/domain1/config/domain.xml
+         perl -pi -e 's/8181/443/g' #{node['glassfish']['domains_dir']}/domain1/config/domain.xml
          touch /etc/authbind/byport/443
-         chown #{node.glassfish.user} /etc/authbind/byport/443
+         chown #{node['glassfish']['user']} /etc/authbind/byport/443
          chmod 550 /etc/authbind/byport/443
    EOF
       end

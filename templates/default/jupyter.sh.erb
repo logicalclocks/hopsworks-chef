@@ -42,7 +42,7 @@ if [ "$1" == "kill" ] ; then
     fi
 
      
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    su <%= node['jupyter']['user'] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
      
 
     # Remove all the directories in the home jupyter folder for this project-user.
@@ -115,17 +115,17 @@ elif [ "$1" == "start" ] ; then
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
     #    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
     # Make the group of the files, the jupyter group so that they can write to the files
-    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node["jupyter"]["group"] %> $2/..
+    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node['jupyter']['group'] %> $2/..
     if [ $? -ne 0 ] ; then
 	echo "Error: could not change ownership of config_dir for Jupyter: $2"
 	exit 1
     fi
     sudo chmod 0730 $2/..    
-    sudo chown -R <%= node['jupyter']['user'] %>:<%= node["jupyter"]["group"] %> $2
+    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
     sudo chmod -R 770 $2
      
     # Launch the jupyter notebook
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
+    su <%= node['jupyter']['user'] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then

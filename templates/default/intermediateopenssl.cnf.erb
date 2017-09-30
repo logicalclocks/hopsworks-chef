@@ -78,12 +78,12 @@ commonName                      = Common Name
 emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
-countryName_default             = <%= node.hopsworks.cert.c %>
-stateOrProvinceName_default     = <%= node.hopsworks.cert.s %>
+countryName_default             = <%= node['hopsworks']['cert']['c'] %>
+stateOrProvinceName_default     = <%= node['hopsworks']['cert']['s'] %>
 localityName_default            = Stockholm
 0.organizationName_default      = SICS
 organizationalUnitName_default  = HOPS
-emailAddress_default            = <%= node.hopsworks.email %>
+emailAddress_default            = <%= node['hopsworks']['email'] %>
 
 [ v3_ca ]
 # Extensions for a typical CA (`man x509v3_config`).
