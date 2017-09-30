@@ -18,7 +18,7 @@ sudo service glassfish-domain1 stop
 DOMAIN=<%= node['fqdn'] %>
 NEW_DOMAIN=${DOMAIN}-$2
 KEYSTOREPW=$1
-#<%= node["hopsworks"]["cert"]["password"] %>
+#<%= node['hopsworks']['cert']['password'] %>
 
 BASE=/etc/letsencrypt/live 
 LIVE=${BASE}/$DOMAIN

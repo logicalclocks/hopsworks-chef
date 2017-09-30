@@ -66,7 +66,7 @@ class Register():
             if cert != None:
                 Cert.store(cert, key)
                 break
-            time.sleep(<%= node[:kagent][:dashboard][:api][:heartbeat] %>)
+            time.sleep(<%= node['kagent']['dashboard']['api']['heartbeat'] %>)
 
     @staticmethod
     def register(csr, key):
@@ -74,7 +74,7 @@ class Register():
 		json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
         	form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
 		payload = {}
-                payload["csr"] = csr
+                payload['csr'] = csr
                 payload["agent-password"] = ""
                 payload["host-id"] = host_id
                 logger.info("Registering with HopsWorks...")
@@ -119,9 +119,9 @@ class Cert():
 
     @staticmethod
     def read_key_and_csr():
-        csrFile = open("<%= node.hopsworks.domains_dir %>/domain1/config/ca/intermediate/csr/intermediate.csr.pem","r") 
+        csrFile = open("<%= node['hopsworks']['domains_dir'] %>/domain1/config/ca/intermediate/csr/intermediate.csr.pem","r") 
         csr = csrFile.read()
-        pkFile = open("<%= node.hopsworks.domains_dir %>/domain1/config/ca/intermediate/private/intermediate.key.pem","r") 	
+        pkFile = open("<%= node['hopsworks']['domains_dir'] %>/domain1/config/ca/intermediate/private/intermediate.key.pem","r") 	
         private_key = pkFile.read()
         return csr, private_key
 
@@ -144,23 +144,23 @@ config_mutex = Lock()
 HTTP_OK = 200
 
 CONFIG_FILE = "<%= node['hopsworks']['domains_dir'] %>/domain1/config/ca.ini"
-LOG_FILE = "<%= node[:kagent][:base_dir] %>/csr.log"
-CERT_FILE = "<%= node[:kagent][:certs_dir] %>/pub.pem"
-CA_FILE = "<%= node[:kagent][:certs_dir] %>/ca_pub.pem"
-KEY_FILE = "<%= node[:kagent][:certs_dir] %>/priv.key"
-SERVER_KEYSTORE = "<%= node.kagent.keystore_dir %>/node_server_keystore.jks"
-SERVER_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_server_truststore.jks"
-CLIENT_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_client_truststore.jks"
+LOG_FILE = "<%= node['kagent']['base_dir'] %>/csr.log"
+CERT_FILE = "<%= node['kagent']['certs_dir'] %>/pub.pem"
+CA_FILE = "<%= node['kagent']['certs_dir'] %>/ca_pub.pem"
+KEY_FILE = "<%= node['kagent']['certs_dir'] %>/priv.key"
+SERVER_KEYSTORE = "<%= node['kagent']['keystore_dir'] %>/node_server_keystore.jks"
+SERVER_TRUSTSTORE = "<%= node['kagent']['keystore_dir'] %>/node_server_truststore.jks"
+CLIENT_TRUSTSTORE = "<%= node['kagent']['keystore_dir'] %>/node_client_truststore.jks"
 
 # reading config
 try:
-    server_url = "http://<%= @master_ip %>/<%= node.kagent.dashboard_app %>"
-    register_url = server_url + <%= node[:kagent][:dashboard][:api][:register] %>
-    login_url = server_url + <%= node[:kagent][:dashboard][:api][:login] %>
-    server_username = <%= node[:kagent][:dashboard][:user] %>
-    server_password = <%= node[:kagent][:dashboard][:password] %>
-    heartbeat_interval = <%= node[:kagent][:dashboard][:api][:heartbeat] %>
-    logging_level = <%= node[:kagent][:logging_level] %>
+    server_url = "http://<%= @master_ip %>/<%= node['kagent']['dashboard_app'] %>"
+    register_url = server_url + <%= node['kagent']['dashboard']['api']['register'] %>
+    login_url = server_url + <%= node['kagent']['dashboard']['api']['login'] %>
+    server_username = <%= node['kagent']['dashboard']['user'] %>
+    server_password = <%= node['kagent']['dashboard']['password'] %>
+    heartbeat_interval = <%= node['kagent']['dashboard']['api']['heartbeat'] %>
+    logging_level = <%= node['kagent']['logging_level'] %>
     network_interface = config.get('agent', 'network-interface')
 
     hostname = socket.gethostbyaddr(eth0_ip)[0]
@@ -229,11 +229,11 @@ if __name__ == '__main__':
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
         
-        subprocess.call("<%= node[:hopsworks][:domains_dir] %>/domain1/bin/ca-keystore.sh")
+        subprocess.call("<%= node['hopsworks']['domains_dir'] %>/domain1/bin/ca-keystore.sh")
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
 
 #    if not Cert.existsKeystore():
-#        subprocess.call("<%= node[:kagent][:base_dir] %>/keystore.sh")
+#        subprocess.call("<%= node['kagent']['base_dir'] %>/keystore.sh")
 #    else:
 #        logger.info('Keystore files found.')

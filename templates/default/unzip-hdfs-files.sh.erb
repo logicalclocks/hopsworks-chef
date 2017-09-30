@@ -44,7 +44,7 @@ check_error
 filename=$(basename "$hdfsFile")
 
 echo "STAGING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
 check_error
 
 echo "UNZIPPING" > $fsmFile
@@ -104,11 +104,11 @@ escapedFiledir=${filedir// /_}
 mv "$filedir" $escapedFiledir
 
 echo "UPLOADING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal $escapedFiledir "$dir"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal $escapedFiledir "$dir"
 check_error
 
 echo "CHOWNING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} "$dir"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R ${HDFS_USER} "$dir"
 check_error
 
 echo "SUCCESS" > $fsmFile
