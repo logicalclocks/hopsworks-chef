@@ -1095,18 +1095,3 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   action :create
 end
 
-
-bash 'enable_ssl_cert_access' do
-  user "root"
-  if node['install']['user'].empty? 
-    code <<-EOH
-         setfacl -Rm u:#{node['hopsworks']['user']}:rx #{node['kagent']['certs_dir']}
-         setfacl -Rm u:#{node['jupyter']['user']}:rx #{node['kagent']['certs_dir']}
-         EOH
-  else
-    code <<-EOH
-         setfacl -Rm u:#{node['hopsworks']['user']}:rx #{node['kagent']['certs_dir']}
-         EOH
-  end
-end
-
