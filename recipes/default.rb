@@ -54,13 +54,6 @@ rescue
 end
 
 begin
-  oozie_ip = private_recipe_ip("oozie","default")
-rescue
-  oozie_ip = node['hostname']
-  Chef::Log.warn "could not find oozie ip for HopsWorks!"
-end
-
-begin
   jhs_ip = private_recipe_ip("hops","jhs")
 rescue
   jhs_ip = node['hostname']
@@ -274,7 +267,6 @@ template "#{rows_path}" do
                 :rm_port => rm_port,
                 :logstash_ip => logstash_ip,
                 :logstash_port => logstash_port,
-                :oozie_ip => oozie_ip,
                 :spark_history_server_ip => spark_history_server_ip,
                 :hopsworks_ip => hopsworks_ip,
                 :elastic_ip => elastic_ip,
