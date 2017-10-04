@@ -7,6 +7,8 @@ include_attribute "zeppelin"
 include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
+include_attribute "drelephant"
+include_attribute "dela"
 
 default['hopsworks']['version']                  = "0.1.0"
 

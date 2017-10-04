@@ -24,7 +24,7 @@ cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
 cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master"
 
-cookbook 'ulimit', github: "siroibaf/chef-ulimit", branch: "master"
+cookbook 'ulimit', github: "hopshadoop/chef-ulimit", branch: "master"
 
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
