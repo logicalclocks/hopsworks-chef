@@ -601,24 +601,24 @@ end
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
 # The jupyter user will be able to read the files and write to the directories due to group permissions
 
-user node["jupyter"]["user"] do
-  home node["jupyter"]["base_dir"]
-  gid node["jupyter"]["group"]  
+user node['jupyter']['user'] do
+  home node['jupyter']['base_dir']
+  gid node['jupyter']['group']  
   action :create
   shell "/bin/bash"
   manage_home true
-  not_if "getent passwd #{node["jupyter"]["user"]}"
+  not_if "getent passwd #{node['jupyter']['user']}"
 end
 
 #update permissions of base_dir to 770
-directory node["jupyter"]["base_dir"]  do
-  owner node["jupyter"]["user"]  
-  group node["jupyter"]["group"]
+directory node['jupyter']['base_dir']  do
+  owner node['jupyter']['user']  
+  group node['jupyter']['group']
   mode "770"
   action :create
 end
 
-case node["platform_family"]
+case node['platform_family']
   when "debian"
    apt_package "python-openssl" do
      action :install
@@ -664,14 +664,14 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   mode 0750
 end
 
-directory node["hopssite"]["certs_dir"] do
-  owner node["glassfish"]["user"]
+directory node['hopssite']['certs_dir'] do
+  owner node['glassfish']['user']
   mode "750"
   action :create
 end
 
-directory node["hopssite"]["keystore_dir"] do
-  owner node["glassfish"]["user"]
+directory node['hopssite']['keystore_dir'] do
+  owner node['glassfish']['user']
   mode "750"
   action :create
 end
@@ -692,12 +692,12 @@ end
 
 template "#{theDomain}/bin/ca-keystore.sh" do
   source "ca-keystore.sh.erb"
-  owner node["glassfish"]["user"]
+  owner node['glassfish']['user']
   mode 0750
   action :create
   variables({
-         :directory => node["hopssite"]["keystore_dir"],
-         :keystorepass => node["hopsworks"]["master"]["password"]
+         :directory => node['hopssite']['keystore_dir'],
+         :keystorepass => node['hopsworks']['master']['password']
   })
 end
 
