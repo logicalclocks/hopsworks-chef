@@ -8,12 +8,18 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [killhard pid]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [killhard pid] [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
     echo ""
     exit 1
 }
 
 PORT=0
+CONDA_DIR=<%= node["conda"]["base_dir"] %>
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+JUPYTER_USER=<%= node['jupyter']['user'] %>
+JUPYTER_GROUP=<%= node['jupyter']['group'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+KERNELS_DIR=/usr/local/share/jupyter/kernels
 
 
 if [ "$1" == "kill" ] ; then
@@ -42,7 +48,7 @@ if [ "$1" == "kill" ] ; then
     fi
 
      
-    su <%= node['jupyter']['user'] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $3 $4"
      
 
     # Remove all the directories in the home jupyter folder for this project-user.
@@ -102,7 +108,7 @@ elif [ "$1" == "start" ] ; then
 #    fi
     
     parent=$(dirname $8)
-    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node['jupyter']['group'] %> $parent
+    sudo chown -R ${HOPSWORKS_USER}:${JUPYTER_GROUP} $parent
     sudo chmod 0730 $parent
     sudo mkdir -p $8
     if [ $? -ne 0 ] ; then
@@ -110,35 +116,83 @@ elif [ "$1" == "start" ] ; then
 	exit 1
     fi
     sudo chmod -R 770 $8
-    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $8
+    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $8
     
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
-    #    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
+    #    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
     # Make the group of the files, the jupyter group so that they can write to the files
-    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node['jupyter']['group'] %> $2/..
+    sudo chown -R ${HOPSWORKS_USER}:${JUPYTER_GROUP} $2/..
     if [ $? -ne 0 ] ; then
 	echo "Error: could not change ownership of config_dir for Jupyter: $2"
 	exit 1
     fi
     sudo chmod 0730 $2/..    
-    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
+    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
     sudo chmod -R 770 $2
      
     # Launch the jupyter notebook
-    su <%= node['jupyter']['user'] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
+    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep $2
+    if [ $? -ne 0 ] ; then
+	echo "Error checking PID: $2"
+	echo "Are you trying to ping a non jupyter-notebook process?"
+	exit 12
+    fi
     kill -0 $2
 
+# list 
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    sudo ps -ef | grep -v 'grep' | grep jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 
+# killhard PID    
 elif [ "$1" == "killhard" ] ; then
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep $2
+    if [ $? -ne 0 ] ; then
+	echo "Error killing PID: $2"
+	echo "Are you trying to kill a non jupyter-notebook process?"
+	exit 12
+    fi
+    echo "Trying to 'kill -9' jupyter notebook with PID: $2"
     sudo kill -9 $2 2>&1 > /dev/null
+elif [ "$1" == "kernel-add" ] ; then
+    if [ $# -ne 3 ]; then
+	help
+    fi
+
+# stringZ="proj__jim"
+# echo ${stringZ#*__} # prints jim
+# echo ${stringZ%__*} # prints proj
+    JUPYTER_HOME=$2
+    PROJ_USER=$3
+    PROJECT=${PROJ_USER%__*}	
+    sudo ${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJ_USER}/ --name "python-${PROJ_USER}"
+    sudo ${CONDA_DIR}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJ_USER}/ --name "python-${PROJ_USER}"
+    if [ $? -eq 0 ] ; then
+        sudo jupyter-kernelspec install ${CONDA_DIR}/envs/${PROJ_USER}/share/jupyter/kernels/python-${PROJ_USER}
+        sudo ${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel	
+    else
+        echo "Problem creating Python jupyter kernel for this project ${PROJECT}"
+	exit 12
+    fi
+    # overwrite the default kernel.json file for this kernel
+    sudo mv -f ${JUPYTER_HOME}/conf/kernels-${PROJ_USER}.json /usr/local/share/jupyter/kernels/python-${PROJ_USER}/kernel.json
+elif [ "$1" == "kernel-remove" ] ; then
+    if [[ $2 == *".."* ]]; then
+	echo "Injection Attack when removing python kernel with name python-$2 ?"
+	exit 99
+    fi
+    if [ ! -d "${KERNELS_DIR}/python-${2}" ] ; then
+	echo "Invalid KERNEL directory: $2"
+	exit 2
+    fi
+    
+    sudo rm -rf ${KERNELS_DIR}/python-${2}
 else
   help
 fi

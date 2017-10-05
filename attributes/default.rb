@@ -9,6 +9,7 @@ include_attribute "kkafka"
 include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
+include_attribute "conda"
 
 default['hopsworks']['version']                  = "0.1.0"
 
