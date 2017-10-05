@@ -1192,7 +1192,7 @@ attribute "kkafka/broker/super/users",
 
 ##
 ##
-## Elastic 
+## Elastic
 ##
 ##
 
@@ -1439,7 +1439,7 @@ attribute "ndb/group",
 attribute "ndb/BackupDataDir",
           :description => "Directory to store mysql cluster backups in",
           :type => 'string'
- 
+
 attribute "mysql/user",
           :description => "User that runs mysql server",
           :required => "required",
@@ -1665,10 +1665,33 @@ attribute "ndb/MaxNoOfConcurrentTransactions",
           :type => 'string'
 
 #
-#
 # Dela
 #
-#
+
+attribute "dela/user",
+          :description => "Username for the dela services",
+          :type => 'string'
+
+attribute "dela/group",
+          :description => "Groupname for the dela services",
+          :type => 'string'
+
+attribute "dela/dir",
+          :description => "dela Installation directory.",
+          :type => 'string'
+
+# Hopsworks Dela
+attribute "dela/enabled",
+          :description => "Enable dela services. 'true' (default)",
+          :type => 'string'
+
+attribute "hopsworks/dela/cluster_http_port",
+          :description => "Dela cluster accessible http port",
+          :type => 'string'
+
+attribute "hopsworks/dela/public_hopsworks_port",
+          :description => "Hopsworks public http port",
+          :type => 'string'
 
 attribute "hopsworks/org_name",
           :description => "Organization name for this hopsworks cluster",
@@ -1685,22 +1708,72 @@ attribute "hopsworks/org_city",
 attribute "hopsworks/org_country_code",
           :description => "2-Letter Country code for this organization ('us', 'se', 'uk', etc)",
           :type => 'string'
+# Hops site
+
+attribute "hopsworks/hopssite/domain",
+          :description => "Dela hops site public domain",
+          :type => 'string'
+
+attribute "hopsworks/hopssite/port",
+          :description => "Dela hops site port",
+          :type => 'string'
+
+attribute "hopsworks/hopssite/heartbeat",
+          :description => "Dela hops site heartbeat",
+          :type => 'string'
+
+attribute "hopssite/cert/cn",
+	  :description => "hopssite Organization Common Name (default: hopsworks/cert)",
+	  :type => 'string'
+
+attribute "hopssite/cert/o",
+	  :description => "hopssite Organization Name (default: hopsworks/cert)",
+	  :type => 'string'
+
+attribute "hopssite/cert/ou",
+	  :description => "hopssite Organizational Unit Name (default: hopsworks/cert)",
+	  :type => 'string'
+
+attribute "hopssite/cert/l",
+	  :description => "hopssite Locality Name (eg, city) (default: hopsworks/cert)",
+	  :type => 'string'
+
+attribute "hopssite/cert/s",
+	  :description => "hopssite State or Province Name (default: hopsworks/cert)",
+	  :type => 'string'
+
+attribute "hopssite/cert/c",
+	  :description => "hopssite Country Name (default: hopsworks/cert)",
+	  :type => 'string'
 
 #
-# Dela
+# hops.site settings
 #
-attribute "dela/user",
-          :description => "Username for the dela services",
+attribute "hopssite/manual_register",
+          :description => "Manually register with www.hops.site if set true. 'false' (default)",
           :type => 'string'
 
-attribute "dela/group",
-          :description => "Groupname for the dela services",
+attribute "hopssite/url",
+          :description => "Url to the global Hops Certificate Authority.",
           :type => 'string'
 
-attribute "dela/dir",
-          :description => "dela Installation directory.",
+attribute "hopssite/user",
+          :description => "To register your Hopsworks Cluster, you need to register a username at www.hops.site. This is the username for hops.site.",
           :type => 'string'
 
+attribute "hopssite/password",
+          :description => "Password for the registered username at www.hops.site.",
+          :type => 'string'
+
+attribute "hopssite/retry_interval",
+          :description => "Certificate signing request retry interval for hops.site.",
+          :type => 'string'
+
+attribute "hopssite/max_retries",
+          :description => "Certificate signing request maximum number of retries for hops.site.",
+          :type => 'string'
+  
+# Dela Transfer specific
 attribute "dela/log_level",
           :description => "Default: WARN. Can be INFO or DEBUG or TRACE or ERROR.",
           :type => "string"
@@ -1735,7 +1808,7 @@ attribute "dela/port",
 
 attribute "dela/http_port",
           :description => "Dela Client http port.",
-	    :type => "string"
+	     :type => "string"
 
 attribute "dela/stun_servers_ip",
           :description => "Dela Client stun connections(ips).",
@@ -1752,6 +1825,27 @@ attribute "dela/hops/storage/type",
 attribute "dela/hops/library/type",
           :description => "Dela Client library type(MYSQL/DISK).",
           :type => "string"
+
+##### Dela
+attribute "dela/mysql/ip",
+          :description => "Mysql server ip",
+          :type => 'string',
+          :required => "required"
+
+attribute "dela/mysql/port",
+          :description => "MySql server port",
+          :type => 'string',
+          :required => "required"
+
+attribute "mysql/user",
+          :description => "Mysql server username",
+          :type => 'string',
+          :required => "required"
+
+attribute "mysql/password",
+          :description => "MySql server password",
+          :type => 'string',
+          :required => "required"
 
 
 #
@@ -1781,22 +1875,5 @@ attribute "smtp/email",
 attribute "smtp/email_password",
           :description => "Password for email account. ",
           :required => "required",
-          :type => 'string'
-
-
-#
-# hops.site settings
-#
-
-attribute "hopssite/url",
-          :description => "Url to the global Hops Certificate Authority",
-          :type => 'string'
-
-attribute "hopssite/user",
-          :description => "To register your Hopsworks Cluster, you need to register a username at www.hops.site. This is the username for hops.site.",
-          :type => 'string'
-
-attribute "hopssite/password",
-          :description => "Password for the registered username at www.hops.site.",
           :type => 'string'
 
