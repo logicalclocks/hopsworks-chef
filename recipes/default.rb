@@ -300,9 +300,7 @@ template "#{rows_path}" do
 		:file_preview_image_size => node['hopsworks']['file_preview_image_size'],
 		:file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
                 :zk_ip => zk_ip,
-                :dela_ip => dela_ip,
                 :java_home => node['java']['java_home'],
-                :dela_port => node['dela']['http_port'],
                 :kafka_ip => kafka_ip,
                 :kafka_num_replicas => node['hopsworks']['kafka_num_replicas'],
                 :kafka_num_partitions => node['hopsworks']['kafka_num_partitions'],
@@ -327,7 +325,12 @@ template "#{rows_path}" do
                 :org_city => node['hopsworks']['org_city'],
                 :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip,
-                :monitor_max_status_poll_try => node['hopsworks']['monitor_max_status_poll_try']
+                :monitor_max_status_poll_try => node['hopsworks']['monitor_max_status_poll_try'],
+                :dela_enabled => node['hopsworks']['dela']['enabled'],
+                :dela_ip => dela_ip,
+                :dela_port => node['dela']['http_port'],
+                :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
+                :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port']
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
@@ -1090,20 +1093,5 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   owner node['glassfish']['user']
   mode 0750
   action :create
-end
-
-
-bash 'enable_ssl_cert_access' do
-  user "root"
-  if node['install']['user'].empty? 
-    code <<-EOH
-         setfacl -Rm u:#{node['hopsworks']['user']}:rx #{node['kagent']['certs_dir']}
-         setfacl -Rm u:#{node['jupyter']['user']}:rx #{node['kagent']['certs_dir']}
-         EOH
-  else
-    code <<-EOH
-         setfacl -Rm u:#{node['hopsworks']['user']}:rx #{node['kagent']['certs_dir']}
-         EOH
-  end
 end
 
