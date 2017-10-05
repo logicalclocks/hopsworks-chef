@@ -1681,7 +1681,7 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
-attribute "dela/enabled",
+attribute "hopsworks/dela/enabled",
           :description => "Enable dela services. 'true' (default)",
           :type => 'string'
 
