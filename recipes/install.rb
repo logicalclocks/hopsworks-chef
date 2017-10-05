@@ -78,6 +78,12 @@ user node['jupyter']['user'] do
   not_if "getent passwd #{node['jupyter']['user']}"
 end
 
+group node['kagent']['certs_group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  append true
+end
+
 group node['hops']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
@@ -385,8 +391,15 @@ ca_dir = node['certs']['dir']
 
 directory ca_dir do
   owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "700"
+  group node['kagent']['certs_group']
+  mode "750"
+  action :create
+end
+
+directory "#{ca_dir}/transient" do
+  owner node['glassfish']['user']
+  group node['kagent']['certs_group']
+  mode "750"
   action :create
 end
 
