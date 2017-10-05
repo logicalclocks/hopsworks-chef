@@ -27,11 +27,11 @@ INSERT INTO `meta_field_types` (`id`, `description`) VALUES
 -- Create an admin account
 --
 
-INSERT INTO `users` 
+INSERT INTO `users`
 (`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `two_factor`, `tours_state`) VALUES
 (10000, 'meb10000', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin@kth.se', 'Admin', 'Admin', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 30, 0, 3);
 
-INSERT INTO `users` 
+INSERT INTO `users`
 (`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `tours_state`) VALUES
 (10001, 'agent007', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'agent@hops.io', 'Agent', '007', '2015-05-15 10:22:36', 'Mrs', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 10, '2015-04-28 15:18:42', NULL, '123456789', 4, 0, 3);
 
@@ -61,14 +61,14 @@ insert into address (uid, address1,address2,address3,city,state,country,postalco
 -- Upadte the Account Audit  table
 --
 
-insert into account_audit(initiator, ip, browser, action, target, time, message, os, outcome, email, mac) values (10000,'127.0.0.1', 'Firefox', 'REGISTRATION', 10000, CURRENT_TIMESTAMP, 'Linux', 'Admin account was enabled', 'SUCCESS', 'admin@kth.se', '56:84:7a:fe:97:49'); 
+insert into account_audit(initiator, ip, browser, action, target, time, message, os, outcome, email, mac) values (10000,'127.0.0.1', 'Firefox', 'REGISTRATION', 10000, CURRENT_TIMESTAMP, 'Linux', 'Admin account was enabled', 'SUCCESS', 'admin@kth.se', '56:84:7a:fe:97:49');
 
 -- --------------------------------------------------------
 --
 -- Dumping data for table `people_group`
 --
 
--- Admin user now has a sysadmin 
+-- Admin user now has a sysadmin
 INSERT INTO `people_group` (`uid`, `gid`) VALUES (10000, 1005);
 
 -- Agent user now has an agent role
@@ -117,6 +117,12 @@ INSERT INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
 
 INSERT INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
 
+INSERT INTO variables VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
+
+INSERT INTO variables VALUES ("rm_ip", "<%= @rm_ip %>");
+
+INSERT INTO variables VALUES ("rm_port", "<%= @rm_port %>");
+
 INSERT INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
 
 INSERT INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
@@ -160,11 +166,11 @@ INSERT INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
 INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
-INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node["hopsworks"]["master"]["password"] %>");
+INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
 
 INSERT INTO variables VALUES ("glassfish_cert", "false");
 
-INSERT INTO variables VALUES ("certs_dir", "<%= node["certs"]["dir"] %>");
+INSERT INTO variables VALUES ("certs_dir", "<%= node['certs']['dir'] %>");
 
 -- --------------------------------------------------------
 --
@@ -180,13 +186,20 @@ INSERT INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
 
 INSERT INTO variables VALUES ("cert_mater_delay", "<%= @cert_mater_delay %>");
 
+--
+-- Comma-separated list of user emails that their login attempt should not be
+-- persisted in the database for auditing reasons
+--
+
+INSERT INTO variables VALUES ("whitelist_users", "agent@hops.io");
+
 -- --------------------------------------------------------
 
-INSERT INTO variables VALUES ("jupyter_dir", "<%= node["hopsworks"]["jupyter_dir"] %>");
+INSERT INTO variables VALUES ("jupyter_dir", "<%= node['hopsworks']['jupyter_dir'] %>");
 
 INSERT INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
 
-INSERT INTO variables VALUES ("staging_dir", "<%= node["hopsworks"]["staging_dir"] %>");
+INSERT INTO variables VALUES ("staging_dir", "<%= node['hopsworks']['staging_dir'] %>");
 
 INSERT INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_poll_try %>");
 
@@ -197,25 +210,33 @@ INSERT INTO variables VALUES ("hopsutil_version", "<%= node["hops"]["hopsutil_ve
 -- dela
 --
 
-INSERT INTO variables VALUES ("domain","<%= node["hopsworks"]["dela"]["domain"] %>");
+INSERT INTO variables VALUES ("dela_cluster_ip","<%= @dela_ip %>");
 
-INSERT INTO variables VALUES ("certificate","<%= node["hopsworks"]["dela"]["certifcate"] %>");
+INSERT INTO variables VALUES ("dela_cluster_http_port","<%= @dela_cluster_http_port %>");
 
-INSERT INTO variables VALUES ("gvod_rest_endpoint","http://<%= @dela_ip %>:<%= @dela_port %>");
+INSERT INTO variables VALUES ("dela_hopsworks_public_port","<%= @dela_hopsworks_public_port %>");
 
-INSERT INTO variables VALUES ("hops_site_base_uri","<%= node["hopsworks"]["dela"]["hops_site_base_uri"] %>");
+INSERT INTO variables VALUES ("dela_enabled","<%= @dela_enabled %>");
 
-INSERT INTO variables VALUES ("public_search_endpoint","http://<%= @public_ip %>:<%= node["hopsworks"]["port"] %>/<%= node["hopsworks"]["dela"]["public_search_endpoint"] %>");
+-- dela old
 
-INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node["hopsworks"]["port"] %>");
+INSERT INTO variables VALUES ("hops_site_endpoint","<%= node["hopsworks"]["hopssite"]["base_uri"] %>");
+
+INSERT INTO variables VALUES ("hops_site_host","<%= node["hopsworks"]["hopssite"]["domain"] %>");
+
+INSERT INTO variables VALUES ("hopssite_heartbeat_interval","<%= node["hopsworks"]["hopssite"]["heartbeat"] %>");
+
+--
+
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
 
 INSERT INTO variables VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
 
-INSERT INTO variables VALUES ("rest_port","<%= node["hopsworks"]["port"] %>");
+INSERT INTO variables VALUES ("rest_port","<%= node['hopsworks']['port'] %>");
 
-INSERT INTO variables VALUES ("max_gpu_request_size","<%= node["hopsworks"]["max_gpu_request_size"] %>");
+INSERT INTO variables VALUES ("max_gpu_request_size","<%= node['hopsworks']['max_gpu_request_size'] %>");
 
-INSERT INTO variables VALUES ("max_cpu_request_size","<%= node["hopsworks"]["max_cpu_request_size"] %>");
+INSERT INTO variables VALUES ("max_cpu_request_size","<%= node['hopsworks']['max_cpu_request_size'] %>");
 
 --
 -- kibana, logstash, grafana, graphite
@@ -223,6 +244,7 @@ INSERT INTO variables VALUES ("max_cpu_request_size","<%= node["hopsworks"]["max
 
 INSERT INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
 INSERT INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
+INSERT INTO variables VALUES ("logstash_port", "<%= @logstash_port %>");
 INSERT INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
 INSERT INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
 INSERT INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
@@ -239,6 +261,6 @@ INSERT INTO variables VALUES ("cuda_dir", "<%= @cuda_dir %>");
 INSERT INTO variables VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
 INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
 INSERT INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
-INSERT INTO variables VALUES ("anaconda_enabled", "<%= node["hopsworks"]["anaconda_enabled"] %>");
+INSERT INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
 
 INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");

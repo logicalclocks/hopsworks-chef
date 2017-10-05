@@ -1,6 +1,6 @@
 
-myHost=node.fqdn
-keytool="#{node.java.java_home}/bin/keytool"
+myHost=node['fqdn']
+keytool="#{node['java']['java_home']}/bin/keytool"
 
 
 bash 'letsencrypt-run' do
@@ -20,8 +20,8 @@ bash 'letsencrypt-setup' do
     cwd "/tmp"
     code <<-EOF
 	DOMAIN=#{myHost}
-	KEYSTOREPW=#{node.hopsworks.master.password}
-	GFDOMAIN=#{node.glassfish.domains_dir}/domain1
+	KEYSTOREPW=#{node['hopsworks']['master']['password']}
+	GFDOMAIN=#{node['glassfish']['domains_dir']}/domain1
 
 	#TODO Define Attribute
 	LIVE=/etc/letsencrypt/live/$DOMAIN
@@ -58,10 +58,10 @@ bash 'letsencrypt-setup' do
 	#{keytool} -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#Replace old Keystore & Truststore
 	cp -f keystore.jks cacerts.jks $GFDOMAIN/config/
-	chown -R #{node.glassfish.user} $GFDOMAIN/config/
+	chown -R #{node['glassfish']['user']} $GFDOMAIN/config/
 
-	touch #{node.glassfish.base_dir}/.letsencypt_installed
-  	chown #{node.glassfish.user} #{node.glassfish.base_dir}/.letsencypt_installed
+	touch #{node['glassfish']['base_dir']}/.letsencypt_installed
+  	chown #{node['glassfish']['user']} #{node['glassfish']['base_dir']}/.letsencypt_installed
 
 	#Restart Glassfish
 	service glassfish-domain1 stop
@@ -69,5 +69,5 @@ bash 'letsencrypt-setup' do
 	service glassfish-domain1 start
 
     EOF
- not_if { ::File.exists?( "#{node.glassfish.base_dir}/.letsencypt_installed" ) }
+ not_if { ::File.exists?( "#{node['glassfish']['base_dir']}/.letsencypt_installed" ) }
 end

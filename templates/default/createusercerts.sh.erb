@@ -18,7 +18,7 @@ KEYSTOREPW="$7"
 
 
 # default password should be 'adminpw'
-MASTERPW=<%= node["hopsworks"]["master"]["password"] %>
+MASTERPW=<%= node['hopsworks']['master']['password'] %>
 cd <%= @int_ca_dir %>
 
 #1 Create a user key
@@ -52,7 +52,7 @@ keytool -importkeystore -destkeystore ${DOMAIN}__kstore.jks -srckeystore cert_an
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__kstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
 
-chown -R <%= node["glassfish"]["user"] %>:<%= node["glassfish"]["group"] %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
+chown -R <%= node['glassfish']['user'] %>:<%= node['glassfish']['group'] %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
 mv  ${DOMAIN}__kstore.jks /tmp/${DOMAIN}__kstore.jks
 mv  ${DOMAIN}__tstore.jks /tmp/${DOMAIN}__tstore.jks
 rm cert_and_key.p12

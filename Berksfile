@@ -14,7 +14,6 @@ cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
-cookbook 'adam', github: "biobankcloud/adam-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
@@ -23,29 +22,20 @@ cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master"
 
+cookbook 'ulimit', github: "hopshadoop/chef-ulimit", branch: "master"
 
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
 
-cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master"
 
+cookbook 'elasticsearch', '~> 2.5.0'
 
-cookbook 'elasticsearch', '~> 2.4.0'
-
-cookbook 'compat_resource', '~> 12.7.3'
-cookbook 'ulimit', '~> 0.4.0'
+cookbook 'compat_resource', '~> 12.19.0'
 cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 cookbook 'sysctl', '~> 0.10.0'
-
-#cookbook 'collectd', github: "hopshadoop/collectd-chef", branch: "master"
-
-
-group :test do
-  cookbook 'karamel', github: "hopshadoop/karamel-chef", branch: "master"
-  cookbook 'hostsfile', '~> 2.4.5'
-end
 
 
 metadata

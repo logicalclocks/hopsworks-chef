@@ -1,14 +1,13 @@
-use_inline_resources
+action :reload_systemd do
 
-
-notifying_action :reload_systemd do
-
-if node.services.enabled == "true"
+if node['services']['enabled'] == "true"
   bash 'enable_systemd' do
     user "root"
     ignore_failure true
     code <<-EOF
-          systemctl enable glassfish-domain1 
+          systemctl daemon-reload
+          systemctl reset-failed
+          systemctl enable glassfish-domain1
     EOF
   end
 end
@@ -25,7 +24,7 @@ end
 end
 
 
-notifying_action :reload_sysv do
+action :reload_sysv do
 
   bash 'reload_sysv' do
     user "root"
@@ -39,8 +38,8 @@ end
 
 
 
-notifying_action :create_timers do
-  exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
+action :create_timers do
+  exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
   bash 'create_timers_tables' do
     user "root"
@@ -55,10 +54,10 @@ notifying_action :create_timers do
 
 end
 
-notifying_action :create_tables do
+action :create_tables do
   Chef::Log.info("Tables.sql is here: #{new_resource.tables_path}")
   db="hopsworks"
-  exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
+  exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
   bash 'create_hopsworks_tables' do
     user "root"
@@ -84,18 +83,9 @@ notifying_action :create_tables do
 
 end
 
-notifying_action :insert_rows do
+action :insert_rows do
   Chef::Log.info("Rows.sql is here: #{new_resource.rows_path}")
-  exec = "#{node.ndb.scripts_dir}/mysql-client.sh"
-#  timerTable = "ejbtimer_mysql.sql"
-#  timerTablePath = "#{Chef::Config.file_cache_path}/#{timerTable}"
-
- # template timerTablePath do
- #    source "#{timerTable}.erb"
- #    owner node.glassfish.user
- #    mode 0750
- #    action :create
- #  end 
+  exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
   bash 'insert_hopsworks_rows' do
     user "root"
@@ -103,15 +93,15 @@ notifying_action :insert_rows do
       set -e
       #{exec} hopsworks < #{new_resource.rows_path}
       chmod 750 #{new_resource.rows_path}
-      touch "#{node.glassfish.base_dir}/.hopsworks_rows.sql"
+      touch "#{node['glassfish']['base_dir']}/.hopsworks_rows.sql"
     EOF
-    not_if { ::File.exists?("#{node.glassfish.base_dir}/.hopsworks_rows.sql") }
+    not_if { ::File.exists?("#{node['glassfish']['base_dir']}/.hopsworks_rows.sql") }
   end
 end
 
-notifying_action :sshkeys do
+action :sshkeys do
   # Set attribute for dashboard's public_key to the ssh public key
-  key=IO.readlines("#{node.glassfish.base_dir}/.ssh/id_rsa.pub").first
-  node.normal.hopsworks.public_key=key.gsub("\n","")
+  key=IO.readlines("#{node['glassfish']['base_dir']}/.ssh/id_rsa.pub").first
+  node.normal['hopsworks']['public_key']=key.gsub("\n","")
 end
 

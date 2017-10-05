@@ -17,14 +17,14 @@ umask 0077
 start() {
   ulimit -n 30000
 #  ulimit -l  2>&1 > /dev/null
-  rm -rf <%= node.glassfish.domains_dir %>/<%= @domain_name %>/osgi-cache/*
-  su -c "<%= node.glassfish.base_dir %>/versions/current/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> start-domain --debug false --upgrade false <%= @domain_name %>" <%= node.glassfish.user %> 
+  rm -rf <%= node['glassfish']['domains_dir'] %>/<%= @domain_name %>/osgi-cache/*
+  su -c "<%= node['glassfish']['base_dir'] %>/versions/current/bin/asadmin --user <%= node['hopsworks']['admin']['user'] %> --passwordfile <%= @password_file %> start-domain --debug false --upgrade false <%= @domain_name %>" <%= node['glassfish']['user'] %> 
   return $?
 
 }
 
 stop() {
-su -c "<%= node.glassfish.base_dir %>/versions/current/bin/asadmin --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node.glassfish.user %> 
+su -c "<%= node['glassfish']['base_dir'] %>/versions/current/bin/asadmin --user <%= node['hopsworks']['admin']['user'] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node['glassfish']['user'] %> 
 res=$?
 id=`ps -ef | grep ASMain` 
 if [ "$id" != "" ] ; then
@@ -42,7 +42,7 @@ restart() {
 }
 
 status() {  
-  su -s /bin/sh <%= node.glassfish.user %> -c "exec <%= node.glassfish.base_dir %>/versions/current/bin/asadmin list-domains --user <%= node.hopsworks.admin.user %> --passwordfile <%= @password_file %> --domaindir <%= node.glassfish.domains_dir %>" | grep "<%= @domain_name %> running"
+  su -s /bin/sh <%= node['glassfish']['user'] %> -c "exec <%= node['glassfish']['base_dir'] %>/versions/current/bin/asadmin list-domains --user <%= node['hopsworks']['admin']['user'] %> --passwordfile <%= @password_file %> --domaindir <%= node['glassfish']['domains_dir'] %>" | grep "<%= @domain_name %> running"
 }
 
 # user-supplied parameter to stop/start/restart process.
