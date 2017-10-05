@@ -481,6 +481,7 @@ CREATE TABLE `dataset` (
   `status` TINYINT(1) NOT NULL DEFAULT '1',
   `searchable` TINYINT(1) NOT NULL DEFAULT '0',
   `public_ds` TINYINT(1) NOT NULL DEFAULT '0',
+  `public_ds_id` varchar(1000) DEFAULT '0',
   `shared` TINYINT(1) NOT NULL DEFAULT '0',
   `dstype` INT(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -1090,3 +1091,18 @@ CREATE TABLE `ndb_backup` (
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`backup_id`)
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+--
+-- Dela metadata
+--
+CREATE TABLE `dela` (
+  `id` VARCHAR(200) NOT NULL,
+  `did` INT(11) NOT NULL, 
+  `pid` INT(11) NOT NULL, 
+  `name` VARCHAR(200) NOT NULL, 
+  `status` VARCHAR(52) NOT NULL, 
+  `stream` VARCHAR(200), 
+  `partners` VARCHAR(200), 
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1; 
