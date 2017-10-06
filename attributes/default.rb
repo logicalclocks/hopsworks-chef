@@ -136,6 +136,8 @@ default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
 # hops.site settings for cert signing
 #
+default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
+default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
 default['hopssite']['manual_register']                 = "false"
 default['hopssite']['url']                             = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
 default['hopssite']['user']                            = "agent@hops.io"

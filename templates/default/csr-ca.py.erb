@@ -75,7 +75,7 @@ class Register:
             json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
             form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
             payload = {}
-            payload["csr"] = csr
+            payload['csr'] = csr
             payload["agent-password"] = ""
             logger.info("Registering with HopsWorks...")
             session = requests.Session()
@@ -210,11 +210,11 @@ if __name__ == '__main__':
     if not Cert.exist():
         (csr, key) = Cert.create_key_and_csr()
         Register(csr, key)
-        subprocess.call("<%= node[:hopssite][:base_dir] %>/bin/ca-keystore.sh")
+        subprocess.call("<%= node['hopssite']['base_dir'] %>/bin/ca-keystore.sh")
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
 
     if not Cert.exists_keystore():
-        subprocess.call("<%= node[:hopssite][:base_dir] %>/bin/ca-keystore.sh")
+        subprocess.call("<%= node['hopssite']['base_dir'] %>/bin/ca-keystore.sh")
     else:
         logger.info('Keystore files found.')
