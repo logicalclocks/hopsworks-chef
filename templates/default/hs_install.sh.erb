@@ -90,7 +90,6 @@ EOF
 cd ${HOPS_SITE_BASE}/scripts
 ${RUN_DIR}/hs_elastic.sh
 
-
 # hack fix for RootCA private key not readable by vagrant user
 sudo chown root:${GLASSFISH_USER} /srv/hops/certs-dir/private/ca.key.pem
 sudo chmod 440 /srv/hops/certs-dir/private/ca.key.pem
