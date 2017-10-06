@@ -630,6 +630,43 @@ case node["platform_family"]
    end
 end
 
+directory node['hopssite']['home'] do
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+end
+
+template "#{node['hopssite']['home']}/hs_env.sh" do
+  source "hs_env.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_install.sh" do
+  source "hs_install.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_elastic.sh" do
+  source "hs_elastic.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_purge.sh" do
+  source "hs_purge.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]
