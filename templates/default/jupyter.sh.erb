@@ -20,7 +20,7 @@ JUPYTER_USER=<%= node['jupyter']['user'] %>
 JUPYTER_GROUP=<%= node['jupyter']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 KERNELS_DIR=/usr/local/share/jupyter/kernels
-EXEC_AS_ANACONDA_USER=<%= node['anaconda']['user'] %>
+EXEC_AS_ANACONDA_USER=<%= node['conda']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
