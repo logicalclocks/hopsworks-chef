@@ -11,7 +11,8 @@ PROJ_USER=$3
 CONDA_DIR=$4
 JUPYTER_HOME=$5
 
-su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel"
+export PIP_DOWNLOAD_CACHE=${CONDA_DIR}/
+su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/pip install ipykernel"
 su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJECT}/ --name \"python-${PROJ_USER}\""
 if [ $? -eq 0 ] ; then
     sudo jupyter-kernelspec install ${CONDA_DIR}/envs/${PROJECT}/share/jupyter/kernels/python-${PROJ_USER}
