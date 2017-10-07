@@ -20,7 +20,7 @@ JUPYTER_USER=<%= node['jupyter']['user'] %>
 JUPYTER_GROUP=<%= node['jupyter']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 KERNELS_DIR=/usr/local/share/jupyter/kernels
-
+EXEC_AS_ANACONDA_USER=<%= node['anaconda']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -171,11 +171,12 @@ elif [ "$1" == "kernel-add" ] ; then
     JUPYTER_HOME=$2
     PROJ_USER=$3
     PROJECT=${PROJ_USER%__*}	
-    sudo ${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel
-    sudo ${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJECT}/ --name "python-${PROJ_USER}"
+    #sudo ${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel
+    su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel"
+
+    su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJECT}/ --name \"python-${PROJ_USER}\""
     if [ $? -eq 0 ] ; then
         sudo jupyter-kernelspec install ${CONDA_DIR}/envs/${PROJECT}/share/jupyter/kernels/python-${PROJ_USER}
-        sudo ${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel	
     else
         echo "Problem creating Python jupyter kernel for this project ${PROJECT}"
 	exit 12
