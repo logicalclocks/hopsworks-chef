@@ -494,6 +494,15 @@ template "#{theDomain}/bin/jupyter.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/jupyter-kernel-install.sh" do
+  source "jupyter-kernel-install.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+
 template "#{theDomain}/bin/jupyter-project-cleanup.sh" do
   source "jupyter-project-cleanup.sh.erb"
   owner node['glassfish']['user']

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ $# -ne 5 ]; then
+  echo "incorrect usage"
+  exit 2
+fi
+
+EXEC_AS_ANACONDA_USER=$1
+PROJECT=$2
+PROJ_USER=$3
+CONDA_DIR=$4
+JUPYTER_HOME=$5
+
+su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel"
+su $EXEC_AS_ANACONDA_USER -c "${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJECT}/ --name \"python-${PROJ_USER}\""
+if [ $? -eq 0 ] ; then
+    sudo jupyter-kernelspec install ${CONDA_DIR}/envs/${PROJECT}/share/jupyter/kernels/python-${PROJ_USER}
+else
+    echo "Problem creating Python jupyter kernel for this project ${PROJECT}"
+    exit 12
+fi
+# overwrite the default kernel.json file for this kernel
+sudo mv -f ${JUPYTER_HOME}/conf/kernel.json /usr/local/share/jupyter/kernels/python-${PROJ_USER}/kernel.json
+    
