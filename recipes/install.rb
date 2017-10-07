@@ -565,7 +565,8 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh"
+              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
+              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh"              
             })
   action :create
 end

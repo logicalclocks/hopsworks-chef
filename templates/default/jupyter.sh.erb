@@ -172,7 +172,7 @@ elif [ "$1" == "kernel-add" ] ; then
     PROJ_USER=$3
     PROJECT=${PROJ_USER%__*}	
 
-    sudo "${DOMAINS_DIR}/domain1/bin/jupyter-kernel-install.sh $EXEC_AS_ANACONDA_USER $PROJECT $PROJ_USER $CONDA_DIR $JUPYTER_HOME"
+    nohup sudo ${DOMAINS_DIR}/domain1/bin/jupyter-kernel-install.sh $EXEC_AS_ANACONDA_USER $PROJECT $PROJ_USER $CONDA_DIR $JUPYTER_HOME &
     
 #   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
 elif [ "$1" == "kernel-remove" ] ; then
