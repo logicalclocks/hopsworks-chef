@@ -1112,6 +1112,8 @@ bash "jupyter-root-sparkmagic" do
     pip install --target /usr/lib/python2.7/site-packages mock
     pip uninstall configparser  -y
     pip install --target /usr/lib/python2.7/site-packages configparser
+    pip uninstall sparkmagic  -y
+    pip install --target /usr/lib/python2.7/site-packages sparkmagic
    EOF
 end
 
@@ -1121,7 +1123,7 @@ bash "jupyter-user-sparkmagic" do
   ignore_failure true
   code <<-EOF
     source ~/.bashrc
-    pip install --no-cache-dir --user sparkmagic
+    pip install --upgrade --no-cache-dir --user sparkmagic
    EOF
 end
 
