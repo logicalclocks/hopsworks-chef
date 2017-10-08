@@ -1095,3 +1095,10 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   action :create
 end
 
+bash "jupyter-user-sparkmagic" do
+  user node['jupyter']['user']
+  code <<-EOF
+    set -e
+    pip install --user --upgrade sparkmagic
+   EOF
+end
