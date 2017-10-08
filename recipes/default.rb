@@ -1095,10 +1095,33 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   action :create
 end
 
-bash "jupyter-user-sparkmagic" do
-  user node['jupyter']['user']
+bash "jupyter-root-sparkmagic" do
+  user 'root'
   code <<-EOF
     set -e
-    pip install --user sparkmagic
+    source ~/.bashrc
+    pip uninstall numpy -y
+    pip install --target /usr/lib/python2.7/site-packages numpy
+    pip uninstall pbr -y
+    pip install --target /usr/lib/python2.7/site-packages pbr
+    pip uninstall funcsigs -y
+    pip install --target /usr/lib/python2.7/site-packages funcsigs
+    pip uninstall setuptools  -y
+    pip install --target /usr/lib/python2.7/site-packages setuptools
+    pip uninstall mock  -y
+    pip install --target /usr/lib/python2.7/site-packages mock
+    pip uninstall configparser  -y
+    pip install --target /usr/lib/python2.7/site-packages configparser
    EOF
 end
+
+
+bash "jupyter-user-sparkmagic" do
+  user node['jupyter']['user']
+  ignore_failure true
+  code <<-EOF
+    source ~/.bashrc
+    pip install --no-cache-dir --user sparkmagic
+   EOF
+end
+
