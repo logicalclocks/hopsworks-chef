@@ -1119,11 +1119,10 @@ end
 
 
 bash "jupyter-user-sparkmagic" do
-  user node['jupyter']['user']
-  ignore_failure true
+  user 'root'
   code <<-EOF
-    source ~/.bashrc
-    pip install --upgrade --no-cache-dir --user sparkmagic
+    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
    EOF
 end
+
 
