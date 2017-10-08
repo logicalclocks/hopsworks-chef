@@ -871,10 +871,10 @@ bash "jupyter-sparkmagic" do
     retries 1
     code <<-EOF
     set -e
-    sudo -H pip install --upgrade urllib3
-    sudo -H pip install --upgrade requests
-    sudo -H pip install --upgrade jupyter
-    sudo -H pip install --no-cache-dir --upgrade sparkmagic
+    pip install --upgrade urllib3
+    pip install --upgrade requests
+    pip install --upgrade jupyter
+    pip install --upgrade sparkmagic
 EOF
 end
 
