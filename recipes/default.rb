@@ -1099,6 +1099,6 @@ bash "jupyter-user-sparkmagic" do
   user node['jupyter']['user']
   code <<-EOF
     set -e
-    pip install --user --upgrade sparkmagic
+    pip install --user sparkmagic
    EOF
 end
