@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ ! -f ./hs_env.sh ]; then
+   echo "File hs_env.sh does not exist."
+   exit 1
+fi
+
 . hs_env.sh
 
 RUN_DIR=`pwd`
@@ -27,7 +32,7 @@ sudo -u $GLASSFISH_USER sh -s ${RUN_DIR} <<'EOF'
 . $1/hs_env.sh
 
 cd ${GLASSFISH_PATH}/bin
-echo "AS_ADMIN_PASSWORD=${KEYSTOREPW}\nAS_ADMIN_MASTERPASSWORD=${KEYSTOREPW}" > $DOMAINPW_FILE
+echo -e "AS_ADMIN_PASSWORD=${KEYSTOREPW}\nAS_ADMIN_MASTERPASSWORD=${KEYSTOREPW}" > $DOMAINPW_FILE
 ./asadmin $ASADMIN_PW create-domain --portbase ${DOMAIN_BASE_PORT} ${DOMAIN}
 ./asadmin $ASADMIN_PW start-domain ${DOMAIN}
 
