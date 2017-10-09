@@ -871,10 +871,10 @@ bash "jupyter-sparkmagic" do
     retries 1
     code <<-EOF
     set -e
-    sudo -H pip install --upgrade urllib3
-    sudo -H pip install --upgrade requests
-    sudo -H pip install --upgrade jupyter
-    sudo -H pip install --no-cache-dir --upgrade sparkmagic
+    pip install --upgrade urllib3
+    pip install --upgrade requests
+    pip install --upgrade jupyter
+    pip install --upgrade sparkmagic
 EOF
 end
 
@@ -1094,4 +1094,35 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   mode 0750
   action :create
 end
+
+bash "jupyter-root-sparkmagic" do
+  user 'root'
+  code <<-EOF
+    set -e
+    source ~/.bashrc
+    pip uninstall numpy -y
+    pip install --target /usr/lib/python2.7/site-packages numpy
+    pip uninstall pbr -y
+    pip install --target /usr/lib/python2.7/site-packages pbr
+    pip uninstall funcsigs -y
+    pip install --target /usr/lib/python2.7/site-packages funcsigs
+    pip uninstall setuptools  -y
+    pip install --target /usr/lib/python2.7/site-packages setuptools
+    pip uninstall mock  -y
+    pip install --target /usr/lib/python2.7/site-packages mock
+    pip uninstall configparser  -y
+    pip install --target /usr/lib/python2.7/site-packages configparser
+    pip uninstall sparkmagic  -y
+    pip install --target /usr/lib/python2.7/site-packages sparkmagic
+   EOF
+end
+
+
+bash "jupyter-user-sparkmagic" do
+  user 'root'
+  code <<-EOF
+    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
+   EOF
+end
+
 

@@ -494,6 +494,15 @@ template "#{theDomain}/bin/jupyter.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/jupyter-kernel-install.sh" do
+  source "jupyter-kernel-install.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+
 template "#{theDomain}/bin/jupyter-project-cleanup.sh" do
   source "jupyter-project-cleanup.sh.erb"
   owner node['glassfish']['user']
@@ -556,7 +565,8 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh"
+              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
+              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh"              
             })
   action :create
 end
@@ -630,6 +640,43 @@ case node["platform_family"]
    end
 end
 
+directory node['hopssite']['home'] do
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+end
+
+template "#{node['hopssite']['home']}/hs_env.sh" do
+  source "hs_env.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_install.sh" do
+  source "hs_install.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_elastic.sh" do
+  source "hs_elastic.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
+
+template "#{node['hopssite']['home']}/hs_purge.sh" do
+  source "hs_purge.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0750
+end
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]

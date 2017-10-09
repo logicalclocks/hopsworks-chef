@@ -1105,4 +1105,4 @@ CREATE TABLE `dela` (
   `partners` VARCHAR(200), 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1; 
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 
