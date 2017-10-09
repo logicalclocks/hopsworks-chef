@@ -65,6 +65,10 @@ attribute "kapacitor/notify/email",
           :required => "required",
           :type => 'string'
 
+attribute "hopsworks/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
 attribute "hopsworks/email",
           :description => "Email account to send notifications from. ",
           :required => "required",
@@ -281,6 +285,9 @@ attribute "hopsworks/monitor_max_status_poll_try",
 ##
 ##
 
+attribute "hadoop_spark/historyserver/private_ips",
+          :description => "historyserver ip addr",
+          :type => 'array'
 
 attribute "hadoop_spark/user",
           :description => "Username to run spark master/worker as",
@@ -391,6 +398,10 @@ attribute "flink/hadoop/distribution",
 ##
 ##
 
+attribute "livy/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
 attribute "livy/user",
           :description => "User to install/run as",
           :type => 'string'
@@ -434,6 +445,10 @@ attribute "livy/keystore_password",
 ##
 ##
 
+attribute "epipe/default/private_ips",
+          :description => "historyserver ip addr",
+          :type => 'array'
+
 attribute "epipe/user",
           :description => "User to run Epipe server as",
           :type => "string"
@@ -465,6 +480,11 @@ attribute "epipe/pid_file",
 ##
 ##
 
+attribute "drelephant/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
+
 attribute "drelephant/dir",
           :description => "Default base installation directory for the Dr Elephant server (default: /srv)",
           :type => 'string'
@@ -488,6 +508,10 @@ attribute "drelephant/port",
 ## hopsmonitor
 ##
 ##
+
+attribute "hopsmonitor/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
 
 attribute "hopsmonitor/user",
           :description => "User to run Influxdb/Grafana server as",
@@ -573,6 +597,10 @@ attribute "grafana/port",
 ## hopslog
 ##
 ##
+
+attribute "hopslog/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
 
 attribute "hopslog/user",
           :description => "User to run Kibana server as",
@@ -917,6 +945,10 @@ attribute "hops/rpc/ssl",
 ## Kafka
 ##
 ##
+attribute "kkafka/default/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
 attribute "kkafka/user",
           :description => "User to install kafka as",
           :type => 'string'
@@ -1196,6 +1228,10 @@ attribute "kkafka/broker/super/users",
 ##
 ##
 
+attribute "elastic/default/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
 attribute "elastic/user",
           :description =>  "Elastic user",
           :type => 'string'
@@ -1239,6 +1275,10 @@ attribute "elastic/checksum",
 ##
 ##
 
+attribute "kzookeeper/default/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
 attribute "kzookeeper/version",
           :description => "Version of kzookeeper",
           :type => 'string'
@@ -1266,6 +1306,15 @@ attribute "kzookeeper/dir",
 ## Hive
 ##
 ##
+
+attribute "hive2/metastore/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
+attribute "hive2/server2/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
 
 ##
 ##
@@ -1319,6 +1368,10 @@ attribute "jupyter/python",
 ##
 ##
 
+attribute "kagent/default/private_ips",
+          :description => "Set ip addresses",
+          :type => "array"
+
 
 attribute "kagent/user",
           :description => "Username to run kagent as",
@@ -1340,7 +1393,7 @@ attribute "kagent/enabled",
           :description => "Kagent enabled: default 'true'. Set to 'false' to disable it.",
           :type => 'string'
 
-attribute "hop/hostid",
+attribute "kagent/hostid",
           :description => " One-time password used when registering the host",
           :type => 'string'
 
@@ -1402,6 +1455,23 @@ attribute "services/enabled",
 ## NDB
 ##
 ##
+
+
+attribute "ndb/mgmd/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
+attribute "ndb/ndbd/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
+attribute "ndb/mysqld/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
+attribute "ndb/memcached/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
 
 attribute "ndb/url",
           :description => "Download URL for MySQL Cluster binaries",
@@ -1668,6 +1738,10 @@ attribute "ndb/MaxNoOfConcurrentTransactions",
 # Dela
 #
 
+attribute "dela/default/private_ips",
+          :description => "ip addrs",
+          :type => 'array'
+
 attribute "dela/user",
           :description => "Username for the dela services",
           :type => 'string'
@@ -1774,6 +1848,8 @@ attribute "hopssite/max_retries",
           :type => 'string'
   
 # Dela Transfer specific
+
+
 attribute "dela/log_level",
           :description => "Default: WARN. Can be INFO or DEBUG or TRACE or ERROR.",
           :type => "string"
