@@ -494,6 +494,15 @@ template "#{theDomain}/bin/jupyter.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/jupyter-kernel-install.sh" do
+  source "jupyter-kernel-install.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+
 template "#{theDomain}/bin/jupyter-project-cleanup.sh" do
   source "jupyter-project-cleanup.sh.erb"
   owner node['glassfish']['user']
@@ -556,7 +565,8 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh"
+              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
+              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh"              
             })
   action :create
 end

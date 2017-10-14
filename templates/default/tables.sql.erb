@@ -982,11 +982,13 @@ CREATE TABLE `tf_fifo_queue` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `zeppelin_interpreter_confs` (
-  `project_name` VARCHAR(100),
-  `lastUpdate` TIMESTAMP,
-  `interpreter_conf` TEXT,
-  FOREIGN KEY (`project_name`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  PRIMARY KEY (`project_name`)
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `project_id` INT(11) NOT NULL,
+  `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `interpreter_conf` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `project_id_UNIQUE` (`project_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
@@ -1105,4 +1107,4 @@ CREATE TABLE `dela` (
   `partners` VARCHAR(200), 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1; 
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 

@@ -871,10 +871,10 @@ bash "jupyter-sparkmagic" do
     retries 1
     code <<-EOF
     set -e
-    sudo -H pip install --upgrade urllib3
-    sudo -H pip install --upgrade requests
-    sudo -H pip install --upgrade jupyter
-    sudo -H pip install --no-cache-dir --upgrade sparkmagic
+    pip install --upgrade urllib3
+    pip install --upgrade requests
+    pip install --upgrade jupyter
+    pip install --upgrade sparkmagic
 EOF
 end
 
@@ -1093,5 +1093,55 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   owner node['glassfish']['user']
   mode 0750
   action :create
+end
+
+pythonDir="/usr/lib/python2.7/site-packages"
+case node['platform']
+ when 'debian', 'ubuntu'
+   pythonDir="/usr/local/lib/python2.7/dist-packages"
+ when 'redhat', 'centos', 'fedora'
+   pythonDir="/usr/lib/python2.7/site-packages"     
+end
+
+
+bash "jupyter-root-sparkmagic" do
+  user 'root'
+  code <<-EOF
+    set -e
+    source ~/.bashrc
+    pip uninstall numpy -y
+    pip install --target #{pythonDir} --upgrade numpy
+    pip uninstall pbr -y
+    pip install --target #{pythonDir} --upgrade pbr
+    pip uninstall funcsigs -y
+    pip install --target #{pythonDir} --upgrade funcsigs
+    pip uninstall setuptools  -y
+    pip install --target #{pythonDir} --upgrade setuptools
+    pip uninstall mock  -y
+    pip install --target #{pythonDir} --upgrade mock
+    pip uninstall configparser  -y
+    pip install --target #{pythonDir} --upgrade configparser
+    pip uninstall sparkmagic  -y
+    pip install --target #{pythonDir} --upgrade sparkmagic
+   EOF
+end
+
+if vagrant_enabled == 1
+  bash "fix_owner_ship_pip_files" do
+    user 'root'
+    code <<-EOF
+    if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
+       chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
+    fi
+   EOF
+  end
+end  
+
+
+bash "jupyter-user-sparkmagic" do
+  user 'root'
+  code <<-EOF
+    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
+   EOF
 end
 

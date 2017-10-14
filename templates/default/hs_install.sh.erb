@@ -88,8 +88,7 @@ cd ${GLASSFISH_PATH}/bin
 EOF
 
 cd ${HOPS_SITE_BASE}/scripts
-./hs_elastic.sh
-
+${RUN_DIR}/hs_elastic.sh
 
 # hack fix for RootCA private key not readable by vagrant user
 sudo chown root:${GLASSFISH_USER} /srv/hops/certs-dir/private/ca.key.pem
