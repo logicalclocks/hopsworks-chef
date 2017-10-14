@@ -20,7 +20,7 @@ JUPYTER_USER=<%= node['jupyter']['user'] %>
 JUPYTER_GROUP=<%= node['jupyter']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 KERNELS_DIR=/usr/local/share/jupyter/kernels
-
+EXEC_AS_ANACONDA_USER=<%= node['conda']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -88,7 +88,7 @@ elif [ "$1" == "start" ] ; then
     pid=$(sudo ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
-        su vagrant -c "/srv/hops/domains/domain1/bin/jupyter-kill.sh $2 $pid $6"
+        su vagrant -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
 	sleep 5
     fi
 
@@ -171,18 +171,11 @@ elif [ "$1" == "kernel-add" ] ; then
     JUPYTER_HOME=$2
     PROJ_USER=$3
     PROJECT=${PROJ_USER%__*}	
-    sudo ${CONDA_DIR}/envs/${PROJECT}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJECT}/ --name "python-${PROJ_USER}"
-#    sudo ${CONDA_DIR}/bin/python -m ipykernel install --prefix=${CONDA_DIR}/envs/${PROJ_USER}/ --name "python-${PROJ_USER}"
-    if [ $? -eq 0 ] ; then
-        sudo jupyter-kernelspec install ${CONDA_DIR}/envs/${PROJECT}/share/jupyter/kernels/python-${PROJ_USER}
-        sudo ${CONDA_DIR}/envs/${PROJECT}/bin/pip install --upgrade ipykernel	
-    else
-        echo "Problem creating Python jupyter kernel for this project ${PROJECT}"
-	exit 12
-    fi
-    # overwrite the default kernel.json file for this kernel
-    sudo mv -f ${JUPYTER_HOME}/conf/kernels-${PROJ_USER}.json /usr/local/share/jupyter/kernels/python-${PROJ_USER}/kernel.json
     
+    if [ ! -d /usr/local/share/jupyter/kernels/python-${PROJ_USER} ] ; then
+       sudo ${DOMAINS_DIR}/domain1/bin/jupyter-kernel-install.sh $EXEC_AS_ANACONDA_USER $PROJECT $PROJ_USER $CONDA_DIR $JUPYTER_HOME
+    fi
+ 
 #   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
 elif [ "$1" == "kernel-remove" ] ; then
     if [[ $2 == *".."* ]]; then
