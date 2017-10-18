@@ -651,7 +651,7 @@ template "#{node['hopssite']['home']}/hs_env.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_install.sh" do
@@ -659,7 +659,7 @@ template "#{node['hopssite']['home']}/hs_install.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_elastic.sh" do
@@ -667,7 +667,7 @@ template "#{node['hopssite']['home']}/hs_elastic.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_purge.sh" do
@@ -675,7 +675,7 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 directory node["hopssite"]["certs_dir"] do
