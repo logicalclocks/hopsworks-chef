@@ -798,10 +798,6 @@ hopsworks_certs "generate-certs" do
   action :generate
 end
 
-
-
-
-
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
   owner node['glassfish']['user']
@@ -1144,4 +1140,5 @@ bash "jupyter-user-sparkmagic" do
     su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
    EOF
 end
+
 
