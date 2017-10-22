@@ -554,7 +554,7 @@ end
 template "#{theDomain}/bin/global-ca-sign-csr.sh" do
   source "global-ca-sign-csr.sh.erb"
   owner node['glassfish']['user']
-  mode 0770
+  mode 0550
   action :create
 end
 
