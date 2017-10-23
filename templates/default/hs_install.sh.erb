@@ -92,7 +92,6 @@ cd ${GLASSFISH_PATH}/bin
 ./asadmin --interactive=false --port $ADMIN_PORT $ASADMIN_PW deploy --force=true ${HOPS_SITE_WAR}
 EOF
 
-cd ${HOPS_SITE_BASE}/scripts
 ${RUN_DIR}/hs_elastic.sh
 
 cd ${DOMAIN_DIR}
