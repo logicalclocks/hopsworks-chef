@@ -337,8 +337,8 @@ CREATE TABLE `job_input_files` (
 
 CREATE TABLE `files_to_remove` (
   `execution_id` INT(11) NOT NULL,
-  `path` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`execution_id`,`path`),
+  `filepath` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`execution_id`,`filepath`),
   FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
