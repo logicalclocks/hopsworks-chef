@@ -551,7 +551,12 @@ template "#{theDomain}/bin/unzip-background.sh" do
   action :create
 end
 
-
+template "#{theDomain}/bin/global-ca-sign-csr.sh" do
+  source "global-ca-sign-csr.sh.erb"
+  owner node['glassfish']['user']
+  mode 0550
+  action :create
+end
 
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
@@ -566,7 +571,8 @@ template "/etc/sudoers.d/glassfish" do
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
-              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh"              
+              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
+              :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh"                            
             })
   action :create
 end
@@ -599,12 +605,6 @@ end
 # Jupyter Configuration
 #
 
-
-# group node['kagent']['certs_group'] do
-#   action :modify
-#   members ["#{node['jupyter']['user']}"]
-#   append true
-# end
 
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
@@ -651,7 +651,7 @@ template "#{node['hopssite']['home']}/hs_env.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_install.sh" do
@@ -659,7 +659,7 @@ template "#{node['hopssite']['home']}/hs_install.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_elastic.sh" do
@@ -667,7 +667,7 @@ template "#{node['hopssite']['home']}/hs_elastic.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_purge.sh" do
@@ -675,7 +675,7 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
-  mode 0750
+  mode 0755
 end
 
 directory node["hopssite"]["certs_dir"] do
