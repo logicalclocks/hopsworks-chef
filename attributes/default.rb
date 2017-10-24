@@ -123,7 +123,7 @@ default['hopsworks']['org_city']                       = "Stockholm"
 # Dela  - please do not change without consulting dela code
 #
 default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['cluster_http_port']      = "8080"
+default['hopsworks']['dela']['cluster_http_port']      = "42000"
 default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 
 #
@@ -138,7 +138,7 @@ default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['manual_register']                 = "true"
+default['hopssite']['manual_register']                 = "false"
 default['hopssite']['url']                             = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
 default['hopssite']['user']                            = "agent@hops.io"
 default['hopssite']['password']                        = "admin"
