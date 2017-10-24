@@ -21,7 +21,6 @@ export ASADMIN_PW="--user adminuser --passwordfile ${DOMAINPW_FILE}"
 export KEYSTOREPW="adminpw"
 export KEYSTORE_PASSWORD="-srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW"
 export KEY_PASSWORD="-keypass $KEYSTOREPW -storepass $KEYSTOREPW"
-export OPENSSL_CONF="${HOPS_SITE_BASE}/conf/openssl-ca.cnf"
 export ADMIN_CERT_ALIAS="hops.site-admin"
 export DOMAIN_BASE_PORT=50000
 export ADMIN_PORT=`expr $DOMAIN_BASE_PORT + 48` # HTTPS listener port: portbase + 81
