@@ -122,15 +122,16 @@ default['hopsworks']['org_city']                       = "Stockholm"
 #
 # Dela  - please do not change without consulting dela code
 #
-default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['cluster_http_port']      = "8080"
+default['hopsworks']['dela']['demo']                   = false
+default['hopsworks']['dela']['enabled']                = node['hopsworks']['dela']['demo'] ? "true" : "false"
+default['hopsworks']['dela']['cluster_http_port']      = "42000"
 default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 
 #
 # Hops-site 
 #
-default['hopsworks']['hopssite']['domain']    = "hops.site"
-default['hopsworks']['hopssite']['port']      = "50081"
+default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
+default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "50081"
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
 default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
@@ -138,9 +139,9 @@ default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['manual_register']                 = "true"
-default['hopssite']['url']                             = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
-default['hopssite']['user']                            = "agent@hops.io"
+default['hopssite']['manual_register']                 = "false"
+default['hopssite']['url']                             = node['hopsworks']['dela']['demo'] ? "http://bbc5.sics.se:8080": "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
+default['hopssite']['user']                            = node['hopsworks']['dela']['demo'] ? node['hopsworks']['email'] : "agent@hops.io"
 default['hopssite']['password']                        = "admin"
 default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
