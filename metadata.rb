@@ -1758,6 +1758,9 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
+attribute "hopsworks/dela/demo",
+          :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
+          :type => 'string'
 attribute "hopsworks/dela/enabled",
           :description => "Enable dela services. 'true' (default)",
           :type => 'string'
