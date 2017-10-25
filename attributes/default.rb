@@ -174,3 +174,6 @@ default['jupyter']['base_dir']                         = node['install']['dir'].
 default['jupyter']['user']                             = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
+
+# Livy
+default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"

@@ -438,6 +438,9 @@ attribute "livy/keystore_password",
           :dscription => "ivy.keystore_password",
           :type => "string"
 
+attribute "hopsworks/livy_zeppelin_session_timeout",
+          :description => "Session timeout for Livy on Zeppelin, to differentiate from the default for Jupyter.",
+          :type => 'string'
 
 ##
 ##
