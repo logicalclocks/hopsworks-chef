@@ -9,10 +9,10 @@ fi
 . hs_env.sh
 
 cd ${INSTALL_PATH}
-sudo mkdir $HOPS_SITE_BASE
-cd $HOPS_SITE_BASE
-sudo wget ${HOPS_SITE_DOWNLOAD_URL}${HOPS_SITE_TAR} && sudo tar xvzf ${HOPS_SITE_TAR} && sudo rm ${HOPS_SITE_TAR}
-sudo chown -R ${GLASSFISH_USER}:${GLASSFISH_USER} $HOPS_SITE_BASE
+sudo mkdir -p ${HOPS_SITE_BASE}/lib
+cd ${HOPS_SITE_BASE}/lib
+sudo wget ${HOPS_SITE_DOWNLOAD_URL}
+sudo chown -R ${GLASSFISH_USER}:${GLASSFISH_USER} ${HOPS_SITE_BASE}
 
 sudo chown ${MYSQL_USER}:${MYSQL_USER} ${HOPS_SITE_TABLES}
 sudo chown ${MYSQL_USER}:${MYSQL_USER} ${HOPS_SITE_ROWS}
