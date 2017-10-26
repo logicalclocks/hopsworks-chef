@@ -558,6 +558,13 @@ template "#{theDomain}/bin/global-ca-sign-csr.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/ca-keystore.sh" do
+  source "ca-keystore.sh.erb"
+  owner node['glassfish']['user']
+  mode 0550
+  action :create
+end
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
@@ -572,7 +579,8 @@ template "/etc/sudoers.d/glassfish" do
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
-              :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh"                            
+              :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
+              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh"                            
             })
   action :create
 end
@@ -702,17 +710,6 @@ template "#{theDomain}/bin/csr-ca.py" do
   owner node['glassfish']['user']
   mode 0750
   action :create
-end
-
-template "#{theDomain}/bin/ca-keystore.sh" do
-  source "ca-keystore.sh.erb"
-  owner node["glassfish"]["user"]
-  mode 0750
-  action :create
-  variables({
-         :directory => node["hopssite"]["keystore_dir"],
-         :keystorepass => node["hopsworks"]["master"]["password"]
-  })
 end
 
 if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
