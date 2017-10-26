@@ -1095,7 +1095,7 @@ CREATE TABLE `ndb_backup` (
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
--- Dela metadata
+-- Dela tables
 --
 CREATE TABLE `dela` (
   `id` VARCHAR(200) NOT NULL,
@@ -1108,3 +1108,14 @@ CREATE TABLE `dela` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 
+
+CREATE TABLE `hopssite_cluster_certs` (
+  `cluster_name` varchar(129) NOT NULL,
+  `cluster_key` varbinary(7000) DEFAULT NULL,
+  `cluster_cert` varbinary(3000) DEFAULT NULL,
+  `cert_password` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`cluster_name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+--
+-- End Dela tables
+--
