@@ -1,6 +1,11 @@
 #!/bin/bash
 
 export INSTALL_PATH='/srv/hops'
+
+export HOPSSITE_AUX="${INSTALL_PATH}/hopssite"
+export HOPS_SITE_TABLES="${HOPSSITE_AUX}/tables.sql"
+export HOPS_SITE_ROWS="${HOPSSITE_AUX}/rows.sql"
+
 export HOPS_SITE_BASE="${INSTALL_PATH}/hops-site"
 export GLASSFISH_PATH='/srv/hops/glassfish/versions/current'
 export DOMAIN_DIR='/srv/hops/domains'
@@ -12,8 +17,6 @@ export MYSQL_PORT='3306'
 export DB_NAME='hops_site'
 export MYSQL_DIR='/srv/hops/mysql-cluster/ndb/scripts/'
 export MSQL_CONNECTOR='mysql-connector-java-5.1.29-bin.jar'
-export HOPS_SITE_TABLES="${HOPS_SITE_BASE}/sql/tables.sql"
-export HOPS_SITE_ROWS="${HOPS_SITE_BASE}/sql/rows.sql"
 export HOPS_SITE_TAR='hops-site.tar.gz'
 export HOPS_SITE_WAR="${INSTALL_PATH}/hops-site/target/hops-site.war"
 export HOPS_SITE_DOWNLOAD_URL="http://snurran.sics.se/hops/"

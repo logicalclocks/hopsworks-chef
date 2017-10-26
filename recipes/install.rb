@@ -686,6 +686,22 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   mode 0755
 end
 
+template "#{node['hopssite']['home']}/hs_table.sh" do
+  source "hs_table.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0755
+end
+
+template "#{node['hopssite']['home']}/hs_rows.sh" do
+  source "hs_rows.sh.erb" 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0755
+end
+
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]
   mode "750"

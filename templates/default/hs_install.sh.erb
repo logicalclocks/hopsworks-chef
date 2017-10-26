@@ -8,9 +8,6 @@ fi
 
 . hs_env.sh
 
-RUN_DIR=`pwd`
-echo ${RUN_DIR}
-
 cd ${INSTALL_PATH}
 sudo mkdir $HOPS_SITE_BASE
 cd $HOPS_SITE_BASE
@@ -20,16 +17,16 @@ sudo chown -R ${GLASSFISH_USER}:${GLASSFISH_USER} $HOPS_SITE_BASE
 sudo chown ${MYSQL_USER}:${MYSQL_USER} ${HOPS_SITE_TABLES}
 sudo chown ${MYSQL_USER}:${MYSQL_USER} ${HOPS_SITE_ROWS}
 
-sudo -u $MYSQL_USER sh -s ${RUN_DIR}<<'EOF'
-. $1/hs_env.sh
+sudo -u $MYSQL_USER sh -s <<'EOF'
+. ${HOPSSITE_AUX}/hs_envs.sh
 cd ${MYSQL_DIR}
 ./mysql-client.sh -e "CREATE DATABASE IF NOT EXISTS hops_site"
 ./mysql-client.sh hops_site < ${HOPS_SITE_TABLES}
 ./mysql-client.sh hops_site < ${HOPS_SITE_ROWS}
 EOF
 
-sudo -u $GLASSFISH_USER sh -s ${RUN_DIR} <<'EOF'
-. $1/hs_env.sh
+sudo -u $GLASSFISH_USER sh -s <<'EOF'
+. ${HOPSSITE_AUX}/hs_env.sh
 
 cd ${GLASSFISH_PATH}/bin
 echo "AS_ADMIN_PASSWORD=${KEYSTOREPW}" > $DOMAINPW_FILE
@@ -69,8 +66,8 @@ EOF
 sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.req -cert ${CERTS_DIR}/certs/ca.cert.pem -keyfile ${CERTS_DIR}/private/ca.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.pem -config ${CERTS_DIR}/openssl-ca.cnf -key $KEYSTOREPW
 sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.req -cert ${CERTS_DIR}/certs/ca.cert.pem -keyfile ${CERTS_DIR}/private/ca.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.pem -config ${CERTS_DIR}/openssl-ca.cnf -key $KEYSTOREPW
 
-sudo -u $GLASSFISH_USER sh -s ${RUN_DIR} <<'EOF'
-. $1/hs_env.sh
+sudo -u $GLASSFISH_USER sh -s <<'EOF'
+. ${HOPSSITE_AUX}/hs_env.sh
 
 cd ${DOMAIN_DIR}/${DOMAIN}/config
 openssl x509 -in hops.site-admin.pem -outform DER -out hops.site-admin.der
@@ -92,7 +89,7 @@ cd ${GLASSFISH_PATH}/bin
 ./asadmin --interactive=false --port $ADMIN_PORT $ASADMIN_PW deploy --force=true ${HOPS_SITE_WAR}
 EOF
 
-${RUN_DIR}/hs_elastic.sh
+${HOPSSITE_AUX}/hs_elastic.sh
 
 cd ${DOMAIN_DIR}
 sudo su -c 'python domain1/bin/csr-ca.py' ${GLASSFISH_USER}
