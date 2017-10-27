@@ -82,7 +82,7 @@ class Register:
             session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
             resp = session.post(sign_cert_url, data=json.dumps(payload), headers=json_headers, verify=False)
             if not resp.status_code == HTTP_OK:
-                raise Exception('Could not register: Unknown host id or internal error on the dashboard (Status code: {0}).'.format(resp.status_code))
+                raise Exception('Could not register: Status code: {0}. response msg: {1}'.format(resp.status_code, resp.content))
 
             jData = json.loads(resp.content)
             cert = jData['pubAgentCert']

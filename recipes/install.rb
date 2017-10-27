@@ -563,6 +563,9 @@ template "#{theDomain}/bin/ca-keystore.sh" do
   owner node['glassfish']['user']
   mode 0550
   action :create
+  variables({
+         :directory => node["hopssite"]["keystore_dir"],
+  })
 end
 
 template "/etc/sudoers.d/glassfish" do
