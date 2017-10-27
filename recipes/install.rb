@@ -686,8 +686,8 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   mode 0755
 end
 
-template "#{node['hopssite']['home']}/hs_table.sql" do
-  source "hs_table.sql.erb" 
+template "#{node['hopssite']['home']}/hs_tables.sql" do
+  source "hs_tables.sql.erb" 
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
