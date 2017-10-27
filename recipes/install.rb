@@ -650,7 +650,7 @@ end
 
 directory node['hopssite']['home'] do
   owner node['glassfish']['user']
-  mode 0750
+  mode 0755
   action :create
 end
 
