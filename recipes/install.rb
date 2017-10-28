@@ -707,6 +707,7 @@ end
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]
+  group node['kagent']['certs_group']
   mode "750"
   action :create
 end
