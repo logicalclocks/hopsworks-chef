@@ -64,7 +64,6 @@ keytool -certreq -alias ${ADMIN_CERT_ALIAS} -keyalg RSA -file hops.site-admin.re
 keytool -genkey -alias hops.site-instance -keyalg RSA -keysize 1024 -keystore keystore.jks -dname "CN=hops.site-instance, O=SICS, L=Stockholm, ST=Sweden, C=SE" $KEY_PASSWORD
 keytool -certreq -alias hops.site-instance -keyalg RSA -file hops.site-instance.req -keystore keystore.jks $KEY_PASSWORD
 
-cp ${OPENSSL_CONF} "${CERTS_DIR}/openssl-ca.cnf"
 EOF
 
 sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.req -cert ${CERTS_DIR}/certs/ca.cert.pem -keyfile ${CERTS_DIR}/private/ca.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.pem -config ${CERTS_DIR}/openssl-ca.cnf -key $KEYSTOREPW
@@ -93,14 +92,7 @@ cd ${GLASSFISH_PATH}/bin
 ./asadmin --interactive=false --port $ADMIN_PORT $ASADMIN_PW deploy --force=true ${HOPS_SITE_WAR}
 EOF
 
-cd ${HOPS_SITE_BASE}/scripts
 ${RUN_DIR}/hs_elastic.sh
-
-# hack fix for RootCA private key not readable by vagrant user
-sudo chown root:${GLASSFISH_USER} /srv/hops/certs-dir/private/ca.key.pem
-sudo chmod 440 /srv/hops/certs-dir/private/ca.key.pem
-# hack fix for .rnd not owned by vagrant
-sudo chown ${GLASSFISH_USER}:${GLASSFISH_USER} ~/.rnd
 
 cd ${DOMAIN_DIR}
 sudo su -c 'python domain1/bin/csr-ca.py' ${GLASSFISH_USER}

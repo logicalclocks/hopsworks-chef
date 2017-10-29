@@ -175,8 +175,9 @@ CREATE TABLE `project_team` (
 CREATE TABLE `jupyter_settings` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
-  `num_tf_ps` INT(11) NOT NULL DEFAULT '0',
+  `num_tf_ps` INT(11) NOT NULL DEFAULT '1',
   `num_tf_gpus` INT(11) NOT NULL DEFAULT '0',
+  `num_mpi_np` INT(11) NOT NULL DEFAULT '1',
   `appmaster_cores` INT(11) NOT NULL DEFAULT '1',
   `appmaster_memory` INT(11) NOT NULL DEFAULT '1',
   `num_executors` INT(11) NOT NULL DEFAULT '1',

@@ -330,7 +330,9 @@ template "#{rows_path}" do
                 :dela_ip => dela_ip,
                 :dela_port => node['dela']['http_port'],
                 :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
-                :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port']
+                :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
+                :recovery_path => node['hopsworks']['recovery_path'],
+                :verification_path => node['hopsworks']['verification_path']
               })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
