@@ -1141,4 +1141,16 @@ bash "jupyter-user-sparkmagic" do
    EOF
 end
 
+directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
+  owner "root"
+  group "root"
+  mode "775"
+  action :create
+end
 
+template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html" do
+  source "facets-jupyter.html.erb"
+  owner "root"
+  mode 0775
+  action :create
+end

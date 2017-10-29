@@ -63,6 +63,10 @@ fi
 
 cd $SECRET_DIR
 
+# Install facets-dist by linking to it
+mkdir -p nbextensions
+ln -s /usr/local/share/jupyter/nbextensions/facets-dist ndbextensions/facets-dist
+
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
 setsid jupyter notebook --debug --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
