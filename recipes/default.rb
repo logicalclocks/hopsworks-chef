@@ -1,3 +1,9 @@
+
+domain_name="domain1"
+domains_dir = node['hopsworks']['domains_dir']
+theDomain="#{domains_dir}/#{domain_name}"
+
+
 case node['platform']
 when "ubuntu"
  if node['platform_version'].to_f <= 14.04
@@ -25,7 +31,6 @@ if node['glassfish']['install_dir'].include?("versions") == false
   node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
 
-domains_dir = node['glassfish']['domains_dir']
 private_ip=my_private_ip()
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
@@ -345,7 +350,6 @@ end
 
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
-domain_name="domain1"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 
