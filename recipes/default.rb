@@ -1156,3 +1156,20 @@ template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html"
   mode 0775
   action :create
 end
+
+directory "#{theDomain}/docroot/nbextensions/facets-dist" do 
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "775"
+  action :create
+  recursive true  
+end
+
+template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
+  source "facets-jupyter.html.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']  
+  mode 0775
+  action :create
+end
+
