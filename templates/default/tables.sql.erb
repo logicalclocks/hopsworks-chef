@@ -1116,6 +1116,24 @@ CREATE TABLE `hopssite_cluster_certs` (
   `cert_password` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`cluster_name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cluster_cert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) NOT NULL,
+  `common_name` varchar(64) NOT NULL,
+  `organization_name` varchar(64) NOT NULL,
+  `organizational_unit_name` varchar(64) NOT NULL,
+  `serial_number` varchar(45) DEFAULT NULL,
+  `registration_status` varchar(45) NOT NULL,
+  `validation_key` varchar(128) DEFAULT NULL,
+  `validation_key_date` timestamp NULL DEFAULT NULL,
+  `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `organization_name` (`organization_name`,`organizational_unit_name`),
+  UNIQUE KEY `serial_number` (`serial_number`),
+  KEY `agent_id` (`agent_id`),
+  FOREIGN KEY (`agent_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 --
 -- End Dela tables
 --
