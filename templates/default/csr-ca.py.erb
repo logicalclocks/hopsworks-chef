@@ -87,11 +87,16 @@ class Register:
             jData = json.loads(resp.content)
             cert = jData['pubAgentCert']
             caCert = jData['caPubCert']
+            intermediateCaCert = jData['intermediateCaPubCert']
 
             cert_dir = os.path.dirname(os.path.abspath(__file__))
             with open(join(cert_dir, CA_FILE), "wt") as f:
                 f.write(caCert)
             logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
+
+            with open(join(cert_dir, INTERMEDIATE_CA_FILE), "wt") as f:
+                f.write(intermediateCaCert)
+            logger.info("Writing intermediate Ca Public key to {0}.".format(INTERMEDIATE_CA_FILE))
 
             logger.info("Registered successfully.")
             return cert
@@ -161,6 +166,7 @@ CONFIG_FILE = "<%= node['hopssite']['base_dir'] %>/config/ca.ini"
 LOG_FILE = "<%= node['hopssite']['certs_dir'] %>/csr.log"
 CERT_FILE = "<%= node['hopssite']['certs_dir'] %>/pub.pem"
 CA_FILE = "<%= node['hopssite']['certs_dir'] %>/ca_pub.pem"
+INTERMEDIATE_CA_FILE = "<%= node['hopssite']['certs_dir'] %>/intermediate_ca_pub.pem"
 KEY_FILE = "<%= node['hopssite']['certs_dir'] %>/priv.key"
 SERVER_KEYSTORE = "<%= node['hopssite']['keystore_dir'] %>/keystore.jks"
 SERVER_TRUSTSTORE = "<%= node['hopssite']['keystore_dir'] %>/truststore.jks"
