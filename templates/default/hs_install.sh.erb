@@ -50,8 +50,8 @@ cp ${DOMAIN_DIR}/domain1/lib/${MSQL_CONNECTOR} ${DOMAIN_DIR}/${DOMAIN}/lib
 cd ${DOMAIN_DIR}/${DOMAIN}/config
 rm cacerts.jks
 rm keystore.jks
-keytool -import -noprompt -trustcacerts -alias HopsIntermediateCA -file ${CERTS_DIR}/intermediate/certs/intermediate.cert.pem -keystore cacerts.jks $KEYSTORE_PASSWORD
-keytool -import -noprompt -trustcacerts -alias HopsIntermediateCA -file ${CERTS_DIR}/intermediate/certs/intermediate.cert.pem -keystore keystore.jks $KEYSTORE_PASSWORD
+keytool -import -noprompt -trustcacerts -alias HopsRootCA -file ${CERTS_DIR}/certs/ca.cert.pem -keystore cacerts.jks $KEYSTORE_PASSWORD		 +keytool -import -noprompt -trustcacerts -alias HopsIntermediateCA -file ${CERTS_DIR}/intermediate/certs/intermediate.cert.pem -keystore cacerts.jks $KEYSTORE_PASSWORD
+keytool -import -noprompt -trustcacerts -alias HopsRootCA -file ${CERTS_DIR}/certs/ca.cert.pem -keystore keystore.jks $KEYSTORE_PASSWORD
 chmod 600 cacerts.jks
 chmod 600 keystore.jks
 
@@ -63,8 +63,8 @@ keytool -certreq -alias hops.site-instance -keyalg RSA -file hops.site-instance.
 
 EOF
 
-sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.req -cert ${CERTS_DIR}/intermediate/certs/intermediate.cert.pem -keyfile ${CERTS_DIR}/intermediate/private/intermediate.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.pem -config ${CERTS_DIR}/intermediate/openssl-intermediate.cnf -key $KEYSTOREPW
-sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.req -cert ${CERTS_DIR}/intermediate/certs/intermediate.cert.pem -keyfile ${CERTS_DIR}/intermediate/private/intermediate.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.pem -config ${CERTS_DIR}/intermediate/openssl-intermediate.cnf -key $KEYSTOREPW
+sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.req -cert ${CERTS_DIR}/certs/ca.cert.pem -keyfile ${CERTS_DIR}/private/ca.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-admin.pem -config ${CERTS_DIR}/openssl-ca.cnf -key $KEYSTOREPW
+sudo openssl ca -batch -in ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.req -cert ${CERTS_DIR}/certs/ca.cert.pem -keyfile ${CERTS_DIR}/private/ca.key.pem -out ${DOMAIN_DIR}/${DOMAIN}/config/hops.site-instance.pem -config ${CERTS_DIR}/openssl-ca.cnf -key $KEYSTOREPW
 
 sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX} <<'EOF'
 . $1/hs_env.sh
