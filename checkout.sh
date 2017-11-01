@@ -23,7 +23,7 @@ checkout()
     git checkout -b $BRANCH
     git push -u origin $BRANCH    
     popd
-    echo "$REPO" >> .${BRANCH}    
+    echo "${REPO}\n" >> .${BRANCH}    
 }
 
 clear_screen()
