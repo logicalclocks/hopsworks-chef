@@ -9,12 +9,15 @@ fi
 # Check that the branch name is HOPS-[0-9]+    
 
 SCRIPTNAME=`basename $0`
-SCRIPTDIR=`dirname $0`
+SCRIPTDIR=`pwd`
 BASEDIR=`dirname $SCRIPTDIR`
 COOKBOOK=""
 REPO=""
 BRANCH=$1
 
+echo "script is: $SCRIPTNAME"
+echo "dir is: $SCRIPTDIR"
+echo "basedir is: $BASEDIR"
 checkout()
 {
     pushd .
@@ -24,6 +27,12 @@ checkout()
     git push -u origin $BRANCH    
     popd
     echo "${REPO}\n" >> .${BRANCH}    
+}
+
+update_hopsworks()
+{
+  # update Berksfile to point to the new branch
+  perl -pi -e "s/hopshadoop\/${REPO}\",\s+branch:\s+\"master/hopshadoop\/${REPO}\", branch: \"${BRANCH}/" Berksfile
 }
 
 clear_screen()
@@ -64,6 +73,37 @@ clone()
   git pull origin master
   popd
 }
+
+# Check the user has checkout karamel-chef in the basedir
+
+if [ ! -d $BASEDIR/karamel-chef ] ; then
+    echo "You need to checkout the github.com/hopshadoop/karamel-chef project into your parent dir:"
+    echo "cd $BASEDIR"
+    echo "git clone git@github.com:hopshadoop/karamel-chef.git"
+    echo ""
+    exit 12
+fi    
+
+echo "Creating a new cluster configuration for $USER in karamel-chef from karamel-chef/cluster-defns/1.template.yml"
+echo "New cluster configuration:"
+echo "$BASEDIR/karamel-chef/cluster-defns/1.${USER}.yml"
+
+cp -f $BASEDIR/karamel-chef/cluster-defns/1.template.yml $BASEDIR/karamel-chef/cluster-defns/1.${USER}.yml
+if [ $? -ne 0 ] ; then
+    echo "Error copying cluster configuration file"
+    exit 11
+fi    
+perl -pi -e "s/MASTER_BRANCH/${BRANCH}/" $BASEDIR/karamel-chef/cluster-defns/1.${USER}.yml
+if [ $? -ne 0 ] ; then
+    echo "Error editing cluster configuration file"
+    exit 12
+fi    
+
+perl -pi -e "s/THEUSER/${USER}/" $BASEDIR/karamel-chef/cluster-defns/1.${USER}.yml
+if [ $? -ne 0 ] ; then
+    echo "Error editing cluster configuration file"
+    exit 13
+fi    
 
 FINISHED=0
 
@@ -186,6 +226,7 @@ while [ $FINISHED -eq 0 ]; do
  	clone
       fi
       checkout
+      update_hopsworks
     fi
 
 done
@@ -193,3 +234,4 @@ done
 REPO="hopsworks-chef"
 COOKBOOK="hopsworks"
 checkout
+
