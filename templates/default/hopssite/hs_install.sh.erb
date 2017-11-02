@@ -6,6 +6,9 @@ if [ ! -f ./hs_env.sh ]; then
    exit 1
 fi
 
+chown ${MYSQL_USER}::${MYSQL_USER} hs_tables.sql
+chown ${MYSQL_USER}::${MYSQL_USER} hs_rows.sql
+
 echo "setup hops-site"
 ./hs_setup.sh
 echo "setup db"

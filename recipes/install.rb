@@ -788,16 +788,16 @@ end
 
 template "#{node['hopssite']['home']}/hs_tables.sql" do
   source "hopssite/hs_tables.sql.erb" 
-  owner node['mysql']['user']
-  group node['mysql']['group']
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
   action :create
   mode 0755
 end
 
 template "#{node['hopssite']['home']}/hs_rows.sql" do
   source "hopssite/hs_rows.sql.erb" 
-  owner node['mysql']['user']
-  group node['mysql']['group']
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
   action :create
   mode 0755
 end
