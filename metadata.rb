@@ -33,6 +33,7 @@ depends 'java'
 depends 'tensorflow'
 depends 'hopslog'
 depends 'hopsmonitor'
+depends 'hive2'
 
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
@@ -1852,7 +1853,7 @@ attribute "hopssite/retry_interval",
 attribute "hopssite/max_retries",
           :description => "Certificate signing request maximum number of retries for hops.site.",
           :type => 'string'
-  
+
 # Dela Transfer specific
 
 
@@ -1903,7 +1904,7 @@ attribute "dela/stun_servers_id",
 attribute "dela/hops/storage/type",
           :description => "Dela Client storage type(HDFS/DISK).",
           :type => "string"
-          
+
 attribute "dela/hops/library/type",
           :description => "Dela Client library type(MYSQL/DISK).",
           :type => "string"

@@ -23,7 +23,7 @@ bash "systemd_reload_for_glassfish_failures" do
 end
 
 
-if node['hopsworks']['systemd'] === "true" 
+if node['hopsworks']['systemd'] === "true"
   systemd = true
 else
   systemd = false
@@ -71,7 +71,7 @@ end
 
 user node['jupyter']['user'] do
   home node['jupyter']['base_dir']
-  gid node['jupyter']['group']  
+  gid node['jupyter']['group']
   action :create
   shell "/bin/bash"
   manage_home true
@@ -92,7 +92,7 @@ end
 
 #update permissions of base_dir to 770
 directory node['jupyter']['base_dir']  do
-  owner node['jupyter']['user']  
+  owner node['jupyter']['user']
   group node['jupyter']['group']
   mode "770"
   action :create
@@ -119,7 +119,7 @@ end
 
 case node['platform_family']
 when "debian"
-  
+
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end
@@ -128,7 +128,7 @@ when "debian"
 
 when "rhel"
   package "krb5-libs"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -174,7 +174,7 @@ node.override = {
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
           'max_perm_size' => node['glassfish']['max_perm_size'],
-          'max_stack_size' => node['glassfish']['max_stack_size'], 
+          'max_stack_size' => node['glassfish']['max_stack_size'],
           'port' => web_port,
           'admin_port' => admin_port,
           'username' => username,
@@ -568,6 +568,14 @@ template "#{theDomain}/bin/ca-keystore.sh" do
   })
 end
 
+template "#{theDomain}/bin/start-llap.sh" do
+  source "start-llap.sh.erb"
+  owner node['glassfish']['user']
+  group node['hive2']['group']
+  mode 0550
+  action :create
+end
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
@@ -583,7 +591,9 @@ template "/etc/sudoers.d/glassfish" do
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
-              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh"                            
+              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh"
+              :hive_user => node['hive2']['user'],
+              :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
   action :create
 end
@@ -624,7 +634,7 @@ end
 
 user node["jupyter"]["user"] do
   home node["jupyter"]["base_dir"]
-  gid node["jupyter"]["group"]  
+  gid node["jupyter"]["group"]
   action :create
   shell "/bin/bash"
   manage_home true
@@ -633,7 +643,7 @@ end
 
 #update permissions of base_dir to 770
 directory node["jupyter"]["base_dir"]  do
-  owner node["jupyter"]["user"]  
+  owner node["jupyter"]["user"]
   group node["jupyter"]["group"]
   mode "770"
   action :create
@@ -659,7 +669,7 @@ directory node['hopssite']['home'] do
 end
 
 template "#{node['hopssite']['home']}/hs_env.sh" do
-  source "hopssite/hs_env.sh.erb" 
+  source "hopssite/hs_env.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -667,7 +677,7 @@ template "#{node['hopssite']['home']}/hs_env.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_install.sh" do
-  source "hopssite/hs_install.sh.erb" 
+  source "hopssite/hs_install.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -675,7 +685,7 @@ template "#{node['hopssite']['home']}/hs_install.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_setup.sh" do
-  source "hopssite/hs_setup.sh.erb" 
+  source "hopssite/hs_setup.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -683,7 +693,7 @@ template "#{node['hopssite']['home']}/hs_setup.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_db_setup.sh" do
-  source "hopssite/hs_db_setup.sh.erb" 
+  source "hopssite/hs_db_setup.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -691,7 +701,7 @@ template "#{node['hopssite']['home']}/hs_db_setup.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_create_domain2.sh" do
-  source "hopssite/hs_create_domain2.sh.erb" 
+  source "hopssite/hs_create_domain2.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -699,7 +709,7 @@ template "#{node['hopssite']['home']}/hs_create_domain2.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_jdbc_connector.sh" do
-  source "hopssite/hs_jdbc_connector.sh.erb" 
+  source "hopssite/hs_jdbc_connector.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -707,7 +717,7 @@ template "#{node['hopssite']['home']}/hs_jdbc_connector.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_realm_setup.sh" do
-  source "hopssite/hs_realm_setup.sh.erb" 
+  source "hopssite/hs_realm_setup.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -715,7 +725,7 @@ template "#{node['hopssite']['home']}/hs_realm_setup.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_domain2_certs.sh" do
-  source "hopssite/hs_domain2_certs.sh.erb" 
+  source "hopssite/hs_domain2_certs.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -723,7 +733,7 @@ template "#{node['hopssite']['home']}/hs_domain2_certs.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_glassfish_sign.sh" do
-  source "hopssite/hs_glassfish_sign.sh.erb" 
+  source "hopssite/hs_glassfish_sign.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -731,7 +741,7 @@ template "#{node['hopssite']['home']}/hs_glassfish_sign.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_glassfish_certs.sh" do
-  source "hopssite/hs_glassfish_certs.sh.erb" 
+  source "hopssite/hs_glassfish_certs.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -739,7 +749,7 @@ template "#{node['hopssite']['home']}/hs_glassfish_certs.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_ssl_setup.sh" do
-  source "hopssite/hs_ssl_setup.sh.erb" 
+  source "hopssite/hs_ssl_setup.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -747,7 +757,7 @@ template "#{node['hopssite']['home']}/hs_ssl_setup.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_admin_certs.sh" do
-  source "hopssite/hs_admin_certs.sh.erb" 
+  source "hopssite/hs_admin_certs.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -755,7 +765,7 @@ template "#{node['hopssite']['home']}/hs_admin_certs.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_redeploy.sh" do
-  source "hopssite/hs_redeploy.sh.erb" 
+  source "hopssite/hs_redeploy.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -763,7 +773,7 @@ template "#{node['hopssite']['home']}/hs_redeploy.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_elastic.sh" do
-  source "hopssite/hs_elastic.sh.erb" 
+  source "hopssite/hs_elastic.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -771,7 +781,7 @@ template "#{node['hopssite']['home']}/hs_elastic.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_dela_certs.sh" do
-  source "hopssite/hs_dela_certs.sh.erb" 
+  source "hopssite/hs_dela_certs.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -779,7 +789,7 @@ template "#{node['hopssite']['home']}/hs_dela_certs.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_purge.sh" do
-  source "hopssite/hs_purge.sh.erb" 
+  source "hopssite/hs_purge.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -787,7 +797,7 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
 end
 
 template "#{node['hopssite']['home']}/hs_tables.sql" do
-  source "hopssite/hs_tables.sql.erb" 
+  source "hopssite/hs_tables.sql.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
@@ -795,7 +805,7 @@ template "#{node['hopssite']['home']}/hs_tables.sql" do
 end
 
 template "#{node['hopssite']['home']}/hs_rows.sql" do
-  source "hopssite/hs_rows.sql.erb" 
+  source "hopssite/hs_rows.sql.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
