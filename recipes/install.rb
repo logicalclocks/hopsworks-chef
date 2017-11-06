@@ -840,8 +840,10 @@ template "#{theDomain}/bin/csr-ca.py" do
   action :create
 end
 
-if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
-  hopsworks_certs "sign-ca-with-root-hopssite-ca" do
-    action :sign_hopssite
+if node['hopsworks']['dela']['enabled'] == "true"
+  if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
+    hopsworks_certs "sign-ca-with-root-hopssite-ca" do
+      action :sign_hopssite
+    end
   end
 end
