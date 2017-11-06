@@ -591,7 +591,7 @@ template "/etc/sudoers.d/glassfish" do
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
-              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh"
+              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
               :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
