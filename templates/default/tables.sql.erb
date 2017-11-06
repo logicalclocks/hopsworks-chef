@@ -576,10 +576,10 @@ CREATE TABLE `user_certs` (
 
 
 CREATE TABLE `projectgenericuser_certs` (
-  `project_generic_username` varchar(120) NOT NULL,
-  `key` varbinary(7000) DEFAULT NULL,
-  `cert` varbinary(3000) DEFAULT NULL,
-  `cert_password` varchar(200) NOT NULL DEFAULT '',
+  `project_generic_username` varchar(120) COLLATE latin1_general_cs NOT NULL,
+  `pgu_key` varbinary(7000) DEFAULT NULL,
+  `pgu_cert` varbinary(3000) DEFAULT NULL,
+  `cert_password` varchar(200) COLLATE latin1_general_cs NOT NULL DEFAULT '',
   PRIMARY KEY (`project_generic_username`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
