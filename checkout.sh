@@ -15,9 +15,18 @@ COOKBOOK=""
 REPO=""
 BRANCH=$1
 
+VERSION=$(grep -e 'version.*\".*\"' metadata.rb | sed -e 's/version//g' | sed -e 's/\"//g'  | sed -e 's/^[ \t]*//')
 echo "script is: $SCRIPTNAME"
 echo "dir is: $SCRIPTDIR"
 echo "basedir is: $BASEDIR"
+echo ""
+echo "Current version is: $VERSION"
+echo "Enter new version: "
+read ACCEPT
+NEW_VERSION=$ACCEPT
+
+echo "new version is: $NEW_VERSION"
+
 checkout()
 {
     pushd .
@@ -108,6 +117,8 @@ fi
 FINISHED=0
 
 echo "" > .${BRANCH}
+
+perl -pi -e 's/\"${VERSION}\"/\"${NEW_VERSION}\"/' metadata.rb
 
 while [ $FINISHED -eq 0 ]; do
 
