@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+. hs_env.sh
+sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+. $1/hs_env.sh
+
+cd ${DOMAIN_DIR}/${DOMAIN}/config
+openssl x509 -in hops.site-admin.pem -outform DER -out hops.site-admin.der
+keytool -import -noprompt -alias ${ADMIN_CERT_ALIAS} -file hops.site-admin.der -keystore keystore.jks $KEYSTORE_PASSWORD
+
+openssl x509 -in hops.site-instance.pem -outform DER -out hops.site-instance.der
+keytool -import -noprompt -alias hops.site-instance -file hops.site-instance.der -keystore keystore.jks $KEYSTORE_PASSWORD
+
+EOF

@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.1.0"
+version          "0.3.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -33,6 +33,7 @@ depends 'java'
 depends 'tensorflow'
 depends 'hopslog'
 depends 'hopsmonitor'
+depends 'hive2'
 
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
@@ -438,6 +439,9 @@ attribute "livy/keystore_password",
           :dscription => "ivy.keystore_password",
           :type => "string"
 
+attribute "hopsworks/livy_zeppelin_session_timeout",
+          :description => "Session timeout for Livy on Zeppelin, to differentiate from the default for Jupyter.",
+          :type => 'string'
 
 ##
 ##
@@ -1755,6 +1759,9 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
+attribute "hopsworks/dela/demo",
+          :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
+          :type => 'string'
 attribute "hopsworks/dela/enabled",
           :description => "Enable dela services. 'true' (default)",
           :type => 'string'
@@ -1846,7 +1853,7 @@ attribute "hopssite/retry_interval",
 attribute "hopssite/max_retries",
           :description => "Certificate signing request maximum number of retries for hops.site.",
           :type => 'string'
-  
+
 # Dela Transfer specific
 
 
@@ -1897,7 +1904,7 @@ attribute "dela/stun_servers_id",
 attribute "dela/hops/storage/type",
           :description => "Dela Client storage type(HDFS/DISK).",
           :type => "string"
-          
+
 attribute "dela/hops/library/type",
           :description => "Dela Client library type(MYSQL/DISK).",
           :type => "string"

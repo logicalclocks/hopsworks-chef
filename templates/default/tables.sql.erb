@@ -35,22 +35,22 @@ CREATE TABLE `users` (
     UNIQUE KEY `email` (`email`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=10000;
 
-  CREATE TABLE `yubikey` (
-    `yubidnum` INT(11) NOT NULL AUTO_INCREMENT,
-    `uid` INT(11) NOT NULL,
-    `public_id` VARCHAR(40)  DEFAULT NULL,
-    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `aes_secret` VARCHAR(100)  DEFAULT NULL,
-    `accessed` TIMESTAMP NULL DEFAULT NULL,
-    `status` INT(11) DEFAULT '-1',
-    `counter` INT(11) DEFAULT NULL,
-    `low` INT(11) DEFAULT NULL,
-    `high` INT(11) DEFAULT NULL,
-    `session_use` INT(11) DEFAULT NULL,
-    `notes` VARCHAR(100)  DEFAULT NULL,
-    PRIMARY KEY (`yubidnum`),
-    FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-    )ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+CREATE TABLE `yubikey` (
+  `yubidnum` INT(11) NOT NULL AUTO_INCREMENT,
+  `uid` INT(11) NOT NULL,
+  `public_id` VARCHAR(40)  DEFAULT NULL,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `aes_secret` VARCHAR(100)  DEFAULT NULL,
+  `accessed` TIMESTAMP NULL DEFAULT NULL,
+  `status` INT(11) DEFAULT '-1',
+  `counter` INT(11) DEFAULT NULL,
+  `low` INT(11) DEFAULT NULL,
+  `high` INT(11) DEFAULT NULL,
+  `session_use` INT(11) DEFAULT NULL,
+  `notes` VARCHAR(100)  DEFAULT NULL,
+  PRIMARY KEY (`yubidnum`),
+  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
 CREATE TABLE `address` (
@@ -128,10 +128,10 @@ CREATE TABLE `project` (
   `retention_period` DATE DEFAULT NULL,
   `ethical_status` VARCHAR(30) DEFAULT NULL,
   `archived` TINYINT(1) DEFAULT '0',
-  `conda` TINYINT(1) DEFAULT '0',  
+  `conda` TINYINT(1) DEFAULT '0',
   `logs` TINYINT(1) DEFAULT '0',
   `deleted` TINYINT(1) DEFAULT '0',
-  `python_version` VARCHAR(25) DEFAULT NULL,    
+  `python_version` VARCHAR(25) DEFAULT NULL,
   `description` VARCHAR(2000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
@@ -175,8 +175,9 @@ CREATE TABLE `project_team` (
 CREATE TABLE `jupyter_settings` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
-  `num_tf_ps` INT(11) NOT NULL DEFAULT '0',
+  `num_tf_ps` INT(11) NOT NULL DEFAULT '1',
   `num_tf_gpus` INT(11) NOT NULL DEFAULT '0',
+  `num_mpi_np` INT(11) NOT NULL DEFAULT '1',
   `appmaster_cores` INT(11) NOT NULL DEFAULT '1',
   `appmaster_memory` INT(11) NOT NULL DEFAULT '1',
   `num_executors` INT(11) NOT NULL DEFAULT '1',
@@ -189,10 +190,11 @@ CREATE TABLE `jupyter_settings` (
   `log_level` VARCHAR(32) NULL DEFAULT 'INFO',
   `mode` VARCHAR(32) NOT NULL,
   `advanced` tinyint(1) NOT NULL DEFAULT '0',
-  `archives` VARCHAR(2500) NOT NULL DEFAULT '',
-  `jars` VARCHAR(2500) NOT NULL DEFAULT '',
-  `files` VARCHAR(2500) NOT NULL DEFAULT '',
-  `py_files` VARCHAR(2500) NOT NULL DEFAULT '',
+  `archives` VARCHAR(1500) NOT NULL DEFAULT '',
+  `jars` VARCHAR(1500) NOT NULL DEFAULT '',
+  `files` VARCHAR(1500) NOT NULL DEFAULT '',
+  `py_files` VARCHAR(1500) NOT NULL DEFAULT '',
+  `spark_params` VARCHAR(6500) NOT NULL DEFAULT '',
   PRIMARY KEY (`project_id`,`team_member`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -217,7 +219,7 @@ CREATE TABLE `project_topics` (
   `schema_name` VARCHAR(255) NOT NULL,
   `schema_version` INT(11) NOT NULL,
   PRIMARY KEY (`topic_name`,`project_id`),
-  KEY schema_name_idx (schema_name),  
+  KEY schema_name_idx (schema_name),
   FOREIGN KEY `project_idx` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs /*!50100 PARTITION BY KEY (topic_name) */ ;
@@ -533,8 +535,8 @@ CREATE TABLE `dataset_request` (
    ON DELETE CASCADE
    ON UPDATE NO ACTION,
   FOREIGN KEY (`message_id`)
-   REFERENCES `message` (`id`) 
-   ON DELETE NO ACTION 
+   REFERENCES `message` (`id`)
+   ON DELETE NO ACTION
    ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -569,15 +571,16 @@ CREATE TABLE `user_certs` (
         `user_key_pwd` varchar(200) DEFAULT NULL,
 	PRIMARY KEY (`projectname`, `username`),
 	FOREIGN KEY (`projectname`) REFERENCES `project` (`projectname`) ON DELETE CASCADE ON UPDATE NO ACTION,
-	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION 
+	FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `service_certs` (
-  `service_name` varchar(50) NOT NULL,
-  `service_key` varbinary(7000) DEFAULT NULL,
-  `service_cert` varbinary(3000) DEFAULT NULL,
-  `cert_password` varchar(200) NOT NULL DEFAULT '',
-  PRIMARY KEY (`service_name`)
+
+CREATE TABLE `projectgenericuser_certs` (
+  `project_generic_username` varchar(120) COLLATE latin1_general_cs NOT NULL,
+  `pgu_key` varbinary(7000) DEFAULT NULL,
+  `pgu_cert` varbinary(3000) DEFAULT NULL,
+  `cert_password` varchar(200) COLLATE latin1_general_cs NOT NULL DEFAULT '',
+  PRIMARY KEY (`project_generic_username`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
@@ -756,7 +759,7 @@ CREATE TABLE `edges` (
 --   job_exec_url    TEXT          ,
 --   flow_exec_url   TEXT          ,
 --   job_def_url     TEXT          ,
---   flow_def_url    TEXT          ,                                                          
+--   flow_def_url    TEXT          ,
 --   PRIMARY KEY (id)
 -- );
 
@@ -842,7 +845,7 @@ CREATE TABLE `hosts` (
   `registered` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY (`hostid`),
-  KEY (`hostname_`)  
+  KEY (`hostname_`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
@@ -1009,10 +1012,10 @@ CREATE TABLE `python_dep` (
   `version` VARCHAR(128) NOT NULL,
   `repo_id` INT(11) NOT NULL,
   `status` INT(11) NOT NULL,
-  `preinstalled` TINYINT(1) DEFAULT '0',  
+  `preinstalled` TINYINT(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY (`dependency`, `version`),
-  KEY (`status`),    
+  KEY (`status`),
   FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -1032,21 +1035,21 @@ CREATE TABLE `project_pythondeps` (
 
 CREATE TABLE `conda_commands` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `project_id` INT(11) NOT NULL,  
+  `project_id` INT(11) NOT NULL,
   `user` VARCHAR(52) NOT NULL,
   `op` VARCHAR(52) NOT NULL,
   `proj` VARCHAR(255) NOT NULL,
   `channel_url` VARCHAR(255),
   `arg` VARCHAR(255),
   `lib` VARCHAR(255),
-  `version` VARCHAR(52),    
+  `version` VARCHAR(52),
   `host_id` INT(11) NOT NULL,
-  `status` VARCHAR(52) NOT NULL,  
+  `status` VARCHAR(52) NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY (`host_id`),  
+  KEY (`host_id`),
   FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
@@ -1056,16 +1059,16 @@ CREATE TABLE `conda_commands` (
 
 CREATE TABLE `jupyter_project` (
   `port` INT(11) NOT NULL,
-  `hdfs_user_id` int(11) NOT NULL,  
+  `hdfs_user_id` int(11) NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `host_ip` VARCHAR(255) NOT NULL,
   `token` VARCHAR(255) NOT NULL,
-  `secret` VARCHAR(64) NOT NULL,  
+  `secret` VARCHAR(64) NOT NULL,
   `pid` BIGINT NOT NULL,
   `project_id` INT(11) NOT NULL,
   PRIMARY KEY (`port`),
-  KEY `hdfs_user_idx` (`hdfs_user_id`),  
+  KEY `hdfs_user_idx` (`hdfs_user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1075,13 +1078,37 @@ CREATE TABLE `jupyter_project` (
 --
 CREATE TABLE `jupyter_interpreter` (
   `port` INT(11) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,  
+  `name` VARCHAR(255) NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`port`,`name`),
   FOREIGN KEY (`port`) REFERENCES `jupyter_project` (`port`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+
+--
+-- Project Devices feature
+--
+
+CREATE TABLE `project_devices`(
+  `project_id` INT(11) NOT NULL,
+  `device_uuid` VARCHAR(36) NOT NULL,
+  `password` VARCHAR(64) NOT NULL,
+  `alias` VARCHAR(80) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `state` TINYINT(1) NOT NULL DEFAULT '0',
+  `last_logged_in` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`project_id`, `device_uuid`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
+
+CREATE TABLE `project_devices_settings` (
+  `project_id` INT(11) NOT NULL,
+  `jwt_secret` VARCHAR(128) NOT NULL,
+  `jwt_token_duration` INT(11) NOT NULL,
+  PRIMARY KEY (`project_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
 
 --
@@ -1095,16 +1122,45 @@ CREATE TABLE `ndb_backup` (
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
--- Dela metadata
+-- Dela tables
 --
 CREATE TABLE `dela` (
   `id` VARCHAR(200) NOT NULL,
-  `did` INT(11) NOT NULL, 
-  `pid` INT(11) NOT NULL, 
-  `name` VARCHAR(200) NOT NULL, 
-  `status` VARCHAR(52) NOT NULL, 
-  `stream` VARCHAR(200), 
-  `partners` VARCHAR(200), 
+  `did` INT(11) NOT NULL,
+  `pid` INT(11) NOT NULL,
+  `name` VARCHAR(200) NOT NULL,
+  `status` VARCHAR(52) NOT NULL,
+  `stream` VARCHAR(200),
+  `partners` VARCHAR(200),
   PRIMARY KEY (`id`),
   FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopssite_cluster_certs` (
+  `cluster_name` varchar(129) NOT NULL,
+  `cluster_key` varbinary(7000) DEFAULT NULL,
+  `cluster_cert` varbinary(3000) DEFAULT NULL,
+  `cert_password` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`cluster_name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cluster_cert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) NOT NULL,
+  `common_name` varchar(64) NOT NULL,
+  `organization_name` varchar(64) NOT NULL,
+  `organizational_unit_name` varchar(64) NOT NULL,
+  `serial_number` varchar(45) DEFAULT NULL,
+  `registration_status` varchar(45) NOT NULL,
+  `validation_key` varchar(128) DEFAULT NULL,
+  `validation_key_date` timestamp NULL DEFAULT NULL,
+  `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `organization_name` (`organization_name`,`organizational_unit_name`),
+  UNIQUE KEY `serial_number` (`serial_number`),
+  KEY `agent_id` (`agent_id`),
+  FOREIGN KEY (`agent_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+--
+-- End Dela tables
+--

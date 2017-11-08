@@ -10,6 +10,7 @@ include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "conda"
+include_attribute "hive2"
 
 default['hopsworks']['version']                  = "0.1.0"
 
@@ -61,6 +62,7 @@ default['hopsworks']['admin']['password']           = "adminpw"
 default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
 default['hopsworks']['twofactor_auth']           = "false"
 default['hopsworks']['twofactor_exclude_groups'] = "AGENT" #semicolon separated list of roles
+
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
 ## s: seconds
@@ -96,6 +98,7 @@ default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "10000"
 default['hopsworks']['hdfs_default_quota_mbs']   = "200000"
+default['hopsworks']['hive_default_quota_mbs']   = "50000"
 default['hopsworks']['max_num_proj_per_user']    = "10"
 
 # file preview
@@ -119,18 +122,22 @@ default['hopsworks']['org_email']                      = "user@hops.site"
 default['hopsworks']['org_country_code']               = "SE"
 default['hopsworks']['org_city']                       = "Stockholm"
 
+default['hopsworks']['recovery_path']            = "hopsworks-api/api/auth/recover"
+default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verify"
+
 #
 # Dela  - please do not change without consulting dela code
 #
-default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['cluster_http_port']      = "8080"
+default['hopsworks']['dela']['demo']                   = false
+default['hopsworks']['dela']['enabled']                = node['hopsworks']['dela']['demo'] ? "true" : "false"
+default['hopsworks']['dela']['cluster_http_port']      = "42000"
 default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 
 #
-# Hops-site 
+# Hops-site
 #
-default['hopsworks']['hopssite']['domain']    = "hops.site"
-default['hopsworks']['hopssite']['port']      = "50081"
+default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
+default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "50081"
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
 default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
@@ -138,9 +145,9 @@ default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['manual_register']                 = "true"
-default['hopssite']['url']                             = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
-default['hopssite']['user']                            = "agent@hops.io"
+default['hopssite']['manual_register']                 = "false"
+default['hopssite']['url']                             = node['hopsworks']['dela']['demo'] ? "http://bbc5.sics.se:8080": "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
+default['hopssite']['user']                            = node['hopsworks']['dela']['demo'] ? "agent@hops.io" : node['hopsworks']['email']
 default['hopssite']['password']                        = "admin"
 default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
@@ -149,7 +156,7 @@ default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
 
 #
-# Dela 
+# Dela
 #
 
 default['hopssite']['cert']['email']                   = node['hopsworks']['email']
@@ -174,3 +181,6 @@ default['jupyter']['base_dir']                         = node['install']['dir'].
 default['jupyter']['user']                             = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
+
+# Livy
+default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
