@@ -715,11 +715,11 @@ if node['hopsworks']['email_password'].eql? "password"
   bash 'gmail' do
     user "root"
     code <<-EOF
-      cd /tmp
-      rm -f /tmp/hopsworks.email
+      cd #{Chef::Config['file_cache_path']}
+      rm -f #{Chef::Config['file_cache_path']}/hopsworks.email
       wget #{node['hopsworks']['gmail']['placeholder']}
-      cat /tmp/hopsworks.email | base64 -d > /tmp/hopsworks.encoded
-      chmod 775 /tmp/hopsworks.encoded
+      cat #{Chef::Config['file_cache_path']}/hopsworks.email | base64 -d > #{Chef::Config['file_cache_path']}/hopsworks.encoded
+      chmod 775 #{Chef::Config['file_cache_path']}/hopsworks.encoded
     EOF
   end
 
