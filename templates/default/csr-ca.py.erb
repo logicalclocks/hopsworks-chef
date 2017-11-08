@@ -82,16 +82,21 @@ class Register:
             session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
             resp = session.post(sign_cert_url, data=json.dumps(payload), headers=json_headers, verify=False)
             if not resp.status_code == HTTP_OK:
-                raise Exception('Could not register: Unknown host id or internal error on the dashboard (Status code: {0}).'.format(resp.status_code))
+                raise Exception('Could not register: Status code: {0}. response msg: {1}'.format(resp.status_code, resp.content))
 
             jData = json.loads(resp.content)
             cert = jData['pubAgentCert']
             caCert = jData['caPubCert']
+            intermediateCaCert = jData['intermediateCaPubCert']
 
             cert_dir = os.path.dirname(os.path.abspath(__file__))
             with open(join(cert_dir, CA_FILE), "wt") as f:
                 f.write(caCert)
             logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
+
+            with open(join(cert_dir, INTERMEDIATE_CA_FILE), "wt") as f:
+                f.write(intermediateCaCert)
+            logger.info("Writing intermediate Ca Public key to {0}.".format(INTERMEDIATE_CA_FILE))
 
             logger.info("Registered successfully.")
             return cert
@@ -161,6 +166,7 @@ CONFIG_FILE = "<%= node['hopssite']['base_dir'] %>/config/ca.ini"
 LOG_FILE = "<%= node['hopssite']['certs_dir'] %>/csr.log"
 CERT_FILE = "<%= node['hopssite']['certs_dir'] %>/pub.pem"
 CA_FILE = "<%= node['hopssite']['certs_dir'] %>/ca_pub.pem"
+INTERMEDIATE_CA_FILE = "<%= node['hopssite']['certs_dir'] %>/intermediate_ca_pub.pem"
 KEY_FILE = "<%= node['hopssite']['certs_dir'] %>/priv.key"
 SERVER_KEYSTORE = "<%= node['hopssite']['keystore_dir'] %>/keystore.jks"
 SERVER_TRUSTSTORE = "<%= node['hopssite']['keystore_dir'] %>/truststore.jks"
@@ -210,11 +216,5 @@ if __name__ == '__main__':
     if not Cert.exist():
         (csr, key) = Cert.create_key_and_csr()
         Register(csr, key)
-        subprocess.call("<%= node['hopssite']['base_dir'] %>/bin/ca-keystore.sh")
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
-
-    if not Cert.exists_keystore():
-        subprocess.call("<%= node['hopssite']['base_dir'] %>/bin/ca-keystore.sh")
-    else:
-        logger.info('Keystore files found.')

@@ -107,7 +107,7 @@ INSERT INTO hosts(hostid, hostname_) VALUES <%= @hosts %>;
 
 INSERT INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= @spark_dir %>"),  ("flink_dir", "<%= @flink_dir %>"), ("zeppelin_dir", "<%= @zeppelin_dir %>"), ("elastic_dir", "<%= @elastic_dir %>"),  ("mysql_dir", "<%= @mysql_dir %>"), ("ndb_dir", "<%= @ndb_dir %>"), ("hadoop_dir", "<%= @hadoop_dir %>"), ("hdfs_user", "<%= @hdfs_user %>"), ("yarn_user", "<%= @yarn_user %>"), ("mr_user","<%= @mr_user %>"), ("zeppelin_user","<%= @zeppelin_user %>"), ("elastic_user","<%= @elastic_user %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
 
-INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>");
+INSERT INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
 
 INSERT INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
 
@@ -269,3 +269,12 @@ INSERT INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
 INSERT INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
 
 INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
+
+--
+-- Hive
+--
+
+INSERT INTO variables VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname %>");
+INSERT INTO variables VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
+INSERT INTO variables VALUES ("hive_warehouse", "<%= @hive_warehouse%>");
+INSERT INTO variables VALUES ("hive_scratchdir", "<%= @hive_scratchdir%>");

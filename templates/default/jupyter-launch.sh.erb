@@ -61,6 +61,11 @@ if [ -f $PID_FILE ] ; then
  fi
 fi
 
+cd $JUPYTER_HOME
+# Install facets-dist by linking to it
+mkdir -p nbextensions
+ln -s /usr/local/share/jupyter/nbextensions/facets-dist ndbextensions/facets-dist
+
 cd $SECRET_DIR
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 

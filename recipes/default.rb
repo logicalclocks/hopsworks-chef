@@ -1,3 +1,9 @@
+
+domain_name="domain1"
+domains_dir = node['hopsworks']['domains_dir']
+theDomain="#{domains_dir}/#{domain_name}"
+
+
 case node['platform']
 when "ubuntu"
  if node['platform_version'].to_f <= 14.04
@@ -25,7 +31,6 @@ if node['glassfish']['install_dir'].include?("versions") == false
   node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
 
-domains_dir = node['glassfish']['domains_dir']
 private_ip=my_private_ip()
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
@@ -146,6 +151,12 @@ rescue
   Chef::Log.warn "could not find the hopsmonitor server ip!"
 end
 
+begin
+  hiveserver_ip = private_recipe_ip("hive2","default")
+rescue
+  hiveserver_ip = node['hostname']
+  Chef::Log.warn "could not find the Hive server ip!"
+end
 
 begin
   python_kernel = "#{node['jupyter']['python']}".downcase
@@ -222,7 +233,6 @@ template timerTablePath do
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end
 
-
 require 'resolv'
 hostf = Resolv::Hosts.new
 dns = Resolv::DNS.new
@@ -296,6 +306,7 @@ template "#{rows_path}" do
                 :elastic_user => node['elastic']['user'],
                 :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
                 :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
+                :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
                 :max_num_proj_per_user => node['hopsworks']['max_num_proj_per_user'],
 		:file_preview_image_size => node['hopsworks']['file_preview_image_size'],
 		:file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
@@ -332,8 +343,12 @@ template "#{rows_path}" do
                 :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
                 :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
                 :recovery_path => node['hopsworks']['recovery_path'],
-                :verification_path => node['hopsworks']['verification_path']
-              })
+                :verification_path => node['hopsworks']['verification_path'],
+                :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
+                :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
+                :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
+                :hive_scratchdir => node['hive2']['scratch_dir']
+           })
    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 end
 
@@ -345,7 +360,6 @@ end
 
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
-domain_name="domain1"
 admin_port = 4848
 mysql_host = private_recipe_ip("ndb","mysqld")
 
@@ -1098,7 +1112,7 @@ case node['platform']
  when 'debian', 'ubuntu'
    pythonDir="/usr/local/lib/python2.7/dist-packages"
  when 'redhat', 'centos', 'fedora'
-   pythonDir="/usr/lib/python2.7/site-packages"     
+   pythonDir="/usr/lib/python2.7/site-packages"
 end
 
 
@@ -1133,7 +1147,7 @@ if vagrant_enabled == 1
     fi
    EOF
   end
-end  
+end
 
 
 bash "jupyter-user-sparkmagic" do
@@ -1143,4 +1157,34 @@ bash "jupyter-user-sparkmagic" do
    EOF
 end
 
+directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
+  owner "root"
+  group "root"
+  mode "775"
+  action :create
+  recursive true
+end
+
+template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html" do
+  source "facets-jupyter.html.erb"
+  owner "root"
+  mode 0775
+  action :create
+end
+
+directory "#{theDomain}/docroot/nbextensions/facets-dist" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "775"
+  action :create
+  recursive true
+end
+
+template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
+  source "facets-jupyter.html.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0775
+  action :create
+end
 
