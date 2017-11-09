@@ -252,7 +252,7 @@ for h in node['kagent']['default']['private_ips']
     end
   end
 
-  hosts += "('" + hname + "','" + h + "')" + ","
+  hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
 if h.length > 0
   hosts = hosts.chop!
