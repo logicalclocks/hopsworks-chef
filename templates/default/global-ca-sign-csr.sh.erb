@@ -18,4 +18,5 @@ GENERATED_CERT_PATH="$5"
 openssl ca -batch -config $CA_FILE -passin pass:${MASTERPW} \
         -extensions $EXTENSION -days 3650 -notext -md sha256 -in ${CSR_PATH} -out ${GENERATED_CERT_PATH}
 
+
 chmod +r ${GENERATED_CERT_PATH}
