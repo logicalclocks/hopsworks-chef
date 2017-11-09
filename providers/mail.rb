@@ -4,7 +4,7 @@ decoded = node['hopsworks']['email_password']
 
 # If the email_password is the 'default' password
 if decoded.eql? "password"
-  decoded = ::File.read("/tmp/hopsworks.encoded")
+  decoded = ::File.read("#{Chef::Config['file_cache_path']}/hopsworks.encoded")
   node.override['hopsworks']['email_password'] = decoded
 end
 
