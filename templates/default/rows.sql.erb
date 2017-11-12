@@ -129,6 +129,8 @@ INSERT INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
 
 INSERT INTO variables VALUES ("livy_zeppelin_session_timeout", "<%= node['hopsworks']['livy_zeppelin_session_timeout'] %>");
 
+INSERT INTO variables VALUES ("zeppelin_interpreters", "<%= node['hopsworks']['zeppelin_interpreters'] %>");
+
 INSERT INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
 
 INSERT INTO variables VALUES ("yarn_ui_port", "<%= @yarn_ui_port %>");
@@ -278,3 +280,4 @@ INSERT INTO variables VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname 
 INSERT INTO variables VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
 INSERT INTO variables VALUES ("hive_warehouse", "<%= @hive_warehouse%>");
 INSERT INTO variables VALUES ("hive_scratchdir", "<%= @hive_scratchdir%>");
+INSERT INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");

@@ -552,7 +552,7 @@ CREATE TABLE `message_to_user` (
 
  CREATE TABLE `variables` (
   `id` varchar(255) NOT NULL,
-  `value` varchar(255) NOT NULL,
+  `value` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
