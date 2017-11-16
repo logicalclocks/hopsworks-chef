@@ -28,6 +28,7 @@ CREATE TABLE `users` (
     `notes` VARCHAR(500)  DEFAULT '-',
     `mobile` VARCHAR(15)  DEFAULT '-',
     `max_num_projects` INT(11) NOT NULL,
+    `num_created_projects` INT(11) NOT NULL DEFAULT '0',
     `two_factor` tinyint(1) NOT NULL DEFAULT '1',
     `tours_state` tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`uid`),
@@ -133,6 +134,7 @@ CREATE TABLE `project` (
   `deleted` TINYINT(1) DEFAULT '0',
   `python_version` VARCHAR(25) DEFAULT NULL,
   `description` VARCHAR(2000) DEFAULT NULL,
+  `payment_type` VARCHAR(255) NOT NULL DEFAULT 'PREPAID',
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
   UNIQUE KEY(`inode_pid`, `inode_name`,	`partition_id`),
@@ -552,7 +554,7 @@ CREATE TABLE `message_to_user` (
 
  CREATE TABLE `variables` (
   `id` varchar(255) NOT NULL,
-  `value` varchar(255) NOT NULL,
+  `value` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
