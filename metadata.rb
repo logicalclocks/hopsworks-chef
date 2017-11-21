@@ -239,6 +239,10 @@ attribute "hopsworks/kafka_num_partitions",
           :description => "Default number of partitions for Kafka Topics.",
           :type => 'string'
 
+attribute "hopsworks/encryption_password",
+          :description => "Default master encryption password for storing secrets.",
+          :type => 'string'
+
 attribute "hopsworks/file_preview_image_size",
           :description => "Maximum size in bytes of an image that can be previewed in DataSets",
           :type => 'string'
