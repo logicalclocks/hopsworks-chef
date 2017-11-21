@@ -219,8 +219,8 @@ attribute "hopsworks/yarn_default_quota_mins",
           :description => "Default number of CPU mins availble per project",
           :type => 'string'
 
-attribute "hopsworks/hdfs_default_quota_gbs",
-          :description => "Default amount in GB of available storage per project",
+attribute "hopsworks/hdfs_default_quota_mbs",
+          :description => "Default amount in MB of available storage per project",
           :type => 'string'
 
 attribute "hopsworks/hive_default_quota_mbs",
