@@ -1,5 +1,6 @@
 require 'json'
 require 'base64'
+require 'digest'
 
 private_ip=my_private_ip()
 username=node['hopsworks']['admin']['user']
@@ -394,6 +395,15 @@ directory ca_dir do
   group node['kagent']['certs_group']
   mode "750"
   action :create
+end
+
+master_password_digest = Digest::SHA256.hexdigest node['hopsworks']['encryption_password']
+
+file "#{ca_dir}/encryption_master_password" do
+  content "#{master_password_digest}"
+  mode "0700"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
 end
 
 directory "#{ca_dir}/transient" do

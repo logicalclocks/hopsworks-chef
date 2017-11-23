@@ -96,9 +96,9 @@ default['hopsworks']['email_password']           = node['smtp']['email_password'
 default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
 # #quotas
-default['hopsworks']['yarn_default_quota_mins']  = "10000"
-default['hopsworks']['hdfs_default_quota_mbs']   = "200000"
-default['hopsworks']['hive_default_quota_mbs']   = "50000"
+default['hopsworks']['yarn_default_quota_mins']  = "1000000"
+default['hopsworks']['hdfs_default_quota_mbs']   = "500000"
+default['hopsworks']['hive_default_quota_mbs']   = "250000"
 default['hopsworks']['max_num_proj_per_user']    = "10"
 
 # file preview
@@ -124,6 +124,8 @@ default['hopsworks']['org_city']                       = "Stockholm"
 
 default['hopsworks']['recovery_path']            = "hopsworks-api/api/auth/recover"
 default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verify"
+# Master encryption password
+default['hopsworks']['encryption_password']      = "adminpw"
 
 #
 # Dela  - please do not change without consulting dela code
@@ -187,3 +189,4 @@ default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
 
 # Zeppelin
 default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivySparkInterpreter,org.apache.zeppelin.livy.LivyPySparkInterpreter,org.apache.zeppelin.livy.LivySparkRInterpreter,org.apache.zeppelin.livy.LivySparkSQLInterpreter,org.apache.zeppelin.spark.SparkInterpreter,org.apache.zeppelin.spark.PySparkInterpreter,org.apache.zeppelin.rinterpreter.RRepl,org.apache.zeppelin.rinterpreter.KnitR,org.apache.zeppelin.spark.SparkRInterpreter,org.apache.zeppelin.spark.SparkSqlInterpreter,org.apache.zeppelin.spark.DepInterpreter,org.apache.zeppelin.markdown.Markdown,org.apache.zeppelin.angular.AngularInterpreter,org.apache.zeppelin.flink.FlinkInterpreter"
+
