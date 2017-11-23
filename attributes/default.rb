@@ -139,7 +139,7 @@ default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 # Hops-site
 #
 default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
-default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "50081"
+default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "51081"
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
 default['hopsworks']['hopssite']['heartbeat'] = "600000"
 #
