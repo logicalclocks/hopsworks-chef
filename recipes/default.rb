@@ -913,7 +913,7 @@ EOF
 end
 
 
-if node['hopsworks']['pixiedust'].eql?("true")
+if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
   cloudant="cloudant-spark-v2.0.0-185.jar"
   # Pixiedust is a visualization library for Jupyter
   pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
