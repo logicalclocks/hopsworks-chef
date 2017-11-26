@@ -131,7 +131,7 @@ default['hopsworks']['encryption_password']      = "adminpw"
 # Dela  - please do not change without consulting dela code
 #
 default['hopsworks']['dela']['demo']                   = false
-default['hopsworks']['dela']['enabled']                = node['hopsworks']['dela']['demo'] ? "true" : "false"
+default['hopsworks']['dela']                           = node['hopsworks']['dela']['demo'] ? "true" : "false"
 default['hopsworks']['dela']['cluster_http_port']      = "42000"
 default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
 

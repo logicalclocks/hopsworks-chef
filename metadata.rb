@@ -1770,8 +1770,9 @@ attribute "dela/dir",
 attribute "hopsworks/dela/demo",
           :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
           :type => 'string'
-attribute "hopsworks/dela/enabled",
-          :description => "Enable dela services. 'true' (default)",
+
+attribute "hopsworks/enabled",
+          :description => "'true' to enable dela services, otherwise 'false' (default)",
           :type => 'string'
 
 attribute "hopsworks/dela/cluster_http_port",
