@@ -1771,7 +1771,7 @@ attribute "hopsworks/dela/demo",
           :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
           :type => 'string'
 
-attribute "hopsworks/enabled",
+attribute "hopsworks/dela",
           :description => "'true' to enable dela services, otherwise 'false' (default)",
           :type => 'string'
 
