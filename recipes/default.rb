@@ -757,6 +757,7 @@ glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear"
   target "server"
   url node['hopsworks']['ear_url']
+  version node['hopsworks']['version']
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -775,6 +776,7 @@ glassfish_deployable "hopsworks" do
   component_name "hopsworks-web"
   target "server"
   url node['hopsworks']['war_url']
+  version node['hopsworks']['version']
   context_root "/hopsworks"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -792,6 +794,7 @@ glassfish_deployable "hopsworks-ca" do
   component_name "hopsworks-ca"
   target "server"
   url node['hopsworks']['ca_url']
+  version node['hopsworks']['version']
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -1187,4 +1190,3 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
   mode 0775
   action :create
 end
-

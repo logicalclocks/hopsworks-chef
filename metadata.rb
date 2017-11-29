@@ -259,6 +259,10 @@ attribute "hopsworks/staging_dir",
           :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
           :type => 'string'
 
+attribute "hopsworks/version",
+          :description => "The version of ear/web/ca to download",
+          :type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
