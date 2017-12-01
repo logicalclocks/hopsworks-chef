@@ -918,7 +918,8 @@ if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
   # Pixiedust is a visualization library for Jupyter
   pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
   bash "jupyter-pixiedust" do
-    user node['jupyter']['user']
+    user "root"
+#    node['jupyter']['user']
     retries 1
     ignore_failure true
     code <<-EOF
@@ -930,12 +931,14 @@ if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
       export SCALA_HOME=#{scala_home}
       pip --no-cache-dir install matplotlib
       pip --no-cache-dir install pixiedust
-      jupyter pixiedust install --silent
       wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-#      chown #{node['jupyter']['user']} -R #{pixiedust_home}
+      jupyter pixiedust install --silent
+ #      chown #{node['jupyter']['user']} -R #{pixiedust_home}
 # pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
       if [ -d /home/#{node['hopsworks']['user']}/.local/share/jupyter/kernels ] ; then
-         jupyter-kernelspec install /home/#{node['jupyter']['user']}/.local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
+         jupyter-kernelspec install /root/.local/share/jupyter/kernels/pythonwithpixiedustspark22
+#/usr/local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
+#/home/#{node['jupyter']['user']}/.local/
       fi
     EOF
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
