@@ -24,17 +24,25 @@ echo "Current version is: $VERSION"
 echo "Enter new version: "
 read ACCEPT
 NEW_VERSION=$ACCEPT
-
 echo "new version is: $NEW_VERSION"
-
+perl -pi -e 's/$VERSION/$NEW_VERSION/g' metadata.rb
 checkout()
 {
     pushd .
     cd ../$REPO
     git pull origin master
     git checkout -b $BRANCH
+    VERSION=$(grep -e 'version.*\".*\"' metadata.rb | sed -e 's/version//g' | sed -e 's/\"//g'  | sed -e 's/^[ \t]*//')
+    echo "Current version of $REPO is: $VERSION"
+    echo "Enter new version: "
+    read ACCEPT
+    NEW_VERSION=$ACCEPT
+    echo "new version is: $NEW_VERSION"
+    perl -pi -e 's/$VERSION/$NEW_VERSION/g' metadata.rb
+    git commit -am 'bump version to $NEW_VERSION'
     git push -u origin $BRANCH    
     popd
+    perl -pi -e 's/$VERSION/$NEW_VERSION/g' Berksfile
     echo "${REPO}\n" >> .${BRANCH}    
 }
 
