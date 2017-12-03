@@ -199,7 +199,7 @@ attribute "hopsworks/reinstall",
           :description => "Enter 'true' if this is a reinstallation",
           :type => 'string'
 
-attribute "hopsworks/pixiedust",
+attribute "hopsworks/pixiedust/enabled",
           :description => "Enter 'true' to install pixiedust, 'false' otherwise",
           :type => 'string'
 
@@ -257,6 +257,10 @@ attribute "hopsworks/anaconda_enabled",
 
 attribute "hopsworks/staging_dir",
           :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
+          :type => 'string'
+
+attribute "hopsworks/version",
+          :description => "The version of ear/web/ca to download",
           :type => 'string'
 
 attribute "vagrant",
@@ -1770,8 +1774,9 @@ attribute "dela/dir",
 attribute "hopsworks/dela/demo",
           :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
           :type => 'string'
+
 attribute "hopsworks/dela/enabled",
-          :description => "Enable dela services. 'true' (default)",
+          :description => "'true' to enable dela services, otherwise 'false' (default)",
           :type => 'string'
 
 attribute "hopsworks/dela/cluster_http_port",

@@ -55,7 +55,7 @@ default['hopsworks']['ca_url']                   = "#{node['download_url']}/hops
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 
 
-default['hopsworks']['pixiedust']                = "false"
+default['hopsworks']['pixiedust']['enabled']        = "false"
 
 default['hopsworks']['admin']['user']               = "adminuser"
 default['hopsworks']['admin']['password']           = "adminpw"
