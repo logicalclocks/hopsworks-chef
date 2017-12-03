@@ -139,15 +139,14 @@ if(node['hopsworks']['hopssite']['version'].eql? "hops")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
   default['hopsworks']['hopssite']['port']             = 51081
-  default['hopsworks']['hopssite']['base_uri']         = "https://hops.site:51081/hops-site/api"
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
   default['hopsworks']['hopssite']['port']             = 42004
-  default['hopsworks']['hopssite']['base_uri']         = "http://bbc5.sics.se:42004/hops-site/api"
 end
-default['hopsworks']['hopssite']['heartbeat'] = "600000"
+default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
+default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
