@@ -4,7 +4,7 @@ source 'https://supermarket.chef.io'
 
 cookbook 'java'
 cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
-cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
+cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "HOPSWORKS-384"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "spark-hive-dep"
@@ -18,7 +18,7 @@ cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
-cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
+cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "1.0.0"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
