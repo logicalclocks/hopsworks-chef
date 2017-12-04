@@ -1162,7 +1162,7 @@ CREATE TABLE `cluster_cert` (
   UNIQUE KEY `serial_number` (`serial_number`),
   KEY `agent_id` (`agent_id`),
   FOREIGN KEY (`agent_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=ndbcluster AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 --
 -- End Dela tables
 --
