@@ -60,8 +60,8 @@ default['hopsworks']['pixiedust']['enabled']        = "false"
 default['hopsworks']['admin']['user']               = "adminuser"
 default['hopsworks']['admin']['password']           = "adminpw"
 default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
-default['hopsworks']['twofactor_auth']           = "false"
-default['hopsworks']['twofactor_exclude_groups'] = "AGENT" #semicolon separated list of roles
+default['hopsworks']['twofactor_auth']              = "false"
+default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
@@ -130,37 +130,45 @@ default['hopsworks']['encryption_password']      = "adminpw"
 #
 # Dela  - please do not change without consulting dela code
 #
-default['hopsworks']['dela']['demo']                   = false
-default['hopsworks']['dela']['enabled']                = node['hopsworks']['dela']['demo'] ? "true" : "false"
-default['hopsworks']['dela']['cluster_http_port']      = "42000"
-default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
-
-#
-# Hops-site
-#
-default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
-default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "51081"
+default['hopsworks']['dela']['enabled']                = "false"
+default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
+default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
+# Dela - hopssite settings
+default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
+if(node['hopsworks']['hopssite']['version'].eql? "hops")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+end
+if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
+  default['hopsworks']['hopssite']['port']             = 42004
+end
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
-default['hopsworks']['hopssite']['heartbeat'] = "600000"
+default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
+if(node['hopsworks']['hopssite']['version'].eql? "hops")
+  default['hopssite']['url']                           = "https://hops.site:443"
+end
+if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
+ default['hopssite']['url']                            = "http://bbc5.sics.se:8080"
+end
+default['hopssite']['manual_register']                 = "false"
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['manual_register']                 = "false"
-default['hopssite']['url']                             = node['hopsworks']['dela']['demo'] ? "http://bbc5.sics.se:8080": "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
-default['hopssite']['user']                            = node['hopsworks']['dela']['demo'] ? "agent@hops.io" : node['hopsworks']['email']
+default['hopssite']['user']                            = node['hopsworks']['email']
 default['hopssite']['password']                        = "admin"
 default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
 default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
 default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
-
 #
-# Dela
+# Hopssite cert
 #
-
 default['hopssite']['cert']['email']                   = node['hopsworks']['email']
 default['hopssite']['cert']['cn']                      = node['hopsworks']['cert']['cn']
 default['hopssite']['cert']['o']                       = node['hopsworks']['cert']['o']
@@ -168,7 +176,7 @@ default['hopssite']['cert']['ou']                      = node['hopsworks']['cert
 default['hopssite']['cert']['l']                       = node['hopsworks']['cert']['l']
 default['hopssite']['cert']['s']                       = node['hopsworks']['cert']['s']
 default['hopssite']['cert']['c']                       = node['hopsworks']['cert']['c']
-#
+# Dela end
 
 default['hopsworks']['max_gpu_request_size']           = 1
 default['hopsworks']['max_cpu_request_size']           = 1
