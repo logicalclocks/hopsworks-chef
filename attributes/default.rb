@@ -138,19 +138,19 @@ default['hopsworks']['hopssite']['version']            = "none" # default for {h
 if(node['hopsworks']['hopssite']['version'].eql? "none") 
   default['hopsworks']['dela']['enabled']              = "false"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['port']             = "51081"
   default['hopssite']['url']                           = "https://hops.site:443"
 end
 if(node['hopsworks']['hopssite']['version'].eql? "hops")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['port']             = "51081"
   default['hopssite']['url']                           = "https://hops.site:443"
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
-  default['hopsworks']['hopssite']['port']             = 42004
+  default['hopsworks']['hopssite']['port']             = "42004"
   default['hopssite']['url']                           = "http://bbc5.sics.se:8080"
 end
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
