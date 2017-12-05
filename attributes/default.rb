@@ -135,27 +135,29 @@ default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
 default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
+if(node['hopsworks']['hopssite']['version'].eql? "none") 
+  default['hopsworks']['dela']['enabled']              = "false"
+  default['hopsworks']['hopssite']['domain']           = "none"
+  default['hopsworks']['hopssite']['port']             = 0
+  default['hopssite']['url']                           = "none"
+end
 if(node['hopsworks']['hopssite']['version'].eql? "hops")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
   default['hopsworks']['hopssite']['port']             = 51081
+  default['hopssite']['url']                           = "https://hops.site:443"
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
   default['hopsworks']['hopssite']['port']             = 42004
+  default['hopssite']['url']                            = "http://bbc5.sics.se:8080"
 end
 default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
 default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
-if(node['hopsworks']['hopssite']['version'].eql? "hops")
-  default['hopssite']['url']                           = "https://hops.site:443"
-end
-if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
- default['hopssite']['url']                            = "http://bbc5.sics.se:8080"
-end
 default['hopssite']['manual_register']                 = "false"
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
