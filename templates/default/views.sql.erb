@@ -13,11 +13,3 @@ CREATE VIEW `users_groups` AS
 
 
 CREATE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));
-
-CREATE VIEW `projects_last_payment` AS
-  select `project_payments_history`.`projectname` AS `projectname`,
-         max(`project_payments_history`.`transaction_date`) AS `transaction_date`
-  from `project_payments_history`
-  where (`project_payments_history`.`action` = 'DEPOSIT_MONEY')
-  group by `project_payments_history`.`projectname`
-  order by max(`project_payments_history`.`transaction_date`);

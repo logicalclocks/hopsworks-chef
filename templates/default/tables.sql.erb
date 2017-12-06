@@ -135,6 +135,7 @@ CREATE TABLE `project` (
   `python_version` VARCHAR(25) DEFAULT NULL,
   `description` VARCHAR(2000) DEFAULT NULL,
   `payment_type` VARCHAR(255) NOT NULL DEFAULT 'PREPAID',
+  `last_quota_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY(`projectname`),
   UNIQUE KEY(`inode_pid`, `inode_name`,	`partition_id`),
@@ -632,31 +633,6 @@ CREATE TABLE `consents_audit` (
      FOREIGN KEY (`initiator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
      FOREIGN KEY (`consent_id`) REFERENCES `consents` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-
-create TABLE project_account_history (
-  projectname varchar(100) NOT NULL,
-  action varchar(30) NOT NULL,
-  transaction_date datetime DEFAULT CURRENT_TIMESTAMP,
-  details int(11) NOT NULL,
-  PRIMARY KEY(projectname, transaction_date),
-  KEY transaction_date_idx(transaction_date),
-  KEY action_idx(action)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-create TABLE project_payments_history (
-  projectname varchar(100) not null,
-  username varchar(150) NOT NULL,
-  action varchar(30) NOT NULL,
-  transaction_date datetime default CURRENT_TIMESTAMP,
-  amount int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (projectname, transaction_date),
-  KEY transaction_date_idx(transaction_date),
-  KEY action_idx(action),
-  KEY username_idx(username),
-  FOREIGN KEY username_idx(`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
 
 
 -- File Activity Table
