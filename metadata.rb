@@ -882,6 +882,10 @@ attribute "hops/dn/data_dir",
           :description => "The directory in which Hadoop's DataNodes store their data",
           :type => 'string'
 
+attribute "hops/dn/data_dir_permissions",
+          :description => "The permissions for the directory in which Hadoop's DataNodes store their data (default: 700)",
+          :type => 'string'
+
 attribute "hops/yarn/nodemanager_hb_ms",
           :description => "Heartbeat Interval for NodeManager->ResourceManager in ms",
           :type => 'string'
