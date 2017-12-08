@@ -171,10 +171,10 @@ default['hopssite']['max_retries']                     = 5
 #
 # Hopssite cert
 #
-default['hopssite']['cert']['email']                   = node['hopsworks']['email']
-default['hopssite']['cert']['cn']                      = node['hopsworks']['cert']['cn']
-default['hopssite']['cert']['o']                       = node['hopsworks']['cert']['o']
-default['hopssite']['cert']['ou']                      = node['hopsworks']['cert']['ou']
+default['hopssite']['cert']['email']                   = node['hopssite']['user'] 
+default['hopssite']['cert']['o']                       = node['hopssite']['cert']['email'].split("@")[0]
+default['hopssite']['cert']['ou']                      = node['hopssite']['cert']['email'].split("@")[1]
+default['hopssite']['cert']['cn']                      = node['hopssite']['cert']['o'] + "_" + node['hopssite']['cert']['ou']
 default['hopssite']['cert']['l']                       = node['hopsworks']['cert']['l']
 default['hopssite']['cert']['s']                       = node['hopsworks']['cert']['s']
 default['hopssite']['cert']['c']                       = node['hopsworks']['cert']['c']
