@@ -46,6 +46,7 @@ default['hopsworks']['max_perm_size']            = "1500"
 default['glassfish']['max_perm_size']            = node['hopsworks']['max_perm_size'].to_i
 default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
+default['hopsworks']['http_logs']['enabled']     = "true"
 
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"

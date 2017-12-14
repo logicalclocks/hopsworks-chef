@@ -194,6 +194,9 @@ attribute "hopsworks/max_stack_size",
           :description => "glassfish/max_stack_size",
           :type => 'string'
 
+attribute "hopsworks/http_logs/enabled",
+          :description => "Enable logging of HTTP requests and dump to HDFS",
+          :type => 'string'
 
 attribute "hopsworks/max_perm_size",
           :description => "glassfish/max_perm_size",
