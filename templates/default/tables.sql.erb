@@ -31,6 +31,7 @@ CREATE TABLE `users` (
     `num_created_projects` INT(11) NOT NULL DEFAULT '0',
     `two_factor` tinyint(1) NOT NULL DEFAULT '1',
     `tours_state` tinyint(1) NOT NULL DEFAULT '0',
+    `salt` VARCHAR(128) NOT NULL DEFAULT '',
     PRIMARY KEY (`uid`),
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`)
