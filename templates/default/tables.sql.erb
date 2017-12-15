@@ -807,11 +807,11 @@ CREATE TABLE `meta_log` (
 
 CREATE TABLE `hosts` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `hostname` varchar(128) NOT NULL,
+  `hostid` varchar(128) NOT NULL,
   `cores` int(11) DEFAULT NULL,
   `disk_capacity` bigint(20) DEFAULT NULL,
   `disk_used` bigint(20) DEFAULT NULL,
-  `host_ip` varchar(128) NOT NULL,
+  `hostname_` varchar(128) NOT NULL,
   `last_heartbeat` bigint(20) DEFAULT NULL,
   `load1` double DEFAULT NULL,
   `load15` double DEFAULT NULL,
@@ -823,8 +823,8 @@ CREATE TABLE `hosts` (
   `agent_password` varchar(25) DEFAULT NULL,
   `registered` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY (`hostname`),
-  KEY (`host_ip`)
+  KEY (`hostid`),
+  KEY (`hostname_`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
