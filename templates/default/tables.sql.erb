@@ -863,22 +863,6 @@ CREATE TABLE `commands` (
 -- tensorflow
 -- ------------------------
 
-CREATE TABLE `tf_serving` (
-  `port` INT(11) NOT NULL,
-  `host_ip` VARCHAR(255) NOT NULL,  
-  `hdfs_user_id` int(11) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,  
-  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `hdfs_path_to_model` VARCHAR(1000) NOT NULL,  
-  `pid` BIGINT NOT NULL,
-  `project_id` INT(11) NOT NULL,
-  PRIMARY KEY (`port`),
-  KEY `hdfs_user_idx` (`hdfs_user_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
 
 -- ------------------------
 -- zeppelin
