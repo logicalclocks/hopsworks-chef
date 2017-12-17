@@ -15,7 +15,6 @@ mysql_password=node['mysql']['password']
 mysql_host = my_private_ip()
 password_file = "#{theDomain}_admin_passwd"
 
-
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   code <<-EOF
@@ -816,6 +815,14 @@ end
 
 template "#{node['hopssite']['home']}/hs_rows.sql" do
   source "hopssite/hs_rows.sql.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0755
+end
+
+template "#{node['hopssite']['home']}/hs_systemctl.sh" do
+  source "hopssite/hs_systemctl.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   action :create
