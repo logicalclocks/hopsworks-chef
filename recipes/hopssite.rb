@@ -149,6 +149,14 @@ template "#{node['hopssite']['home']}/hs_rows.sql" do
   mode 0755
 end
 
+template "#{node['hopssite']['home']}/glassfish-domain2.service" do
+  source "hopssite/glassfish-domain2.service.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  action :create
+  mode 0755
+end
+
 template "#{node['hopssite']['home']}/hs_systemctl.sh" do
   source "hopssite/hs_systemctl.sh.erb"
   owner node['glassfish']['user']
