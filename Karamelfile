@@ -11,3 +11,6 @@ dependencies:
   - recipe: hopsworks::image
     global:  
       - hopsworks::dev
+  - recipe: hopsworks::hopssite
+    global:
+      - hopsworks::default
