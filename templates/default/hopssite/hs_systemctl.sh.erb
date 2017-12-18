@@ -15,9 +15,13 @@ EOF
 
 sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX}<<'EOF'
 . $1/hs_env.sh
+echo "testing systemctl glassfish domain2 service"
 sudo systemctl enable glassfish-domain2.service
+echo "gladssfish domain2 start"
 sudo systemctl start glassfish-domain2
+echo "gladssfish domain2 stop"
 sudo systemctl stop glassfish-domain2
+echo "gladssfish domain2 start"
 sudo systemctl start glassfish-domain2
 EOF
 
