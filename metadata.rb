@@ -100,6 +100,10 @@ attribute "hopsworks/smtp_ssl_port",
           :description => "SSL port of SMTP server (default is 465)",
           :type => 'string'
 
+attribute "hopsworks/alert_email_addrs",
+          :description => "Comma-separated list of email addresses that will receive emails for alerts in Hopsworks",
+          :type => 'string'
+
 attribute "hopsworks/admin/user",
           :description => "Username for the Administration account on the Web Application Server",
           :type => 'string',

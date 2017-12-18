@@ -95,6 +95,8 @@ default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
 default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
+default['hopsworks']['alert_email_addrs']        = ""
+
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "1000000"
 default['hopsworks']['hdfs_default_quota_mbs']   = "500000"
