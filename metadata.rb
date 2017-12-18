@@ -870,6 +870,10 @@ attribute "hops/hdfs/blocksize",
           :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
           :type => 'string'
 
+attribute "hops/hdfs/umask",
+          :description => "Set the default HDFS umask (default: 0022).",
+          :type => 'string'
+
 attribute "hops/format",
           :description => "Format HDFS, Run 'hdfs namenode -format",
           :type => 'string'
