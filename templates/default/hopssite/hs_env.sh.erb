@@ -27,7 +27,7 @@ export ADMIN_CERT_ALIAS="hops.site-admin"
 export DOMAIN_BASE_PORT=50000
 export ADMIN_PORT=`expr $DOMAIN_BASE_PORT + 48` # HTTPS listener port: portbase + 81
 
-export MYSQL_USER="<% node['mysql']['user'] %>"
-export GLASSFISH_USER="<% node['glassfish']['user'] %>"
-export CERTS_GROUP="<% node['glassfish']['user'] %>"
-export KAGENT_USER="<% node['kagent']['user'] %>"
+export MYSQL_USER="<%= node['ndb']['user'] %>"
+export GLASSFISH_USER="<%= node['hopsworks']['user'] %>"
+export CERTS_GROUP="<%= node['hopsworks']['user'] %>"
+export KAGENT_USER="<%= node['kagent']['user'] %>"
