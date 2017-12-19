@@ -586,6 +586,19 @@ template "#{theDomain}/bin/start-llap.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
+  source "dump_web_logs_to_hdfs.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0700
+  action :create
+  variables({
+              :weblogs_dir => "#{theDomain}/logs/access",
+              :hadoop_home => node['hops']['base_dir'],
+              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_logs"
+            })
+end
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
