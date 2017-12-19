@@ -47,7 +47,8 @@ recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks d
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::purge", "Deletes glassfish installation."
-recipe  "hopsworks::hopssite", "install hopssite on current vm"
+recipe  "hopsworks::hopssite", "Install hopssite on current vm"
+recipe  "hopsworks::dela", "Register dela on current vm"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -1814,6 +1815,11 @@ attribute "hopsworks/hopssite/domain",
 attribute "hopsworks/hopssite/port",
           :description => "Dela hops site port",
           :type => 'string'
+
+attribute "hopsworks/hopssite/register_port",
+          :description => "Dela hops site port used for cert registration",
+          :type => 'string'
+
 
 attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",

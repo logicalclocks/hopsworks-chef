@@ -14,3 +14,6 @@ dependencies:
   - recipe: hopsworks::hopssite
     global:
       - hopsworks::default
+  - recipe: hopsworks::dela
+    global:
+      - hopsworks::default
