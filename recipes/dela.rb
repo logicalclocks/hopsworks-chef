@@ -24,6 +24,6 @@ bash "register" do
   user node['hopsworks']['user']
   code <<-EOF
     set -e
-    node['hopssite']['home']/hopssite/register.sh
+    node['hopssite']['home']/register.sh
   EOF
 end
