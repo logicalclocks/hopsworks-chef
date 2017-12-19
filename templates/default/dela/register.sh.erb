@@ -2,8 +2,8 @@
 set -e
 cd dela/running
 CONTENT_TYPE="Content-Type: application/json"
-HS_DOMAIN=<%= default['hopsworks']['hopssite']['domain'] %>
-HS_REGISTER_PORT=<%= default['hopsworks']['hopssite']['domain'] %>
+HS_DOMAIN=<%= node['hopsworks']['hopssite']['domain'] %>
+HS_REGISTER_PORT=<%= node['hopsworks']['hopssite']['domain'] %>
 TARGET=http://${HS_DOMAIN}:${HS_REGISTER_PORT}/hopsworks-cluster/api/cluster/register
 CURL_RES=$(curl -s -o /dev/null -w "%{http_code}" -d "@register_data.json" -H "$CONTENT_TYPE" -X POST $TARGET)
 if [ ${CURL_RES} != 200 ] ; then
