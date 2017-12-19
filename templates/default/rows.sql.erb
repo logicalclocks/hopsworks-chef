@@ -225,6 +225,8 @@ INSERT INTO variables VALUES ("dela_hopsworks_public_port","<%= @dela_hopsworks_
 
 INSERT INTO variables VALUES ("dela_enabled","<%= @dela_enabled %>");
 
+INSERT INTO variables VALUES ("dela_client_type","<%= node['hopsworks']['dela']['client'] %>");
+
 -- dela old
 
 INSERT INTO variables VALUES ("hops_site_endpoint","<%= node['hopsworks']['hopssite']['base_uri'] %>");

@@ -1783,6 +1783,10 @@ attribute "hopsworks/dela/enabled",
           :description => "'true' to enable dela services, otherwise 'false' (default)",
           :type => 'string'
 
+attribute "hopsworks/dela/client",
+          :description => "'BASE_CLIENT' to disable upload services, otherwise 'FULL_CLIENT' (default)",
+          :type => 'string'
+
 attribute "hopsworks/dela/cluster_http_port",
           :description => "Dela cluster accessible http port",
           :type => 'string'

@@ -131,6 +131,7 @@ default['hopsworks']['encryption_password']      = "adminpw"
 # Dela  - please do not change without consulting dela code
 #
 default['hopsworks']['dela']['enabled']                = "false"
+default['hopsworks']['dela']['client']                 = "FULL_CLIENT"
 default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
