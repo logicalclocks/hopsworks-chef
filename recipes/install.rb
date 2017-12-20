@@ -40,6 +40,11 @@ group node['jupyter']['group'] do
   not_if "getent group #{node['jupyter']['group']}"
 end
 
+group node['tfserving']['group'] do
+  action :create
+  not_if "getent group #{node['tfserving']['group']}"
+end
+
 #
 # hdfs superuser group is 'hdfs'
 #
@@ -63,6 +68,13 @@ group node['jupyter']['group'] do
   append true
 end
 
+group node['tfserving']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
+
+
 # Add to the hdfs superuser group
 group node['hops']['hdfs']['user'] do
   action :modify
@@ -78,6 +90,17 @@ user node['jupyter']['user'] do
   manage_home true
   not_if "getent passwd #{node['jupyter']['user']}"
 end
+
+user node['tfserving']['user'] do
+  home node['tfserving']['base_dir']
+  gid node['tfserving']['group']
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node['tfserving']['user']}"
+end
+
+
 
 group node['kagent']['certs_group'] do
   action :modify
@@ -98,6 +121,15 @@ directory node['jupyter']['base_dir']  do
   mode "770"
   action :create
 end
+
+#update permissions of base_dir to 770
+directory node['tfserving']['base_dir']  do
+  owner node['tfserving']['user']
+  group node['tfserving']['group']
+  mode "770"
+  action :create
+end
+
 
 directory node['hopsworks']['dir']  do
   owner node['hopsworks']['user']
@@ -545,6 +577,24 @@ template "#{theDomain}/bin/jupyter-launch.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/tfserving.sh" do
+  source "tfserving.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/tfserving-launch.sh" do
+  source "tfserving-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+
+
 template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
   owner node['glassfish']['user']
@@ -611,6 +661,7 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
+              :tfserving =>  "#{theDomain}/bin/tfserving.sh",              
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",

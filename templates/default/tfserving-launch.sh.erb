@@ -1,0 +1,97 @@
+#!/bin/bash
+
+WAIT_START=20
+TFSERVING_HOME=$1
+export HADOOP_HOME=$2
+PORT=$3
+LOGFILE=${TFSERVING_HOME}/logs/$4
+SECRET_DIR=$5
+
+help() {
+    echo ""
+    echo "usage: $0 TFSERVING_HOME HADOOP_HOME PORT LOGFILE SECRET_DIR"
+    echo ""
+    exit 1
+}
+
+function kill_named {
+    PID=`ps aux | grep -i tensorflow_model_server | grep ${TFSERVING_HOME} | grep $PORT | grep -v grep | awk '{print $2}'`
+    if [ "$PID" != "" ] ; then
+	kill -9 $PID > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return $res
+}
+
+
+if [ $# -ne 5 ]; then
+  help
+fi
+
+
+export TFSERVING_DATA_DIR=$TFSERVING_HOME
+export PDIR=$SECRET_DIR
+export TFSERVING_PATH=$TFSERVING_HOME
+export TFSERVING_CONFIG_DIR=${TFSERVING_HOME}/conf
+export TFSERVING_RUNTIME_DIR=${TFSERVING_HOME}/run
+export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64
+export SPARKMAGIC_CONF_DIR=${TFSERVING_HOME}/conf
+
+export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
+export PYLIB=${ANACONDA_ENV}/lib
+
+export HADOOP_VERSION=<%= node['hops']['version'] %>
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+
+
+PID_FILE=${TFSERVING_HOME}/run/jupyter.pid
+
+
+if [ -f $PID_FILE ] ; then
+ PID=`cat $PID_FILE`
+ kill -0 $PID 2>&1 > /dev/null
+ if [ $? -eq 0 ] ; then
+     echo "A jupyter notebook is already running here. Kill it first."
+     exit 1
+ fi
+fi
+
+cd $TFSERVING_HOME
+# Install facets-dist by linking to it
+mkdir -p nbextensions
+ln -s /usr/local/share/jupyter/nbextensions/facets-dist ndbextensions/facets-dist
+
+cd $SECRET_DIR
+
+# setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
+setsid jupyter notebook --debug --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
+echo $! > $PID_FILE
+
+# Check that the token is written to the logfile, return when we see it.
+token=0
+timeout=0
+while [ $timeout -lt $WAIT_START ] ; do
+	sleep 1
+	grep 'token' $LOGFILE
+        if [ $? -eq 0 ] ; then 
+          break
+        fi
+	echo -n "."
+	timeout=`expr $timeout + 1`
+done
+echo ""
+
+# If the timeout was exceeded, kill jupyter notebook
+if [ $timeout -eq $WAIT_START ] ; then
+ PID=`cat $PID_FILE`
+ kill $PID 2>&1 > /dev/null
+ if [ $? -ne 0 ] ; then
+     kill_named
+ fi
+fi
+
+
+exit $?

@@ -197,6 +197,16 @@ default['jupyter']['user']                             = node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
 
+
+#
+# TensorFlow Serving
+#
+
+default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/tfserving" : node['install']['dir'] + "/tfserving"
+default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+
+
 # Livy
 default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
 
