@@ -1787,7 +1787,7 @@ attribute "dela/dir",
 
 # Hopsworks Dela
 attribute "hopsworks/hopssite/version",
-          :description => "Enable hopssite default versions: hops or bbc5",
+          :description => "Enable hopssite default versions: hops, hops-demo or bbc5",
           :type => 'string'
 
 attribute "hopsworks/dela/enabled",

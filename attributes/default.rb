@@ -134,13 +134,13 @@ default['hopsworks']['encryption_password']      = "adminpw"
 # Dela  - please do not change without consulting dela code
 #
 default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['client']                 = "FULL_CLIENT"
 default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
 default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
 if(node['hopsworks']['hopssite']['version'].eql? "none") 
   default['hopsworks']['dela']['enabled']              = "false"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
   default['hopsworks']['hopssite']['port']             = 51081
   default['hopsworks']['hopssite']['register_port']    = 443
@@ -148,6 +148,15 @@ if(node['hopsworks']['hopssite']['version'].eql? "none")
 end
 if(node['hopsworks']['hopssite']['version'].eql? "hops")
   default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+if(node['hopsworks']['hopssite']['version'].eql? "hops-demo")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
   default['hopsworks']['hopssite']['port']             = 51081
   default['hopsworks']['hopssite']['register_port']    = 443
@@ -155,8 +164,9 @@ if(node['hopsworks']['hopssite']['version'].eql? "hops")
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
-  default['hopsworks']['hopssite']['port']             = 42004
+  default['hopsworks']['hopssite']['port']             = 43080
   default['hopsworks']['hopssite']['register_port']    = 8080
   default['hopssite']['url']                           = "http://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
 end
