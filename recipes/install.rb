@@ -91,20 +91,9 @@ user node['jupyter']['user'] do
   not_if "getent passwd #{node['jupyter']['user']}"
 end
 
-user node['tfserving']['user'] do
-  home node['tfserving']['base_dir']
-  gid node['tfserving']['group']
-  action :create
-  shell "/bin/bash"
-  manage_home true
-  not_if "getent passwd #{node['tfserving']['user']}"
-end
-
-
-
 group node['kagent']['certs_group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}"]
   append true
 end
 
@@ -121,15 +110,6 @@ directory node['jupyter']['base_dir']  do
   mode "770"
   action :create
 end
-
-#update permissions of base_dir to 770
-directory node['tfserving']['base_dir']  do
-  owner node['tfserving']['user']
-  group node['tfserving']['group']
-  mode "770"
-  action :create
-end
-
 
 directory node['hopsworks']['dir']  do
   owner node['hopsworks']['user']
@@ -592,8 +572,6 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   mode "550"
   action :create
 end
-
-
 
 template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"

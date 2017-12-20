@@ -202,7 +202,6 @@ default['jupyter']['python']                           = "true"
 # TensorFlow Serving
 #
 
-default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/tfserving" : node['install']['dir'] + "/tfserving"
 default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 
