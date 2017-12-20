@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+LOGS_DIR=<%= @weblogs_dir %>
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
+HDFS_WEBLOGS_DIR=<%= @remote_weblogs_dir %>
+
+CHECKPOINT=$LOGS_DIR/.checkpoint
+FILES_TO_DUMP=$LOGS_DIR/.files_to_dump
+
+function printer {
+    echo "<Web logs dumper> $1"
+}
+
+if [ -e $CHECKPOINT ]
+then
+    printer "Dumping log files since `cat $CHECKPOINT`"
+    find $LOGS_DIR -type f -name 'server_access_log*' -readable -newer $CHECKPOINT | sort -nr > $FILES_TO_DUMP
+    cp $CHECKPOINT $CHECKPOINT.bak
+else
+    printer "Checkpoint does not exist, dumping all"
+    find $LOGS_DIR -type f -name 'server_access_log*' -readable | sort -nr > $FILES_TO_DUMP
+fi
+
+echo `date` > $CHECKPOINT
+
+# Remove the first file as it is the running log
+sed -i '1d' $FILES_TO_DUMP
+
+function failed_exit {
+    mv $CHECKPOINT.bak $CHECKPOINT
+    exit -1
+}
+
+while IFS='' read -r log_file || [[ -n "$log_file" ]];
+do
+    # Create directory in HDFS
+    date=`echo $log_file | awk -F '.' {'print $2'}`
+    year=`echo $date | awk -F '-' {'print $1'}`
+    month=`echo $date | awk -F '-' {'print $2'}`
+    REMOTE_DIR=$HDFS_WEBLOGS_DIR/$year/$month
+    printer "Creating remote directory $REMOTE_DIR"
+    $HADOOP_HOME/bin/hdfs dfs -mkdir -p $REMOTE_DIR
+    if [ $? -ne 0 ]
+    then
+	printer "Failed to create directory $REMOTE_DIR. Exiting..."
+	failed_exit
+    fi
+    
+    printer "Copying file $log_file"
+    $HADOOP_HOME/bin/hdfs dfs -copyFromLocal $log_file $REMOTE_DIR
+    if [ $? -ne 0 ]
+    then
+        printer "Error while copying $log_file. Exiting..."
+        failed_exit
+    fi
+done < $FILES_TO_DUMP
+
+printer "Deleting temporary files"
+rm $FILES_TO_DUMP
+
+if [ -e $CHECKPOINT.bak ]
+then
+    rm $CHECKPOINT.bak
+fi

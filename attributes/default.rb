@@ -46,6 +46,7 @@ default['hopsworks']['max_perm_size']            = "1500"
 default['glassfish']['max_perm_size']            = node['hopsworks']['max_perm_size'].to_i
 default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
+default['hopsworks']['http_logs']['enabled']     = "true"
 
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
@@ -94,6 +95,8 @@ default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
 default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
 default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
+
+default['hopsworks']['alert_email_addrs']        = ""
 
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "1000000"
