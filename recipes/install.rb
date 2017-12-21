@@ -570,6 +570,14 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   owner node['glassfish']['user']
   group node['tfserving']['group']
   mode "550"
+  variables({
+case node['platform']
+ when 'debian', 'ubuntu'
+        :commmand => 'tensorflow_model_server'
+ when 'redhat', 'centos', 'fedora'
+        :commmand => '/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server'
+ end
+  })
   action :create
 end
 

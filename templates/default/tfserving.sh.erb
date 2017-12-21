@@ -17,6 +17,7 @@ PORT=0
 TFSERVING_USER=<%= node['tfserving']['user'] %>
 TFSERVING_GROUP=<%= node['tfserving']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -46,7 +47,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 6 ]; then
+    if [ $# -ne 7 ]; then
 	help
     fi
 
