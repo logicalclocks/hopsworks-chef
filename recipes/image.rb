@@ -3,14 +3,18 @@
 # Only for Ubuntu 
 #
 
+package 'lightdm'
 package 'ubuntu-desktop'
 package "mingetty"
 
 bash 'mkdir_autostart' do
-  user 'root'  
+  user 'root'
+  ignore_failure true
   code <<-EOF
        mkdir -p /home/#{node['glassfish']['user']}/.config/autostart
        chown -R #{node['glassfish']['user']}  /home/#{node['glassfish']['user']}/.config
+       groupadd -r autologin
+       gpasswd -a #{node['glassfish']['user']} autologin
     EOF
 end
 
@@ -49,3 +53,13 @@ template "/etc/lightdm/lightdm.conf" do
     action :create
 end 
 
+
+
+#
+#
+#
+
+service "lightdm" do
+  service_name node["lightdm"]["service_name"]
+  action [:enable, :start]
+end
