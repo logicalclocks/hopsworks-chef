@@ -222,7 +222,7 @@ default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivyS
 
 
 
-default["lightdm"]["service_name"] = "xdm"
+default["lightdm"]["service_name"] = "lightdm"
 default["lightdm"]["sysconfig_file"] = "/etc/sysconfig/displaymanager"
 default["lightdm"]["users_file"] = "/etc/lightdm/users.conf"
 default["lightdm"]["keys_file"] = "/etc/lightdm/keys.conf"

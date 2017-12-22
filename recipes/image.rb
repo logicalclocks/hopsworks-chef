@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 #
 # For the Hopsworks Virtualbox Instance, autologin and autostart a browser.
 # Only for Ubuntu 
