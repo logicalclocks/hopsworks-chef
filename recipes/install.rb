@@ -40,6 +40,11 @@ group node['jupyter']['group'] do
   not_if "getent group #{node['jupyter']['group']}"
 end
 
+group node['tfserving']['group'] do
+  action :create
+  not_if "getent group #{node['tfserving']['group']}"
+end
+
 #
 # hdfs superuser group is 'hdfs'
 #
@@ -63,6 +68,13 @@ group node['jupyter']['group'] do
   append true
 end
 
+group node['tfserving']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
+
+
 # Add to the hdfs superuser group
 group node['hops']['hdfs']['user'] do
   action :modify
@@ -81,7 +93,7 @@ end
 
 group node['kagent']['certs_group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}"]
   append true
 end
 
@@ -545,6 +557,34 @@ template "#{theDomain}/bin/jupyter-launch.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/tfserving.sh" do
+  source "tfserving.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+command=""
+case node['platform']
+ when 'debian', 'ubuntu'
+   command='tensorflow_model_server'
+ when 'redhat', 'centos', 'fedora'
+   command='/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server'
+end
+
+
+template "#{theDomain}/bin/tfserving-launch.sh" do
+  source "tfserving-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  variables({
+     :command => command
+  })
+  action :create
+end
+
 template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
   owner node['glassfish']['user']
@@ -611,6 +651,7 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
+              :tfserving =>  "#{theDomain}/bin/tfserving.sh",              
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
