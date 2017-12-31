@@ -213,14 +213,21 @@ default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
 default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivySparkInterpreter,org.apache.zeppelin.livy.LivyPySparkInterpreter,org.apache.zeppelin.livy.LivySparkRInterpreter,org.apache.zeppelin.livy.LivySparkSQLInterpreter,org.apache.zeppelin.spark.SparkInterpreter,org.apache.zeppelin.spark.PySparkInterpreter,org.apache.zeppelin.rinterpreter.RRepl,org.apache.zeppelin.rinterpreter.KnitR,org.apache.zeppelin.spark.SparkRInterpreter,org.apache.zeppelin.spark.SparkSqlInterpreter,org.apache.zeppelin.spark.DepInterpreter,org.apache.zeppelin.markdown.Markdown,org.apache.zeppelin.angular.AngularInterpreter,org.apache.zeppelin.flink.FlinkInterpreter"
 
 
+#
+# Database upgrades
+#
+# "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.0.3/flyway-commandline-5.0.3-linux-x64.tar.gz"
+default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-5.0.3-linux-x64.tar.gz"
 
+
+#default['hopsworks']['previous_version']               = "0.1.0"
+
+default['hopsworks']['sql']['versions']                = %w{ V0.1.0 V0.1.1 }
 
 #
 #
+# Virtulbox Image support
 #
-#
-
-
 
 default["lightdm"]["service_name"] = "lightdm"
 default["lightdm"]["sysconfig_file"] = "/etc/sysconfig/displaymanager"

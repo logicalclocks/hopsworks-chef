@@ -24,7 +24,7 @@ bash "systemd_reload_for_glassfish_failures" do
 end
 
 
-if node['hopsworks']['systemd'] === "true"
+if node['hopsworks']['systemd'] == "true"
   systemd = true
 else
   systemd = false
@@ -145,7 +145,7 @@ when "rhel"
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
-    source "http://brettcsmith.org/2007/dtrx/dtrx-7.1.tar.gz"
+    source node['download_url'] + "/dtrx-7.1.tar.gz"
     mode 0755
     action :create
   end
@@ -910,4 +910,102 @@ if node['hopsworks']['dela']['enabled'] == "true"
       action :sign_hopssite
     end
   end
+end
+
+
+flyway_tgz = File.basename(node['hopsworks']['flyway_url'])
+flyway =  File.basename(flyway_tgz, ".tar.gz")
+
+remote_file "#{Chef::Config['file_cache_path']}/#{flyway_tgz}" do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['flyway_url']
+  mode 0755
+  action :create
+end
+
+bash "unpack_flyway" do
+  user "root"
+  code <<-EOF
+    set -e
+    cd #{Chef::Config['file_cache_path']}
+    tar -xzf #{flyway_tgz}
+    mv #{flyway} #{theDomain}/bin
+    cd #{theDomain}/bin
+    chown -R node['glassfish']['user'] flyway*
+    rm -rf flyway
+    ln -s #{flyway} flyway
+  EOF
+  not_if ::File.exists?("#{theDomain}/bin/flyway/flyway")
+end
+
+template "#{theDomain}/flyway/conf/flyway.conf" do
+  source "flyway.conf.erb"
+  owner node['glassfish']['user']
+  mode 0750
+  variables({
+              :mysql_host => mysql_host
+            })
+  action :create  
+end
+
+
+directory "#{theDomain}/flyway/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
+
+#version=node['hopsworks']['version']
+
+for version in node['hopsworks']['sql']['versions'] do
+
+  template "#{theDomain}/flyway/sql/#{version}__hopsworks.sql" do
+    source "sql/#{version}.erb"
+    owner node['glassfish']['user']
+    mode 0750
+    action :create_if_missing
+  end
+
+  template "#{theDomain}/flyway/undo/#{version}.1_undo.sql" do
+    source "sql/#{version}.erb"
+    owner node['glassfish']['user']
+    mode 0750
+    action :create_if_missing
+  end
+
+end
+
+# cb = run_context.cookbook_collection['hopsworks']
+# cb.manifest['templates'].each do |cbf|
+#   #filename = cbf['name']
+#   filename = tmpl['name']
+#   cookbook_file "/tmp/#{filename}" do
+#     source filename
+#     notifies :write, "log[testlog]"
+#   end
+# end
+
+if node['install']['upgrade'] == "true" 
+
+  bash "flyway_baseline" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{theDomain}/bin/flyway
+    #{theDomain}/bin/flyway/flyway baseline
+  EOF
+    not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+  end
+  
+  bash "flyway_migrate" do
+    user "root"
+    code <<-EOF
+    set -e
+    cd #{theDomain}/bin/flyway
+    #{theDomain}/bin/flyway/flyway migrate
+  EOF
+    only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
+  end
+
 end
