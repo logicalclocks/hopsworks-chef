@@ -914,7 +914,7 @@ end
 
 
 flyway_tgz = File.basename(node['hopsworks']['flyway_url'])
-flyway =  File.basename(flyway_tgz, ".tar.gz")
+flyway =  "flyway-" + node['hopsworks']['flyway']['version']
 
 remote_file "#{Chef::Config['file_cache_path']}/#{flyway_tgz}" do
   user node['glassfish']['user']

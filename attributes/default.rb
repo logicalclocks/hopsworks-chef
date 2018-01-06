@@ -217,10 +217,8 @@ default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivyS
 # Database upgrades
 #
 # "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.0.3/flyway-commandline-5.0.3-linux-x64.tar.gz"
-default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-5.0.3-linux-x64.tar.gz"
-
-
-#default['hopsworks']['previous_version']               = "0.1.0"
+default['hopsworks']['flyway']['version']              = "5.0.3"
+default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-#{node['hopsworks']['flyway']['version']}-linux-x64.tar.gz"
 
 default['hopsworks']['sql']['versions']                = %w{ V0.1.0 V0.1.1 }
 
