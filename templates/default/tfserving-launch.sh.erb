@@ -4,11 +4,12 @@ WAIT_START=20
 MODEL_NAME=$1
 MODEL_VERSION=$2
 TFSERVING_HDFS_DIR=$3
-HADOOP_HOME=<%= node['hops']['base_dir'] %>
+HADOOP_HOME=/srv/hops/hadoop
 PORT=$4
 SECRET_DIR=$5
 ENABLE_BATCHING=$6
 LOGDIR=${SECRET_DIR}/tfserving/logs/
+MODELDIR=${SECRET_DIR}/tfserving/model
 LOGFILE=${LOGDIR}/${MODEL_NAME}-${PORT}.log
 PID_FILE=${SECRET_DIR}/tfserving/tfserving-${PORT}.pid
 FILE_SYSTEM_POLLING_INTERVAL_SECS=10
@@ -73,7 +74,11 @@ fi
 
 cd $SECRET_DIR
 
-setsid <%= @command %> --port=$PORT --model_name=${MODEL_NAME} --model_base_path=${TFSERVING_HDFS_DIR}/${MODEL_NAME}/${MODEL_VERSION} --enable_batching=$ENABLE_BATCHING --file_system_poll_wait_seconds=$FILE_SYSTEM_POLLING_INTERVAL_SECS </dev/zero &> $LOGFILE  &
+mkdir ${MODELDIR}
+
+/srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
+
+setsid tensorflow_model_server --port=$PORT --model_name=${MODEL_NAME} --model_base_path=${MODELDIR}/${MODEL_NAME} --enable_batching=$ENABLE_BATCHING --file_system_poll_wait_seconds=$FILE_SYSTEM_POLLING_INTERVAL_SECS </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
 
 # Check that the token is written to the logfile, return when we see it.
@@ -82,7 +87,7 @@ timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
 	sleep 1
 	grep 'serving' $LOGFILE
-        if [ $? -eq 0 ] ; then 
+        if [ $? -eq 0 ] ; then
           break
         fi
 	echo -n "."
