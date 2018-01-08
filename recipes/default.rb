@@ -3,8 +3,6 @@ domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 
-node['hopsworks']['versions'].push(node['hopsworks']['version'])
-
 case node['platform']
 when "ubuntu"
  if node['platform_version'].to_f <= 14.04
