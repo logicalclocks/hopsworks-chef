@@ -369,8 +369,8 @@ versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 
 for version in versions do
 
-  template "#{theDomain}/flyway/sql/#{version}.sql" do
-    source "sql/#{version}.erb"
+  template "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
+    source "sql/#{version}.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     variables({
@@ -457,8 +457,8 @@ for version in versions do
     action :create_if_missing    
   end
 
-  template "#{theDomain}/flyway/undo/#{version}.1__undo.sql" do
-    source "sql/#{version}.erb"
+  template "#{theDomain}/flyway/undo/V#{version}.1__undo.sql" do
+    source "sql/#{version}.1__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     action :create_if_missing
