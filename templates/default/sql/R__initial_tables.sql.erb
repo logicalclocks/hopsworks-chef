@@ -1,4 +1,6 @@
-CREATE TABLE `bbc_group` (
+
+
+CREATE TABLE IF NOT EXISTS `bbc_group` (
     `group_name` VARCHAR(20) NOT NULL,
     `group_desc` VARCHAR(200) DEFAULT NULL,
     `gid` INT(11) NOT NULL,
@@ -6,7 +8,7 @@ CREATE TABLE `bbc_group` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
     `uid` INT(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(10)  NOT NULL,
     `password` VARCHAR(128)  NOT NULL,
@@ -37,7 +39,7 @@ CREATE TABLE `users` (
     UNIQUE KEY `email` (`email`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=10000;
 
-CREATE TABLE `yubikey` (
+CREATE TABLE IF NOT EXISTS `yubikey` (
   `yubidnum` INT(11) NOT NULL AUTO_INCREMENT,
   `uid` INT(11) NOT NULL,
   `public_id` VARCHAR(40)  DEFAULT NULL,
@@ -55,7 +57,7 @@ CREATE TABLE `yubikey` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `address` (
+CREATE TABLE IF NOT EXISTS `address` (
     `address_id` INT(11) NOT NULL AUTO_INCREMENT,
     `uid` INT(11) NOT NULL,
     `address1` VARCHAR(100) DEFAULT '-',
@@ -69,7 +71,7 @@ CREATE TABLE `address` (
     FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `people_group` (
+CREATE TABLE IF NOT EXISTS `people_group` (
     `uid` INT(11) NOT NULL,
     `gid` INT(11) NOT NULL,
     PRIMARY KEY (`uid`,`gid`),
@@ -78,7 +80,7 @@ CREATE TABLE `people_group` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `account_audit` (
+CREATE TABLE IF NOT EXISTS `account_audit` (
     `log_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `initiator` INT(11) NOT NULL,
     `target` INT(11) NOT NULL,
@@ -99,7 +101,7 @@ CREATE TABLE `account_audit` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `roles_audit` (
+CREATE TABLE IF NOT EXISTS `roles_audit` (
     `log_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `target` INT(11) NOT NULL,
     `initiator` INT(11) NOT NULL,
@@ -119,7 +121,7 @@ CREATE TABLE `roles_audit` (
     FOREIGN KEY (`target`) REFERENCES `users` (`uid`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project` (
+CREATE TABLE IF NOT EXISTS `project` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
@@ -145,7 +147,7 @@ CREATE TABLE `project` (
   FOREIGN KEY (`inode_pid`,`inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `activity` (
+CREATE TABLE IF NOT EXISTS `activity` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `activity` VARCHAR(128) NOT NULL,
   `user_id` INT(10) NOT NULL,
@@ -157,14 +159,14 @@ CREATE TABLE `activity` (
   FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project_services` (
+CREATE TABLE IF NOT EXISTS `project_services` (
   `project_id` INT(11) NOT NULL,
   `service` VARCHAR(32) NOT NULL,
   PRIMARY KEY (`project_id`,`service`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project_team` (
+CREATE TABLE IF NOT EXISTS `project_team` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
   `team_role` VARCHAR(32) NOT NULL,
@@ -176,7 +178,7 @@ CREATE TABLE `project_team` (
 
 
 
-CREATE TABLE `jupyter_settings` (
+CREATE TABLE IF NOT EXISTS `jupyter_settings` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
   `num_tf_ps` INT(11) NOT NULL DEFAULT '1',
@@ -208,7 +210,7 @@ CREATE TABLE `jupyter_settings` (
 
 
 
-CREATE TABLE `schema_topics` (
+CREATE TABLE IF NOT EXISTS `schema_topics` (
   `name` VARCHAR(255) NOT NULL,
   `version` INT(11) NOT NULL,
   `contents` VARCHAR(10000) NOT NULL,
@@ -217,7 +219,7 @@ CREATE TABLE `schema_topics` (
    PRIMARY KEY (`name`,`version`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project_topics` (
+CREATE TABLE IF NOT EXISTS `project_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
   `schema_name` VARCHAR(255) NOT NULL,
@@ -228,7 +230,7 @@ CREATE TABLE `project_topics` (
   FOREIGN KEY `schema_idx` (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs /*!50100 PARTITION BY KEY (topic_name) */ ;
 
-CREATE TABLE `shared_topics` (
+CREATE TABLE IF NOT EXISTS `shared_topics` (
   `topic_name` VARCHAR(255) NOT NULL,
   `project_id` INT(11) NOT NULL,
   `owner_id` INT(11) NOT NULL,
@@ -236,7 +238,7 @@ CREATE TABLE `shared_topics` (
   FOREIGN KEY `topic_idx` (`topic_name`, `owner_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs /*!50100 PARTITION BY KEY (topic_name) */ ;
 
-CREATE TABLE `topic_acls` (
+CREATE TABLE IF NOT EXISTS `topic_acls` (
  `id` INT(11) NOT NULL AUTO_INCREMENT,
  `topic_name` VARCHAR(255) NOT NULL,
  `project_id` INT(11) NOT NULL,
@@ -251,7 +253,7 @@ CREATE TABLE `topic_acls` (
   FOREIGN KEY `topic_idx` (`topic_name`, `project_id`) REFERENCES `project_topics` (`topic_name`, `project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs ;
 
-CREATE TABLE `userlogins` (
+CREATE TABLE IF NOT EXISTS `userlogins` (
     `login_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `ip` VARCHAR(45) DEFAULT NULL,
     `os` VARCHAR(255) DEFAULT NULL,
@@ -268,7 +270,7 @@ CREATE TABLE `userlogins` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `jobs` (
+CREATE TABLE IF NOT EXISTS `jobs` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(128) DEFAULT NULL,
   `creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -282,7 +284,7 @@ CREATE TABLE `jobs` (
   FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `jobs_history` (
+CREATE TABLE IF NOT EXISTS `jobs_history` (
   `job_id` INT(11) NOT NULL,
   `jar_file` VARCHAR(255) NOT NULL,
   `execution_id` INT(11) NOT NULL,
@@ -305,7 +307,7 @@ CREATE TABLE `jobs_history` (
   UNIQUE KEY `inode_idx` (`app_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `executions` (
+CREATE TABLE IF NOT EXISTS `executions` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `submission_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user` VARCHAR(150) NOT NULL,
@@ -325,7 +327,7 @@ CREATE TABLE `executions` (
   FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `job_output_files` (
+CREATE TABLE IF NOT EXISTS `job_output_files` (
   `execution_id` INT(11) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -333,7 +335,7 @@ CREATE TABLE `job_output_files` (
   FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `job_input_files` (
+CREATE TABLE IF NOT EXISTS `job_input_files` (
   `execution_id` INT(11) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
@@ -341,7 +343,7 @@ CREATE TABLE `job_input_files` (
   FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `files_to_remove` (
+CREATE TABLE IF NOT EXISTS `files_to_remove` (
   `execution_id` INT(11) NOT NULL,
   `filepath` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`execution_id`,`filepath`),
@@ -349,7 +351,7 @@ CREATE TABLE `files_to_remove` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `organization` (
+CREATE TABLE IF NOT EXISTS `organization` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `uid` INT(11) DEFAULT NULL,
     `org_name` VARCHAR(100) DEFAULT '-',
@@ -367,19 +369,19 @@ CREATE TABLE `organization` (
 -- Metadata --------------
 -- ------------------------
 
-CREATE TABLE `meta_templates` (
+CREATE TABLE IF NOT EXISTS `meta_templates` (
   `templateid` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(250) NOT NULL,
   PRIMARY KEY (`templateid`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_field_types` (
+CREATE TABLE IF NOT EXISTS `meta_field_types` (
   `id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_tables` (
+CREATE TABLE IF NOT EXISTS `meta_tables` (
   `tableid` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) DEFAULT NULL,
   `templateid` INT(11) NOT NULL,
@@ -387,7 +389,7 @@ CREATE TABLE `meta_tables` (
   FOREIGN KEY (`templateid`) REFERENCES `meta_templates` (`templateid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_fields` (
+CREATE TABLE IF NOT EXISTS `meta_fields` (
   `fieldid` INT(11) NOT NULL AUTO_INCREMENT,
   `maxsize` INT(11) DEFAULT NULL,
   `name` VARCHAR(255) DEFAULT NULL,
@@ -404,7 +406,7 @@ CREATE TABLE `meta_fields` (
   FOREIGN KEY (`fieldtypeid`) REFERENCES `meta_field_types` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_field_predefined_values` (
+CREATE TABLE IF NOT EXISTS `meta_field_predefined_values` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `fieldid` INT(11) NOT NULL,
   `valuee` VARCHAR(250) NOT NULL,
@@ -412,7 +414,7 @@ CREATE TABLE `meta_field_predefined_values` (
   FOREIGN KEY (`fieldid`) REFERENCES `meta_fields` (`fieldid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_tuple_to_file` (
+CREATE TABLE IF NOT EXISTS `meta_tuple_to_file` (
   `tupleid` INT(11) NOT NULL AUTO_INCREMENT,
   `inodeid` INT(11) NOT NULL, -- pretty necessary for the rivers to work
   `inode_pid` INT(11) NOT NULL,
@@ -422,7 +424,7 @@ CREATE TABLE `meta_tuple_to_file` (
   FOREIGN KEY (`inode_pid`, `inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_raw_data` (
+CREATE TABLE IF NOT EXISTS `meta_raw_data` (
   `fieldid` INT(11) NOT NULL,
   `tupleid` INT(11) NOT NULL,
   PRIMARY KEY (`fieldid`, `tupleid`),
@@ -430,7 +432,7 @@ CREATE TABLE `meta_raw_data` (
   FOREIGN KEY (`tupleid`) REFERENCES `meta_tuple_to_file` (`tupleid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_data` (
+CREATE TABLE IF NOT EXISTS `meta_data` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `data` VARCHAR(12000) NOT NULL,
   `fieldid` INT(11) NOT NULL,
@@ -439,7 +441,7 @@ CREATE TABLE `meta_data` (
   FOREIGN KEY (`fieldid`, `tupleid`) REFERENCES `meta_raw_data` (`fieldid`, `tupleid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_template_to_inode` (
+CREATE TABLE IF NOT EXISTS `meta_template_to_inode` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `template_id` INT(11) NOT NULL,
   `inode_pid` INT(11) NOT NULL,
@@ -450,7 +452,7 @@ CREATE TABLE `meta_template_to_inode` (
   FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_inode_basic_metadata` (
+CREATE TABLE IF NOT EXISTS `meta_inode_basic_metadata` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
@@ -462,7 +464,7 @@ CREATE TABLE `meta_inode_basic_metadata` (
   FOREIGN KEY (`inode_pid`, `inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes`(`parent_id`, `name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_data_schemaless` (
+CREATE TABLE IF NOT EXISTS `meta_data_schemaless` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `inode_id` int(11) NOT NULL,
   `inode_parent_id` int(11) NOT NULL,
@@ -475,7 +477,7 @@ CREATE TABLE `meta_data_schemaless` (
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- Dataset table-------------------------------------------------
-CREATE TABLE `dataset` (
+CREATE TABLE IF NOT EXISTS `dataset` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` INT(11) NOT NULL,
   `inode_name` VARCHAR(255) NOT NULL,
@@ -502,7 +504,7 @@ CREATE TABLE `dataset` (
 
 -- Message
 -- ------------------------
-CREATE TABLE `message` (
+CREATE TABLE IF NOT EXISTS `message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_from` varchar(150) DEFAULT NULL,
   `user_to` varchar(150)  NOT NULL,
@@ -520,7 +522,7 @@ CREATE TABLE `message` (
   FOREIGN KEY (`reply_to_msg`) REFERENCES `message` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `dataset_request` (
+CREATE TABLE IF NOT EXISTS `dataset_request` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `dataset` INT(11) NOT NULL,
   `projectId` INT(11) NOT NULL,
@@ -545,7 +547,7 @@ CREATE TABLE `dataset_request` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `message_to_user` (
+CREATE TABLE IF NOT EXISTS `message_to_user` (
   `message` int(11) NOT NULL,
   `user_email` varchar(150) NOT NULL,
   PRIMARY KEY (`message`,`user_email`),
@@ -554,7 +556,7 @@ CREATE TABLE `message_to_user` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
- CREATE TABLE `variables` (
+ CREATE TABLE IF NOT EXISTS `variables` (
   `id` varchar(255) NOT NULL,
   `value` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
@@ -567,7 +569,7 @@ CREATE TABLE `message_to_user` (
 -- ATTENTION
 -- CERTS ARE BOUND TO PROJECTNAME+USERID
 -- UPDATED FOREIGN KEYS MIGHT LEAVE US WITH STALE DATA
-CREATE TABLE `user_certs` (
+CREATE TABLE IF NOT EXISTS `user_certs` (
 	`projectname` VARCHAR(100) NOT NULL,
 	`username` VARCHAR(10)  NOT NULL,
 	`user_key` VARBINARY(7000),
@@ -579,7 +581,7 @@ CREATE TABLE `user_certs` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `projectgenericuser_certs` (
+CREATE TABLE IF NOT EXISTS `projectgenericuser_certs` (
   `project_generic_username` varchar(120) COLLATE latin1_general_cs NOT NULL,
   `pgu_key` varbinary(7000) DEFAULT NULL,
   `pgu_cert` varbinary(3000) DEFAULT NULL,
@@ -588,7 +590,7 @@ CREATE TABLE `projectgenericuser_certs` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `ssh_keys` (
+CREATE TABLE IF NOT EXISTS `ssh_keys` (
   `uid` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `public_key` VARCHAR(2000) NOT NULL,
@@ -597,11 +599,11 @@ CREATE TABLE `ssh_keys` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
+CREATE TABLE IF NOT EXISTS authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
 -- Consents for BiobankCloud
 
-CREATE TABLE `consents` (
+CREATE TABLE IF NOT EXISTS `consents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` int(11) NOT NULL,
   `inode_name` varchar(255) NOT NULL,
@@ -617,7 +619,7 @@ CREATE TABLE `consents` (
   FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `consents_audit` (
+CREATE TABLE IF NOT EXISTS `consents_audit` (
     `log_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `initiator` INT(11) NOT NULL,
     `consent_id` int(11) NOT NULL,
@@ -639,7 +641,7 @@ CREATE TABLE `consents_audit` (
 -- File Activity Table
 --
 
-CREATE TABLE `file_activity`
+CREATE TABLE IF NOT EXISTS `file_activity`
 (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `activity` varchar(128) NOT NULL,
@@ -659,7 +661,7 @@ CREATE TABLE `file_activity`
 
 
 
-CREATE TABLE `workflows` (
+CREATE TABLE IF NOT EXISTS `workflows` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `project_id` INT(11) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
@@ -669,7 +671,7 @@ CREATE TABLE `workflows` (
      FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `workflow_executions` (
+CREATE TABLE IF NOT EXISTS `workflow_executions` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `job_id` VARCHAR(255),
     `user_id` INT(11),
@@ -683,7 +685,7 @@ CREATE TABLE `workflow_executions` (
 
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `nodes` (
+CREATE TABLE IF NOT EXISTS `nodes` (
     `id` VARCHAR(255) NOT NULL,
     `external_id` VARCHAR(255),
     `type` VARCHAR(255) NOT NULL,
@@ -696,7 +698,7 @@ CREATE TABLE `nodes` (
      FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `edges` (
+CREATE TABLE IF NOT EXISTS `edges` (
   `id` VARCHAR(255) NOT NULL,
   `type` VARCHAR(255),
   `target_id` VARCHAR(255) NOT NULL,
@@ -717,7 +719,7 @@ CREATE TABLE `edges` (
 --
 
 
--- CREATE TABLE yarn_app_result (
+-- CREATE TABLE IF NOT EXISTS yarn_app_result (
 --   id              VARCHAR(50)   NOT NULL,
 --   name            TEXT          ,
 --   username        VARCHAR(50)   NOT NULL,
@@ -750,7 +752,7 @@ CREATE TABLE `edges` (
 -- create index yarn_app_result_i6 on yarn_app_result (flow_def_id);
 -- create index yarn_app_result_i7 on yarn_app_result (start_time);
 
--- CREATE TABLE yarn_app_heuristic_result (
+-- CREATE TABLE IF NOT EXISTS yarn_app_heuristic_result (
 --   id                  INT(11)       NOT NULL AUTO_INCREMENT,
 --   yarn_app_result_id  VARCHAR(50)   NOT NULL,
 --   heuristic_class     TEXT          ,
@@ -764,7 +766,7 @@ CREATE TABLE `edges` (
 -- create index yarn_app_heuristic_result_i1 on yarn_app_heuristic_result (yarn_app_result_id);
 -- create index yarn_app_heuristic_result_i2 on yarn_app_heuristic_result (heuristic_name,severity);
 
--- CREATE TABLE yarn_app_heuristic_result_details (
+-- CREATE TABLE IF NOT EXISTS yarn_app_heuristic_result_details (
 --   yarn_app_heuristic_result_id  INT(11)          NOT NULL,
 --   name                          VARCHAR(128)     NOT NULL DEFAULT '',
 --   value                         TEXT             ,
@@ -780,7 +782,7 @@ CREATE TABLE `edges` (
 -- ePipe
 -- ------------------------
 
-CREATE TABLE `ops_log` (
+CREATE TABLE IF NOT EXISTS `ops_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `op_id` int(11) NOT NULL,
   `op_on` tinyint(1) NOT NULL,
@@ -791,7 +793,7 @@ CREATE TABLE `ops_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `meta_log` (
+CREATE TABLE IF NOT EXISTS `meta_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `meta_pk1` int(11) NOT NULL,
   `meta_pk2` int(11) NOT NULL,
@@ -805,7 +807,7 @@ CREATE TABLE `meta_log` (
 -- kmon
 -- ------------------------
 
-CREATE TABLE `hosts` (
+CREATE TABLE IF NOT EXISTS `hosts` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `hostname` varchar(128) NOT NULL,
   `cores` int(11) DEFAULT NULL,
@@ -827,7 +829,7 @@ CREATE TABLE `hosts` (
   KEY (`host_ip`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `alerts` (
+CREATE TABLE IF NOT EXISTS `alerts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `current_value` varchar(32) DEFAULT NULL,
   `failure_max` varchar(32) DEFAULT NULL,
@@ -851,7 +853,7 @@ CREATE TABLE `alerts` (
 
 
 
-CREATE TABLE `roles` (
+CREATE TABLE IF NOT EXISTS `roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cluster` varchar(48) NOT NULL,
   `host_id` int(11) NOT NULL,
@@ -867,7 +869,7 @@ CREATE TABLE `roles` (
   FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `commands` (
+CREATE TABLE IF NOT EXISTS `commands` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cluster` varchar(48) NOT NULL,
   `command` varchar(255) NOT NULL,
@@ -890,7 +892,7 @@ CREATE TABLE `commands` (
 -- zeppelin
 -- ------------------------
 
-CREATE TABLE `zeppelin_interpreter_confs` (
+CREATE TABLE IF NOT EXISTS `zeppelin_interpreter_confs` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `project_id` INT(11) NOT NULL,
   `last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -905,14 +907,14 @@ CREATE TABLE `zeppelin_interpreter_confs` (
 -- Python Dependencies
 --
 
-CREATE TABLE `anaconda_repo` (
+CREATE TABLE IF NOT EXISTS `anaconda_repo` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `url` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `python_dep` (
+CREATE TABLE IF NOT EXISTS `python_dep` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `dependency` VARCHAR(128) NOT NULL,
   `version` VARCHAR(128) NOT NULL,
@@ -926,7 +928,7 @@ CREATE TABLE `python_dep` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-CREATE TABLE `project_pythondeps` (
+CREATE TABLE IF NOT EXISTS `project_pythondeps` (
   `project_id` INT(11) NOT NULL,
   `dep_id` INT(10) NOT NULL,
   PRIMARY KEY (`project_id`, `dep_id`),
@@ -939,7 +941,7 @@ CREATE TABLE `project_pythondeps` (
 -- Kagent Asynchronous Commands for Conda Operations
 --
 
-CREATE TABLE `conda_commands` (
+CREATE TABLE IF NOT EXISTS `conda_commands` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `project_id` INT(11) NOT NULL,
   `user` VARCHAR(52) NOT NULL,
@@ -963,7 +965,7 @@ CREATE TABLE `conda_commands` (
 -- Jupyter server per project
 --
 
-CREATE TABLE `jupyter_project` (
+CREATE TABLE IF NOT EXISTS `jupyter_project` (
   `port` INT(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -982,7 +984,7 @@ CREATE TABLE `jupyter_project` (
 --
 -- Mapping of jupyter notebook servers to Livy interpreters
 --
-CREATE TABLE `jupyter_interpreter` (
+CREATE TABLE IF NOT EXISTS `jupyter_interpreter` (
   `port` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -996,7 +998,7 @@ CREATE TABLE `jupyter_interpreter` (
 -- Project Devices feature
 --
 
-CREATE TABLE `project_devices`(
+CREATE TABLE IF NOT EXISTS `project_devices`(
   `project_id` INT(11) NOT NULL,
   `device_uuid` VARCHAR(36) NOT NULL,
   `password` VARCHAR(64) NOT NULL,
@@ -1008,7 +1010,7 @@ CREATE TABLE `project_devices`(
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 
-CREATE TABLE `project_devices_settings` (
+CREATE TABLE IF NOT EXISTS `project_devices_settings` (
   `project_id` INT(11) NOT NULL,
   `jwt_secret` VARCHAR(128) NOT NULL,
   `jwt_token_duration` INT(11) NOT NULL,
@@ -1021,7 +1023,7 @@ CREATE TABLE `project_devices_settings` (
 -- Backups for MySQL Cluster
 --
 
-CREATE TABLE `ndb_backup` (
+CREATE TABLE IF NOT EXISTS `ndb_backup` (
   `backup_id` INT(11) NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`backup_id`)
@@ -1030,7 +1032,7 @@ CREATE TABLE `ndb_backup` (
 --
 -- Dela tables
 --
-CREATE TABLE `dela` (
+CREATE TABLE IF NOT EXISTS `dela` (
   `id` VARCHAR(200) NOT NULL,
   `did` INT(11) NOT NULL,
   `pid` INT(11) NOT NULL,
@@ -1042,7 +1044,7 @@ CREATE TABLE `dela` (
   FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `hopssite_cluster_certs` (
+CREATE TABLE IF NOT EXISTS `hopssite_cluster_certs` (
   `cluster_name` varchar(129) NOT NULL,
   `cluster_key` varbinary(7000) DEFAULT NULL,
   `cluster_cert` varbinary(3000) DEFAULT NULL,
@@ -1050,7 +1052,7 @@ CREATE TABLE `hopssite_cluster_certs` (
   PRIMARY KEY (`cluster_name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `cluster_cert` (
+CREATE TABLE IF NOT EXISTS `cluster_cert` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `agent_id` int(11) NOT NULL,
   `common_name` varchar(64) NOT NULL,
@@ -1070,3 +1072,20 @@ CREATE TABLE `cluster_cert` (
 --
 -- End Dela tables
 --
+
+
+-- VIEWS --------------
+-- ---------------------
+
+CREATE OR REPLACE VIEW `users_groups` AS
+    select `u`.`username` AS `username`,
+    `u`.`password` AS `password`,
+    `u`.`secret` AS `secret`,
+    `u`.`email` AS `email`,
+    `g`.`group_name` AS `group_name`
+    from
+    ((`people_group` `ug` join `users` `u` on((`u`.`uid` = `ug`.`uid`))) join `bbc_group` `g` on((`g`.`gid` = `ug`.`gid`)));
+
+
+
+CREATE OR REPLACE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));

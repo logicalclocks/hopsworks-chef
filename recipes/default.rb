@@ -171,44 +171,58 @@ if node['hopsworks']['user'] == "vagrant"
   vagrant_enabled = 1
 end
 
-tables_path = "#{domains_dir}/tables.sql"
-views_path = "#{domains_dir}/views.sql"
-rows_path = "#{domains_dir}/rows.sql"
+#tables_path = "#{domains_dir}/tables.sql"
+#views_path = "#{domains_dir}/views.sql"
+#rows_path = "#{domains_dir}/rows.sql"
 
-hopsworks_grants "hopsworks_tables" do
-  tables_path  "#{tables_path}"
-  views_path  "#{views_path}"
-  rows_path  "#{rows_path}"
-  action :nothing
-end
+# hopsworks_grants "hopsworks_tables" do
+#   tables_path  "#{tables_path}"
+#   views_path  "#{views_path}"
+#   rows_path  "#{rows_path}"
+#   action :nothing
+# end
 
-template views_path do
-  source File.basename("#{views_path}") + ".erb"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-  variables({
-               :private_ip => private_ip
-              })
-end
+# template views_path do
+#   source File.basename("#{views_path}") + ".erb"
+#   owner node['glassfish']['user']
+#   mode 0750
+#   action :create
+#   variables({
+#                :private_ip => private_ip
+#               })
+# end
 
 # Need to delete the sql file so that the action is triggered
-file tables_path do
-  action :delete
-  ignore_failure true
+# file tables_path do
+#   action :delete
+#   ignore_failure true
+# end
+
+#Chef::Log.info("Could not find previously defined #{tables_path} resource")
+# template tables_path do
+#   source File.basename("#{tables_path}") + ".erb"
+#   owner node['glassfish']['user']
+#   mode 0750
+#   action :create
+#   variables({
+#                 :private_ip => private_ip
+#               })
+#     notifies :create_tables, 'hopsworks_grants[hopsworks_tables]', :immediately
+# end
+
+db="hopsworks"
+exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
+
+bash 'create_hopsworks_db' do
+  user "root"
+  code <<-EOF
+      set -e
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
+      #{exec} #{db} < #{new_resource.tables_path}
+    EOF
+  not_if "#{exec} -e 'show databases' | grep hopsworks"
 end
 
-Chef::Log.info("Could not find previously defined #{tables_path} resource")
-template tables_path do
-  source File.basename("#{tables_path}") + ".erb"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-  variables({
-                :private_ip => private_ip
-              })
-    notifies :create_tables, 'hopsworks_grants[hopsworks_tables]', :immediately
-end
 
 timerTable = "ejbtimer_mysql.sql"
 timerTablePath = "#{Chef::Config['file_cache_path']}/#{timerTable}"
@@ -263,11 +277,102 @@ if node['hops']['rpc']['ssl'].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
-template "#{rows_path}" do
-   source File.basename("#{rows_path}") + ".erb"
-   owner node['glassfish']['user']
-   mode 0755
-   action :create
+# template "#{rows_path}" do
+#    source File.basename("#{rows_path}") + ".erb"
+#    owner node['glassfish']['user']
+#    mode 0755
+#    action :create
+#     variables({
+#                 :hosts => hosts,
+#                 :epipe_ip => epipe_ip,
+#                 :livy_ip => livy_ip,
+#                 :jhs_ip => jhs_ip,
+#                 :rm_ip => rm_ip,
+#                 :rm_port => rm_port,
+#                 :logstash_ip => logstash_ip,
+#                 :logstash_port => logstash_port,
+#                 :spark_history_server_ip => spark_history_server_ip,
+#                 :hopsworks_ip => hopsworks_ip,
+#                 :elastic_ip => elastic_ip,
+#                 :spark_dir => node['hadoop_spark']['dir'] + "/spark",
+#                 :spark_user => node['hadoop_spark']['user'],
+#                 :hadoop_dir => node['hops']['dir'] + "/hadoop",
+#                 :yarn_user => node['hops']['yarn']['user'],
+#                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
+#                 :yarn_ui_port => node['hops']['rm']['http_port'],
+#                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+#                 :hdfs_ui_port => node['hops']['nn']['http_port'],
+#                 :hopsworks_user => node['hopsworks']['user'],
+#                 :hdfs_user => node['hops']['hdfs']['user'],
+#                 :mr_user => node['hops']['mr']['user'],
+#                 :flink_dir => node['flink']['dir'] + "/flink",
+#                 :flink_user => node['flink']['user'],
+#                 :zeppelin_dir => node['zeppelin']['dir'] + "/zeppelin",
+#                 :zeppelin_user => node['zeppelin']['user'],
+#                 :ndb_dir => node['ndb']['dir'] + "/mysql-cluster",
+#                 :mysql_dir => node['mysql']['dir'] + "/mysql",
+#                 :elastic_dir => node['elastic']['dir'] + "/elastic",
+#                 :hopsworks_dir => domains_dir,
+#                 :twofactor_auth => node['hopsworks']['twofactor_auth'],
+#                 :twofactor_exclude_groups => node['hopsworks']['twofactor_exclude_groups'],
+#                 :hops_rpc_tls => hops_rpc_tls_val,
+#                 :cert_mater_delay => node['hopsworks']['cert_mater_delay'],
+#                 :elastic_user => node['elastic']['user'],
+#                 :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
+#                 :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
+#                 :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
+#                 :max_num_proj_per_user => node['hopsworks']['max_num_proj_per_user'],
+# 		:file_preview_image_size => node['hopsworks']['file_preview_image_size'],
+# 		:file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
+#                 :zk_ip => zk_ip,
+#                 :java_home => node['java']['java_home'],
+#                 :kafka_ip => kafka_ip,
+#                 :kafka_num_replicas => node['hopsworks']['kafka_num_replicas'],
+#                 :kafka_num_partitions => node['hopsworks']['kafka_num_partitions'],
+#                 :drelephant_port => node['drelephant']['port'],
+#                 :drelephant_db => node['drelephant']['db'],
+#                 :drelephant_ip => drelephant_ip,
+#                 :kafka_user => node['kkafka']['user'],
+#                 :kibana_ip => kibana_ip,
+#                 :python_kernel => python_kernel,
+#                 :grafana_ip => grafana_ip,
+#                 :influxdb_ip => influxdb_ip,
+#                 :influxdb_port => node['influxdb']['http']['port'],
+#                 :influxdb_user => node['influxdb']['db_user'],
+#                 :influxdb_password => node['influxdb']['db_password'],
+#                 :graphite_port => node['influxdb']['graphite']['port'],
+#                 :cuda_dir => node['cuda']['base_dir'],
+#                 :anaconda_dir => node['conda']['base_dir'],
+#                 :org_name => node['hopsworks']['org_name'],
+#                 :org_domain => node['hopsworks']['org_domain'],
+#                 :org_email => node['hopsworks']['org_email'],
+#                 :org_country_code => node['hopsworks']['org_country_code'],
+#                 :org_city => node['hopsworks']['org_city'],
+#                 :vagrant_enabled => vagrant_enabled,
+#                 :public_ip => public_ip,
+#                 :monitor_max_status_poll_try => node['hopsworks']['monitor_max_status_poll_try'],
+#                 :dela_enabled => node['hopsworks']['dela']['enabled'],
+#                 :dela_ip => dela_ip,
+#                 :dela_port => node['dela']['http_port'],
+#                 :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
+#                 :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
+#                 :recovery_path => node['hopsworks']['recovery_path'],
+#                 :verification_path => node['hopsworks']['verification_path'],
+#                 :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
+#                 :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
+#                 :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
+#                 :hive_scratchdir => node['hive2']['scratch_dir']
+#            })
+#    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
+# end
+
+
+for version in node['hopsworks']['versions'] do
+
+  template "#{theDomain}/flyway/sql/#{version}.sql" do
+    source "sql/#{version}.erb"
+    owner node['glassfish']['user']
+    mode 0750
     variables({
                 :hosts => hosts,
                 :epipe_ip => epipe_ip,
@@ -349,9 +454,17 @@ template "#{rows_path}" do
                 :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
                 :hive_scratchdir => node['hive2']['scratch_dir']
            })
-   notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
-end
+    action :create_if_missing    
+  end
 
+  template "#{theDomain}/flyway/undo/#{version}.1__undo.sql" do
+    source "sql/#{version}.erb"
+    owner node['glassfish']['user']
+    mode 0750
+    action :create_if_missing
+  end
+
+end
 
 
 ###############################################################################
@@ -406,6 +519,31 @@ hopsworks_grants "reload_sysv" do
 end
 
 
+# if node['install']['upgrade'] == "true" 
+# end
+
+
+bash "flyway_baseline" do
+  user "root"
+  code <<-EOF
+    set -e
+    cd #{theDomain}/flyway
+    #{theDomain}/flyway/flyway baseline
+  EOF
+  not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+end
+
+bash "flyway_migrate" do
+  user "root"
+  code <<-EOF
+    set -e
+    cd #{theDomain}/flyway
+    #{theDomain}/flyway/flyway migrate
+  EOF
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
+end
+
+
 glassfish_secure_admin domain_name do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -414,10 +552,6 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
-
-
-#end
-
 
 
 props =  {
@@ -1273,6 +1407,7 @@ case node['platform']
       apt-get update
       apt-get install tensorflow-model-server
     EOF
+  not_if "which tensorflow_model_server"
   end
  when 'redhat', 'centos', 'fedora'
   bash 'tf_serving' do
@@ -1283,6 +1418,6 @@ case node['platform']
         cd serving
         bazel build -c opt tensorflow_serving/...
     EOF
+  not_if { File::exists?("/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server") }
   end
-
 end

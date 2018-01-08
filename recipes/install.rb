@@ -963,23 +963,13 @@ end
 
 #version=node['hopsworks']['version']
 
-for version in node['hopsworks']['sql']['versions'] do
-
-  template "#{theDomain}/flyway/sql/#{version}__hopsworks.sql" do
-    source "sql/#{version}.erb"
-    owner node['glassfish']['user']
-    mode 0750
-    action :create_if_missing
-  end
-
-  template "#{theDomain}/flyway/undo/#{version}.1_undo.sql" do
-    source "sql/#{version}.erb"
-    owner node['glassfish']['user']
-    mode 0750
-    action :create_if_missing
-  end
-
+template "#{theDomain}/flyway/sql/R__initial_tables.sql" do
+  source "sql/R__initial_tables.sql.erb"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create_if_missing
 end
+
 
 # cb = run_context.cookbook_collection['hopsworks']
 # cb.manifest['templates'].each do |cbf|
@@ -990,27 +980,3 @@ end
 #     notifies :write, "log[testlog]"
 #   end
 # end
-
-if node['install']['upgrade'] == "true" 
-
-  bash "flyway_baseline" do
-    user "root"
-    code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway baseline
-  EOF
-    not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
-  end
-  
-  bash "flyway_migrate" do
-    user "root"
-    code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway migrate
-  EOF
-    only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
-  end
-
-end

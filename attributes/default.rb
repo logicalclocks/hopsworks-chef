@@ -14,6 +14,9 @@ include_attribute "hive2"
 
 default['hopsworks']['version']                  = "0.1.0"
 
+# array of previous versions of hopsworks (used for upgrading SQL)
+default['hopsworks']['versions']                 = %w{ }
+node['hopsworks']['versions'].push(node['hopsworks']['version'])
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
@@ -220,7 +223,6 @@ default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivyS
 default['hopsworks']['flyway']['version']              = "5.0.3"
 default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-#{node['hopsworks']['flyway']['version']}-linux-x64.tar.gz"
 
-default['hopsworks']['sql']['versions']                = %w{ V0.1.0 V0.1.1 }
 
 #
 #
