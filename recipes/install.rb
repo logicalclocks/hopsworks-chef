@@ -932,7 +932,7 @@ bash "unpack_flyway" do
     tar -xzf #{flyway_tgz}
     mv #{flyway} #{theDomain}/bin
     cd #{theDomain}/bin
-    chown -R node['glassfish']['user'] flyway*
+    chown -R #{node['glassfish']['user']} flyway*
     rm -rf flyway
     ln -s #{flyway} flyway
   EOF
