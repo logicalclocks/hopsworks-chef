@@ -930,14 +930,19 @@ bash "unpack_flyway" do
     set -e
     cd #{Chef::Config['file_cache_path']}
     tar -xzf #{flyway_tgz}
-    mv #{flyway} #{theDomain}/bin
-    cd #{theDomain}/bin
+    mv #{flyway} #{theDomain}
+    cd #{theDomain}
     chown -R #{node['glassfish']['user']} flyway*
     rm -rf flyway
     ln -s #{flyway} flyway
   EOF
-  not_if { ::File.exists?("#{theDomain}/bin/flyway/flyway") }
+  not_if { ::File.exists?("#{theDomain}/flyway/flyway") }
 end
+
+# file "#{theDomain}/flyway/conf/flyway.conf" do
+#   owner "root"
+#   action :delete
+# end
 
 template "#{theDomain}/flyway/conf/flyway.conf" do
   source "flyway.conf.erb"
@@ -992,8 +997,8 @@ if node['install']['upgrade'] == "true"
     user "root"
     code <<-EOF
     set -e
-    cd #{theDomain}/bin/flyway
-    #{theDomain}/bin/flyway/flyway baseline
+    cd #{theDomain}/flyway
+    #{theDomain}/flyway/flyway baseline
   EOF
     not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
   end
@@ -1002,8 +1007,8 @@ if node['install']['upgrade'] == "true"
     user "root"
     code <<-EOF
     set -e
-    cd #{theDomain}/bin/flyway
-    #{theDomain}/bin/flyway/flyway migrate
+    cd #{theDomain}/flyway
+    #{theDomain}/flyway/flyway migrate
   EOF
     only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
   end
