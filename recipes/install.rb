@@ -936,7 +936,7 @@ bash "unpack_flyway" do
     rm -rf flyway
     ln -s #{flyway} flyway
   EOF
-  not_if ::File.exists?("#{theDomain}/bin/flyway/flyway")
+  not_if { ::File.exists?("#{theDomain}/bin/flyway/flyway") }
 end
 
 template "#{theDomain}/flyway/conf/flyway.conf" do
