@@ -3,6 +3,7 @@ domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 
+node['hopsworks']['versions'].push(node['hopsworks']['version'])
 
 case node['platform']
 when "ubuntu"
@@ -218,9 +219,7 @@ bash 'create_hopsworks_db' do
   code <<-EOF
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
-      #{exec} #{db} < #{new_resource.tables_path}
     EOF
-  not_if "#{exec} -e 'show databases' | grep hopsworks"
 end
 
 
@@ -367,7 +366,10 @@ end
 # end
 
 
-for version in node['hopsworks']['versions'] do
+# Convert comma-separated string of versions into an array
+versions = node['hopsworks']['versions'].split(/\s*,\s*/)
+
+for version in versions do
 
   template "#{theDomain}/flyway/sql/#{version}.sql" do
     source "sql/#{version}.erb"

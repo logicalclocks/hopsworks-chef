@@ -15,8 +15,9 @@ include_attribute "hive2"
 default['hopsworks']['version']                  = "0.1.0"
 
 # array of previous versions of hopsworks (used for upgrading SQL)
-default['hopsworks']['versions']                 = %w{ }
-node['hopsworks']['versions'].push(node['hopsworks']['version'])
+# default['hopsworks']['versions']                 = "0.1.1, #{node['hopsworks']['version']}"
+# comma-separated string of versions
+default['hopsworks']['versions']                 = "#{node['hopsworks']['version']}"
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
