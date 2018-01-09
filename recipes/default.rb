@@ -457,8 +457,8 @@ for version in versions do
     action :create_if_missing    
   end
 
-  template "#{theDomain}/flyway/undo/V#{version}.1__undo.sql" do
-    source "sql/#{version}.1__undo.sql.erb"
+  template "#{theDomain}/flyway/undo/V#{version}.1__undo.sql.renameToDotSQLToEnable" do
+    source "sql/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     action :create_if_missing
