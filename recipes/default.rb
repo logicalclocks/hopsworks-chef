@@ -681,6 +681,73 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
 end
 
 
+if node['hopsworks']['http_logs']['enabled'].eql? "true"
+  # Enable http logging
+  glassfish_asadmin "set server.http-service.access-logging-enabled=true" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
+  # ':' is not a legal filename character in HDFS, thus '_'
+  glassfish_asadmin "set server.http-service.access-log.rotation-suffix=yyyy-MM-dd-kk_mm" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.max-history-files=10" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.buffer-size-bytes=32768" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.write-interval-seconds=120" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.rotation-interval-in-minutes=1400" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+  
+  # Setup cron job for HDFS dumper
+  cron 'dump_http_logs_to_hdfs' do
+    if node['hopsworks']['systemd'] == "true"
+      command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh"
+    else #sysv
+      command "#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh >> #{domains_dir}/#{domain_name}/logs/web_dumper.log 2>&1"
+    end
+    user node['glassfish']['user']
+    minute '0'
+    hour '21'
+    day '*'
+    month '*'
+    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh") end
+  end
+end
 
 # Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
 
@@ -1192,4 +1259,30 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
   group node['glassfish']['group']
   mode 0775
   action :create
+end
+
+
+case node['platform']
+ when 'debian', 'ubuntu'
+  bash 'tf_serving' do
+    user "root"
+    code <<-EOF
+      set -e
+      echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
+      curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -        
+      apt-get update
+      apt-get install tensorflow-model-server
+    EOF
+  end
+ when 'redhat', 'centos', 'fedora'
+  bash 'tf_serving' do
+    user "root"
+    code <<-EOF
+        cd /opt
+        git clone --recurse-submodules https://github.com/tensorflow/serving
+        cd serving
+        bazel build -c opt tensorflow_serving/...
+    EOF
+  end
+
 end

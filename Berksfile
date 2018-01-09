@@ -1,6 +1,7 @@
 Encoding.default_external = "UTF-8"
 source 'https://supermarket.chef.io'
 
+metadata
 
 cookbook 'java'
 cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
@@ -40,4 +41,3 @@ cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 cookbook 'sysctl', '~> 0.10.0'
 
-metadata

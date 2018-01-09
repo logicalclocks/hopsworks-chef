@@ -100,6 +100,10 @@ attribute "hopsworks/smtp_ssl_port",
           :description => "SSL port of SMTP server (default is 465)",
           :type => 'string'
 
+attribute "hopsworks/alert_email_addrs",
+          :description => "Comma-separated list of email addresses that will receive emails for alerts in Hopsworks",
+          :type => 'string'
+
 attribute "hopsworks/admin/user",
           :description => "Username for the Administration account on the Web Application Server",
           :type => 'string',
@@ -190,6 +194,9 @@ attribute "hopsworks/max_stack_size",
           :description => "glassfish/max_stack_size",
           :type => 'string'
 
+attribute "hopsworks/http_logs/enabled",
+          :description => "Enable logging of HTTP requests and dump to HDFS",
+          :type => 'string'
 
 attribute "hopsworks/max_perm_size",
           :description => "glassfish/max_perm_size",
@@ -866,6 +873,10 @@ attribute "hops/hdfs/blocksize",
           :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
           :type => 'string'
 
+attribute "hops/hdfs/umask",
+          :description => "Set the default HDFS umask (default: 0022).",
+          :type => 'string'
+
 attribute "hops/format",
           :description => "Format HDFS, Run 'hdfs namenode -format",
           :type => 'string'
@@ -880,6 +891,10 @@ attribute "hops/nn/name_dir",
 
 attribute "hops/dn/data_dir",
           :description => "The directory in which Hadoop's DataNodes store their data",
+          :type => 'string'
+
+attribute "hops/dn/data_dir_permissions",
+          :description => "The permissions for the directory in which Hadoop's DataNodes store their data (default: 700)",
           :type => 'string'
 
 attribute "hops/yarn/nodemanager_hb_ms",
@@ -1771,8 +1786,8 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
-attribute "hopsworks/dela/demo",
-          :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
+attribute "hopsworks/hopssite/version",
+          :description => "Enable hopssite default versions: hops or bbc5",
           :type => 'string'
 
 attribute "hopsworks/dela/enabled",

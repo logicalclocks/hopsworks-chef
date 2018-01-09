@@ -88,7 +88,7 @@ elif [ "$1" == "start" ] ; then
     pid=$(sudo ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
-        su vagrant -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
+        su $JUPYTER_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
 	sleep 5
     fi
 
