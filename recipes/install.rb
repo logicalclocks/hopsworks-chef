@@ -961,8 +961,8 @@ directory "#{theDomain}/flyway/undo" do
   action :create
 end
 
-template "#{theDomain}/flyway/sql/R__initial_tables.sql" do
-  source "sql/R__initial_tables.sql.erb"
+template "#{theDomain}/flyway/sql/0.0.2__initial_tables.sql" do
+  source "sql/0.0.2__initial_tables.sql.erb"
   owner node['glassfish']['user']
   mode 0750
   action :create_if_missing

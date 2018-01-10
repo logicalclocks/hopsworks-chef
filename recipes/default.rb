@@ -18,12 +18,6 @@ end
 
 include_recipe "java"
 
-previous_version=""
-if node['hopsworks']['versions'].any?
-   previous_version=node['hopsworks']['versions'].last
-end
-
-
 ##
 ## default['rb']
 ##
@@ -368,9 +362,12 @@ end
 #    notifies :insert_rows, 'hopsworks_grants[hopsworks_tables]', :immediately
 # end
 
-
-# Convert comma-separated string of versions into an array
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
+previous_version=""
+if versions.any?
+   previous_version=verions.last
+end
+versions.push(node['hopsworks']['version'])
 
 for version in versions do
 

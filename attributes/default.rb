@@ -17,7 +17,7 @@ default['hopsworks']['version']                  = "0.1.0"
 # array of previous versions of hopsworks (used for upgrading SQL)
 # comma-separated string of versions
 # E.g., ["0.1.1, 0.1.2"]
-default['hopsworks']['versions']                 = [ ] 
+default['hopsworks']['versions']                 = ""
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
