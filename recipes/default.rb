@@ -1281,28 +1281,4 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
 end
 
 
-case node['platform']
- when 'debian', 'ubuntu'
-  bash 'tf_serving' do
-    user "root"
-    code <<-EOF
-      set -e
-      echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
-      curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -        
-      apt-get update
-      apt-get install tensorflow-model-server
-    EOF
-  not_if "which tensorflow_model_server"
-  end
- when 'redhat', 'centos', 'fedora'
-  bash 'tf_serving' do
-    user "root"
-    code <<-EOF
-        cd /opt
-        git clone --recurse-submodules https://github.com/tensorflow/serving
-        cd serving
-        bazel build -c opt tensorflow_serving/...
-    EOF
-  not_if { File::exists?("/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server") }
-  end
-end
+include_recipe "tensorflow::serving"
