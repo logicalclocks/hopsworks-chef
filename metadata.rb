@@ -46,6 +46,7 @@ recipe  "hopsworks::slave", "Hopsworks master instance that will store only an i
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
+recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 

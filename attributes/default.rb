@@ -16,8 +16,8 @@ default['hopsworks']['version']                  = "0.1.0"
 
 # array of previous versions of hopsworks (used for upgrading SQL)
 # comma-separated string of versions
-# E.g., "0.1.1, 0.1.2, #{node['hopsworks']['version']}"
-default['hopsworks']['versions']                 = "#{node['hopsworks']['version']}"
+# E.g., ["0.1.1, 0.1.2"]
+default['hopsworks']['versions']                 = [ ] 
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
@@ -239,3 +239,4 @@ default["lightdm"]["minimum_uid"] = 1000
 default["lightdm"]["hidden_users"] = %w(nobody)
 default["lightdm"]["hidden_shells"] = %w(/bin/false /sbin/nologin)
 default["lightdm"]["keyrings"] = {}
+

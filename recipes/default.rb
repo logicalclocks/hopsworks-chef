@@ -16,8 +16,13 @@ else
   systemd = false
 end
 
-
 include_recipe "java"
+
+previous_version=""
+if node['hopsworks']['versions'].any?
+   previous_version=node['hopsworks']['versions'].last
+end
+
 
 ##
 ## default['rb']
@@ -457,7 +462,15 @@ for version in versions do
     action :create_if_missing    
   end
 
-  template "#{theDomain}/flyway/undo/V#{version}.1__undo.sql.renameToDotSQLToEnable" do
+  #
+  # Delete the undo file for the previous version - not rolling back more than 1 version
+  #
+  file "#{theDomain}/flyway/undo/U#{previous_version}__undo.sql" do
+    action :delete
+  end
+  
+
+  template "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
     source "sql/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
@@ -530,7 +543,7 @@ bash "flyway_baseline" do
     cd #{theDomain}/flyway
     #{theDomain}/flyway/flyway baseline
   EOF
-  not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+ not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
 end
 
 bash "flyway_migrate" do
@@ -540,7 +553,6 @@ bash "flyway_migrate" do
     cd #{theDomain}/flyway
     #{theDomain}/flyway/flyway migrate
   EOF
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
 end
 
 
@@ -954,8 +966,9 @@ end
 
 node.override['glassfish']['asadmin']['timeout'] = 400
 
+
 glassfish_deployable "hopsworks-ear" do
-  component_name "hopsworks-ear"
+  component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['ear_url']
   version node['hopsworks']['version']
@@ -967,14 +980,14 @@ glassfish_deployable "hopsworks-ear" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w 'hopsworks-ear'"
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
 
-
-
 glassfish_deployable "hopsworks" do
-  component_name "hopsworks-web"
+  component_name "hopsworks-web:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['war_url']
   version node['hopsworks']['version']
@@ -986,13 +999,15 @@ glassfish_deployable "hopsworks" do
   secure false
   action :deploy
   async_replication false
-  retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -v hopsworks-ear | grep hopsworks"
+  retries 1  
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
 
 
 glassfish_deployable "hopsworks-ca" do
-  component_name "hopsworks-ca"
+  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['ca_url']
   version node['hopsworks']['version']
@@ -1004,8 +1019,50 @@ glassfish_deployable "hopsworks-ca" do
   action :deploy
   async_replication false
   retries 1
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w hopsworks-ca"
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
+
+
+#
+# If deployment of the new version succeeds, then undeploy the previous version
+#
+
+glassfish_deployable "undeploy_hopsworks-ear" do
+  component_name "hopsworks-ear:#{previous_version}"
+  target "server"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure true
+  action :undeploy
+end
+
+glassfish_deployable "undeploy_hopsworks-war" do
+  component_name "hopsworks-web:#{previous_version}"
+  target "server"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure true
+  action :undeploy
+end
+
+glassfish_deployable "undeploy_hopsworks-ca" do
+  component_name "hopsworks-ca:#{previous_version}"
+  target "server"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure true
+  action :undeploy
+end
+
+
 
 template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"

@@ -961,8 +961,6 @@ directory "#{theDomain}/flyway/undo" do
   action :create
 end
 
-#version=node['hopsworks']['version']
-
 template "#{theDomain}/flyway/sql/R__initial_tables.sql" do
   source "sql/R__initial_tables.sql.erb"
   owner node['glassfish']['user']
@@ -970,13 +968,3 @@ template "#{theDomain}/flyway/sql/R__initial_tables.sql" do
   action :create_if_missing
 end
 
-
-# cb = run_context.cookbook_collection['hopsworks']
-# cb.manifest['templates'].each do |cbf|
-#   #filename = cbf['name']
-#   filename = tmpl['name']
-#   cookbook_file "/tmp/#{filename}" do
-#     source filename
-#     notifies :write, "log[testlog]"
-#   end
-# end
