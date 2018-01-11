@@ -51,7 +51,7 @@ default['hopsworks']['http_logs']['enabled']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-2.0.jar"
-default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks.war"
+default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 
@@ -138,7 +138,7 @@ default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
 default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
-if(node['hopsworks']['hopssite']['version'].eql? "none") 
+if(node['hopsworks']['hopssite']['version'].eql? "none")
   default['hopsworks']['dela']['enabled']              = "false"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
   default['hopsworks']['hopssite']['port']             = "51081"
