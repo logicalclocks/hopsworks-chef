@@ -51,7 +51,7 @@ default['hopsworks']['http_logs']['enabled']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-2.0.jar"
-default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks.war"
+default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 
@@ -138,25 +138,39 @@ default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
 default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
-if(node['hopsworks']['hopssite']['version'].eql? "none") 
+if(node['hopsworks']['hopssite']['version'].eql? "none")
   default['hopsworks']['dela']['enabled']              = "false"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = "51081"
-  default['hopssite']['url']                           = "https://hops.site:443"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
 end
 if(node['hopsworks']['hopssite']['version'].eql? "hops")
   default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = "51081"
-  default['hopssite']['url']                           = "https://hops.site:443"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+if(node['hopsworks']['hopssite']['version'].eql? "hops-demo")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
-  default['hopsworks']['hopssite']['port']             = "42004"
-  default['hopssite']['url']                           = "http://bbc5.sics.se:8080"
+  default['hopsworks']['hopssite']['port']             = 43080
+  default['hopsworks']['hopssite']['register_port']    = 8080
+  default['hopssite']['url']                           = "http://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
 end
-default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
+default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port'].to_s  + "/hops-site/api"
 default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
@@ -174,10 +188,10 @@ default['hopssite']['max_retries']                     = 5
 #
 # Hopssite cert
 #
-default['hopssite']['cert']['email']                   = node['hopsworks']['email']
-default['hopssite']['cert']['cn']                      = node['hopsworks']['cert']['cn']
-default['hopssite']['cert']['o']                       = node['hopsworks']['cert']['o']
-default['hopssite']['cert']['ou']                      = node['hopsworks']['cert']['ou']
+default['hopssite']['cert']['email']                   = node['hopssite']['user'] 
+default['hopssite']['cert']['o']                       = node['hopssite']['cert']['email'].split("@")[0]
+default['hopssite']['cert']['ou']                      = node['hopssite']['cert']['email'].split("@")[1]
+default['hopssite']['cert']['cn']                      = node['hopssite']['cert']['o'] + "_" + node['hopssite']['cert']['ou']
 default['hopssite']['cert']['l']                       = node['hopsworks']['cert']['l']
 default['hopssite']['cert']['s']                       = node['hopsworks']['cert']['s']
 default['hopssite']['cert']['c']                       = node['hopsworks']['cert']['c']
