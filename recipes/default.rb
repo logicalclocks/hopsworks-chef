@@ -707,7 +707,7 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
    admin_port admin_port
    secure false
   end
-  
+
   # Setup cron job for HDFS dumper
   cron 'dump_http_logs_to_hdfs' do
     if node['hopsworks']['systemd'] == "true"
@@ -1280,5 +1280,5 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
   action :create
 end
 
-
 include_recipe "tensorflow::serving"
+

@@ -1,0 +1,15 @@
+[Unit]
+Description = GlassFish Server for domain2
+After = syslog.target network.target remote-fs.target
+
+[Service]
+User=<%= node['glassfish']['user'] %>
+ExecStart =  /srv/hops/glassfish/versions/current/glassfish/bin/asadmin start-domain --passwordfile=/srv/hops/domains/domain1_admin_passwd --verbose false --debug true --upgrade false --domaindir /srv/hops/domains domain2
+ExecStop =  /srv/hops/glassfish/versions/current/glassfish/bin/asadmin stop-domain --passwordfile=/srv/hops/domains/domain1_admin_passwd --domaindir /srv/hops/domains domain2
+ExecReload =  /srv/hops/glassfish/versions/current/glassfish/bin/asadmin restart-domain --passwordfile=/srv/hops/domains/domain1_admin_passwd --domaindir /srv/hops/domains domain2
+Type = forking
+TimeoutStartSec = 240
+TimeoutStopSec = 90
+
+[Install]
+WantedBy = multi-user.target

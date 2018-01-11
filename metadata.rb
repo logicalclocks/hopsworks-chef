@@ -49,7 +49,8 @@ recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
-
+recipe  "hopsworks::hopssite", "Install hopssite on current vm"
+recipe  "hopsworks::dela", "Register dela on current vm"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -1788,11 +1789,15 @@ attribute "dela/dir",
 
 # Hopsworks Dela
 attribute "hopsworks/hopssite/version",
-          :description => "Enable hopssite default versions: hops or bbc5",
+          :description => "Enable hopssite default versions: hops, hops-demo or bbc5",
           :type => 'string'
 
 attribute "hopsworks/dela/enabled",
           :description => "'true' to enable dela services, otherwise 'false' (default)",
+          :type => 'string'
+
+attribute "hopsworks/dela/client",
+          :description => "'BASE_CLIENT' to disable upload services, otherwise 'FULL_CLIENT' (default)",
           :type => 'string'
 
 attribute "hopsworks/dela/cluster_http_port",
@@ -1827,6 +1832,11 @@ attribute "hopsworks/hopssite/domain",
 attribute "hopsworks/hopssite/port",
           :description => "Dela hops site port",
           :type => 'string'
+
+attribute "hopsworks/hopssite/register_port",
+          :description => "Dela hops site port used for cert registration",
+          :type => 'string'
+
 
 attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
