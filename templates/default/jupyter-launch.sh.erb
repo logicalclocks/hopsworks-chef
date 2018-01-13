@@ -27,6 +27,12 @@ function kill_named {
     return $res
 }
 
+function finish {
+    rm -rf $JUPYTER_HOME
+}
+trap finish EXIT
+
+
 
 if [ $# -ne 7 ]; then
   help
