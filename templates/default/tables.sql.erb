@@ -37,23 +37,6 @@ CREATE TABLE `users` (
     UNIQUE KEY `email` (`email`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=10000;
 
-CREATE TABLE `yubikey` (
-  `yubidnum` INT(11) NOT NULL AUTO_INCREMENT,
-  `uid` INT(11) NOT NULL,
-  `public_id` VARCHAR(40)  DEFAULT NULL,
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `aes_secret` VARCHAR(100)  DEFAULT NULL,
-  `accessed` TIMESTAMP NULL DEFAULT NULL,
-  `status` INT(11) DEFAULT '-1',
-  `counter` INT(11) DEFAULT NULL,
-  `low` INT(11) DEFAULT NULL,
-  `high` INT(11) DEFAULT NULL,
-  `session_use` INT(11) DEFAULT NULL,
-  `notes` VARCHAR(100)  DEFAULT NULL,
-  PRIMARY KEY (`yubidnum`),
-  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
 
 CREATE TABLE `address` (
     `address_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -69,7 +52,7 @@ CREATE TABLE `address` (
     FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `people_group` (
+CREATE TABLE `user_group` (
     `uid` INT(11) NOT NULL,
     `gid` INT(11) NOT NULL,
     PRIMARY KEY (`uid`,`gid`),
