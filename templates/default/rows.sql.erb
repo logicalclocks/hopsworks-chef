@@ -65,14 +65,14 @@ insert into account_audit(initiator, ip, browser, action, target, time, message,
 
 -- --------------------------------------------------------
 --
--- Dumping data for table `people_group`
+-- Dumping data for table `user_group`
 --
 
 -- Admin user now has a sysadmin
-INSERT INTO `people_group` (`uid`, `gid`) VALUES (10000, 1005);
+INSERT INTO `user_group` (`uid`, `gid`) VALUES (10000, 1005);
 
 -- Agent user now has an agent role
-INSERT INTO `people_group` (`uid`, `gid`) VALUES (10001, 1007);
+INSERT INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
 
 
 
