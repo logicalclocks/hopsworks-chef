@@ -263,6 +263,11 @@ if node['hops']['rpc']['ssl'].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
+hdfs_ui_port = node['hops']['nn']['http_port']
+if node['hops']['rpc']['ssl'].eql? "true"
+  hdfs_ui_port = node['hops']['dfs']['https']['port']
+end
+
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node['glassfish']['user']
@@ -287,7 +292,7 @@ template "#{rows_path}" do
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node['hops']['rm']['http_port'],
                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-                :hdfs_ui_port => node['hops']['nn']['http_port'],
+                :hdfs_ui_port => hdfs_ui_port,
                 :hopsworks_user => node['hopsworks']['user'],
                 :hdfs_user => node['hops']['hdfs']['user'],
                 :mr_user => node['hops']['mr']['user'],
