@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `jupyter_settings` (
   `secret` VARCHAR(255) NOT NULL,
   `log_level` VARCHAR(32) NULL DEFAULT 'INFO',
   `mode` VARCHAR(32) NOT NULL,
+  `umask` VARCHAR(32) NOT NULL DEFAULT '022',  
   `advanced` tinyint(1) NOT NULL DEFAULT '0',
   `archives` VARCHAR(1500) NOT NULL DEFAULT '',
   `jars` VARCHAR(1500) NOT NULL DEFAULT '',
