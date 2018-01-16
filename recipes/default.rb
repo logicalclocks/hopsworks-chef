@@ -844,6 +844,7 @@ glassfish_deployable "hopsworks-ca" do
   target "server"
   url node['hopsworks']['ca_url']
   version node['hopsworks']['version']
+  context_root "/hopsworks-ca"  
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
