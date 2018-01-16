@@ -601,8 +601,6 @@ CREATE TABLE IF NOT EXISTS `ssh_keys` (
 
 CREATE TABLE IF NOT EXISTS authorized_sshkeys (project VARCHAR(64) NOT NULL, user VARCHAR(48) NOT NULL, sshkey_name VARCHAR(64) NOT NULL, PRIMARY KEY (project, user, sshkey_name), KEY idx_user(user), KEY idx_project(project)) engine=ndbcluster;
 
--- Consents for BiobankCloud
-
 CREATE TABLE IF NOT EXISTS `consents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `inode_pid` int(11) NOT NULL,
@@ -659,61 +657,6 @@ CREATE TABLE IF NOT EXISTS `file_activity`
 
 
 
-
-
-CREATE TABLE IF NOT EXISTS `workflows` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `project_id` INT(11) NOT NULL,
-    `name` VARCHAR(255) NOT NULL,
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     PRIMARY KEY (`id`),
-     FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `workflow_executions` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `job_id` VARCHAR(255),
-    `user_id` INT(11),
-    `error` TEXT,
-    `workflow_id` INT(11) NOT NULL,
-    `workflow_timestamp` TIMESTAMP NULL DEFAULT NULL,
-    `snapshot` VARCHAR(10000),
-     PRIMARY KEY (`id`),
-     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-     FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `nodes` (
-    `id` VARCHAR(255) NOT NULL,
-    `external_id` VARCHAR(255),
-    `type` VARCHAR(255) NOT NULL,
-    `workflow_id` INT(11) NOT NULL,
-    `data` LONGTEXT NOT NULL,
-    `classname` VARCHAR(255) NOT NULL,
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     PRIMARY KEY (`id`, `workflow_id`),
-     FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `edges` (
-  `id` VARCHAR(255) NOT NULL,
-  `type` VARCHAR(255),
-  `target_id` VARCHAR(255) NOT NULL,
-  `source_id` VARCHAR(255) NOT NULL,
-  `workflow_id` INT(11) NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`, `workflow_id`),
-  FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`target_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`source_id`, `workflow_id`) REFERENCES `nodes` (`id`, `workflow_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-
---
 --
 -- DR ELEPHANT TABLES
 --
