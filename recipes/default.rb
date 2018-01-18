@@ -685,7 +685,7 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
-if node['ldap']['enabled'].eql? "true" do
+if node['ldap']['enabled'].eql? "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
   ldap_provider_url=node['ldap']['provider_url']
   ldap_attr_binary=node['ldap']['attr_binary_val']
