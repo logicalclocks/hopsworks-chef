@@ -685,6 +685,27 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
+if node['ldap']['enabled'].eql? "true" do
+  ldap_jndilookupname= node['ldap']['jndilookupname']
+  ldap_provider_url=node['ldap']['provider_url']
+  ldap_attr_binary=node['ldap']['attr_binary_val']
+  ldap_sec_auth=node['ldap']['security_auth']
+  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
+  ldap_sec_principal=node['ldap']['security_principal']
+  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":SECURITY_PRINCIPAL=#{ldap_sec_principal}"
+  ldap_sec_credentials=node['ldap']['security_credentials']
+  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":SECURITY_CREDENTIALS=#{ldap_sec_credentials}"
+  ldap_ref=node['ldap']['referral']
+  ldap_referral=ldap_ref.to_s.empty? ? "" : ":REFERRAL=#{ldap_ref}"
+
+  glassfish_asadmin "create-jndi-resource --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral} ldap/LdapResource" do
+     domain_name domain_name
+     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+     username username
+     admin_port admin_port
+     secure false
+  end
+end
 
 if node['hopsworks']['http_logs']['enabled'].eql? "true"
   # Enable http logging
