@@ -687,9 +687,9 @@ end
 
 if node['ldap']['enabled'].eql? "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
-  ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
+  ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
   ldap_provider_url=node['ldap']['provider_url']
-  ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
+  ldap_provider_url=ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
   ldap_attr_binary=node['ldap']['attr_binary_val']
   ldap_sec_auth=node['ldap']['security_auth']
   ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
