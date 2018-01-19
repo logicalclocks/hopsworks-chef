@@ -282,7 +282,15 @@ INSERT INTO variables VALUES ("hive_warehouse", "<%= @hive_warehouse%>");
 INSERT INTO variables VALUES ("hive_scratchdir", "<%= @hive_scratchdir%>");
 INSERT INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
 
+--
+-- First-time Login
+--
+
+INSERT INTO variables VALUES ("first_time_login", "1");
 
 
+--
+-- Alerting
+--
 
 INSERT INTO variables VALUES ("alert_email_addrs", "<%= node['hopsworks']['alert_email_addrs'] %>");
