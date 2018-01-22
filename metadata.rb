@@ -2084,3 +2084,7 @@ attribute "ldap/security_credentials",
 attribute "ldap/referral",
           :description => "LDAP used to redirect a client's request to another server . 'follow' (default) possible values ('ignore', 'follow', 'throw')",
           :type => 'string'
+
+attribute "ldap/additional_props",
+          :description => "LDAP additional properties. '' (default),
+          :type => 'string'
