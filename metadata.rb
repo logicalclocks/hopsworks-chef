@@ -2086,5 +2086,5 @@ attribute "ldap/referral",
           :type => 'string'
 
 attribute "ldap/additional_props",
-          :description => "LDAP additional properties. '' (default),
+          :description => "LDAP additional properties. '' (default)",
           :type => 'string'
