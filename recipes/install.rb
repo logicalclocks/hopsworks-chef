@@ -15,7 +15,6 @@ mysql_password=node['mysql']['password']
 mysql_host = my_private_ip()
 password_file = "#{theDomain}_admin_passwd"
 
-
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   code <<-EOF
@@ -38,6 +37,11 @@ end
 group node['jupyter']['group'] do
   action :create
   not_if "getent group #{node['jupyter']['group']}"
+end
+
+group node['tfserving']['group'] do
+  action :create
+  not_if "getent group #{node['tfserving']['group']}"
 end
 
 #
@@ -63,6 +67,13 @@ group node['jupyter']['group'] do
   append true
 end
 
+group node['tfserving']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
+
+
 # Add to the hdfs superuser group
 group node['hops']['hdfs']['user'] do
   action :modify
@@ -81,7 +92,7 @@ end
 
 group node['kagent']['certs_group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}"]
   append true
 end
 
@@ -545,6 +556,50 @@ template "#{theDomain}/bin/jupyter-launch.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/tfserving.sh" do
+  source "tfserving.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/tfserving-kill.sh" do
+  source "tfserving-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/tfserving-kill.sh" do
+  source "tfserving-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
+command=""
+case node['platform']
+ when 'debian', 'ubuntu'
+   command='tensorflow_model_server'
+ when 'redhat', 'centos', 'fedora'
+   command='/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server'
+end
+
+
+template "#{theDomain}/bin/tfserving-launch.sh" do
+  source "tfserving-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  variables({
+     :command => command
+  })
+  action :create
+end
+
 template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
   owner node['glassfish']['user']
@@ -586,6 +641,19 @@ template "#{theDomain}/bin/start-llap.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
+  source "dump_web_logs_to_hdfs.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0700
+  action :create
+  variables({
+              :weblogs_dir => "#{theDomain}/logs/access",
+              :hadoop_home => node['hops']['base_dir'],
+              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_logs"
+            })
+end
+
 template "/etc/sudoers.d/glassfish" do
   source "glassfish_sudoers.erb"
   owner "root"
@@ -598,6 +666,7 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
+              :tfserving =>  "#{theDomain}/bin/tfserving.sh",              
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
@@ -670,158 +739,6 @@ case node["platform_family"]
      action :install
    end
 end
-
-#START hopssite install scripts
-directory node['hopssite']['home'] do
-  owner node['glassfish']['user']
-  mode 0755
-  action :create
-end
-
-template "#{node['hopssite']['home']}/hs_env.sh" do
-  source "hopssite/hs_env.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_install.sh" do
-  source "hopssite/hs_install.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_setup.sh" do
-  source "hopssite/hs_setup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_db_setup.sh" do
-  source "hopssite/hs_db_setup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_create_domain2.sh" do
-  source "hopssite/hs_create_domain2.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_jdbc_connector.sh" do
-  source "hopssite/hs_jdbc_connector.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_realm_setup.sh" do
-  source "hopssite/hs_realm_setup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_domain2_certs.sh" do
-  source "hopssite/hs_domain2_certs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_glassfish_sign.sh" do
-  source "hopssite/hs_glassfish_sign.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_glassfish_certs.sh" do
-  source "hopssite/hs_glassfish_certs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_ssl_setup.sh" do
-  source "hopssite/hs_ssl_setup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_admin_certs.sh" do
-  source "hopssite/hs_admin_certs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_redeploy.sh" do
-  source "hopssite/hs_redeploy.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_elastic.sh" do
-  source "hopssite/hs_elastic.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_dela_certs.sh" do
-  source "hopssite/hs_dela_certs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_purge.sh" do
-  source "hopssite/hs_purge.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_tables.sql" do
-  source "hopssite/hs_tables.sql.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-
-template "#{node['hopssite']['home']}/hs_rows.sql" do
-  source "hopssite/hs_rows.sql.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  action :create
-  mode 0755
-end
-#END hopssite install scripts
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]

@@ -263,6 +263,11 @@ if node['hops']['rpc']['ssl'].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
+hdfs_ui_port = node['hops']['nn']['http_port']
+if node['hops']['rpc']['ssl'].eql? "true"
+  hdfs_ui_port = node['hops']['dfs']['https']['port']
+end
+
 template "#{rows_path}" do
    source File.basename("#{rows_path}") + ".erb"
    owner node['glassfish']['user']
@@ -287,7 +292,7 @@ template "#{rows_path}" do
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
                 :yarn_ui_port => node['hops']['rm']['http_port'],
                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-                :hdfs_ui_port => node['hops']['nn']['http_port'],
+                :hdfs_ui_port => hdfs_ui_port,
                 :hopsworks_user => node['hopsworks']['user'],
                 :hdfs_user => node['hops']['hdfs']['user'],
                 :mr_user => node['hops']['mr']['user'],
@@ -680,7 +685,99 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
+if node['ldap']['enabled'].eql? "true"
+  ldap_jndilookupname= node['ldap']['jndilookupname']
+  ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
+  ldap_provider_url=node['ldap']['provider_url']
+  ldap_provider_url=ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
+  ldap_attr_binary=node['ldap']['attr_binary_val']
+  ldap_sec_auth=node['ldap']['security_auth']
+  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
+  ldap_sec_principal=node['ldap']['security_principal']
+  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":SECURITY_PRINCIPAL=#{ldap_sec_principal}"
+  ldap_sec_credentials=node['ldap']['security_credentials']
+  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":SECURITY_CREDENTIALS=#{ldap_sec_credentials}"
+  ldap_ref=node['ldap']['referral']
+  ldap_referral=ldap_ref.to_s.empty? ? "" : ":REFERRAL=#{ldap_ref}"
+  ldap_props=node['ldap']['additional_props']
+  ldap_properties=ldap_props.to_s.empty? ? "" : ":#{ldap_props}"
 
+  glassfish_asadmin "create-jndi-resource --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral}#{ldap_properties} ldap/LdapResource" do
+     domain_name domain_name
+     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+     username username
+     admin_port admin_port
+     secure false
+  end
+end
+
+if node['hopsworks']['http_logs']['enabled'].eql? "true"
+  # Enable http logging
+  glassfish_asadmin "set server.http-service.access-logging-enabled=true" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
+  # ':' is not a legal filename character in HDFS, thus '_'
+  glassfish_asadmin "set server.http-service.access-log.rotation-suffix=yyyy-MM-dd-kk_mm" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.max-history-files=10" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.buffer-size-bytes=32768" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.write-interval-seconds=120" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  glassfish_asadmin "set server.http-service.access-log.rotation-interval-in-minutes=1400" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+  # Setup cron job for HDFS dumper
+  cron 'dump_http_logs_to_hdfs' do
+    if node['hopsworks']['systemd'] == "true"
+      command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh"
+    else #sysv
+      command "#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh >> #{domains_dir}/#{domain_name}/logs/web_dumper.log 2>&1"
+    end
+    user node['glassfish']['user']
+    minute '0'
+    hour '21'
+    day '*'
+    month '*'
+    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh") end
+  end
+end
 
 # Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
 

@@ -1,0 +1,108 @@
+#!/bin/bash
+
+WAIT_START=20
+MODEL_NAME=$1
+MODEL_VERSION=$2
+TFSERVING_HDFS_DIR=$3
+HADOOP_HOME=/srv/hops/hadoop
+PORT=$4
+SECRET_DIR=$5
+ENABLE_BATCHING=$6
+LOGDIR=${SECRET_DIR}/tfserving/logs/
+MODELDIR=${SECRET_DIR}/tfserving/model
+LOGFILE=${LOGDIR}/${MODEL_NAME}-${PORT}.log
+PID_FILE=${SECRET_DIR}/tfserving/tfserving-${PORT}.pid
+FILE_SYSTEM_POLLING_INTERVAL_SECS=10
+
+
+help() {
+    echo ""
+    echo "usage: $0 MODEL_NAME MODEL_VERSION TFSERVING_HDFS_DIR PORT SECRET_DIR ENABLE_BATCHING"
+    echo ""
+    exit 1
+}
+
+
+#  tensorflow_model_server --help
+# usage: tensorflow_model_server
+# Flags:
+# 	--port=8500                      	int32	port to listen on
+# 	--enable_batching=false          	bool	enable batching
+# 	--batching_parameters_file=""    	string	If non-empty, read an ascii BatchingParameters protobuf from the supplied file name and use the contained values instead of the defaults.
+# 	--model_config_file=""           	string	If non-empty, read an ascii ModelServerConfig protobuf from the supplied file name, and serve the models in that file. This config file can be used to specify multiple models to serve and other advanced parameters including non-default version policy. (If used, --model_name, --model_base_path are ignored.)
+# 	--model_name="default"           	string	name of model (ignored if --model_config_file flag is set
+# 	--model_base_path=""             	string	path to export (ignored if --model_config_file flag is set, otherwise required)
+# 	--file_system_poll_wait_seconds=1	int32	interval in seconds between each poll of the file system for new model version
+# 	--tensorflow_session_parallelism=0	int64	Number of threads to use for running a Tensorflow session. Auto-configured by default.Note that this option is ignored if --platform_config_file is non-empty.
+# 	--platform_config_file=""        	string	If non-empty, read an ascii PlatformConfigMap protobuf from the supplied file name, and use that platform config instead of the Tensorflow platform. (If used, --enable_batching is ignored.)
+
+
+function kill_named {
+    PID=`ps aux | grep -i tensorflow_model_server | grep ${TFSERVING_HDFS_DIR} | grep $PORT | grep -v grep | awk '{print $2}'`
+    if [ "$PID" != "" ] ; then
+	kill -9 $PID > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return $res
+}
+
+
+if [ $# -ne 6 ]; then
+  help
+fi
+
+if [ ! -d $SECRET_DIR ] ; then
+    echo "Secret dir does not exist: $SECRET_DIR"
+    exit 2
+fi
+
+mkdir -p $LOGDIR
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+
+if [ -f $PID_FILE ] ; then
+ PID=`cat $PID_FILE`
+ kill -0 $PID 2>&1 > /dev/null
+ if [ $? -eq 0 ] ; then
+     echo "A TensorFlowServing server is already running here. Kill it first."
+     exit 1
+ fi
+fi
+
+cd $SECRET_DIR
+
+mkdir ${MODELDIR}
+
+/srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
+
+setsid tensorflow_model_server --port=$PORT --model_name=${MODEL_NAME} --model_base_path=${MODELDIR}/${MODEL_NAME} --enable_batching=$ENABLE_BATCHING --file_system_poll_wait_seconds=$FILE_SYSTEM_POLLING_INTERVAL_SECS </dev/zero &> $LOGFILE  &
+echo $! > $PID_FILE
+
+# Check that the token is written to the logfile, return when we see it.
+token=0
+timeout=0
+while [ $timeout -lt $WAIT_START ] ; do
+	sleep 1
+	grep 'serving' $LOGFILE
+        if [ $? -eq 0 ] ; then
+          break
+        fi
+	echo -n "."
+	timeout=`expr $timeout + 1`
+done
+echo ""
+
+# If the timeout was exceeded, kill tfserver
+if [ $timeout -eq $WAIT_START ] ; then
+ PID=`cat $PID_FILE`
+ kill $PID 2>&1 > /dev/null
+ if [ $? -ne 0 ] ; then
+     kill_named
+ fi
+fi
+
+
+exit $?

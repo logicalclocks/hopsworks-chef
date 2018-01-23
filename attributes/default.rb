@@ -46,11 +46,12 @@ default['hopsworks']['max_perm_size']            = "1500"
 default['glassfish']['max_perm_size']            = node['hopsworks']['max_perm_size'].to_i
 default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
+default['hopsworks']['http_logs']['enabled']     = "true"
 
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-2.0.jar"
-default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks.war"
+default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 
@@ -60,8 +61,8 @@ default['hopsworks']['pixiedust']['enabled']        = "false"
 default['hopsworks']['admin']['user']               = "adminuser"
 default['hopsworks']['admin']['password']           = "adminpw"
 default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
-default['hopsworks']['twofactor_auth']           = "false"
-default['hopsworks']['twofactor_exclude_groups'] = "AGENT" #semicolon separated list of roles
+default['hopsworks']['twofactor_auth']              = "false"
+default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
@@ -94,6 +95,8 @@ default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
 default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
 default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
+
+default['hopsworks']['alert_email_addrs']        = ""
 
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "1000000"
@@ -130,45 +133,69 @@ default['hopsworks']['encryption_password']      = "adminpw"
 #
 # Dela  - please do not change without consulting dela code
 #
-default['hopsworks']['dela']['demo']                   = false
-default['hopsworks']['dela']['enabled']                = node['hopsworks']['dela']['demo'] ? "true" : "false"
-default['hopsworks']['dela']['cluster_http_port']      = "42000"
-default['hopsworks']['dela']['public_hopsworks_port']  = "8080"
-
-#
-# Hops-site
-#
-default['hopsworks']['hopssite']['domain']    = node['hopsworks']['dela']['demo'] ? "bbc5.sics.se" : "hops.site"
-default['hopsworks']['hopssite']['port']      = node['hopsworks']['dela']['demo'] ? "42004" : "51081"
-default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port']  + "/hops-site/api"
-default['hopsworks']['hopssite']['heartbeat'] = "600000"
+default['hopsworks']['dela']['enabled']                = "false"
+default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
+default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
+# Dela - hopssite settings
+default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
+if(node['hopsworks']['hopssite']['version'].eql? "none")
+  default['hopsworks']['dela']['enabled']              = "false"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+if(node['hopsworks']['hopssite']['version'].eql? "hops")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+if(node['hopsworks']['hopssite']['version'].eql? "hops-demo")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "hops.site"
+  default['hopsworks']['hopssite']['port']             = 51081
+  default['hopsworks']['hopssite']['register_port']    = 443
+  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
+  default['hopsworks']['dela']['enabled']              = "true"
+  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
+  default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
+  default['hopsworks']['hopssite']['port']             = 43080
+  default['hopsworks']['hopssite']['register_port']    = 8080
+  default['hopssite']['url']                           = "http://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
+end
+default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port'].to_s  + "/hops-site/api"
+default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
+default['hopssite']['manual_register']                 = "false"
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['manual_register']                 = "false"
-default['hopssite']['url']                             = node['hopsworks']['dela']['demo'] ? "http://bbc5.sics.se:8080": "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['port']
-default['hopssite']['user']                            = node['hopsworks']['dela']['demo'] ? "agent@hops.io" : node['hopsworks']['email']
+default['hopssite']['user']                            = node['hopsworks']['email']
 default['hopssite']['password']                        = "admin"
 default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
 default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
 default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
-
 #
-# Dela
+# Hopssite cert
 #
-
-default['hopssite']['cert']['email']                   = node['hopsworks']['email']
-default['hopssite']['cert']['cn']                      = node['hopsworks']['cert']['cn']
-default['hopssite']['cert']['o']                       = node['hopsworks']['cert']['o']
-default['hopssite']['cert']['ou']                      = node['hopsworks']['cert']['ou']
+default['hopssite']['cert']['email']                   = node['hopssite']['user']
+default['hopssite']['cert']['o']                       = node['hopssite']['cert']['email'].split("@")[0]
+default['hopssite']['cert']['ou']                      = node['hopssite']['cert']['email'].split("@")[1]
+default['hopssite']['cert']['cn']                      = node['hopssite']['cert']['o'] + "_" + node['hopssite']['cert']['ou']
 default['hopssite']['cert']['l']                       = node['hopsworks']['cert']['l']
 default['hopssite']['cert']['s']                       = node['hopsworks']['cert']['s']
 default['hopssite']['cert']['c']                       = node['hopsworks']['cert']['c']
-#
+# Dela end
 
 default['hopsworks']['max_gpu_request_size']           = 1
 default['hopsworks']['max_cpu_request_size']           = 1
@@ -184,9 +211,66 @@ default['jupyter']['user']                             = node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
 
+
+#
+# TensorFlow Serving
+#
+
+default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+
+
 # Livy
 default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
 
 # Zeppelin
 default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivySparkInterpreter,org.apache.zeppelin.livy.LivyPySparkInterpreter,org.apache.zeppelin.livy.LivySparkRInterpreter,org.apache.zeppelin.livy.LivySparkSQLInterpreter,org.apache.zeppelin.spark.SparkInterpreter,org.apache.zeppelin.spark.PySparkInterpreter,org.apache.zeppelin.rinterpreter.RRepl,org.apache.zeppelin.rinterpreter.KnitR,org.apache.zeppelin.spark.SparkRInterpreter,org.apache.zeppelin.spark.SparkSqlInterpreter,org.apache.zeppelin.spark.DepInterpreter,org.apache.zeppelin.markdown.Markdown,org.apache.zeppelin.angular.AngularInterpreter,org.apache.zeppelin.flink.FlinkInterpreter"
 
+
+
+
+#
+#
+#
+#
+
+
+
+default["lightdm"]["service_name"] = "lightdm"
+default["lightdm"]["sysconfig_file"] = "/etc/sysconfig/displaymanager"
+default["lightdm"]["users_file"] = "/etc/lightdm/users.conf"
+default["lightdm"]["keys_file"] = "/etc/lightdm/keys.conf"
+default["lightdm"]["config_file"] = "/etc/lightdm/lightdm.conf"
+default["lightdm"]["minimum_uid"] = 1000
+default["lightdm"]["hidden_users"] = %w(nobody)
+default["lightdm"]["hidden_shells"] = %w(/bin/false /sbin/nologin)
+default["lightdm"]["keyrings"] = {}
+
+
+#
+# LDAP
+#
+default['ldap']['enabled']                           = "false"
+default['ldap']['group_mapping']                     = ""
+default['ldap']['user_id']                           = "uid"
+default['ldap']['user_givenName']                    = "givenName"
+default['ldap']['user_surname']                      = "sn"
+default['ldap']['user_email']                        = "mail"
+default['ldap']['user_search_filter']                = "uid=%s"
+default['ldap']['group_search_filter']               = "member=%d"
+default['ldap']['attr_binary']                       = "java.naming.ldap.attributes.binary"
+default['ldap']['group_target']                      = "cn"
+default['ldap']['dyn_group_target']                  = "memberOf"
+default['ldap']['user_dn']                           = ""
+default['ldap']['group_dn']                          = ""
+default['ldap']['account_status']                    = 4
+
+#LDAP External JNDI Resource
+default['ldap']['provider_url']                      = ""
+default['ldap']['jndilookupname']                    = ""
+default['ldap']['attr_binary_val']                   = "entryUUID"
+default['ldap']['security_auth']                     = "none"
+default['ldap']['security_principal']                = ""
+default['ldap']['security_credentials']              = ""
+default['ldap']['referral']                          = "follow"
+default['ldap']['additional_props']                  = ""

@@ -46,9 +46,9 @@ recipe  "hopsworks::slave", "Hopsworks master instance that will store only an i
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
-
 recipe  "hopsworks::purge", "Deletes glassfish installation."
-
+recipe  "hopsworks::hopssite", "Install hopssite on current vm"
+recipe  "hopsworks::dela", "Register dela on current vm"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -98,6 +98,10 @@ attribute "hopsworks/smtp_port",
 
 attribute "hopsworks/smtp_ssl_port",
           :description => "SSL port of SMTP server (default is 465)",
+          :type => 'string'
+
+attribute "hopsworks/alert_email_addrs",
+          :description => "Comma-separated list of email addresses that will receive emails for alerts in Hopsworks",
           :type => 'string'
 
 attribute "hopsworks/admin/user",
@@ -190,6 +194,9 @@ attribute "hopsworks/max_stack_size",
           :description => "glassfish/max_stack_size",
           :type => 'string'
 
+attribute "hopsworks/http_logs/enabled",
+          :description => "Enable logging of HTTP requests and dump to HDFS",
+          :type => 'string'
 
 attribute "hopsworks/max_perm_size",
           :description => "glassfish/max_perm_size",
@@ -866,6 +873,10 @@ attribute "hops/hdfs/blocksize",
           :description => "HDFS Blocksize (128k, 512m, 1g, etc). Default 128m.",
           :type => 'string'
 
+attribute "hops/hdfs/umask",
+          :description => "Set the default HDFS umask (default: 0022).",
+          :type => 'string'
+
 attribute "hops/format",
           :description => "Format HDFS, Run 'hdfs namenode -format",
           :type => 'string'
@@ -880,6 +891,10 @@ attribute "hops/nn/name_dir",
 
 attribute "hops/dn/data_dir",
           :description => "The directory in which Hadoop's DataNodes store their data",
+          :type => 'string'
+
+attribute "hops/dn/data_dir_permissions",
+          :description => "The permissions for the directory in which Hadoop's DataNodes store their data (default: 700)",
           :type => 'string'
 
 attribute "hops/yarn/nodemanager_hb_ms",
@@ -1771,12 +1786,16 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
-attribute "hopsworks/dela/demo",
-          :description => "Enable demo specific defaults(connect to hopssite mirror). 'false' (default)",
+attribute "hopsworks/hopssite/version",
+          :description => "Enable hopssite default versions: hops, hops-demo or bbc5",
           :type => 'string'
 
 attribute "hopsworks/dela/enabled",
           :description => "'true' to enable dela services, otherwise 'false' (default)",
+          :type => 'string'
+
+attribute "hopsworks/dela/client",
+          :description => "'BASE_CLIENT' to disable upload services, otherwise 'FULL_CLIENT' (default)",
           :type => 'string'
 
 attribute "hopsworks/dela/cluster_http_port",
@@ -1811,6 +1830,11 @@ attribute "hopsworks/hopssite/domain",
 attribute "hopsworks/hopssite/port",
           :description => "Dela hops site port",
           :type => 'string'
+
+attribute "hopsworks/hopssite/register_port",
+          :description => "Dela hops site port used for cert registration",
+          :type => 'string'
+
 
 attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
@@ -1973,3 +1997,94 @@ attribute "smtp/email_password",
           :required => "required",
           :type => 'string'
 
+#
+# LDAP
+#
+
+attribute "ldap/enabled",
+          :description => "Enable ldap auth. 'false' (default)",
+          :type => 'string'
+
+attribute "ldap/group_mapping",
+          :description => "LDAP group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
+          :type => 'string'
+
+attribute "ldap/user_id",
+          :description => "The login field used by ldap. 'uid' (default)",
+          :type => 'string'
+
+attribute "ldap/user_givenName",
+          :description => "Given name field of ldap 'givenName' (default)",
+          :type => 'string'
+
+attribute "ldap/user_surname",
+          :description => "Surname field of ldap. 'sn' (default)",
+          :type => 'string'
+
+attribute "ldap/user_email",
+          :description => "Email field of ldap. 'mail' (default)",
+          :type => 'string'
+
+attribute "ldap/user_search_filter",
+          :description => "LDAP user search filter. 'uid=%s' (default)",
+          :type => 'string'
+
+attribute "ldap/group_search_filter",
+          :description => "LDAP group search filter. 'member=%d' (default)",
+          :type => 'string'
+
+attribute "ldap/attr_binary",
+          :description => "LDAP global Unique Identity Code of the object attribute. 'java.naming.ldap.attributes.binary' (default)",
+          :type => 'string'
+
+attribute "ldap/group_target",
+          :description => "LDAP search result group target 'cn' (default)",
+          :type => 'string'
+
+attribute "ldap/dyn_group_target",
+          :description => "LDAP search result dynamic group target 'memberOf' (default)",
+          :type => 'string'
+
+attribute "ldap/user_dn",
+          :description => "LDAP baseDN. '' (default)",
+          :type => 'string'
+
+attribute "ldap/group_dn",
+          :description => "LDAP groupDN. '' (default)",
+          :type => 'string'
+
+attribute "ldap/account_status",
+          :description => "Hopsworks account status given for new LDAP user. '4' activated account (default)",
+          :type => 'string'
+#LDAP External JNDI Resource
+attribute "ldap/provider_url",
+          :description => "LDAP provider url. ",
+          :type => 'string'
+
+attribute "ldap/jndilookupname",
+          :description => "LDAP jndi lookup name. ",
+          :type => 'string'
+
+attribute "ldap/attr_binary_val",
+          :description => "LDAP global Unique Identity Code of the user object. 'entryUUID' (default)",
+          :type => 'string'
+
+attribute "ldap/security_auth",
+          :description => "LDAP security auth type. 'none' (default) possible values ('none', 'simple', 'sasl_mech')",
+          :type => 'string'
+
+attribute "ldap/security_principal",
+          :description => "LDAP security principal. '' (default)",
+          :type => 'string'
+
+attribute "ldap/security_credentials",
+          :description => "LDAP security credentials. '' (default)",
+          :type => 'string'
+
+attribute "ldap/referral",
+          :description => "LDAP used to redirect a client's request to another server . 'follow' (default) possible values ('ignore', 'follow', 'throw')",
+          :type => 'string'
+
+attribute "ldap/additional_props",
+          :description => "LDAP additional properties. '' (default)",
+          :type => 'string'
