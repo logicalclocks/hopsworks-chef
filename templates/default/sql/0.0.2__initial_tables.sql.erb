@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `address` (
     FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `user_group` (
+CREATE TABLE IF NOT EXISTS `user_group` (
     `uid` INT(11) NOT NULL,
     `gid` INT(11) NOT NULL,
     PRIMARY KEY (`uid`,`gid`),
@@ -150,8 +150,6 @@ CREATE TABLE IF NOT EXISTS `project_team` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-
-
 CREATE TABLE IF NOT EXISTS `jupyter_settings` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
@@ -182,8 +180,26 @@ CREATE TABLE IF NOT EXISTS `jupyter_settings` (
   KEY secret_idx(`secret`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-
-
+CREATE TABLE IF NOT EXISTS `tf_serving` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `host_ip` VARCHAR(255) DEFAULT NULL,
+  `port` INT(11) DEFAULT NULL,
+  `pid` BIGINT DEFAULT NULL,
+  `status` VARCHAR(50) NOT NULL,
+  `project_id` INT(11) NOT NULL,
+  `hdfs_user_id` int(11) NOT NULL,
+  `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `model_name` VARCHAR(255) NOT NULL,
+  `hdfs_model_path` VARCHAR(255) NOT NULL,
+  `version` INT(11) NOT NULL,
+  `secret` VARCHAR(255) NOT NULL,
+  `enable_batching` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hdfs_user_idx` (`hdfs_user_id`),
+  CONSTRAINT Serving_Constraint UNIQUE(project_id, hdfs_user_id, model_name),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `schema_topics` (
   `name` VARCHAR(255) NOT NULL,

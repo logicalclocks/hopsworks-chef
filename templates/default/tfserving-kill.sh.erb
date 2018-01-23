@@ -43,4 +43,7 @@ if [ $? -ne 0 ] ; then
 	kill_named
     fi    
 fi
+
+sudo rm -rf ${SECRET_DIR}
+
 exit $?
