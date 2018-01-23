@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `notes` VARCHAR(500)  DEFAULT '-',
     `mobile` VARCHAR(15)  DEFAULT '-',
     `max_num_projects` INT(11) NOT NULL,
+    `num_active_projects` INT(11) NOT NULL DEFAULT '0',    
     `num_created_projects` INT(11) NOT NULL DEFAULT '0',
     `two_factor` tinyint(1) NOT NULL DEFAULT '1',
     `tours_state` tinyint(1) NOT NULL DEFAULT '0',
