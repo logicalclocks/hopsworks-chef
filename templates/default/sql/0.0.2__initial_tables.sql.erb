@@ -980,7 +980,7 @@ CREATE OR REPLACE VIEW `users_groups` AS
     `u`.`email` AS `email`,
     `g`.`group_name` AS `group_name`
     from
-    ((`people_group` `ug` join `users` `u` on((`u`.`uid` = `ug`.`uid`))) join `bbc_group` `g` on((`g`.`gid` = `ug`.`gid`)));
+    ((`user_group` `ug` join `users` `u` on((`u`.`uid` = `ug`.`uid`))) join `bbc_group` `g` on((`g`.`gid` = `ug`.`gid`)));
 
 
 
