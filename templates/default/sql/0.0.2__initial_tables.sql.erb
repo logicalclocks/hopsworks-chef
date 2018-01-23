@@ -969,7 +969,6 @@ CREATE TABLE IF NOT EXISTS `cluster_cert` (
 -- End Dela tables
 --
 
-
 -- VIEWS --------------
 -- ---------------------
 
@@ -985,3 +984,16 @@ CREATE OR REPLACE VIEW `users_groups` AS
 
 
 CREATE OR REPLACE VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`));
+
+--
+-- LDAP tables
+--
+CREATE TABLE IF NOT EXISTS `ldap_user` (
+  `entry_uuid` VARCHAR(128) NOT NULL,
+  `auth_key` VARCHAR(64) NOT NULL,
+  `uid` INT(11) NOT NULL,
+  PRIMARY KEY (`entry_uuid`),
+  UNIQUE KEY `uid_UNIQUE` (`uid`),
+  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
