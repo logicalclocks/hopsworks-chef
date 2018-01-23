@@ -188,7 +188,7 @@ default['hopssite']['max_retries']                     = 5
 #
 # Hopssite cert
 #
-default['hopssite']['cert']['email']                   = node['hopssite']['user'] 
+default['hopssite']['cert']['email']                   = node['hopssite']['user']
 default['hopssite']['cert']['o']                       = node['hopssite']['cert']['email'].split("@")[0]
 default['hopssite']['cert']['ou']                      = node['hopssite']['cert']['email'].split("@")[1]
 default['hopssite']['cert']['cn']                      = node['hopssite']['cert']['o'] + "_" + node['hopssite']['cert']['ou']
@@ -245,3 +245,32 @@ default["lightdm"]["minimum_uid"] = 1000
 default["lightdm"]["hidden_users"] = %w(nobody)
 default["lightdm"]["hidden_shells"] = %w(/bin/false /sbin/nologin)
 default["lightdm"]["keyrings"] = {}
+
+
+#
+# LDAP
+#
+default['ldap']['enabled']                           = "false"
+default['ldap']['group_mapping']                     = ""
+default['ldap']['user_id']                           = "uid"
+default['ldap']['user_givenName']                    = "givenName"
+default['ldap']['user_surname']                      = "sn"
+default['ldap']['user_email']                        = "mail"
+default['ldap']['user_search_filter']                = "uid=%s"
+default['ldap']['group_search_filter']               = "member=%d"
+default['ldap']['attr_binary']                       = "java.naming.ldap.attributes.binary"
+default['ldap']['group_target']                      = "cn"
+default['ldap']['dyn_group_target']                  = "memberOf"
+default['ldap']['user_dn']                           = ""
+default['ldap']['group_dn']                          = ""
+default['ldap']['account_status']                    = 4
+
+#LDAP External JNDI Resource
+default['ldap']['provider_url']                      = ""
+default['ldap']['jndilookupname']                    = ""
+default['ldap']['attr_binary_val']                   = "entryUUID"
+default['ldap']['security_auth']                     = "none"
+default['ldap']['security_principal']                = ""
+default['ldap']['security_credentials']              = ""
+default['ldap']['referral']                          = "follow"
+default['ldap']['additional_props']                  = ""

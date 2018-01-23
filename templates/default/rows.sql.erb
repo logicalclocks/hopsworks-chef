@@ -288,3 +288,22 @@ INSERT INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
 
 
 INSERT INTO variables VALUES ("alert_email_addrs", "<%= node['hopsworks']['alert_email_addrs'] %>");
+
+--
+-- LDAP
+--
+
+INSERT INTO variables VALUES ("ldap_auth", "<%= node['ldap']['enabled'] %>");
+INSERT INTO variables VALUES ("ldap_group_mapping", "<%= node['ldap']['group_mapping'] %>");
+INSERT INTO variables VALUES ("ldap_user_id", "<%= node['ldap']['user_id'] %>");
+INSERT INTO variables VALUES ("ldap_user_givenName", "<%= node['ldap']['user_givenName'] %>");
+INSERT INTO variables VALUES ("ldap_user_surname", "<%= node['ldap']['user_surname'] %>");
+INSERT INTO variables VALUES ("ldap_user_email", "<%= node['ldap']['user_email'] %>");
+INSERT INTO variables VALUES ("ldap_user_search_filter", "<%= node['ldap']['user_search_filter'] %>");
+INSERT INTO variables VALUES ("ldap_group_search_filter", "<%= node['ldap']['group_search_filter'] %>");
+INSERT INTO variables VALUES ("ldap_attr_binary", "<%= node['ldap']['attr_binary'] %>");
+INSERT INTO variables VALUES ("ldap_group_target", "<%= node['ldap']['group_target'] %>");
+INSERT INTO variables VALUES ("ldap_dyn_group_target", "<%= node['ldap']['dyn_group_target'] %>");
+INSERT INTO variables VALUES ("ldap_user_dn", "<%= node['ldap']['user_dn'] %>");
+INSERT INTO variables VALUES ("ldap_group_dn", "<%= node['ldap']['group_dn'] %>");
+INSERT INTO variables VALUES ("ldap_account_status", "<%= node['ldap']['account_status'] %>");

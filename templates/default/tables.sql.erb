@@ -881,7 +881,7 @@ CREATE TABLE `roles` (
   `startTime` bigint(20) DEFAULT NULL,
   `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
+  FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `commands` (
@@ -1087,3 +1087,15 @@ CREATE TABLE `cluster_cert` (
 --
 -- End Dela tables
 --
+
+--
+-- LDAP tables
+--
+CREATE TABLE `ldap_user` (
+  `entry_uuid` VARCHAR(128) NOT NULL,
+  `auth_key` VARCHAR(64) NOT NULL,
+  `uid` INT(11) NOT NULL,
+  PRIMARY KEY (`entry_uuid`),
+  UNIQUE KEY `uid_UNIQUE` (`uid`),
+  FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
