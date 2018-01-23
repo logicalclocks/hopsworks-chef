@@ -254,9 +254,6 @@ default["lightdm"]["hidden_users"] = %w(nobody)
 default["lightdm"]["hidden_shells"] = %w(/bin/false /sbin/nologin)
 default["lightdm"]["keyrings"] = {}
 
-<<<<<<< HEAD
-=======
-
 #
 # LDAP
 #
@@ -284,4 +281,3 @@ default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
 default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
->>>>>>> 4f15547da6e6492bf03717dc9d662341ca67c8fd
