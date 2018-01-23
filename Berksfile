@@ -6,9 +6,9 @@ metadata
 cookbook 'java'
 cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
 cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
-cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
+cookbook 'hops', github: "tkakantousis/hops-hadoop-chef", branch: "HOPSWORKS-415"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
-cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
+cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "HOPSWORKS-415"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
