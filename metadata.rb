@@ -134,6 +134,10 @@ attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
 
+attribute "hopsworks/http_secure_enabled",
+          :description => "Indicates if there is an HTTPS listener enabled",
+          :type => 'string'
+
 attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
