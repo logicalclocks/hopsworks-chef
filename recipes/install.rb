@@ -335,12 +335,15 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
 end
 
 
-# if node['glassfish']['port'] == 80
-#   authbind_port "AuthBind GlassFish Port 80" do
-#     port 80
-#     user node['glassfish']['user']
-#   end
-# end
+case node['platform']
+ when 'debian', 'ubuntu'
+ if node['glassfish']['port'] == 80
+   authbind_port "AuthBind GlassFish Port 80" do
+     port 80
+     user node['glassfish']['user']
+   end
+ end
+end
 
 include_recipe "hopsworks::authbind"
 
