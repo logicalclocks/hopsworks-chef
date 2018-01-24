@@ -162,10 +162,7 @@ when "rhel"
   end
 end
 
-
-
-
-
+include_recipe "hopsworks::authbind"
 
 
 node.override = {
