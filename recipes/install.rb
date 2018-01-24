@@ -162,7 +162,6 @@ when "rhel"
   end
 end
 
-include_recipe "hopsworks::authbind"
 
 
 node.override = {
@@ -343,6 +342,7 @@ end
 #   end
 # end
 
+include_recipe "hopsworks::authbind"
 
 case node['platform']
 when "rhel"
