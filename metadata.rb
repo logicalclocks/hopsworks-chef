@@ -300,6 +300,10 @@ attribute "install/upgrade",
           :description => "User to upgrade the software",
           :type => "string"
 
+attribute "install/addhost",
+          :description => "Indicates that this host will be added to an existing Hops cluster.",
+          :type => "string"
+
 attribute "hopsworks/monitor_max_status_poll_try",
           :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
           :type => 'string'

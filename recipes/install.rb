@@ -580,6 +580,15 @@ template "#{theDomain}/bin/tfserving-kill.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/anaconda-prepare.sh" do
+  source "anaconda-prepare.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -672,6 +681,7 @@ template "/etc/sudoers.d/glassfish" do
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
+              :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
               :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
   action :create
