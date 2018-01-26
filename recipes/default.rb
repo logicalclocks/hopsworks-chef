@@ -476,7 +476,7 @@ props =  {
    username username
    admin_port admin_port
    secure false
-   classname "se.kth.bbc.crealm.CustomAuthRealm"
+   classname "io.hops.crealm.CustomAuthRealm"
  end
 
 
