@@ -14,9 +14,9 @@ include_attribute "hive2"
 
 default['hopsworks']['version']                  = "0.1.0"
 
-# array of previous versions of hopsworks (used for upgrading SQL)
-# comma-separated string of versions
-# E.g., ["0.1.1, 0.1.2"]
+# Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
+# comma-separated string of previous versions hopsworks (not including the current version)
+# E.g., "0.1.1, 0.1.2"
 default['hopsworks']['versions']                 = ""
 
 default['glassfish']['variant']                  = "payara"

@@ -343,7 +343,7 @@ for version in versions do
   #end
   
   template "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
-    source "sql/#{version}__undo.sql.erb"
+    source "sql/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     action :create_if_missing
