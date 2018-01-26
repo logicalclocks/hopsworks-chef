@@ -719,6 +719,7 @@ CREATE TABLE IF NOT EXISTS `hosts` (
   `private_ip` varchar(15) DEFAULT NULL,
   `public_ip` varchar(15) DEFAULT NULL,
   `agent_password` varchar(25) DEFAULT NULL,
+  `has_gpus` tinyint(1) DEFAULT '0',
   `registered` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY (`hostname`),
