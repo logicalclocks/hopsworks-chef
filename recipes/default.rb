@@ -241,7 +241,7 @@ end
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 previous_version=""
 if versions.any?
-   previous_version=verions.last
+   previous_version=versions.last
 end
 versions.push(node['hopsworks']['version'])
 
