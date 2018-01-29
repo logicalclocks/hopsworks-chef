@@ -244,8 +244,8 @@ if versions.any?
    previous_version=versions.last
 end
 
-flyway_version = node['hopsworks']['version']
-flyway_version.gsub!(/-SNAPSHOT/, "")
+myVersion = node['hopsworks']['version']
+flyway_version = myVersion.sub("-SNAPSHOT", "")
 versions.push(flyway_version)
 
 for version in versions do
