@@ -58,6 +58,7 @@ glassfish_deployable "hopsworks-ear" do
   keep_state true  
   async_replication false
   retries 1
+  enabled true  
 end
 
 
@@ -76,6 +77,7 @@ glassfish_deployable "hopsworks" do
   keep_state true  
   async_replication false
   retries 1
+  enabled true
 end
 
 glassfish_deployable "hopsworks-ca" do
@@ -92,4 +94,5 @@ glassfish_deployable "hopsworks-ca" do
   keep_state true  
   async_replication false
   retries 1
+  enabled true
 end
