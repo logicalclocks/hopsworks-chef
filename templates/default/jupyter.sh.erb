@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [killhard pid] [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -29,10 +29,10 @@ if [ "$1" == "kill" ] ; then
     fi
 
     # Sanity checks for injection attacks
-    if [ ! -d "$2" ] ; then
-	echo "Invalid JUPYTER_HOME directory: $2"
-	exit 1
-    fi
+    #    if [ ! -d "$2" ] ; then
+    #	echo "Invalid JUPYTER_HOME directory: $2"
+    #	exit 1
+    #    fi
 
     # Check that the port is an int (and not some injection attack)
     re='^[0-9]+$'
@@ -47,12 +47,16 @@ if [ "$1" == "kill" ] ; then
       help
     fi
 
-     
+    # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'jupyter'
     su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $3 $4"
-     
 
     # Remove all the directories in the home jupyter folder for this project-user.
-    sudo rm -rf ${2}/../*
+    if [ "$2" != "" ] ; then
+	# Try and make sure some silly directory is not deleted, that this
+	if [[ $2 = *"hops/jupyter/Projects"* ]]; then
+            sudo rm -rf ${2}/../*
+	fi
+    fi
     
 elif [ "$1" == "start" ] ; then
 
@@ -150,16 +154,7 @@ elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
     sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 
-# killhard PID    
-elif [ "$1" == "killhard" ] ; then
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep $2
-    if [ $? -ne 0 ] ; then
-	echo "Error killing PID: $2"
-	echo "Are you trying to kill a non jupyter-notebook process?"
-	exit 12
-    fi
-    echo "Trying to 'kill -9' jupyter notebook with PID: $2"
-    sudo kill -9 $2 2>&1 > /dev/null
+# kernel-add
 elif [ "$1" == "kernel-add" ] ; then
     if [ $# -ne 3 ]; then
 	help

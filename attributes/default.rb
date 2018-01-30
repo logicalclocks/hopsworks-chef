@@ -1,3 +1,4 @@
+include_attribute "conda"
 include_attribute "kagent"
 include_attribute "ndb"
 include_attribute "hadoop_spark"
@@ -9,11 +10,14 @@ include_attribute "kkafka"
 include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
-include_attribute "conda"
 include_attribute "hive2"
 
-default['hopsworks']['version']                  = "0.1.0"
+default['hopsworks']['version']                  = "0.2.0-SNAPSHOT"
 
+# Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
+# comma-separated string of previous versions hopsworks (not including the current version)
+# E.g., "0.1.1, 0.1.2"
+default['hopsworks']['versions']                 = "0.1.0"
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
@@ -24,7 +28,7 @@ default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['port']                     = "8080"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
-default['glassfish']['version']                  = '4.1.2.173'
+default['glassfish']['version']                  = '4.1.2.174'
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
@@ -227,14 +231,18 @@ default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
 default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.livy.LivySparkInterpreter,org.apache.zeppelin.livy.LivyPySparkInterpreter,org.apache.zeppelin.livy.LivySparkRInterpreter,org.apache.zeppelin.livy.LivySparkSQLInterpreter,org.apache.zeppelin.spark.SparkInterpreter,org.apache.zeppelin.spark.PySparkInterpreter,org.apache.zeppelin.rinterpreter.RRepl,org.apache.zeppelin.rinterpreter.KnitR,org.apache.zeppelin.spark.SparkRInterpreter,org.apache.zeppelin.spark.SparkSqlInterpreter,org.apache.zeppelin.spark.DepInterpreter,org.apache.zeppelin.markdown.Markdown,org.apache.zeppelin.angular.AngularInterpreter,org.apache.zeppelin.flink.FlinkInterpreter"
 
 
+#
+# Database upgrades
+#
+# "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.0.3/flyway-commandline-5.0.3-linux-x64.tar.gz"
+default['hopsworks']['flyway']['version']              = "5.0.3"
+default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-#{node['hopsworks']['flyway']['version']}-linux-x64.tar.gz"
 
 
 #
 #
+# Virtulbox Image support
 #
-#
-
-
 
 default["lightdm"]["service_name"] = "lightdm"
 default["lightdm"]["sysconfig_file"] = "/etc/sysconfig/displaymanager"
@@ -245,7 +253,6 @@ default["lightdm"]["minimum_uid"] = 1000
 default["lightdm"]["hidden_users"] = %w(nobody)
 default["lightdm"]["hidden_shells"] = %w(/bin/false /sbin/nologin)
 default["lightdm"]["keyrings"] = {}
-
 
 #
 # LDAP
