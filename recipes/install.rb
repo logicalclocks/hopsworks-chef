@@ -90,6 +90,15 @@ user node['jupyter']['user'] do
   not_if "getent passwd #{node['jupyter']['user']}"
 end
 
+user node['tfserving']['user'] do
+  home node['tfserving']['base_dir']
+  gid node['tfserving']['group']
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node['tfserving']['user']}"
+end
+
 group node['kagent']['certs_group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
