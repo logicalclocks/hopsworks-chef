@@ -31,16 +31,18 @@ function kill_named {
 echo "Killing input pid: $PID"
 kill $PID 2>&1 > /dev/null
 if [ $? -ne 0 ] ; then
-    PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
-    if [ -f $PID_FILE ] ; then
-	PID=`cat $PID_FILE`
-	echo "Killing pid: $PID"
+    if [ "${JUPYTER_HOME}" != "" ] ; then
+      PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+      if [ -f $PID_FILE ] ; then
+        PID=`cat $PID_FILE`
+        echo "Killing pid: $PID"
 	kill $PID 2>&1 > /dev/null
 	if [ $? -ne 0 ] ; then
 	    kill_named
 	fi
-    else
+      else
 	kill_named
-    fi    
+      fi
+    fi
 fi
 exit $?

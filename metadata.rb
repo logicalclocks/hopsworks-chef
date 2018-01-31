@@ -46,6 +46,8 @@ recipe  "hopsworks::slave", "Hopsworks master instance that will store only an i
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
+recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
+
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
 recipe  "hopsworks::dela", "Register dela on current vm"
@@ -292,6 +294,14 @@ attribute "install/ssl",
 
 attribute "install/cleanup_downloads",
           :description => "Remove any zipped binaries that were downloaded and used to install services",
+          :type => "string"
+
+attribute "install/upgrade",
+          :description => "User to upgrade the software",
+          :type => "string"
+
+attribute "install/addhost",
+          :description => "Indicates that this host will be added to an existing Hops cluster.",
           :type => "string"
 
 attribute "hopsworks/monitor_max_status_poll_try",
