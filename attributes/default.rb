@@ -54,7 +54,7 @@ default['hopsworks']['http_logs']['enabled']     = "true"
 
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-2.0.jar"
+default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-0.3.0.jar"
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
