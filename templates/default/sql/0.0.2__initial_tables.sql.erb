@@ -189,6 +189,7 @@ CREATE TABLE IF NOT EXISTS `tf_serving` (
   `project_id` INT(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `creator` VARCHAR(150) NOT NULL,
   `model_name` VARCHAR(255) NOT NULL,
   `hdfs_model_path` VARCHAR(255) NOT NULL,
   `version` INT(11) NOT NULL,
@@ -196,9 +197,10 @@ CREATE TABLE IF NOT EXISTS `tf_serving` (
   `enable_batching` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),
-  CONSTRAINT Serving_Constraint UNIQUE(project_id, hdfs_user_id, model_name),
+  CONSTRAINT Serving_Constraint UNIQUE(project_id, model_name),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `schema_topics` (
