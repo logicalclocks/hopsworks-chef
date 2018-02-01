@@ -4,7 +4,7 @@ WAIT_START=20
 MODEL_NAME=$1
 MODEL_VERSION=$2
 TFSERVING_HDFS_DIR=$3
-HADOOP_HOME=/srv/hops/hadoop
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
 PORT=$4
 SECRET_DIR=$5
 ENABLE_BATCHING=$6
@@ -76,7 +76,7 @@ cd $SECRET_DIR
 
 mkdir ${MODELDIR}
 
-/srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
+# /srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
 
 setsid tensorflow_model_server --port=$PORT --model_name=${MODEL_NAME} --model_base_path=${MODELDIR}/${MODEL_NAME} --enable_batching=$ENABLE_BATCHING --file_system_poll_wait_seconds=$FILE_SYSTEM_POLLING_INTERVAL_SECS </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE

@@ -91,7 +91,6 @@ user node['jupyter']['user'] do
 end
 
 user node['tfserving']['user'] do
-  home node['tfserving']['base_dir']
   gid node['tfserving']['group']
   action :create
   shell "/bin/bash"

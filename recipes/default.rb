@@ -1198,7 +1198,12 @@ directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
   action :create
 end
 
-
+directory node['hopsworks']['staging_dir'] + "/serving"  do
+  owner node['tfserving']['user']
+  group node['hopsworks']['group']
+  mode "0330"
+  action :create
+end
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
