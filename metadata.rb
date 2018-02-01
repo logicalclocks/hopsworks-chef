@@ -1551,6 +1551,22 @@ attribute "ndb/BackupDataDir",
           :description => "Directory to store mysql cluster backups in",
           :type => 'string'
 
+attribute "ndb/remote_backup_host",
+          :description => "Hostname of the machine where the backups will be stored",
+          :type => 'string'
+
+attribute "ndb/remote_backup_user",
+          :description => "User on the remote backup machine. SSH access should be configured",
+          :type => 'string'
+
+attribute "ndb/remote_backup_dir",
+          :description => "Directory on the remote backup machine that the archives will be stored",
+          :type => 'string'
+
+attribute "ndb/local_backup_dir",
+          :description => "Directory on the local MGM machine where backups will temporarily be stored",
+          :type => 'string'
+
 attribute "mysql/user",
           :description => "User that runs mysql server",
           :required => "required",
