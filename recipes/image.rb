@@ -63,3 +63,9 @@ service "lightdm" do
   service_name node["lightdm"]["service_name"]
   action [:enable, :start]
 end
+
+
+mount "/vagrant" do
+  action :disable
+  ignore_failure true
+end
