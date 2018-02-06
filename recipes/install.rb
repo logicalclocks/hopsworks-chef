@@ -152,7 +152,7 @@ when "rhel"
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
-    source node['download_url'] + "/dtrx-7.1.tar.gz"
+    source node['download_url'] + "/#{node['dtrx']['version']}"
     mode 0755
     action :create
   end
