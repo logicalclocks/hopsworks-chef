@@ -139,7 +139,7 @@ end
 
 case node['platform_family']
 when "debian"
-
+  
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end

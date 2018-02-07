@@ -19,7 +19,15 @@ if node['glassfish']['port'] == 80
          perl -pi -e 's/8080/80/g' #{node['glassfish']['domains_dir']}/domain1/config/domain.xml
      EOF
       end
-      
+
+  # bash "authbind_install" do
+  #   user "root"
+  #   code <<-EOF
+  #    wget https://s3.amazonaws.com/aaronsilber/public/authbind-2.1.1-0.1.x86_64.rpm
+  #    rpm -Uvh authbind-2.1.1-0.1.x86_64.rpm
+  #   EOF
+  #   only_if { "#{node['hopsworks']['port']}" == "80" }
+  # end
     end
       bash "authbind-common" do
         user "root"
