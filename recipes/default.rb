@@ -326,7 +326,8 @@ for version in versions do
          :dela_ip => dela_ip,
          :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-         :nonconda_hosts_list => nonconda_hosts_list
+         :nonconda_hosts_list => nonconda_hosts_list,
+         :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
     })
     action :create
   end
@@ -559,7 +560,7 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 end
 
-if node['ldap']['enabled'].eql? "true"
+if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
   ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
   ldap_provider_url=node['ldap']['provider_url']
@@ -568,6 +569,7 @@ if node['ldap']['enabled'].eql? "true"
   ldap_sec_auth=node['ldap']['security_auth']
   ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
   ldap_sec_principal=node['ldap']['security_principal']
+  ldap_sec_principal=ldap_sec_principal.gsub('=', '\\\\\=')
   ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":SECURITY_PRINCIPAL=#{ldap_sec_principal}"
   ldap_sec_credentials=node['ldap']['security_credentials']
   ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":SECURITY_CREDENTIALS=#{ldap_sec_credentials}"
@@ -582,6 +584,30 @@ if node['ldap']['enabled'].eql? "true"
      username username
      admin_port admin_port
      secure false
+     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jndi-resources | grep 'ldap/LdapResource'"
+  end
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty? 
+  krb_conf_path = node['kerberos']['krb_conf_path']
+  remote_file "#{theDomain}/config/krb5.conf" do
+    source "file:///#{krb_conf_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create_if_missing
+  end
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty? 
+  key_tab_path = node['kerberos']['krb_server_key_tab_path']
+  ket_tab_name = node['kerberos']['krb_server_key_tab_name']
+  remote_file "#{theDomain}/config/#{ket_tab_name}" do
+    source "file:///#{key_tab_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create_if_missing
   end
 end
 
