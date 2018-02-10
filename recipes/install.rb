@@ -39,7 +39,8 @@ when "redhat"
          mkdir -p /etc/authbind/byport
          touch /etc/authbind/byport/80
          chmod 550 /etc/authbind/byport/80
-         perl -pi -e 's/8080/80/g' #{node['glassfish']['domains_dir']}/domain1/config/domain.xml
+         touch /etc/authbind/byport/443
+         chmod 550 /etc/authbind/byport/443
      EOF
     end
   end        
