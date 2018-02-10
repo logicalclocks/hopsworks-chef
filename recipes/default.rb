@@ -18,10 +18,6 @@ end
 
 include_recipe "java"
 
-##
-## default['rb']
-##
-
 # If the install.rb recipe was in a different run, the location of the install dir may
 # not be correct. install_dir is updated by install.rb, but not persisted, so we need to
 # reset it
@@ -335,7 +331,7 @@ for version in versions do
                 :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
                 :hive_scratchdir => node['hive2']['scratch_dir']
            })
-    action :create_if_missing    
+    action :create
   end
 
   #
@@ -349,7 +345,7 @@ for version in versions do
     source "sql/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
-    action :create_if_missing
+    action :create
   end
 
 end
@@ -1042,7 +1038,6 @@ if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
   pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
   bash "jupyter-pixiedust" do
     user "root"
-#    node['jupyter']['user']
     retries 1
     ignore_failure true
     code <<-EOF
