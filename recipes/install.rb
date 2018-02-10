@@ -23,6 +23,30 @@ bash "systemd_reload_for_glassfish_failures" do
 end
 
 
+case node['platform_family']
+when "redhat"
+  if node['glassfish']['port'] == 80
+    bash "authbind-centos" do
+      user "root"
+      code <<-EOF
+         cd /tmp
+         wget http://ftp.debian.org/debian/pool/main/a/authbind/authbind_2.1.1.tar.gz
+         tar zxf http://ftp.debian.org/debian/pool/main/a/authbind/authbind_2.1.1.tar.gz
+         cd authbind-2.1.1
+         make
+         make install
+         ln -s /usr/local/bin/authbind /usr/bin/authbind
+         mkdir -p /etc/authbind/byport
+         touch /etc/authbind/byport/80
+         chmod 550 /etc/authbind/byport/80
+         perl -pi -e 's/8080/80/g' #{node['glassfish']['domains_dir']}/domain1/config/domain.xml
+     EOF
+    end
+  end        
+end
+
+
+
 if node['hopsworks']['systemd'] == "true"
   systemd = true
 else
@@ -170,17 +194,7 @@ when "rhel"
   end
 end
 
-case node['platform']
- when 'debian', 'ubuntu'
- if node['glassfish']['port'] == 80
-   authbind_port "AuthBind GlassFish Port 80" do
-     port 80
-     user node['glassfish']['user']
-   end
- end
-end
 
-include_recipe "hopsworks::authbind"
 
 
 node.override = {
@@ -353,6 +367,16 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   action :create
 end
 
+case node['platform']
+ when 'debian', 'ubuntu'
+ if node['glassfish']['port'] == 80
+   authbind_port "AuthBind GlassFish Port 80" do
+     port 80
+     user node['glassfish']['user']
+   end
+ end
+end
+include_recipe "hopsworks::authbind"
 
 
 case node['platform']
