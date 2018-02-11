@@ -41,4 +41,3 @@ cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 cookbook 'sysctl', '~> 0.10.0'
 
-
