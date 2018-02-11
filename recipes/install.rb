@@ -29,9 +29,10 @@ when "redhat"
     bash "authbind-centos" do
       user "root"
       code <<-EOF
-         cd /tmp
-         wget http://ftp.debian.org/debian/pool/main/a/authbind/authbind_2.1.1.tar.gz
-         tar zxf http://ftp.debian.org/debian/pool/main/a/authbind/authbind_2.1.1.tar.gz
+         cd #{Chef::Config['file_cache_path']}
+         rm -f authbind_2.1.1.tar.gz
+         wget #{node['download_url']}/authbind_2.1.1.tar.gz
+         tar authbind_2.1.1.tar.gz
          cd authbind-2.1.1
          make
          make install
@@ -42,6 +43,7 @@ when "redhat"
          touch /etc/authbind/byport/443
          chmod 550 /etc/authbind/byport/443
      EOF
+       not_if { ::File.exists?("/usr/bin/authbind") }      
     end
   end        
 end
