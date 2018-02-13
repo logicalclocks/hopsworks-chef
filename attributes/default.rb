@@ -36,7 +36,7 @@ default['glassfish']['base_dir']                 = node['glassfish']['install_di
 default['hopsworks']['domains_dir']              = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/domains" : node['install']['dir'] + "/domains"
 default['hopsworks']['domain_name']              = "domain1"
 default['hopsworks']['domain_truststore']        = "cacerts.jks"
-default['hopsworks']['domain_truststore_path']   = node['hopsworks']['domains_dir'] + "/" node['hopsworks']['domain_name'] + "/config"
+default['hopsworks']['domain_truststore_path']   = node['hopsworks']['domains_dir'] + "/" + node['hopsworks']['domain_name'] + "/config"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
