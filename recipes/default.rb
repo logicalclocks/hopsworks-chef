@@ -1,5 +1,5 @@
 
-domain_name="domain1"
+domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 
@@ -936,16 +936,6 @@ template "/bin/hopsworks-2fa" do
 hopsworks_certs "generate-certs" do
   action :generate
 end
-
-#Copy glassfish truststore to hdfs under hdfs user so that HopsUtil can make https requests to HopsWorks
-hops_hdfs_directory "#{domains_dir}/#{domain_name}/config/cacerts.jks" do
-    action :put_as_superuser
-    owner node['hops']['user']
-    group node['hops']['group']
-    mode "0444"
-    dest "/user/#{node['hops']['user']}/cacerts.jks"
-  end
-
 
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"

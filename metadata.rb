@@ -132,6 +132,14 @@ attribute "hopsworks/domains_dir",
           :description => "Installation directory for the glassfish domains",
           :type => 'string'
 
+attribute "hopsworks/domain_truststore",
+          :description => "Name of the glassfish truststore for this domain.",
+          :type => 'string'
+
+attribute "hopsworks/domain_truststore_path",
+          :description => "Path where domain_truststore is stored",
+          :type => 'string'
+
 attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
