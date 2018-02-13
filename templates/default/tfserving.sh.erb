@@ -17,6 +17,7 @@ TFSERVING_USER=<%= node['tfserving']['user'] %>
 TFSERVING_GROUP=<%= node['tfserving']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -43,7 +44,9 @@ if [ "$1" == "kill" ] ; then
     fi
      
     su ${TFSERVING_USER} -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4 $5"
-    
+
+    rm -rf $5
+
 elif [ "$1" == "start" ] ; then
 
     if [ $# -ne 7 ]; then
@@ -91,6 +94,8 @@ elif [ "$1" == "start" ] ; then
     
     # Launch the tensorflow_serving process as user 'tfserving'
     su ${TFSERVING_USER} -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $3 $4 $5 $6 $7"
+
+    su ${HOPSWORKS_USER} -c "${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $4/$2 $SECRET_DIR/tfserving/model"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then

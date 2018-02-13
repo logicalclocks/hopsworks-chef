@@ -1,16 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 #
 # For the Hopsworks Virtualbox Instance, autologin and autostart a browser.
 # Only for Ubuntu 
@@ -75,4 +62,10 @@ end
 service "lightdm" do
   service_name node["lightdm"]["service_name"]
   action [:enable, :start]
+end
+
+
+mount "/vagrant" do
+  action :disable
+  ignore_failure true
 end

@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.3.0"
+version          "0.4.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -46,6 +46,8 @@ recipe  "hopsworks::slave", "Hopsworks master instance that will store only an i
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
+recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
+
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
 recipe  "hopsworks::dela", "Register dela on current vm"
@@ -296,6 +298,14 @@ attribute "install/ssl",
 
 attribute "install/cleanup_downloads",
           :description => "Remove any zipped binaries that were downloaded and used to install services",
+          :type => "string"
+
+attribute "install/upgrade",
+          :description => "User to upgrade the software",
+          :type => "string"
+
+attribute "install/addhost",
+          :description => "Indicates that this host will be added to an existing Hops cluster.",
           :type => "string"
 
 attribute "hopsworks/monitor_max_status_poll_try",
@@ -1543,6 +1553,22 @@ attribute "ndb/group",
 
 attribute "ndb/BackupDataDir",
           :description => "Directory to store mysql cluster backups in",
+          :type => 'string'
+
+attribute "ndb/remote_backup_host",
+          :description => "Hostname of the machine where the backups will be stored",
+          :type => 'string'
+
+attribute "ndb/remote_backup_user",
+          :description => "User on the remote backup machine. SSH access should be configured",
+          :type => 'string'
+
+attribute "ndb/remote_backup_dir",
+          :description => "Directory on the remote backup machine that the archives will be stored",
+          :type => 'string'
+
+attribute "ndb/local_backup_dir",
+          :description => "Directory on the local MGM machine where backups will temporarily be stored",
           :type => 'string'
 
 attribute "mysql/user",

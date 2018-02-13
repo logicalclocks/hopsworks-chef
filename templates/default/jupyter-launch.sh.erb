@@ -27,7 +27,6 @@ function kill_named {
     return $res
 }
 
-
 if [ $# -ne 7 ]; then
   help
 fi
@@ -47,7 +46,7 @@ export PYLIB=${ANACONDA_ENV}/lib
 
 export HADOOP_VERSION=<%= node['hops']['version'] %>
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-
+export HADOOP_CLIENT_OPTS="-D fs.permissions.umask-mode=0002"
 
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 
