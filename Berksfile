@@ -11,7 +11,7 @@ cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "downloader"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "downloader"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
-cookbook 'livy', github: "hopshadoop/livy-chef", branch: "downloader"
+cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "downloader"
 
