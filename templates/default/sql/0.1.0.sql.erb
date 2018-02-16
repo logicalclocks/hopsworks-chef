@@ -235,7 +235,7 @@ INSERT INTO variables VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks
 
 --
 
-INSERT INTO variables VALUES ("hopsworks_endpoint","<%= node['hostname'] %>");
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= node['hostname'] %>:<%= node['hopsworks']['port'] %>");
 
 -- INSERT INTO variables VALUES ("http_secure_enabled","<%= node['hopsworks']['http_secure_enabled'] %>");
 

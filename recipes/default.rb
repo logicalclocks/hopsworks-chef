@@ -1321,3 +1321,8 @@ end
 
 include_recipe "tensorflow::serving"
 
+link "#{node['kagent']['certs_dir']}/cacerts.jks" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  to "#{theDomain}/config/cacerts.jks}"
+end
