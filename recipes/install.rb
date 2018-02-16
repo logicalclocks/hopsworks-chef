@@ -2,7 +2,7 @@ require 'json'
 require 'base64'
 require 'digest'
 
-private_ip=my_private_ip()
+my_ip = my_private_ip()
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
 domain_name="domain1"
@@ -12,7 +12,6 @@ admin_port = node['glassfish']['admin']['port']
 web_port = node['glassfish']['port']
 mysql_user=node['mysql']['user']
 mysql_password=node['mysql']['password']
-mysql_host = my_private_ip()
 password_file = "#{theDomain}_admin_passwd"
 
 bash "systemd_reload_for_glassfish_failures" do
@@ -281,7 +280,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{mysql_host}:3306/",
+                'Url' => "jdbc:mysql://#{my_ip}:3306/",
                 'User' => mysql_user,
                 'Password' => mysql_password
               }
@@ -302,7 +301,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{mysql_host}:3306/glassfish_timers",
+                'Url' => "jdbc:mysql://#{my_ip}:3306/glassfish_timers",
                 'User' => mysql_user,
                 'Password' => mysql_password
               }
@@ -857,7 +856,7 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   owner node['glassfish']['user']
   mode 0750
   variables({
-              :mysql_host => mysql_host
+              :mysql_host => my_ip
             })
   action :create  
 end
