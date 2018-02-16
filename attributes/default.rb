@@ -93,7 +93,7 @@ default['hopsworks']['master']['password']          = "adminpw"
 
 default['hopsworks']['public_ips']                  = ['10.0.2.15']
 default['hopsworks']['private_ips']                 = ['10.0.2.15']
-default['hopsworks']['http_secure_enabled']         = "1"
+#default['hopsworks']['http_secure_enabled']         = "1"
 
 default['kagent']['enabled']                     = "false"
 
