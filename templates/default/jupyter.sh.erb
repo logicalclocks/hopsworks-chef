@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -60,7 +60,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 8 ]; then
+    if [ $# -ne 9 ]; then
 	help
     fi
 
@@ -82,7 +82,12 @@ elif [ "$1" == "start" ] ; then
 	echo "Invalid Anaconda environment directory: $5"
 	exit 3
     fi
-    
+
+    if [ ! -d "${9}" ] ; then
+	echo "Invalid certificates directory: $9"
+	exit 3
+    fi
+	
     re='^[0-9]+$'
     if ! [[ $6 =~ $re ]] ; then
       echo "error: Not a number" >&2
@@ -135,7 +140,7 @@ elif [ "$1" == "start" ] ; then
     sudo chmod -R 770 $2
      
     # Launch the jupyter notebook
-    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
+    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
