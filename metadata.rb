@@ -196,6 +196,10 @@ attribute "hopsworks/port",
           :description => "Port that webserver will listen on",
           :type => 'string'
 
+attribute "hopsworks/port/tls",
+          :description => "TLS Port that webserver will listen on",
+          :type => 'string'
+
 attribute "hopsworks/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'
