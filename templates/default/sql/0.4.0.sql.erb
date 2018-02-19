@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS `remote_material_references` (
 DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
 INSERT INTO `hopsworks`.`variables` VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
-UPDATE `hopsworks`.`variables` SET `value`='<%= node['hostname'] %>:<%= node['hopsworks']['port']['tls'] %>' WHERE `id`='hopsworks_endpoint';
+UPDATE `hopsworks`.`variables` SET `value`='<%= node['hostname'] %>:<%= node['hopsworks']['secure_port'] %>' WHERE `id`='hopsworks_endpoint';

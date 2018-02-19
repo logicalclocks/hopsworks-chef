@@ -196,7 +196,7 @@ attribute "hopsworks/port",
           :description => "Port that webserver will listen on",
           :type => 'string'
 
-attribute "hopsworks/port/tls",
+attribute "hopsworks/secure_port",
           :description => "TLS Port that webserver will listen on",
           :type => 'string'
 
