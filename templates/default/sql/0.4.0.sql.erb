@@ -2,3 +2,12 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
 INSERT INTO variables VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
 UPDATE `hopsworks`.`variables` SET `value`=`<%= node['hostname'] %>:<%= node['hopsworks']['port'] %>` WHERE `id`='hopsworks_endpoint';
+
+CREATE TABLE IF NOT EXISTS `remote_material_references` (
+       `username` VARCHAR(128) NOT NULL,
+       `path` VARCHAR(255) NOT NULL,
+       `references` INT(11) NOT NULL DEFAULT 0,
+       `lock` INT(1) NOT NULL DEFAULT 0,
+       `lock_id` VARCHAR(30) NOT NULL DEFAULT "",
+       PRIMARY KEY (`username`, `path`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
