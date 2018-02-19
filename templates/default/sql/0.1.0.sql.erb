@@ -175,6 +175,8 @@ INSERT INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
 
 INSERT INTO variables VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
 
+INSERT INTO variables VALUES ("glassfish_cert", "false");
+
 INSERT INTO variables VALUES ("certs_dir", "<%= node['certs']['dir'] %>");
 
 -- --------------------------------------------------------
@@ -210,8 +212,6 @@ INSERT INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_
 
 INSERT INTO variables VALUES ("hopsutil_version", "<%= node['hops']['hopsutil_version'] %>");
 
-INSERT INTO variables VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
-
 -- --------------------------------------------------------
 --
 -- dela
@@ -235,9 +235,7 @@ INSERT INTO variables VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks
 
 --
 
-INSERT INTO variables VALUES ("hopsworks_endpoint","<%= node['hostname'] %>:<%= node['hopsworks']['port'] %>");
-
--- INSERT INTO variables VALUES ("http_secure_enabled","<%= node['hopsworks']['http_secure_enabled'] %>");
+INSERT INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
 
 INSERT INTO variables VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
 
@@ -272,7 +270,7 @@ INSERT INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
 INSERT INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
 INSERT INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
 
---INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
+INSERT INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
 
 --
 -- Hive

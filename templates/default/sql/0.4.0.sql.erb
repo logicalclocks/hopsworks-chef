@@ -1,0 +1,4 @@
+DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
+INSERT INTO variables VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
+UPDATE `hopsworks`.`variables` SET `value`=`<%= node['hostname'] %>:<%= node['hopsworks']['port'] %>` WHERE `id`='hopsworks_endpoint';
