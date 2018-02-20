@@ -1,5 +1,5 @@
 
-domain_name="domain1"
+domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 
@@ -1321,3 +1321,8 @@ end
 
 include_recipe "tensorflow::serving"
 
+link "#{node['kagent']['certs_dir']}/cacerts.jks" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  to "#{theDomain}/config/cacerts.jks"
+end

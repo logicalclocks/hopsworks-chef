@@ -6,3 +6,9 @@ CREATE TABLE IF NOT EXISTS `remote_material_references` (
        `lock_id` VARCHAR(30) NOT NULL DEFAULT "",
        PRIMARY KEY (`username`, `path`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
+INSERT INTO `hopsworks`.`variables` VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
+UPDATE `hopsworks`.`variables` SET `value`='<%= node['hostname'] %>:<%= node['hopsworks']['secure_port'] %>' WHERE `id`='hopsworks_endpoint';
+UPDATE `hopsworks`.`variables` SET `value`='<%= node['hops']['hopsutil_version'] %>' WHERE `id`='hopsutil_version';

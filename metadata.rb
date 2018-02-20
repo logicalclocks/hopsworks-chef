@@ -132,9 +132,21 @@ attribute "hopsworks/domains_dir",
           :description => "Installation directory for the glassfish domains",
           :type => 'string'
 
+attribute "hopsworks/domain_truststore",
+          :description => "Name of the glassfish truststore for this domain.",
+          :type => 'string'
+
+attribute "hopsworks/domain_truststore_path",
+          :description => "Path where domain_truststore is stored",
+          :type => 'string'
+
 attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
+
+#attribute "hopsworks/http_secure_enabled",
+#          :description => "Indicates if there is an HTTPS listener enabled",
+#          :type => 'string'
 
 attribute "download_url",
           :description => "URL for downloading binaries",
@@ -182,6 +194,10 @@ attribute "glassfish/group",
 
 attribute "hopsworks/port",
           :description => "Port that webserver will listen on",
+          :type => 'string'
+
+attribute "hopsworks/secure_port",
+          :description => "TLS Port that webserver will listen on",
           :type => 'string'
 
 attribute "hopsworks/max_mem",

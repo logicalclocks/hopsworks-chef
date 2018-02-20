@@ -26,6 +26,7 @@ default['hopsworks']['group']                    = node['install']['user'].empty
 default['glassfish']['group']                    = node['hopsworks']['group']
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['port']                     = "8080"
+default['hopsworks']['secure_port']              = "8181"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
 default['glassfish']['version']                  = '4.1.2.174'
@@ -34,6 +35,7 @@ default['hopsworks']['dir']                      = node['install']['dir'].empty?
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
 default['glassfish']['base_dir']                 = node['glassfish']['install_dir'] + "/glassfish"
 default['hopsworks']['domains_dir']              = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/domains" : node['install']['dir'] + "/domains"
+default['hopsworks']['domain_name']              = "domain1"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
@@ -88,8 +90,9 @@ default['hopsworks']['cert']['c']                   = "se"
 default['hopsworks']['cert']['password']            = "changeit"
 default['hopsworks']['master']['password']          = "adminpw"
 
-default['hopsworks']['public_ips']               = ['10.0.2.15']
-default['hopsworks']['private_ips']              = ['10.0.2.15']
+default['hopsworks']['public_ips']                  = ['10.0.2.15']
+default['hopsworks']['private_ips']                 = ['10.0.2.15']
+#default['hopsworks']['http_secure_enabled']         = "1"
 
 default['kagent']['enabled']                     = "false"
 
@@ -184,7 +187,7 @@ default['hopssite']['dir']                             = node['install']['dir'].
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
 default['hopssite']['user']                            = node['hopsworks']['email']
 default['hopssite']['password']                        = "admin"
-default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/domain1"
+default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/" + node['hopsworks']['domain_name']
 default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
 default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
 default['hopssite']['retry_interval']                  = 60

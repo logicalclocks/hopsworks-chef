@@ -1,1 +1,4 @@
+INSERT INTO variables VALUES ("rest_port","<%= node['hopsworks']['port'] %>");
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsexamples_version';
+UPDATE `hopsworks`.`variables` SET `value`=`<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>` WHERE `id`='hopsworks_endpoint';
 DROP TABLE IF EXISTS `remote_material_references`;
