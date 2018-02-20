@@ -1,3 +1,5 @@
+ALTER TABLE `flyway_schema_history` engine=ndb;
+
 CREATE TABLE IF NOT EXISTS `bbc_group` (
     `group_name` VARCHAR(20) NOT NULL,
     `group_desc` VARCHAR(200) DEFAULT NULL,

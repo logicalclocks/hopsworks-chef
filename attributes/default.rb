@@ -56,7 +56,8 @@ default['hopsworks']['http_logs']['enabled']     = "true"
 
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_url']                = "#{node['download_url']}/otp-auth-0.3.0.jar"
+default['hopsworks']['cauth_version']            = "otp-auth-0.3.0.jar"
+default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
@@ -205,7 +206,7 @@ default['hopssite']['cert']['c']                       = node['hopsworks']['cert
 # Dela end
 
 default['hopsworks']['max_gpu_request_size']           = 1
-default['hopsworks']['max_cpu_request_size']           = 1
+default['hopsworks']['max_cpu_request_size']           = 1 
 
 default['hopsworks']['anaconda_enabled']               = node['kagent']['conda_enabled']
 
@@ -284,3 +285,5 @@ default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
 default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
+
+default['dtrx']['version']                           = "dtrx-7.1.tar.gz"

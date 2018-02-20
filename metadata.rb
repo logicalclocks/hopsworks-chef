@@ -763,7 +763,11 @@ attribute "hops/use_systemd",
           :type => "string"
 
 attribute "hops/format",
-          :description => "Format HDFS",
+          :description => "'true' to format HDFS, 'false' to skip formatting",
+          :type => 'string'
+
+attribute "hops/reformat",
+          :description => "'true' to re-format HDFS, 'false' to skip re-formatting",
           :type => 'string'
 
 attribute "hops/nm/log_dir",

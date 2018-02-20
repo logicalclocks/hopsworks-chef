@@ -29,8 +29,7 @@ action :reload_sysv do
   bash 'reload_sysv' do
     user "root"
     code <<-EOF
-          service glassfish-domain1 stop
-          service glassfish-domain1 start
+          service glassfish-domain1 restart
     EOF
   end
 

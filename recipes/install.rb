@@ -2,7 +2,7 @@ require 'json'
 require 'base64'
 require 'digest'
 
-private_ip=my_private_ip()
+my_ip = my_private_ip()
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
 domain_name="domain1"
@@ -12,7 +12,6 @@ admin_port = node['glassfish']['admin']['port']
 web_port = node['glassfish']['port']
 mysql_user=node['mysql']['user']
 mysql_password=node['mysql']['password']
-mysql_host = my_private_ip()
 password_file = "#{theDomain}_admin_passwd"
 
 bash "systemd_reload_for_glassfish_failures" do
@@ -21,6 +20,33 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
   EOF
 end
+
+
+case node['platform_family']
+when "redhat"
+  if node['glassfish']['port'] == 80
+    bash "authbind-centos" do
+      user "root"
+      code <<-EOF
+         cd #{Chef::Config['file_cache_path']}
+         rm -f authbind_2.1.1.tar.gz
+         wget #{node['download_url']}/authbind_2.1.1.tar.gz
+         tar authbind_2.1.1.tar.gz
+         cd authbind-2.1.1
+         make
+         make install
+         ln -s /usr/local/bin/authbind /usr/bin/authbind
+         mkdir -p /etc/authbind/byport
+         touch /etc/authbind/byport/80
+         chmod 550 /etc/authbind/byport/80
+         touch /etc/authbind/byport/443
+         chmod 550 /etc/authbind/byport/443
+     EOF
+       not_if { ::File.exists?("/usr/bin/authbind") }      
+    end
+  end        
+end
+
 
 
 if node['hopsworks']['systemd'] == "true"
@@ -139,7 +165,7 @@ end
 
 case node['platform_family']
 when "debian"
-
+  
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end
@@ -152,7 +178,7 @@ when "rhel"
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
-    source node['download_url'] + "/dtrx-7.1.tar.gz"
+    source node['download_url'] + "/#{node['dtrx']['version']}"
     mode 0755
     action :create
   end
@@ -169,6 +195,7 @@ when "rhel"
     not_if "which dtrx"
   end
 end
+
 
 
 
@@ -253,7 +280,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{mysql_host}:3306/",
+                'Url' => "jdbc:mysql://#{my_ip}:3306/",
                 'User' => mysql_user,
                 'Password' => mysql_password
               }
@@ -274,7 +301,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{mysql_host}:3306/glassfish_timers",
+                'Url' => "jdbc:mysql://#{my_ip}:3306/glassfish_timers",
                 'User' => mysql_user,
                 'Password' => mysql_password
               }
@@ -342,7 +369,6 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   action :create
 end
 
-
 case node['platform']
  when 'debian', 'ubuntu'
  if node['glassfish']['port'] == 80
@@ -352,8 +378,8 @@ case node['platform']
    end
  end
 end
-
 include_recipe "hopsworks::authbind"
+
 
 case node['platform']
 when "rhel"
@@ -830,7 +856,7 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   owner node['glassfish']['user']
   mode 0750
   variables({
-              :mysql_host => mysql_host
+              :mysql_host => my_ip
             })
   action :create  
 end
