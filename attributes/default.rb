@@ -12,7 +12,7 @@ include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
 
-default['hopsworks']['version']                  = "0.4.0-SNAPSHOT"
+default['hopsworks']['version']                  = "0.4.0"
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
 # comma-separated string of previous versions hopsworks (not including the current version)
@@ -206,7 +206,7 @@ default['hopssite']['cert']['c']                       = node['hopsworks']['cert
 # Dela end
 
 default['hopsworks']['max_gpu_request_size']           = 1
-default['hopsworks']['max_cpu_request_size']           = 1 
+default['hopsworks']['max_cpu_request_size']           = 1
 
 default['hopsworks']['anaconda_enabled']               = node['kagent']['conda_enabled']
 
