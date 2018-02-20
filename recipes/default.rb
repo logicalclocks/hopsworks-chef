@@ -941,6 +941,22 @@ template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/pipsearch.sh" do
+  source "pipsearch.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
+template "#{domains_dir}/#{domain_name}/bin/list_environment.sh" do
+  source "list_environment.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
   source "condalist.sh.erb"
   owner node['glassfish']['user']
