@@ -15,8 +15,8 @@ UPDATE `hopsworks`.`variables` SET `value`='<%= node['hops']['hopsutil_version']
 
 
 
-ALTER TABLE python_dep ADD COLUMN `install_type` INT(11) NOT NULL;
-ALTER TABLE python_dep ADD COLUMN `machine_type` INT(11) NOT NULL;
+ALTER TABLE python_dep ADD COLUMN `install_type` INT(11) NOT NULL DEFAULT 1;
+ALTER TABLE python_dep ADD COLUMN `machine_type` INT(11) NOT NULL DEFAULT 0;
 ALTER TABLE python_dep DROP INDEX dependency;
 ALTER TABLE python_dep ADD UNIQUE KEY (`dependency`, `version`, `install_type`, `repo_id`, `machine_type`);
 
