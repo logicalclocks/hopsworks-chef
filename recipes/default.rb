@@ -1337,3 +1337,21 @@ link "#{node['kagent']['certs_dir']}/cacerts.jks" do
   group node['glassfish']['group']
   to "#{theDomain}/config/cacerts.jks"
 end
+
+
+homedir = node['kagent']['user'].eql?("root") ? "/root" : "/home/#{node['kagent']['user']}"
+Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
+
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  action :generate  
+end  
+
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  cb_name "hopsworks"
+  cb_recipe "default"  
+  action :return_publickey
+end  

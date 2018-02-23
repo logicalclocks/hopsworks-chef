@@ -174,7 +174,7 @@ when "debian"
 
 when "rhel"
   package "krb5-libs"
-
+  
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -619,6 +619,14 @@ template "#{theDomain}/bin/anaconda-prepare.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/kagent-restart.sh" do
+  source "kagent-restart.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "500"
   action :create
 end
 
