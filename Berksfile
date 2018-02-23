@@ -4,7 +4,7 @@ source 'https://supermarket.chef.io'
 metadata
 
 cookbook 'java'
-cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
+cookbook 'conda', github: "hopshadoop/conda-chef", branch: "kagent_fixes"
 cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "kagent_fixes"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
