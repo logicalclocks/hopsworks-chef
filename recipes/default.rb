@@ -1339,7 +1339,7 @@ link "#{node['kagent']['certs_dir']}/cacerts.jks" do
 end
 
 
-homedir = node['kagent']['user'].eql?("root") ? "/root" : "/home/#{node['kagent']['user']}"
+homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
 
 kagent_keys "#{homedir}" do
