@@ -16,7 +16,9 @@ password_file = "#{theDomain}_admin_passwd"
 
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
+  ignore_failure true
   code <<-EOF
+    systemctl stop glassfish-#{domain_name}
     systemctl daemon-reload
   EOF
 end
@@ -320,17 +322,19 @@ node.override = {
 
 
 
-installed = "#{node['glassfish']['base_dir']}/.installed"
-if ::File.exists?( "#{installed}" ) == false
+#installed = "#{node['glassfish']['base_dir']}/.installed"
+#if ::File.exists?( "#{installed}" ) == false
 
   package 'openssl'
 
   include_recipe 'glassfish::default'
   include_recipe 'glassfish::attribute_driven_domain'
 
-  file "#{installed}" do # Mark that glassfish is installed
-    owner node['glassfish']['user']
-  end
+  # file "#{installed}" do # Mark that glassfish is installed
+  #   owner node['glassfish']['user']
+  # end
+
+#end
 
   cauth = File.basename(node['hopsworks']['cauth_url'])
 
@@ -342,8 +346,7 @@ if ::File.exists?( "#{installed}" ) == false
     action :create_if_missing
   end
 
-end
-
+  
 
 # If the install.rb recipe failed and is re-run, install_dir needs to reset it
 if node['glassfish']['install_dir'].include?("versions") == false
@@ -366,7 +369,7 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode '0755'
-  action :create
+  action :create_if_missing
 end
 
 case node['platform']
@@ -378,6 +381,8 @@ case node['platform']
    end
  end
 end
+
+
 include_recipe "hopsworks::authbind"
 
 
