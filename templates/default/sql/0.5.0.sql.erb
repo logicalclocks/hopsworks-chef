@@ -14,3 +14,5 @@ CREATE TABLE IF NOT EXISTS `system_commands` (
 ALTER TABLE `hopsworks`.`jobs` 
 DROP INDEX `name_idx` ,
 ADD UNIQUE INDEX `name_project_idx` (`name` ASC, `project_id` ASC);
+
+INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");

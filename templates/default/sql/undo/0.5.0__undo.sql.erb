@@ -3,3 +3,5 @@ DROP TABLE IF EXISTS `system_commands`;
 ALTER TABLE `hopsworks`.`jobs` 
 DROP INDEX `name_project_idx` ,
 ADD UNIQUE INDEX `name_idx` (`name` ASC);
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_interval';
