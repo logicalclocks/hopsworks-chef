@@ -321,30 +321,22 @@ node.override = {
 }
 
 
+include_recipe 'glassfish::default'
+package 'openssl'
 
-#installed = "#{node['glassfish']['base_dir']}/.installed"
-#if ::File.exists?( "#{installed}" ) == false
-
-  package 'openssl'
-
-  include_recipe 'glassfish::default'
+if ::Directory.exists?( "#{theDomain}/lib" ) == false
   include_recipe 'glassfish::attribute_driven_domain'
+end
 
-  # file "#{installed}" do # Mark that glassfish is installed
-  #   owner node['glassfish']['user']
-  # end
+cauth = File.basename(node['hopsworks']['cauth_url'])
 
-#end
-
-  cauth = File.basename(node['hopsworks']['cauth_url'])
-
-  remote_file "#{theDomain}/lib/#{cauth}"  do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    source node['hopsworks']['cauth_url']
-    mode 0755
-    action :create_if_missing
-  end
+remote_file "#{theDomain}/lib/#{cauth}"  do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['cauth_url']
+  mode 0755
+  action :create_if_missing
+end
 
   
 
