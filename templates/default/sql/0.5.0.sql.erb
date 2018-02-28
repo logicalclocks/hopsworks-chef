@@ -10,3 +10,7 @@ CREATE TABLE IF NOT EXISTS `system_commands` (
   KEY `host_id` (`host_id`),
   FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`jobs` 
+DROP INDEX `name_idx` ,
+ADD UNIQUE INDEX `name_project_idx` (`name` ASC, `project_id` ASC);
