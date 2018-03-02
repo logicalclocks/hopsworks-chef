@@ -324,7 +324,7 @@ node.override = {
 include_recipe 'glassfish::default'
 package 'openssl'
 
-if ::Directory.exists?( "#{theDomain}/lib" ) == false
+if ::File.directory?( "#{theDomain}/lib" ) == false
   include_recipe 'glassfish::attribute_driven_domain'
 end
 
