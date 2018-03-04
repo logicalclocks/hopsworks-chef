@@ -50,7 +50,7 @@ recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
-recipe  "hopsworks::dela", "Register dela on current vm"
+recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
 #######################################################################################
 # Required Attributes
 #######################################################################################
