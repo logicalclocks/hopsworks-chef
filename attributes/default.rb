@@ -78,6 +78,7 @@ default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #sem
 ## h: hours
 ## d: days
 default['hopsworks']['cert_mater_delay']         = "3m"
+default['hopsworks']['service_key_rotation_interval'] = "2d"
 
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
