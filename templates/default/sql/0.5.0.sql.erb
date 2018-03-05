@@ -15,4 +15,3 @@ ALTER TABLE `hopsworks`.`jobs`
 DROP INDEX `name_idx` ,
 ADD UNIQUE INDEX `name_project_idx` (`name` ASC, `project_id` ASC);
 
-INSERT INTO `hopsworks`.`variables` VALUES ("dela_client_type", "<%= node['hopsworks']['dela']['client'] %>");
