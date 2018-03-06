@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ $# -ne 5  ]; then
-    echo "Usage: $0 ca_file masterpassword extension csr_path generated_cert_path"
-    echo "Example: $0 /srv/hops/certs-dir/openssl-ca.cnf adminpw v3_intermediate_ca /tmp/123.csr /tmp/123.pem"
+if [ $# -ne 6  ]; then
+    echo "Usage: $0 ca_file masterpassword extension csr_path generated_cert_path valid_days"
+    echo "Example: $0 /srv/hops/certs-dir/openssl-ca.cnf adminpw v3_intermediate_ca /tmp/123.csr /tmp/123.pem 24"
  exit 1
 fi
 
@@ -14,9 +14,10 @@ MASTERPW="$2"
 EXTENSION="$3"
 CSR_PATH="$4"
 GENERATED_CERT_PATH="$5"
+VALID_DAYS="$6"
 
 openssl ca -batch -config $CA_FILE -passin pass:${MASTERPW} \
-        -extensions $EXTENSION -days 3650 -notext -md sha256 -in ${CSR_PATH} -out ${GENERATED_CERT_PATH}
+        -extensions $EXTENSION -days $VALID_DAYS -notext -md sha256 -in ${CSR_PATH} -out ${GENERATED_CERT_PATH}
 
 
 chmod +r ${GENERATED_CERT_PATH}

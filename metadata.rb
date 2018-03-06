@@ -50,7 +50,7 @@ recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
-recipe  "hopsworks::dela", "Register dela on current vm"
+recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -88,6 +88,10 @@ attribute "hopsworks/twofactor_auth",
 
 attribute "hopsworks/cert_mater_delay",
           :description => "Delay for the Certificate Materialization service of Hopsworks to delete the certificates from the local fs",
+          :type => 'string'
+
+attribute "hopsworks/service_key_rotation_interval",
+          :description => "Interval for Hops service certificates rotation",
           :type => 'string'
 
 attribute "hopsworks/smtp",
