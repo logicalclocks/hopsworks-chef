@@ -244,6 +244,14 @@ myVersion = node['hopsworks']['version']
 flyway_version = myVersion.sub("-SNAPSHOT", "")
 versions.push(flyway_version)
 
+condaRepo = 'defaults'
+
+if node['conda']['mirror_list'].empty? == false
+   repos = node['conda']['mirror_list'].split(/\s*,\s*/)   
+   condaRepo = repos[0]
+end  
+
+
 for version in versions do
 
   template "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
@@ -251,6 +259,7 @@ for version in versions do
     owner node['glassfish']['user']
     mode 0750
     variables({
+                :conda_repo => condaRepo,
                 :hosts => hosts,
                 :epipe_ip => epipe_ip,
                 :livy_ip => livy_ip,

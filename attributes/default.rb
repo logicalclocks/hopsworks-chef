@@ -12,7 +12,7 @@ include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
 
-default['hopsworks']['version']                  = "0.5.0-SNAPSHOT"
+default['hopsworks']['version']                  = "0.4.2-SNAPSHOT"
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
 # comma-separated string of previous versions hopsworks (not including the current version)
