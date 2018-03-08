@@ -17,3 +17,33 @@ ADD UNIQUE INDEX `name_project_idx` (`name` ASC, `project_id` ASC);
 
 INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");
 
+INSERT INTO `hopsworks`.`variables` VALUES ("conda_default_repo", "<%= @conda_repo %>");
+
+INSERT INTO `hopsworks`.`variables` VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
+
+
+CREATE TABLE IF NOT EXISTS `pia` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `project_id` INT(11) DEFAULT NULL,
+  `personal_data` VARCHAR(4000) NOT NULL,
+  `how_data_collected` VARCHAR(2000) NOT NULL,
+  `specified_explicit_legitimate` int(11) NOT NULL DEFAULT '0',
+  `consent_process` varchar(1000) DEFAULT NULL,
+  `consent_basis` varchar(1000) DEFAULT NULL,  
+  `data_minimized` int(11) NOT NULL DEFAULT '0',
+  `data_uptodate` int(11) NOT NULL DEFAULT '0',
+  `users_informed_how` varchar(500) NOT NULL,
+  `user_controls_data_collection_retention` varchar(500) NOT NULL,
+  `data_encrypted` int(11) NOT NULL DEFAULT '0',
+  `data_anonymized` int(11) NOT NULL DEFAULT '0',
+  `data_pseudonymized` int(11) NOT NULL DEFAULT '0',
+  `data_backedup` int(11) NOT NULL DEFAULT '0',
+  `data_security_measures` varchar(500) NOT NULL,
+  `data_portability_measure` varchar(500) NOT NULL,
+  `subject_access_rights` varchar(500) NOT NULL,
+  `risks` varchar(2000) NOT NULL,        
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
