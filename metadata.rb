@@ -156,6 +156,12 @@ attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
 
+
+attribute "hopsworks/cert/user_cert_valid_days",
+           :description => "How long in days will the user certs be valid. Default 12 days.",
+           :type => 'string'
+
+
 attribute "hopsworks/cert/password",
            :description => "password to glassfish certs",
            :type => 'string'

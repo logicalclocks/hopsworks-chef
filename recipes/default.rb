@@ -259,6 +259,7 @@ for version in versions do
     owner node['glassfish']['user']
     mode 0750
     variables({
+                :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
                 :conda_repo => condaRepo,
                 :hosts => hosts,
                 :epipe_ip => epipe_ip,

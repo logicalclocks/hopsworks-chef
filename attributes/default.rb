@@ -92,6 +92,10 @@ default['hopsworks']['cert']['c']                   = "se"
 default['hopsworks']['cert']['password']            = "changeit"
 default['hopsworks']['master']['password']          = "adminpw"
 
+
+
+default['hopsworks']['cert']['user_cert_valid_days'] = "12"
+
 default['hopsworks']['public_ips']                  = ['10.0.2.15']
 default['hopsworks']['private_ips']                 = ['10.0.2.15']
 #default['hopsworks']['http_secure_enabled']         = "1"
