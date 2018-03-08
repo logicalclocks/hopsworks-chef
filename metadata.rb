@@ -2144,3 +2144,12 @@ attribute "ldap/referral",
 attribute "ldap/additional_props",
           :description => "LDAP additional properties. '' (default)",
           :type => 'string'
+
+### Conda
+attribute "conda/mirror_list",
+          :description => "comma separated list of anaconda mirrors",
+          :type => "string"
+
+attribute "conda/use_defaults",
+          :description => "whether or not to add the defaults mirrors to the channels list (default yes)",
+          :type => "string"
