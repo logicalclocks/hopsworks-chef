@@ -17,3 +17,5 @@ COMMIT;
 ALTER TABLE `hopsworks`.`jobs`
 DROP INDEX `name_idx` ,
 ADD UNIQUE INDEX `name_project_idx` (`name` ASC, `project_id` ASC);
+
+INSERT INTO `hopsworks`.`variables` VALUES ("public_https_port", "<%= @public_https_port %>");

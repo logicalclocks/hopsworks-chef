@@ -324,6 +324,7 @@ for version in versions do
                 :dela_port => node['dela']['http_port'],
                 :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
                 :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
+                :public_https_port => node['hopsworks']['public_https_port'],
                 :recovery_path => node['hopsworks']['recovery_path'],
                 :verification_path => node['hopsworks']['verification_path'],
                 :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",

@@ -130,13 +130,13 @@ class Cert:
         pkey.generate_key(crypto.TYPE_RSA, 2048)
         # create certificate sign request
         req = crypto.X509Req()
-        req.get_subject().C  = "<%= node['hopssite']['cert']['c'] %>"
-        req.get_subject().CN = "<%= node['hopssite']['cert']['cn'] %>"
-        req.get_subject().ST = "<%= node['hopssite']['cert']['s'] %>"
-        req.get_subject().L  = "<%= node['hopssite']['cert']['l'] %>"
-        req.get_subject().O  = "<%= node['hopssite']['cert']['o'] %>"
-        req.get_subject().OU = "<%= node['hopssite']['cert']['ou'] %>"
-        req.get_subject().__setattr__("emailAddress", "<%= node['hopssite']['cert']['email'] %>")
+        req.get_subject().C  = cert_c
+        req.get_subject().CN = cert_cn
+        req.get_subject().ST = cert_s
+        req.get_subject().L  = cert_l
+        req.get_subject().O  = cert_o
+        req.get_subject().OU = cert_ou
+        req.get_subject().__setattr__("emailAddress", cert_email)
 
         req.set_pubkey(pkey)
         req.sign(pkey, 'sha256')
@@ -183,6 +183,14 @@ try:
     retry_interval = config.getfloat('hops-site', 'retry-interval')
     retries = config.getfloat('hops-site', 'max-retries')
     logging_level = config.get('hops-site', 'logging-level').upper()
+    cert_c = config.get('hops-site', 'cert_c')
+    cert_cn = config.get('hops-site', 'cert_cn')
+    cert_s = config.get('hops-site', 'cert_s')
+    cert_l = config.get('hops-site', 'cert_l')
+    cert_o = config.get('hops-site', 'cert_o')
+    cert_ou = config.get('hops-site', 'cert_ou')
+    cert_email = config.get('hops-site', 'cert_email')
+
 except Exception, e:
     print "Exception while reading {0}: {1}".format(CONFIG_FILE, e)
     sys.exit(1)
