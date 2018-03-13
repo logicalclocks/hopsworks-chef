@@ -67,7 +67,6 @@ default['hopsworks']['pixiedust']['enabled']        = "false"
 
 default['hopsworks']['admin']['user']               = "adminuser"
 default['hopsworks']['admin']['password']           = "adminpw"
-default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
