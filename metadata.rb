@@ -90,6 +90,10 @@ attribute "hopsworks/cert_mater_delay",
           :description => "Delay for the Certificate Materialization service of Hopsworks to delete the certificates from the local fs",
           :type => 'string'
 
+attribute "hopsworks/service_key_rotation_enabled",
+          :description => "Configuration option to enable/disable automatic service key rotation",
+          :type => 'string'
+
 attribute "hopsworks/service_key_rotation_interval",
           :description => "Interval for Hops service certificates rotation",
           :type => 'string'

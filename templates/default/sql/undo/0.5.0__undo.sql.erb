@@ -5,3 +5,4 @@ DROP INDEX `name_project_idx` ,
 ADD UNIQUE INDEX `name_idx` (`name` ASC);
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_interval';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
