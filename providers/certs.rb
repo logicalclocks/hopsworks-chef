@@ -48,7 +48,7 @@ bash 'certificateauthority' do
 
 	#6 Create the intermediate certificate
 # Done on client
-	[ -f intermediate/csr/intermediate.csr.pem ] || openssl req -new -sha256 -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermedtiateCA" \
+	[ -f intermediate/csr/intermediate.csr.pem ] || openssl req -new -sha256 -subj "/C=SE/ST=Sweden/L=Stockholm/O=SICS/CN=HopsIntermediateCA" \
       -key intermediate/private/intermediate.key.pem -passin pass:${KEYSTOREPW} -passout pass:${KEYSTOREPW} -out intermediate/csr/intermediate.csr.pem
 
 
@@ -74,6 +74,9 @@ bash 'certificateauthority' do
         #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
         echo "unique_subject = no \n" > intermediate/index.txt.attr
+        
+        # 10 Generate CRL for intermediate CA
+        openssl ca -config intermediate/openssl-intermediate.cnf -gencrl -out intermediate/crl/intermediate.crl.pem
     EOF
  not_if { ::File.exists?("#{ca_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
