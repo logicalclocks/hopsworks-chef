@@ -143,6 +143,7 @@ default['hopsworks']['encryption_password']      = "adminpw"
 #
 # Dela  - please do not change without consulting dela code
 #
+default['hopsworks']['public_https_port']              = node['hopsworks']['secure_port']
 default['hopsworks']['dela']['enabled']                = "false"
 default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
@@ -174,7 +175,7 @@ if(node['hopsworks']['hopssite']['version'].eql? "hops-demo")
 end
 if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
   default['hopsworks']['dela']['enabled']              = "true"
-  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
+  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
   default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
   default['hopsworks']['hopssite']['port']             = 43080
   default['hopsworks']['hopssite']['register_port']    = 8080

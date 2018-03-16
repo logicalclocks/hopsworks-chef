@@ -1840,6 +1840,10 @@ attribute "dela/dir",
           :type => 'string'
 
 # Hopsworks Dela
+attribute "hopsworks/public_https_port",
+          :description => "Hopsworks public https port",
+          :type => 'string'
+
 attribute "hopsworks/hopssite/version",
           :description => "Enable hopssite default versions: hops, hops-demo or bbc5",
           :type => 'string'
