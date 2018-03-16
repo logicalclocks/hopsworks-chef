@@ -70,6 +70,7 @@ default['hopsworks']['admin']['password']           = "adminpw"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
+default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
 ## s: seconds

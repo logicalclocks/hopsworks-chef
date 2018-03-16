@@ -636,6 +636,15 @@ glassfish_asadmin "set default-config.http-service.virtual-server.server.propert
    secure false
 end
 
+# Allow following symlinks from docroot
+glassfish_asadmin "set server-config.http-service.virtual-server.server.property.allowLinking=true" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
 # glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
 #    domain_name domain_name
 #    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -941,6 +950,15 @@ template "/bin/hopsworks-2fa" do
 
 hopsworks_certs "generate-certs" do
   action :generate
+  notifies :create, 'link[crl-symlink]', :immediately
+end
+
+# Create soft link from intermediateCA CRL to DOMAIN1/docroot
+link "crl-symlink" do
+  to "#{node['certs']['dir']}/intermediate/crl/intermediate.crl.pem"
+  target_file "#{domains_dir}/#{domain_name}/docroot/intermediate.crl.pem"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
 end
 
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
