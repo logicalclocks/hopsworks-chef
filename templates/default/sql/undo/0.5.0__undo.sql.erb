@@ -13,3 +13,4 @@ DROP TABLE IF EXISTS `pia`;
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `shutdown_level`;

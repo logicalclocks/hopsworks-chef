@@ -45,4 +45,3 @@ CREATE TABLE IF NOT EXISTS `pia` (
 INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `shutdown_level` INT NOT NULL DEFAULT 6;
-ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
