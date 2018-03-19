@@ -63,11 +63,6 @@ attribute "java/install_flavor",
           :display_name =>  "Oracle (default) or openjdk",
           :type => 'string'
 
-attribute "kapacitor/notify/email",
-          :description => "Email address. Recommended to use a gmail account",
-          :required => "required",
-          :type => 'string'
-
 attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
           :type => 'array'
@@ -2156,4 +2151,23 @@ attribute "conda/mirror_list",
 
 attribute "conda/use_defaults",
           :description => "whether or not to add the defaults mirrors to the channels list (default yes)",
+          :type => "string"
+
+### Kapacitor
+
+attribute "kapacitor/notify/email",
+          :description => "Email address. Recommended to use a gmail account",
+          :required => "required",
+          :type => 'string'
+
+attribute "kapacitor/slack_enabled",
+          :description => "Send notifications to slack",
+          :type => "string"
+
+attribute "kapacitor/slack_url",
+          :description => "Slack url hook.",
+          :type => "string"
+
+attribute "kapacitor/slack_channel",
+          :description => "Slack channel name",
           :type => "string"
