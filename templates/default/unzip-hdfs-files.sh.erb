@@ -14,7 +14,7 @@ hdfsFile="$2"
 IMPERSONATED_USERNAME=$3
 
 #FSM states: STAGING, UNZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
-fsmFile="$(dirname $1)/fsm-$(basename $1).txt"
+fsmFile="${workdir}/fsm.txt"
 
 function finish {
     rm -rf $workdir

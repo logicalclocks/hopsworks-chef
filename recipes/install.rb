@@ -648,6 +648,22 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/zip-hdfs-files.sh" do
+  source "zip-hdfs-files.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/zip-background.sh" do
+  source "zip-background.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
 template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   source "unzip-hdfs-files.sh.erb"
   owner node['glassfish']['user']
