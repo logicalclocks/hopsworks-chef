@@ -16,7 +16,9 @@ password_file = "#{theDomain}_admin_passwd"
 
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
+  ignore_failure true
   code <<-EOF
+    systemctl stop glassfish-#{domain_name}
     systemctl daemon-reload
   EOF
 end
@@ -174,7 +176,7 @@ when "debian"
 
 when "rhel"
   package "krb5-libs"
-
+  
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -319,31 +321,24 @@ node.override = {
 }
 
 
+include_recipe 'glassfish::default'
+package 'openssl'
 
-installed = "#{node['glassfish']['base_dir']}/.installed"
-if ::File.exists?( "#{installed}" ) == false
-
-  package 'openssl'
-
-  include_recipe 'glassfish::default'
+if ::File.directory?( "#{theDomain}/lib" ) == false
   include_recipe 'glassfish::attribute_driven_domain'
-
-  file "#{installed}" do # Mark that glassfish is installed
-    owner node['glassfish']['user']
-  end
-
-  cauth = File.basename(node['hopsworks']['cauth_url'])
-
-  remote_file "#{theDomain}/lib/#{cauth}"  do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    source node['hopsworks']['cauth_url']
-    mode 0755
-    action :create_if_missing
-  end
-
 end
 
+cauth = File.basename(node['hopsworks']['cauth_url'])
+
+remote_file "#{theDomain}/lib/#{cauth}"  do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['cauth_url']
+  mode 0755
+  action :create_if_missing
+end
+
+  
 
 # If the install.rb recipe failed and is re-run, install_dir needs to reset it
 if node['glassfish']['install_dir'].include?("versions") == false
@@ -366,7 +361,7 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode '0755'
-  action :create
+  action :create_if_missing
 end
 
 case node['platform']
@@ -378,6 +373,8 @@ case node['platform']
    end
  end
 end
+
+
 include_recipe "hopsworks::authbind"
 
 
@@ -619,6 +616,14 @@ template "#{theDomain}/bin/anaconda-prepare.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/kagent-restart.sh" do
+  source "kagent-restart.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "500"
   action :create
 end
 

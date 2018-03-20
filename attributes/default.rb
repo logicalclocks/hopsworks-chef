@@ -67,7 +67,6 @@ default['hopsworks']['pixiedust']['enabled']        = "false"
 
 default['hopsworks']['admin']['user']               = "adminuser"
 default['hopsworks']['admin']['password']           = "adminpw"
-default['glassfish']['cert']['password']            = "#{node['hopsworks']['admin']['password']}"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
@@ -92,6 +91,10 @@ default['hopsworks']['cert']['c']                   = "se"
 
 default['hopsworks']['cert']['password']            = "changeit"
 default['hopsworks']['master']['password']          = "adminpw"
+
+
+
+default['hopsworks']['cert']['user_cert_valid_days'] = "12"
 
 default['hopsworks']['public_ips']                  = ['10.0.2.15']
 default['hopsworks']['private_ips']                 = ['10.0.2.15']
