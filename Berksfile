@@ -5,7 +5,7 @@ metadata
 
 cookbook 'java'
 cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
-cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
+cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "mml"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
