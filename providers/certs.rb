@@ -13,6 +13,7 @@ bash 'certificateauthority' do
 
 	KEYSTOREPW=#{node['hopsworks']['master']['password']}
 
+        rm -f $HOME/.rnd
 	cd "#{ca_dir}"
         BASEDIR="#{ca_dir}"
 	chmod 700 private
@@ -76,7 +77,7 @@ bash 'certificateauthority' do
         echo "unique_subject = no \n" > intermediate/index.txt.attr
         
         # 10 Generate CRL for intermediate CA
-        openssl ca -config intermediate/openssl-intermediate.cnf -gencrl -out intermediate/crl/intermediate.crl.pem
+        openssl ca -config intermediate/openssl-intermediate.cnf -gencrl -passin pass:${KEYSTOREPW} -out intermediate/crl/intermediate.crl.pem
     EOF
  not_if { ::File.exists?("#{ca_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
