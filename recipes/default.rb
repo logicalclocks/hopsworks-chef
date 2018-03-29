@@ -225,12 +225,12 @@ if h.length > 0
 end
 
 hops_rpc_tls_val = "false"
-if node['hops']['rpc']['ssl'].eql? "true"
+if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
 end
 
 hdfs_ui_port = node['hops']['nn']['http_port']
-if node['hops']['rpc']['ssl'].eql? "true"
+if node['hops']['tls']['enabled'].eql? "true"
   hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
