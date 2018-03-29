@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e
+
+if [ $# -lt 5 ] ; then
+  echo "Usage: input_pb_file inputs outputs hdfs_user transform_rules"
+  exit 1
+fi
+
+INPUT_PB=$1
+shift
+t=`date '+%Y_%m_%d__%H_%M_%S'`
+shift
+INPUTS=$1
+shift
+OUTPUTS=$1
+shift
+HDFS_USER=$1
+shift
+TRANSFORM_RULES=$@
+
+
+cd <%= node['hopsworks']['staging_dir'] %>
+mkdir -p tmp
+cd tmp
+input_local=$(basename $INPUT_PB)
+extension="${input_local##*.}"
+filename="${input_local%.*}"
+output_local="${filename}-${t}.${extension}"
+hdfs_dir=$(dirname $INPUT_PB)
+
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal $INPUT_PB .
+
+#cd <%= node['tensorflow']['base_dir'] %>
+
+cd /home/<%= node['tensorflow']['user'] %>/tensorflow
+
+
+bazel-bin/tensorflow/tools/graph_transforms/transform_graph \
+--in_graph=<%= node['hopsworks']['staging_dir'] %>/tmp/$input_local \
+--out_graph=<%= node['hopsworks']['staging_dir'] %>/tmp/${output_local} \
+--inputs='$INPUTS' \
+--outputs='$OUTPUTS' \
+--transforms='
+$TRANSFORM_RULES
+'
+
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal <%= node['hopsworks']['staging_dir'] %>/tmp/${output_local} ${hdfs_dir}
+
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown ${HDFS_USER} ${hdfs_dir}/${output_local}

@@ -995,6 +995,15 @@ template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
 end
 
 
+template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
+  source "tensorflow_transform_graph.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
+
 
 bash 'enable_sso' do
   user "root"
