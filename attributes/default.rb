@@ -293,3 +293,5 @@ default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
+
+default['hopsworks']['kafka_max_num_topics']                   = '100'

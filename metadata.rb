@@ -265,14 +265,6 @@ attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
 
-attribute "hopsworks/kafka_num_replicas",
-          :description => "Default number of replicas for Kafka Topics.",
-          :type => 'string'
-
-attribute "hopsworks/kafka_num_partitions",
-          :description => "Default number of partitions for Kafka Topics.",
-          :type => 'string'
-
 attribute "hopsworks/encryption_password",
           :description => "Default master encryption password for storing secrets.",
           :type => 'string'
@@ -2173,4 +2165,19 @@ attribute "kapacitor/slack_url",
 
 attribute "kapacitor/slack_channel",
           :description => "Slack channel name",
+          :type => 'string'
+
+
+### Kafka
+
+attribute "hopsworks/kafka_max_num_topics",
+          :description => "Default max number of kafka topics per project",
+          :type => 'string'
+
+attribute "hopsworks/kafka_num_replicas",
+          :description => "Default number of replicas for Kafka Topics.",
+          :type => 'string'
+
+attribute "hopsworks/kafka_num_partitions",
+          :description => "Default number of partitions for Kafka Topics.",
           :type => 'string'
