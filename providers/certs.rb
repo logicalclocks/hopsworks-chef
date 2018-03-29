@@ -78,6 +78,7 @@ bash 'certificateauthority' do
         
         # 10 Generate CRL for intermediate CA
         openssl ca -config intermediate/openssl-intermediate.cnf -gencrl -passin pass:${KEYSTOREPW} -out intermediate/crl/intermediate.crl.pem
+	chown #{node['glassfish']['user']}:#{node['glassfish']['group']} intermediate/crl/intermediate.crl.pem
     EOF
  not_if { ::File.exists?("#{ca_dir}/intermediate/certs/ca-chain.cert.pem" ) }
 end
