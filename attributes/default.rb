@@ -11,6 +11,7 @@ include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
+include_attribute "hops"
 
 default['hopsworks']['version']                  = "0.5.0-SNAPSHOT"
 
