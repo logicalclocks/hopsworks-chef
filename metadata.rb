@@ -996,7 +996,7 @@ attribute "hops/cgroups",
           :description => "'true' to enable cgroups, else (default) 'false'",
           :type => "string"
 
-attribute "hops/rpc/ssl",
+attribute "hops/tls/enabled",
           :description => "'true' to enable ssl, 'false' to disable 'ssl'",
           :type => "string"
 
