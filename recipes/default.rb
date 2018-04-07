@@ -1318,15 +1318,14 @@ bash "jupyter-root-sparkmagic" do
    EOF
 end
 
-if vagrant_enabled == 1
-  bash "fix_owner_ship_pip_files" do
-    user 'root'
-    code <<-EOF
+
+bash "fix_owner_ship_pip_files" do
+  user 'root'
+  code <<-EOF
     if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
        chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
     fi
    EOF
-  end
 end
 
 
