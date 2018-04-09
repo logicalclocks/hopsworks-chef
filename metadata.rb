@@ -265,14 +265,6 @@ attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
 
-attribute "hopsworks/kafka_num_replicas",
-          :description => "Default number of replicas for Kafka Topics.",
-          :type => 'string'
-
-attribute "hopsworks/kafka_num_partitions",
-          :description => "Default number of partitions for Kafka Topics.",
-          :type => 'string'
-
 attribute "hopsworks/encryption_password",
           :description => "Default master encryption password for storing secrets.",
           :type => 'string'
@@ -2155,23 +2147,37 @@ attribute "conda/mirror_list",
 
 attribute "conda/use_defaults",
           :description => "whether or not to add the defaults mirrors to the channels list (default yes)",
-          :type => "string"
+          :type => 'string'
 
 ### Kapacitor
 
 attribute "kapacitor/notify/email",
           :description => "Email address. Recommended to use a gmail account",
-          :required => "required",
           :type => 'string'
 
 attribute "kapacitor/slack_enabled",
           :description => "Send notifications to slack",
-          :type => "string"
+          :type => 'string'
 
 attribute "kapacitor/slack_url",
           :description => "Slack url hook.",
-          :type => "string"
+          :type => 'string'
 
 attribute "kapacitor/slack_channel",
           :description => "Slack channel name",
-          :type => "string"
+          :type => 'string'
+
+
+### Kafka
+
+attribute "hopsworks/kafka_max_num_topics",
+          :description => "Default max number of kafka topics per project",
+          :type => 'string'
+
+attribute "hopsworks/kafka_num_replicas",
+          :description => "Default number of replicas for Kafka Topics.",
+          :type => 'string'
+
+attribute "hopsworks/kafka_num_partitions",
+          :description => "Default number of partitions for Kafka Topics.",
+          :type => 'string'

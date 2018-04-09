@@ -995,6 +995,15 @@ template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
 end
 
 
+template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
+  source "tensorflow_transform_graph.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
+
 
 bash 'enable_sso' do
   user "root"
@@ -1309,15 +1318,14 @@ bash "jupyter-root-sparkmagic" do
    EOF
 end
 
-if vagrant_enabled == 1
-  bash "fix_owner_ship_pip_files" do
-    user 'root'
-    code <<-EOF
+
+bash "fix_owner_ship_pip_files" do
+  user 'root'
+  code <<-EOF
     if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
        chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
     fi
    EOF
-  end
 end
 
 

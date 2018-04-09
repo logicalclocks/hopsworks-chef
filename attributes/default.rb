@@ -11,6 +11,7 @@ include_attribute "kzookeeper"
 include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
+include_attribute "hops"
 
 default['hopsworks']['version']                  = "0.5.0-SNAPSHOT"
 
@@ -293,3 +294,5 @@ default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
+
+default['hopsworks']['kafka_max_num_topics']                   = '100'
