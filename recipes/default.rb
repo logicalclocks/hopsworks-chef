@@ -1178,6 +1178,15 @@ when 'redhat', 'centos', 'fedora'
 end
 
 
+  bash "pip_backports_workaround" do
+    user "root"
+    code <<-EOF
+    pip uninstall backports.functools_lru_cache
+    pip install --upgrade backports.functools_lru_cache
+   EOF
+  end
+
+
 homedir = "/home/#{node['hopsworks']['user']}"
 
 
