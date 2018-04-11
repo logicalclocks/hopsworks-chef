@@ -1182,7 +1182,7 @@ end
     user "root"
     code <<-EOF
     pip uninstall backports.functools_lru_cache
-    pip install --upgrade backports.functools_lru_cache
+    pip install backports.functools_lru_cache
    EOF
   end
 
