@@ -1008,9 +1008,9 @@ bash 'transform_graph' do
   user "root"
   code <<-EOF
     rm -rf tensorflow
-    rm -f #{node['hopsworks']['tensorflow_graph']} 
-    wget #{node['hopsworks']['tensorflow_graph_url']}
-    tar zxf #{node['hopsworks']['tensorflow_graph']} 
+    rm -f #{node['hopsworks']['transform_graph']} 
+    wget #{node['hopsworks']['transform_graph_url']}
+    tar zxf #{node['hopsworks']['transform_graph']} 
     rm -rf #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
     mv tensorflow #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
     rm -f #{node['hopsworks']['dir']}/tensorflow
