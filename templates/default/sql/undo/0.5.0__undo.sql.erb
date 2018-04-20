@@ -1,11 +1,8 @@
 DROP TABLE IF EXISTS `hopsworks`.`system_commands`;
 
-ALTER TABLE `hopsworks`.`jobs` 
-DROP INDEX `name_project_idx` ,
-ADD UNIQUE INDEX `name_idx` (`name` ASC);
+-- ALTER TABLE `hopsworks`.`jobs` DROP INDEX `name_project_idx`, ADD UNIQUE INDEX `name_idx` (`name` ASC);
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_interval';
-
 DELETE FROM `hopsworks`.`variables` WHERE `id`='conda_default_repo';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='user_cert_valid_days';
 
@@ -14,13 +11,10 @@ DROP TABLE IF EXISTS `pia`;
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `shutdown_level`;
-
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `kafka_max_num_topics`;
-
 
 DROP TABLE IF EXISTS `hopsworks`.`rstudio_settings`;
 DROP TABLE IF EXISTS `hopsworks`.`rstudio_project`;
 DROP TABLE IF EXISTS `hopsworks`.`rstudio_interpreter`;
 
 ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `optimized`;
-

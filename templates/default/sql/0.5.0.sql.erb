@@ -12,9 +12,7 @@ CREATE TABLE IF NOT EXISTS `system_commands` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");
-
 INSERT INTO `hopsworks`.`variables` VALUES ("conda_default_repo", "<%= @conda_repo %>");
-
 INSERT INTO `hopsworks`.`variables` VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
 
 
@@ -46,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `pia` (
 INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `shutdown_level` INT NOT NULL DEFAULT 6;
-
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `kafka_max_num_topics` INT NOT NULL DEFAULT <%= node['hopsworks']['kafka_max_num_topics'] %>;
 
 
