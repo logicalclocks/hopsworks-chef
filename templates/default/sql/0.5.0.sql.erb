@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `rstudio_settings` (
   `files` VARCHAR(1500) DEFAULT '',
   `py_files` VARCHAR(1500) DEFAULT '',
   `spark_params` VARCHAR(6500) DEFAULT '',
-  `shutdown_level` INT NOT NULL DEFAULT 6;  
+  `shutdown_level` INT NOT NULL DEFAULT 6,
   PRIMARY KEY (`project_id`,`team_member`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
