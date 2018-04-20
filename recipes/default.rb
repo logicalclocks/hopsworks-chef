@@ -1004,6 +1004,22 @@ template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
 end
 
 
+bash 'transform_graph' do
+  user "root"
+  code <<-EOF
+    rm -rf tensorflow
+    rm -f #{node['hopsworks']['tensorflow_graph']} 
+    wget #{node['hopsworks']['tensorflow_graph_url']}
+    tar zxf #{node['hopsworks']['tensorflow_graph']} 
+    rm -rf #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
+    mv tensorflow #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
+    rm -f #{node['hopsworks']['dir']}/tensorflow
+    ln -s #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']} #{node['hopsworks']['dir']}/tensorflow
+    chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} tensorflow*
+    EOF
+end
+
+
 
 bash 'enable_sso' do
   user "root"
