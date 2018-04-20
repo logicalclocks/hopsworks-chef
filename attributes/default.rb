@@ -63,7 +63,7 @@ default['hopsworks']['war_url']                  = "#{node['download_url']}/hops
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 default['hopsworks']['transform_graph']          = "tensorflow-graph-hops-#{node['tensorflow']['version']}.tar.gz"
-default['hopsworks']['transform_graph_url']      = "#{node['download_url']}/hops/#{node['hopsworks']['transform_graph']}"
+default['hopsworks']['transform_graph_url']      = "#{node['download_url']}/#{node['hopsworks']['transform_graph']}"
 
 
 default['hopsworks']['pixiedust']['enabled']        = "false"
