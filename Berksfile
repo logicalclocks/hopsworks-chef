@@ -40,5 +40,3 @@ cookbook 'compat_resource', '~> 12.19.0'
 cookbook 'authbind', '~> 0.1.10'
 cookbook 'ntp', '~> 2.0.0'
 cookbook 'sysctl', '~> 1.0.3'
-
-cookbook 'poise-python', '~> 1.6.0'
