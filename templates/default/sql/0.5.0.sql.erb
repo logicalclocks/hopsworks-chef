@@ -51,9 +51,6 @@ ALTER TABLE `hopsworks`.`project` ADD COLUMN `kafka_max_num_topics` INT NOT NULL
 
 
 
-
-
-
 --
 -- RStudio support
 --
@@ -117,3 +114,8 @@ CREATE TABLE IF NOT EXISTS `rstudio_interpreter` (
   FOREIGN KEY (`port`) REFERENCES `rstudio_project` (`port`) ON DELETE CASCADE ON UPDATE NO ACTION
   ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+
+--
+--  tensorflow_graph optimization
+--
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `optimized` TINYINT NOT NULL DEFAULT 0;
