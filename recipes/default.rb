@@ -1003,6 +1003,7 @@ template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
   action :create
 end
 
+transform =  File.basename(node['hopsworks']['transform_graph'], ".tar.gz")
 
 bash 'transform_graph' do
   user "root"
@@ -1011,7 +1012,7 @@ bash 'transform_graph' do
     rm -f #{node['hopsworks']['transform_graph']} 
     wget #{node['hopsworks']['transform_graph_url']}
     tar zxf #{node['hopsworks']['transform_graph']} 
-    rm -rf #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
+    rm -f #{node['hopsworks']['dir']}/tensorflow-hops-graph-#{node['tensorflow']['version']}
     mv tensorflow #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
     rm -f #{node['hopsworks']['dir']}/tensorflow
     ln -s #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']} #{node['hopsworks']['dir']}/tensorflow
