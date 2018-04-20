@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `system_commands`;
+DROP TABLE IF EXISTS `hopsworks`.`system_commands`;
 
 ALTER TABLE `hopsworks`.`jobs` 
 DROP INDEX `name_project_idx` ,
@@ -16,3 +16,8 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `shutdown_level`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `kafka_max_num_topics`;
+
+
+DROP TABLE IF EXISTS `hopsworks`.`rstudio_settings`;
+DROP TABLE IF EXISTS `hopsworks`.`rstudio_project`;
+DROP TABLE IF EXISTS `hopsworks`.`rstudio_interpreter`;
