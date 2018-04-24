@@ -1,4 +1,4 @@
-equire 'json'
+require 'json'
 require 'base64'
 require 'digest'
 
