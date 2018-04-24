@@ -1088,7 +1088,7 @@ bash "pydoop" do
                  'HADOOP_HOME' => node['hops']['base_dir']})
     code <<-EOF
       set -e
-      pip install --no-cache-dir --upgrade pydoop==2.0a2
+      # pip install --no-cache-dir --upgrade pydoop==2.0a2
       pip install --no-cache-dir --upgrade hdfscontents
     EOF
 #    not_if "python -c 'import pydoop'"
