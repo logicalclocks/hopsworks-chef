@@ -1419,3 +1419,50 @@ kagent_keys "#{homedir}" do
   cb_recipe "default"  
   action :return_publickey
 end  
+
+
+#
+# Rstudio
+#
+case node['platform']
+ when 'debian', 'ubuntu'
+   package "r-base"
+
+  remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source node['download_url'] + "/#{node['rstudio']['deb']}"
+    mode 0755
+    action :create
+  end
+   
+   bash 'install_rstudio_debian' do
+    user "root"
+    code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      apt-get install gdebi-core -y
+      gdebi #{node['rstudio']['deb']}
+    EOF
+   end
+   
+ when 'redhat', 'centos', 'fedora'
+
+  remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['rpm']}" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source node['download_url'] + "/#{node['rstudio']['rpm']}"
+    mode 0755
+    action :create
+  end
+
+   bash 'install_rstudio_rhel' do
+    user "root"
+    code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      yum install --nogpgcheck #{node['rstudio']['rpm']}
+    EOF
+   end
+   
+end   
