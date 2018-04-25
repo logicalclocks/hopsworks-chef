@@ -426,12 +426,12 @@ ulimit_domain node['hopsworks']['user'] do
   rule do
     item :memlock
     type :soft
-    value unlimited
+    value "unlimited"
   end
   rule do
     item :memlock
     type :hard
-    value unlimited
+    value "unlimited"
   end
 end
   
