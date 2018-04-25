@@ -414,13 +414,30 @@ if systemd == true
     action :create
   end
 
-  template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
-    source "limits.conf.erb"
-    owner "root"
-    mode 0774
-    action :create
-  end
+  
+   template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+     source "limits.conf.erb"
+     owner "root"
+     mode 0774
+     action :create
+   end
 
+ulimit_domain node['hopsworks']['user'] do
+  rule do
+    item :memlock
+    type :soft
+    value unlimited
+  end
+  rule do
+    item :memlock
+    type :hard
+    value unlimited
+  end
+end
+  
+
+
+  
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
