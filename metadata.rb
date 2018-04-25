@@ -724,6 +724,13 @@ attribute "cuda/accept_nvidia_download_terms",
 :description => "Accept cuda licensing terms and conditions. Default: 'false'. Change to 'true' to enable cuda.",
 :type => "string"
 
+attribute "cuda/skip_test",
+          :description => "Dont check if there is a local nvidia card on this machine",
+          :type => "string"
+
+attribute "cuda/skip_stop_xserver",
+          :description => "Dont restart the xserver (probably a localhost installation)",
+          :type => "string"
 
 ##
 ##

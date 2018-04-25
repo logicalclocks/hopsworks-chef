@@ -1466,3 +1466,12 @@ case node['platform']
    end
    
 end   
+
+bash 'disable_rstudio_systemd_daemons' do
+  user "root"
+  ignore_failure true
+  code <<-EOF
+      systemctl stop rstudio-server
+      systemctl disable rstudio-server
+    EOF
+end
