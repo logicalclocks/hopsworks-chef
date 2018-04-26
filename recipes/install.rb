@@ -880,11 +880,6 @@ bash "unpack_flyway" do
   not_if { ::File.exists?("#{theDomain}/flyway/flyway") }
 end
 
-# file "#{theDomain}/flyway/conf/flyway.conf" do
-#   owner "root"
-#   action :delete
-# end
-
 template "#{theDomain}/flyway/conf/flyway.conf" do
   source "flyway.conf.erb"
   owner node['glassfish']['user']
@@ -892,6 +887,13 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   variables({
               :mysql_host => my_ip
             })
+  action :create  
+end
+
+template "#{theDomain}/flyway/flyway-undo.sh" do
+  source "flyway-undo.sh.erb"
+  owner node['glassfish']['user']
+  mode 0750
   action :create  
 end
 
