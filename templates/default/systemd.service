@@ -5,6 +5,8 @@ After = syslog.target network.target remote-fs.target
 
 [Service]
 User=<%= node['glassfish']['user'] %>
+LimitNOFILE=100000
+LimitNPROC=100000
 ExecStart = <%= "#{prefix} #{@start_domain_command}" %>
 ExecStop = <%= "#{prefix} #{@stop_domain_command}" %>
 ExecReload = <%= "#{prefix} #{@restart_domain_command}" %>
