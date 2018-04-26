@@ -2188,3 +2188,10 @@ attribute "hopsworks/kafka_num_replicas",
 attribute "hopsworks/kafka_num_partitions",
           :description => "Default number of partitions for Kafka Topics.",
           :type => 'string'
+
+
+### RStudio
+
+attribute "rstudio/enabled",
+          :description => "Set to 'true' to enable RStudio in Hopsworks. Default 'false'.",
+          :type => 'string'
