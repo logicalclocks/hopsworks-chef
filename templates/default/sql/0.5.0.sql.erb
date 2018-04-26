@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `system_commands` (
 INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");
 INSERT INTO `hopsworks`.`variables` VALUES ("conda_default_repo", "<%= @conda_repo %>");
 INSERT INTO `hopsworks`.`variables` VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
-
+INSERT INTO `hopsworks`.`variables` VALUES ("support_email_addr", "<%= node['hopsworks']['support_email_addr'] %>");
 
 CREATE TABLE IF NOT EXISTS `pia` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

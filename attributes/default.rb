@@ -114,6 +114,8 @@ default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/
 
 default['hopsworks']['alert_email_addrs']        = ""
 
+default['hopsworks']['support_email_addr']       = "support@hops.io"
+
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "1000000"
 default['hopsworks']['hdfs_default_quota_mbs']   = "500000"

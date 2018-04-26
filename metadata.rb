@@ -1893,6 +1893,9 @@ attribute "hopsworks/hopssite/register_port",
           :description => "Dela hops site port used for cert registration",
           :type => 'string'
 
+attribute "hopsworks/support_email_addr",
+          :description => "Email address to contact for email registration problems",
+          :type => 'string'
 
 attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
