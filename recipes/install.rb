@@ -813,7 +813,8 @@ end
 bash "python_openssl" do
   user "root"
   code <<-EOF
-    pip install pyopenssl --upgrade
+    pip install pyopenssl
+    # --upgrade
   EOF
 end
 
