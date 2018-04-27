@@ -1464,7 +1464,7 @@ if node['rstudio']['enabled'].eql? "true"
       code <<-EOF
       set -e
       cd #{Chef::Config['file_cache_path']}
-      yum install --nogpgcheck #{node['rstudio']['rpm']}
+      yum install --nogpgcheck #{node['rstudio']['rpm']} -y
     EOF
     end
     
