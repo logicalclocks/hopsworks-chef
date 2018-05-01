@@ -33,13 +33,13 @@ bash 'dev-setup' do
  when 'redhat', 'centos', 'fedora'
 
 
-   package "npm"
+   # Needs: yum install npm -y --skip-broken
+#   package "npm"
    
 bash 'dev-setup-centos' do
     user "root"
     code <<-EOF
-       npm install -g bower
-
+#       npm install -g bower
 # Turn-on debug mode for both sysv and systemd init scripts
        perl -pi -e "s/--debug false/--debug true/g" /etc/init.d/glassfish-domain1
        perl -pi -e "s/--debug false/--debug true/g" /etc/systemd/system/glassfish-domain1.service
