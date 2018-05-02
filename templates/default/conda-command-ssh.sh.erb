@@ -10,4 +10,4 @@ host=$1
 shift
 
 
-ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/conda.sh <%= node['anaconda']['user'] %> $@"
+ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/conda.sh <%= node['conda']['user'] %> $@"
