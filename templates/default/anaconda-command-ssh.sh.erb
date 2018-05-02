@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ $# -lt 6  ]; then
+    echo "host <op> <proj> <arg> <offline> <hadoop_home>"
+    echo "incorrect usage."
+    echo "<arg> is the python version for 'create' ('27' or '36') and the source env for 'clone'."
+ exit 1
+fi
+doas=<%= node['kagent']['user'] %>
+host=$1
+shift
+
+ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/anaconda_env.sh <%= node['conda']['user'] %> $@"

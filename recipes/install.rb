@@ -912,3 +912,19 @@ template "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
   action :create_if_missing
 end
 
+
+template "#{theDomain}/bin/anaconda-command-ssh.sh" do
+  source "anaconda-command-ssh.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']  
+  mode 0750
+  action :create
+end
+
+template "#{theDomain}/bin/conda-command-ssh.sh" do
+  source "conda-command-ssh.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']  
+  mode 0750
+  action :create
+end
