@@ -13,6 +13,8 @@ shift
 tmpfile=$(mktemp /tmp/hopsworks-anaconda.XXXXXX)
 
 ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/anaconda_env.sh <%= node['conda']['user'] %> $@" 2>&1 > ${tmpfile}
-
+RES=$?
 cat $tmpfile
 rm -f $tmpfile
+
+exit $RES
