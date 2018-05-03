@@ -9,5 +9,10 @@ doas=<%= node['kagent']['user'] %>
 host=$1
 shift
 
+tmpfile=$(mktemp /tmp/hopsworks-conda.XXXXXX)
 
-ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/conda.sh <%= node['conda']['user'] %> $@"
+ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/conda.sh <%= node['conda']['user'] %> $@" 2>&1 > ${tmpfile}
+
+cat $tmpfile
+rm -f $tmpfile
+
