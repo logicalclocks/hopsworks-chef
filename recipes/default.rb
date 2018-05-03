@@ -1402,6 +1402,11 @@ link "#{node['kagent']['certs_dir']}/cacerts.jks" do
   to "#{theDomain}/config/cacerts.jks"
 end
 
+#
+# Need to synchronize conda enviornments for newly joined or rejoining nodes.
+#
+package "rsync"
+
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."

@@ -100,7 +100,17 @@ group node['tfserving']['group'] do
   members ["#{node['hopsworks']['user']}"]
   append true
 end
+group node['jupyter']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
 
+group node['conda']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
 
 # Add to the hdfs superuser group
 group node['hops']['hdfs']['user'] do
@@ -630,6 +640,14 @@ end
 
 template "#{theDomain}/bin/anaconda-prepare.sh" do
   source "anaconda-prepare.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/anaconda-rsync.sh" do
+  source "anaconda-rsync.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
