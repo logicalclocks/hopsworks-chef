@@ -14,7 +14,6 @@ DROP TABLE IF EXISTS `pia`;
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `shutdown_level`;
-ALTER TABLE `hopsworks`.`project` DROP COLUMN `kafka_max_num_topics`;
 
 DROP TABLE IF EXISTS `hopsworks`.`rstudio_settings`;
 DROP TABLE IF EXISTS `hopsworks`.`rstudio_project`;
