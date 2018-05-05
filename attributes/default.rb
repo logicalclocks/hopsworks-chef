@@ -215,8 +215,10 @@ default['hopssite']['cert']['c']                       = node['hopsworks']['cert
 default['hopsworks']['max_gpu_request_size']           = 1
 default['hopsworks']['max_cpu_request_size']           = 1
 
-default['hopsworks']['anaconda_enabled']               = node['kagent']['conda_enabled']
+default['hopsworks']['anaconda_enabled']               = "true"
 
+# Comma separated list of IPs on which you should not enable conda.
+default['hopsworks']['nonconda_hosts']               = ""
 
 #
 # Jupyter

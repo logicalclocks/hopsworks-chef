@@ -247,10 +247,14 @@ versions.push(flyway_version)
 condaRepo = 'defaults'
 
 if node['conda']['mirror_list'].empty? == false
-   repos = node['conda']['mirror_list'].split(/\s*,\s*/)   
+   repos = node['conda']['mirror_list'].split(/\s*,\s*/)
    condaRepo = repos[0]
-end  
+end
 
+nonconda_hosts_list = []
+if node['hopsworks']['nonconda_hosts'].empty? == false
+  nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
+end
 
 for version in versions do
 
@@ -340,7 +344,8 @@ for version in versions do
                 :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
                 :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
                 :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
-                :hive_scratchdir => node['hive2']['scratch_dir']
+                :hive_scratchdir => node['hive2']['scratch_dir'],
+                :nonconda_hosts_list => nonconda_hosts_list
            })
     action :create
   end
@@ -351,7 +356,7 @@ for version in versions do
   #file "#{theDomain}/flyway/undo/U#{previous_version}__undo.sql" do
   #  action :delete
   #end
-  
+
   template "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
     source "sql/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
@@ -414,7 +419,7 @@ hopsworks_grants "reload_sysv" do
 end
 
 
-# if node['install']['upgrade'] == "true" 
+# if node['install']['upgrade'] == "true"
 # end
 
 
@@ -425,7 +430,7 @@ bash "flyway_baseline" do
     cd #{theDomain}/flyway
     #{theDomain}/flyway/flyway baseline
   EOF
- not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
+ not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
 end
 
 bash "flyway_migrate" do
@@ -876,7 +881,7 @@ glassfish_deployable "hopsworks" do
   secure false
   action :deploy
   async_replication false
-  retries 1  
+  retries 1
   keep_state true
   enabled true
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
@@ -888,7 +893,7 @@ glassfish_deployable "hopsworks-ca" do
   target "server"
   url node['hopsworks']['ca_url']
   version node['hopsworks']['version']
-  context_root "/hopsworks-ca"  
+  context_root "/hopsworks-ca"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -1382,13 +1387,13 @@ Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
-  action :generate  
-end  
+  action :generate
+end
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   cb_name "hopsworks"
-  cb_recipe "default"  
+  cb_recipe "default"
   action :return_publickey
-end  
+end
