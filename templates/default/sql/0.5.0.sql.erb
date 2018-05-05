@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `pia` (
   `how_data_collected` VARCHAR(2000) NOT NULL,
   `specified_explicit_legitimate` int(11) NOT NULL DEFAULT '0',
   `consent_process` varchar(1000) DEFAULT NULL,
-  `consent_basis` varchar(1000) DEFAULT NULL,  
+  `consent_basis` varchar(1000) DEFAULT NULL,
   `data_minimized` int(11) NOT NULL DEFAULT '0',
   `data_uptodate` int(11) NOT NULL DEFAULT '0',
   `users_informed_how` varchar(500) NOT NULL,
@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `pia` (
   `data_security_measures` varchar(500) NOT NULL,
   `data_portability_measure` varchar(500) NOT NULL,
   `subject_access_rights` varchar(500) NOT NULL,
-  `risks` varchar(2000) NOT NULL,        
+  `risks` varchar(2000) NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION  
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
@@ -116,3 +116,11 @@ CREATE TABLE IF NOT EXISTS `rstudio_interpreter` (
 --  tensorflow_graph optimization
 --
 ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `optimized` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `kafka_max_num_topics` INT NOT NULL DEFAULT <%= node['hopsworks']['kafka_max_num_topics'] %>;
+
+ALTER TABLE `hopsworks`.`hosts` CHANGE COLUMN `has_gpus` `num_gpus` TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `conda_enabled` TINYINT(1) NOT NULL DEFAULT 1;
+
+<% @nonconda_hosts_list.each do |host| %>
+UPDATE `hopsworks`.`hosts` SET `conda_enabled`=0 WHERE `host_ip`='<%= host %>';
+<% end %>

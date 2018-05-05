@@ -44,9 +44,9 @@ when "redhat"
          touch /etc/authbind/byport/443
          chmod 550 /etc/authbind/byport/443
      EOF
-       not_if { ::File.exists?("/usr/bin/authbind") }      
+       not_if { ::File.exists?("/usr/bin/authbind") }
     end
-  end        
+  end
 end
 
 
@@ -177,7 +177,7 @@ end
 
 case node['platform_family']
 when "debian"
-  
+
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end
@@ -186,7 +186,7 @@ when "debian"
 
 when "rhel"
   package "krb5-libs"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -225,7 +225,7 @@ node.override = {
       domain_name => {
         'config' => {
           'systemd_enabled' => systemd,
-          'systemd_start_timeout' => 240,
+          'systemd_start_timeout' => 500,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
           'max_perm_size' => node['glassfish']['max_perm_size'],
@@ -348,7 +348,7 @@ remote_file "#{theDomain}/lib/#{cauth}"  do
   action :create_if_missing
 end
 
-  
+
 
 # If the install.rb recipe failed and is re-run, install_dir needs to reset it
 if node['glassfish']['install_dir'].include?("versions") == false
@@ -765,7 +765,7 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :tfserving =>  "#{theDomain}/bin/tfserving.sh",              
+              :tfserving =>  "#{theDomain}/bin/tfserving.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
@@ -906,7 +906,7 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   variables({
               :mysql_host => my_ip
             })
-  action :create  
+  action :create
 end
 
 template "#{theDomain}/flyway/flyway-undo.sh" do

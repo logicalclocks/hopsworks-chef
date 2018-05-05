@@ -281,6 +281,10 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/nonconda_hosts",
+          :description => "Comma separated list of IPs on which you should not enable conda.",
+          :type => 'string'
+
 attribute "hopsworks/staging_dir",
           :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
           :type => 'string'
