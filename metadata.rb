@@ -1490,10 +1490,6 @@ attribute "kagent/dashboard/password",
           :description => "kagent password to register with server",
           :type => "string"
 
-attribute "kagent/env_report_freq_in_secs",
-          :description => "How often the kagent sends a full report of its conda environments for synchronization",
-          :type => "string"
-
 attribute "kagent/dns",
           :description => "Default 'false'. Set to 'true' to use fully qualified domain names for kagent hosts in Hopsworks.",
           :type => 'string'
