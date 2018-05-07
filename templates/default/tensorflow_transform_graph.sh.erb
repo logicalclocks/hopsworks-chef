@@ -31,12 +31,13 @@ hdfs_dir=$(dirname $INPUT_PB)
 
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal $INPUT_PB .
 
-#cd <%= node['tensorflow']['base_dir'] %>
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib64:/usr/local/cuda/lib64
 
 cd /home/<%= node['tensorflow']['user'] %>/tensorflow
 
 
-bazel-bin/tensorflow/tools/graph_transforms/transform_graph \
+<%= node['hopsworks']['dir'] %>/tensorflow/tools/graph_transforms/transform_graph \
 --in_graph=<%= node['hopsworks']['staging_dir'] %>/tmp/$input_local \
 --out_graph=<%= node['hopsworks']['staging_dir'] %>/tmp/${output_local} \
 --inputs='$INPUTS' \

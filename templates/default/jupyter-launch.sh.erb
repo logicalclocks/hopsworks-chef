@@ -72,7 +72,7 @@ ln -s /usr/local/share/jupyter/nbextensions/facets-dist nbextensions/facets-dist
 cd $SECRET_DIR
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid jupyter notebook --debug --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
+setsid jupyter notebook --debug --no-browser --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
 
 # Check that the token is written to the logfile, return when we see it.

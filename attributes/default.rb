@@ -62,6 +62,8 @@ default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{no
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+default['hopsworks']['transform_graph']          = "tensorflow-graph-hops-#{node['tensorflow']['version']}.tar.gz"
+default['hopsworks']['transform_graph_url']      = "#{node['download_url']}/#{node['hopsworks']['transform_graph']}"
 
 
 default['hopsworks']['pixiedust']['enabled']        = "false"
@@ -111,6 +113,8 @@ default['hopsworks']['email_password']           = node['smtp']['email_password'
 default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
 default['hopsworks']['alert_email_addrs']        = ""
+
+default['hopsworks']['support_email_addr']       = "support@hops.io"
 
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']  = "1000000"
@@ -296,5 +300,8 @@ default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
+default['rstudio']['deb']                            = "rstudio-server-1.1.447-amd64.deb"
+default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.447-x86_64.rpm"
+default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'

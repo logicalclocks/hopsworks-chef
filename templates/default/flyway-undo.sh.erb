@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] ; then
+    echo ""
+    echo "Undo the supplied 'version' of flyway"
+    echo "$0 version"
+    echo ""
+    exit 1
+fi
+undo=<%= node['hopsworks']['domains_dir'] %>/domain1/flyway/undo/U${1}__undo.sql
+
+if [ ! -f $undo ] ; then
+    echo "Could not find the undo sql file for flyway: $undo"
+    echo ""
+    exit 2
+fi    
+
+# Check to see if this version is installed first. if not, exit.
+
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT FROM flyway_schema_history ORDER BY version DESC LIMIT 1" | grep $1
+
+if [ $? -ne 0 ] ; then
+    echo "This doesn't look like the latest version installed of flyway"
+    version=$(<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT FROM flyway_schema_history ORDER BY version DESC LIMIT 1")
+    echo "The latest version is: $version"
+    echo ""
+    exit 2
+fi    
+
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "DELETE FROM flyway_schema_history ORDER BY version DESC LIMIT 1"
+if [ $? -ne 0 ] ; then
+    echo "Couldnt delete the latest version from the flyway_schema_history table."
+    echo "Exiting..."
+    exit 4
+fi
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks < $undo

@@ -1008,6 +1008,23 @@ template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
   action :create
 end
 
+transform =  File.basename(node['hopsworks']['transform_graph'], ".tar.gz")
+
+bash 'transform_graph' do
+  user "root"
+  code <<-EOF
+    rm -rf tensorflow
+    rm -f #{node['hopsworks']['transform_graph']} 
+    wget #{node['hopsworks']['transform_graph_url']}
+    tar zxf #{node['hopsworks']['transform_graph']} 
+    rm -f #{node['hopsworks']['dir']}/tensorflow-hops-graph-#{node['tensorflow']['version']}
+    mv tensorflow #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
+    rm -f #{node['hopsworks']['dir']}/tensorflow
+    ln -s #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']} #{node['hopsworks']['dir']}/tensorflow
+    chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} tensorflow*
+    EOF
+end
+
 
 
 bash 'enable_sso' do
@@ -1076,9 +1093,10 @@ bash "pydoop" do
                  'HADOOP_HOME' => node['hops']['base_dir']})
     code <<-EOF
       set -e
-      pip install --no-cache-dir hdfscontents
+      # pip install --no-cache-dir --upgrade pydoop==2.0a2
+      pip install --no-cache-dir --upgrade hdfscontents
     EOF
-    not_if "python -c 'import pydoop'"
+#    not_if "python -c 'import pydoop'"
 end
 
 
@@ -1181,6 +1199,15 @@ when 'redhat', 'centos', 'fedora'
   end
 
 end
+
+
+  bash "pip_backports_workaround" do
+    user "root"
+    code <<-EOF
+    pip uninstall backports.functools_lru_cache
+    pip install backports.functools_lru_cache
+   EOF
+  end
 
 
 homedir = "/home/#{node['hopsworks']['user']}"
@@ -1380,6 +1407,11 @@ link "#{node['kagent']['certs_dir']}/cacerts.jks" do
   to "#{theDomain}/config/cacerts.jks"
 end
 
+#
+# Need to synchronize conda enviornments for newly joined or rejoining nodes.
+#
+package "rsync"
+
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
@@ -1396,4 +1428,65 @@ kagent_keys "#{homedir}" do
   cb_name "hopsworks"
   cb_recipe "default"
   action :return_publickey
+end  
+
+
+#
+# Rstudio
+#
+
+if node['rstudio']['enabled'].eql? "true"
+
+  case node['platform']
+  when 'debian', 'ubuntu'
+    package "r-base"
+
+    remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
+      user node['glassfish']['user']
+      group node['glassfish']['group']
+      source node['download_url'] + "/#{node['rstudio']['deb']}"
+      mode 0755
+      action :create
+    end
+    
+    bash 'install_rstudio_debian' do
+      user "root"
+      code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      apt-get install gdebi-core -y
+      gdebi #{node['rstudio']['deb']}
+    EOF
+    end
+    
+  when 'redhat', 'centos', 'fedora'
+
+    remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['rpm']}" do
+      user node['glassfish']['user']
+      group node['glassfish']['group']
+      source node['download_url'] + "/#{node['rstudio']['rpm']}"
+      mode 0755
+      action :create
+    end
+
+    bash 'install_rstudio_rhel' do
+      user "root"
+      code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      yum install --nogpgcheck #{node['rstudio']['rpm']} -y
+    EOF
+    end
+    
+  end   
+
+  bash 'disable_rstudio_systemd_daemons' do
+    user "root"
+    ignore_failure true
+    code <<-EOF
+      systemctl stop rstudio-server
+      systemctl disable rstudio-server
+    EOF
+  end
+
 end
