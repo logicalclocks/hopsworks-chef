@@ -13,9 +13,11 @@ host=$1
 
 #
 # transfer in 'archive' mode to preserve symbolic links/ownership/permissions. only send differences. only print errors to stdout.
+# -S sparse mode, -H handle hard links, 
 #
 tmpfile=$(mktemp /tmp/hopsworks-rsync.XXXXXX)
-rsync -aurpqz <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@$host:<%= node['conda']['dir'] %> 2>&1 > ${tmpfile}
+#rsync -aurpqz <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@$host:<%= node['conda']['dir'] %> 2>&1 > ${tmpfile}
+rsync -S -R -r -aH --delete <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@$host:<%= node['conda']['dir'] %> 2>&1 > ${tmpfile}
 RES=$?
 cat $tmpfile
 rm -f $tmpfile
