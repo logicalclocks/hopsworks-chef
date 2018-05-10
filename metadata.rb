@@ -309,7 +309,7 @@ attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
 
-attribute "install/true",
+attribute "install/update",
           :description => "Set to 'true' if updating the cluster. Default 'false'",
           :type => "string"
 
