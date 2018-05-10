@@ -256,6 +256,12 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
+#
+# If upgrading from version 0.4 or less, you need to run this in bash.
+# /srv/hops/domains/domain1/flyway# /srv/hops/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "update flyway_schema_history set checksum=-291836840 where installed_rank=3
+#
+#
+
 for version in versions do
 
   template "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
