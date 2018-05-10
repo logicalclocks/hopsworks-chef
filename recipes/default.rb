@@ -347,7 +347,7 @@ for version in versions do
                 :hive_scratchdir => node['hive2']['scratch_dir'],
                 :nonconda_hosts_list => nonconda_hosts_list
            })
-    action :create
+    action :create_if_missing
   end
 
   #
@@ -361,7 +361,7 @@ for version in versions do
     source "sql/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
-    action :create
+    action :create_if_missing
   end
 
 end
