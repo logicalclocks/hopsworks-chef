@@ -786,6 +786,10 @@ attribute "hops/nm/log_dir",
           :description => "The directory in which yarn node manager store containers logs",
           :type => 'string'
 
+attribute "hops/nm/recovery_dir",
+          :description => "The directory in which yarn node manager stores recovery state",
+          :type => 'string'
+
 attribute "hops/yarn/memory_mbs",
           :description => "Apache_Hadoop NodeManager Memory in MB",
           :type => 'string'
