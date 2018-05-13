@@ -123,3 +123,30 @@ ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `conda_enabled` TINYINT(1) NOT NULL D
 <% @nonconda_hosts_list.each do |host| %>
 UPDATE `hopsworks`.`hosts` SET `conda_enabled`=0 WHERE `host_ip`='<%= host %>';
 <% end %>
+
+
+
+INSERT INTO `hopsworks`.`variables` VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("influxdb_version", "<%= node['influxdb']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("grafana_version", "<%= node['grafana']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("telegraf_version", "<%= node['telegraf']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("kapacitor_version", "<%= node['kapacitor']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("logstash_version", "<%= node['logstash']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("kibana_version", "<%= node['kibana']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("filebeat_version", "<%= node['filebeat']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("ndb_version", "<%= node['ndb']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("livy_version", "<%= node['livy']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("zeppelin_version", "<%= node['zeppelin']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("hive2_version", "<%= node['hive2']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("tez_version", "<%= node['tez']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("slider_version", "<%= node['slider']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("spark_version", "<%= node['hadoop_spark']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("flink_version", "<%= node['flink']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("epipe_version", "<%= node['epipe']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("dela_version", "<%= node['dela']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("kafka_version", "<%= node['kkafka']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("elastic_version", "<%= node['elastic']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("drelephant_version", "<%= node['drelephant']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("cuda_version", "<%= node['cuda']['major_version'] %>.<%= node['cuda']['minor_version'] %>_<%= node['cuda']['build_version'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>");
