@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# conda list [-c $1]
+
+channel=
+if [[ $# -ne 5 ]]; then
+  echo "incorrect usage"
+  echo "exportdir project host environment user"
+  exit 1
+fi
+
+CONDA_USER=<%= node['conda']['user'] %>
+GLASSFISH_USER=<%= node['glassfish']['user'] %>
+
+EXPORTDIR=$1
+PROJECT=$2
+HOST=$3
+ENVIRONMENTFILE=$4
+IMPERSONATED_USERNAME=$5
+
+if [ ! -d "${EXPORTDIR}" ] ; then
+    exit 1
+fi
+
+function finish {
+    rm -rf "${EXPORTDIR}"
+}
+
+trap finish EXIT
+
+cd $EXPORTDIR
+
+HOSTNAME=$(hostname)
+
+if [[ "${HOST}" == "${HOSTNAME}" ]]; then
+  su ${CONDA_USER} -c "<%= node['conda']['base_dir'] %>/bin/conda env export -n ${PROJECT}" > ${EXPORTDIR}/${ENVIRONMENTFILE}
+else
+  su ${GLASSFISH_USER} -c "ssh ${CONDA_USER}@${HOST} <%= node['conda']['base_dir'] %>/bin/conda env export -n ${PROJECT}" > ${EXPORTDIR}/${ENVIRONMENTFILE}
+fi
+
+if [ $? -ne 0 ] ; then
+    exit 2
+fi
+
+export HADOOP_USER_NAME=${GLASSFISH_USER}
+
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal ${EXPORTDIR}/${ENVIRONMENTFILE} /Projects/${PROJECT}/Resources
+
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown ${IMPERSONATED_USERNAME} /Projects/${PROJECT}/Resources/${ENVIRONMENTFILE}
+
+exit $?
+
