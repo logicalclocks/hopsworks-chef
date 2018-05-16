@@ -646,6 +646,14 @@ template "#{theDomain}/bin/anaconda-prepare.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/condaexport.sh" do
+  source "condaexport.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
 template "#{theDomain}/bin/anaconda-rsync.sh" do
   source "anaconda-rsync.sh.erb"
   owner node['glassfish']['user']
@@ -766,6 +774,7 @@ template "/etc/sudoers.d/glassfish" do
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",
+              :conda_export =>  "#{theDomain}/bin/condaexport.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",

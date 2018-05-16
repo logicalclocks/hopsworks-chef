@@ -22,3 +22,8 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `kafka_max_num_topics`;
 
 ALTER TABLE `hopsworks`.`hosts` CHANGE COLUMN `num_gpus` `has_gpus` TINYINT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `conda_enabled`
+
+--
+-- Exporting Anaconda environment as yml
+--
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `environment_yml`;
