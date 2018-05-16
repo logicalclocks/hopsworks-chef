@@ -150,3 +150,8 @@ INSERT INTO `hopsworks`.`variables` VALUES ("drelephant_version", "<%= node['dre
 INSERT INTO `hopsworks`.`variables` VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>");
 INSERT INTO `hopsworks`.`variables` VALUES ("cuda_version", "<%= node['cuda']['major_version'] %>.<%= node['cuda']['minor_version'] %>_<%= node['cuda']['build_version'] %>");
 INSERT INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>");
+
+--
+-- Exporting Anaconda environment as yml
+--
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `environment_yml` VARCHAR(10000) DEFAULT NULL;
