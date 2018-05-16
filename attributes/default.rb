@@ -59,9 +59,11 @@ default['hopsworks']['http_logs']['enabled']     = "true"
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_version']            = "otp-auth-0.3.0.jar"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
+
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+
 default['hopsworks']['transform_graph']          = "tensorflow-graph-hops-#{node['tensorflow']['version']}.tar.gz"
 default['hopsworks']['transform_graph_url']      = "#{node['download_url']}/#{node['hopsworks']['transform_graph']}"
 
@@ -83,6 +85,9 @@ default['hopsworks']['service_key_rotation_enabled'] = "false"
 default['hopsworks']['cert_mater_delay']         = "3m"
 default['hopsworks']['service_key_rotation_interval'] = "2d"
 default['hopsworks']['application_certificate_validity_period'] = "3d"
+
+#Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
+default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
 
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
