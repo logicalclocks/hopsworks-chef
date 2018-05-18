@@ -17,11 +17,11 @@ fi
 
 # Check to see if this version is installed first. if not, exit.
 
-<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT FROM flyway_schema_history ORDER BY version DESC LIMIT 1" | grep $1
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT version FROM flyway_schema_history ORDER BY version DESC LIMIT 1" | grep $1
 
 if [ $? -ne 0 ] ; then
     echo "This doesn't look like the latest version installed of flyway"
-    version=$(<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT FROM flyway_schema_history ORDER BY version DESC LIMIT 1")
+    version=$(<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT version FROM flyway_schema_history ORDER BY version DESC LIMIT 1")
     echo "The latest version is: $version"
     echo ""
     exit 2
