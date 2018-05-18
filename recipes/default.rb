@@ -1087,7 +1087,9 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade urllib3
     pip install --upgrade requests
     pip install --upgrade jupyter
-    pip install --upgrade sparkmagic
+    pip uninstall pandas -y
+    yes | pip install pandas==0.22
+    pip install sparkmagic
 EOF
 end
 
