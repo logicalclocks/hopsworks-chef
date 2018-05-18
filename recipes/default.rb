@@ -1089,7 +1089,14 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade jupyter
     pip uninstall pandas -y
     yes | pip install pandas==0.22
-    pip install sparkmagic
+#    pip install sparkmagic
+    cd /tmp
+    rm -rf sparkmagic
+    git clone https://github.com/logicalclocks/sparkmagic
+    cd sparkmagic
+    pip install -e hdijupyterutils 
+    pip install -e autovizwidget
+    pip install -e sparkmagic
 EOF
 end
 
