@@ -1099,13 +1099,13 @@ bash "jupyter-sparkmagic" do
     pip uninstall pandas -y
     yes | pip install pandas==0.22
 #    pip install sparkmagic
-    cd #{pythondir}
+    cd /tmp
     rm -rf sparkmagic
     git clone https://github.com/logicalclocks/sparkmagic
-    mv -f sparkmagic/* .
     pip install ./hdijupyterutils 
     pip install ./autovizwidget
     pip install ./sparkmagic
+    rm -rf /tmp/sparkmagic
 EOF
 end
 
