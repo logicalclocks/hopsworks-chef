@@ -1076,6 +1076,15 @@ case node['platform']
 end
 
 
+pythondir=""
+case node['platform']
+ when 'debian', 'ubuntu'
+  pythondir="/usr/local/lib/python2.7/dist-packages"
+ when 'redhat', 'centos', 'fedora'
+  pythondir="/usr/lib/python2.7/site-packages"
+end
+
+
 #
 # https://github.com/jupyter-incubator/sparkmagic
 #
@@ -1090,13 +1099,13 @@ bash "jupyter-sparkmagic" do
     pip uninstall pandas -y
     yes | pip install pandas==0.22
 #    pip install sparkmagic
-    cd /tmp
+    cd #{pythondir}
     rm -rf sparkmagic
     git clone https://github.com/logicalclocks/sparkmagic
-    cd sparkmagic
-    pip install -e hdijupyterutils 
-    pip install -e autovizwidget
-    pip install -e sparkmagic
+    mv -f sparkmagic/* .
+    pip install ./hdijupyterutils 
+    pip install ./autovizwidget
+    pip install ./sparkmagic
 EOF
 end
 
@@ -1154,14 +1163,6 @@ if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
     not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
   end
 
-end
-
-pythondir=""
-case node['platform']
- when 'debian', 'ubuntu'
-  pythondir="/usr/local/lib/python2.7/dist-packages"
- when 'redhat', 'centos', 'fedora'
-  pythondir="/usr/lib/python2.7/site-packages"
 end
 
 bash "jupyter-kernels" do
