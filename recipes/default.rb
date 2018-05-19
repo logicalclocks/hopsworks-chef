@@ -1111,9 +1111,11 @@ bash "jupyter-sparkmagic" do
 #    git clone https://github.com/logicalclocks/sparkmagic
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
-    pip install --no-cache-dir ./hdijupyterutils 
     pip install --no-cache-dir ./autovizwidget
+    pip install --no-cache-dir ./hdijupyterutils 
     pip install --no-cache-dir ./sparkmagic
+    pip uninstall autovizwidget -y
+    pip install --no-cache-dir ./autovizwidget
     cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
 EOF
