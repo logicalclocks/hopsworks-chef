@@ -1096,16 +1096,16 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade urllib3
     pip install --upgrade requests
     pip install --upgrade jupyter
-    pip uninstall pandas -y
-    yes | pip install pandas==0.22
-#    pip install sparkmagic
-    cd /tmp
+
+    cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
     git clone https://github.com/logicalclocks/sparkmagic
-    pip install ./hdijupyterutils 
-    pip install ./autovizwidget
-    pip install ./sparkmagic
-    rm -rf /tmp/sparkmagic
+    cd sparkmagic
+    pip install --no-cache-dir ./hdijupyterutils 
+    pip install --no-cache-dir ./autovizwidget
+    pip install --no-cache-dir ./sparkmagic
+    cd #{Chef::Config['file_cache_path']}
+    rm -rf sparkmagic
 EOF
 end
 
