@@ -1085,6 +1085,15 @@ case node['platform']
 end
 
 
+
+  remote_file "#{Chef::Config['file_cache_path']}/sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source node['jupyter']['sparkmagic']['url']
+    mode 0755
+    action :create_if_missing
+  end
+
 #
 # https://github.com/jupyter-incubator/sparkmagic
 #
@@ -1098,8 +1107,9 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade jupyter
 
     cd #{Chef::Config['file_cache_path']}
-    rm -rf sparkmagic
-    git clone https://github.com/logicalclocks/sparkmagic
+#    rm -rf sparkmagic
+#    git clone https://github.com/logicalclocks/sparkmagic
+    tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
     pip install --no-cache-dir ./hdijupyterutils 
     pip install --no-cache-dir ./autovizwidget
