@@ -1442,6 +1442,9 @@ attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
           :type => 'string'
 
+attribute "jupyter/sparkmagic/version",
+          :description => "Version of sparkmagic for Jupyter to install. ",
+          :type => 'string'
 
 ##
 ##
