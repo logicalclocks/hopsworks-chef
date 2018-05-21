@@ -1086,13 +1086,13 @@ end
 
 
 
-  remote_file "#{Chef::Config['file_cache_path']}/sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz" do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    source node['jupyter']['sparkmagic']['url']
-    mode 0755
-    action :create_if_missing
-  end
+remote_file "#{Chef::Config['file_cache_path']}/sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz" do
+  user node['jupyter']['user']
+  group node['glassfish']['group']
+  source node['jupyter']['sparkmagic']['url']
+  mode 0755
+  action :create_if_missing
+end
 
 #
 # https://github.com/jupyter-incubator/sparkmagic
@@ -1193,7 +1193,7 @@ end
 case node['platform']
 when 'debian', 'ubuntu'
 
-  bash "jupyter-sparkmagic-kernel" do
+  bash "jupyter-sparkmagic-kernel-extension" do
     user "root"
     code <<-EOF
     set -e
@@ -1368,8 +1368,16 @@ bash "jupyter-root-sparkmagic" do
     pip install --target #{pythonDir} --upgrade mock
     pip uninstall configparser  -y
     pip install --target #{pythonDir} --upgrade configparser
-    pip uninstall sparkmagic  -y
-    pip install --target #{pythonDir} --upgrade sparkmagic
+    # pip uninstall sparkmagic  -y
+    # cd #{Chef::Config['file_cache_path']}
+    # rm -rf sparkmagic
+    # tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
+    # cd sparkmagic
+    # pip install ./hdijupyterutils 
+    # pip install --upgrade ./autovizwidget
+    # pip install ./sparkmagic
+    # cd #{Chef::Config['file_cache_path']}
+    # rm -rf sparkmagic
    EOF
 end
 
