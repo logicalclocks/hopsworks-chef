@@ -1102,17 +1102,17 @@ bash "jupyter-sparkmagic" do
     retries 1
     code <<-EOF
     set -e
-    pip install --upgrade urllib3
-    pip install --upgrade requests
-    pip install --upgrade jupyter
+    pip install --no-cache-dir --upgrade urllib3
+    pip install --no-cache-dir --upgrade requests
+    pip install --no-cache-dir --upgrade jupyter
 
     cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
-    pip install ./hdijupyterutils 
-    pip install --upgrade ./autovizwidget
-    pip install ./sparkmagic
+    pip install --no-cache-dir ./hdijupyterutils 
+    pip install --no-cache-dir --upgrade ./autovizwidget
+    pip install --no-cache-dir ./sparkmagic
     cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
 EOF
