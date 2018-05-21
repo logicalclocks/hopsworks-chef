@@ -1107,15 +1107,12 @@ bash "jupyter-sparkmagic" do
     pip install --upgrade jupyter
 
     cd #{Chef::Config['file_cache_path']}
-#    rm -rf sparkmagic
-#    git clone https://github.com/logicalclocks/sparkmagic
+    rm -rf sparkmagic
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
-    pip install --no-cache-dir ./autovizwidget
-    pip install --no-cache-dir ./hdijupyterutils 
-    pip install --no-cache-dir ./sparkmagic
-    pip uninstall autovizwidget -y
-    pip install --no-cache-dir ./autovizwidget
+    pip install ./hdijupyterutils 
+    pip install --upgrade ./autovizwidget
+    pip install ./sparkmagic
     cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
 EOF
@@ -1129,10 +1126,8 @@ bash "pydoop" do
                  'HADOOP_HOME' => node['hops']['base_dir']})
     code <<-EOF
       set -e
-      # pip install --no-cache-dir --upgrade pydoop==2.0a2
       pip install --no-cache-dir --upgrade hdfscontents
     EOF
-#    not_if "python -c 'import pydoop'"
 end
 
 
