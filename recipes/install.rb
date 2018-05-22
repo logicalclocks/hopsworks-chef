@@ -388,22 +388,6 @@ end
 include_recipe "hopsworks::authbind"
 
 
-case node['platform']
-when "rhel"
-
-  # Needed by sparkmagic
-  package "krb5-libs"
-  package "krb5-devel"
-
-  service_name = "glassfish-#{domain_name}"
-  file "/etc/systemd/system/#{service_name}.service" do
-    owner "root"
-    action :delete
-  end
-
-end
-
-
 if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
     owner "root"
@@ -412,7 +396,7 @@ if systemd == true
     action :create
   end
 
-  
+
    template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
      source "limits.conf.erb"
      owner "root"
@@ -432,10 +416,10 @@ ulimit_domain node['hopsworks']['user'] do
     value "unlimited"
   end
 end
-  
 
 
-  
+
+
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
@@ -910,7 +894,7 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
   source "flyway-undo.sh.erb"
   owner node['glassfish']['user']
   mode 0750
-  action :create  
+  action :create
 end
 
 
@@ -931,7 +915,7 @@ end
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']  
+  group node['glassfish']['group']
   mode 0750
   action :create
 end
@@ -939,7 +923,7 @@ end
 template "#{theDomain}/bin/conda-command-ssh.sh" do
   source "conda-command-ssh.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']  
+  group node['glassfish']['group']
   mode 0750
   action :create
 end
