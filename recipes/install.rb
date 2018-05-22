@@ -401,18 +401,19 @@ when "rhel"
     action :delete
   end
 
-  template "/usr/lib/systemd/system/#{service_name}.service" do
-    source 'systemd.service.erb'
-    mode '0741'
-    cookbook 'hopsworks'
-    variables(
-      :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
-      :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
-      :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
-      :authbind => requires_authbind,
-      :listen_ports => [admin_port, node['glassfish']['port']])
+  if node['install']['upgrade'] == "true"    
+    template "/usr/lib/systemd/system/#{service_name}.service" do
+      source 'systemd.service.erb'
+      mode '0741'
+      cookbook 'hopsworks'
+      variables(
+        :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
+        :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
+        :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
+        :authbind => requires_authbind,
+        :listen_ports => [admin_port, node['glassfish']['port']])
+    end
   end
-
 end
 
 

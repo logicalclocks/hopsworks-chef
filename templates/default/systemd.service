@@ -17,7 +17,7 @@ Environment="<%= key %>=<%= value %>"
 <% end -%>
 <% end -%>
 Restart=always
-TimeoutSec=420
+TimeoutSec=900
 
 [Install]
 WantedBy = multi-user.target
