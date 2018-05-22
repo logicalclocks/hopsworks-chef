@@ -231,7 +231,8 @@ default['jupyter']['base_dir']                         = node['install']['dir'].
 default['jupyter']['user']                             = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
-
+default['jupyter']['sparkmagic']['version']            = "0.12.5"
+default['jupyter']['sparkmagic']['url']                = node['download_url'] + "/sparkmagic-" + node['jupyter']['sparkmagic']['version'] + ".tar.gz"
 
 #
 # TensorFlow Serving

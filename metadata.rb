@@ -309,6 +309,10 @@ attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
 
+attribute "install/upgrade",
+          :description => "Set to 'true' if updating the cluster. Default 'false'",
+          :type => "string"
+
 attribute "install/ssl",
           :description => "Is SSL turned on for all services?",
           :type => "string"
@@ -782,8 +786,12 @@ attribute "hops/reformat",
           :description => "'true' to re-format HDFS, 'false' to skip re-formatting",
           :type => 'string'
 
-attribute "hops/nm/log_dir",
+attribute "hops/yarn/nodemanager_log_dir",
           :description => "The directory in which yarn node manager store containers logs",
+          :type => 'string'
+
+attribute "hops/yarn/nodemanager_recovery_dir",
+          :description => "The directory in which yarn node manager stores recovery state",
           :type => 'string'
 
 attribute "hops/yarn/memory_mbs",
@@ -1434,6 +1442,9 @@ attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
           :type => 'string'
 
+attribute "jupyter/sparkmagic/version",
+          :description => "Version of sparkmagic for Jupyter to install. ",
+          :type => 'string'
 
 ##
 ##

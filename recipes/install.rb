@@ -184,7 +184,7 @@ when "debian"
   package "dtrx"
   package "libkrb5-dev"
 
-when "rhel"
+when "redhat"
   package "krb5-libs"
 
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
@@ -225,7 +225,7 @@ node.override = {
       domain_name => {
         'config' => {
           'systemd_enabled' => systemd,
-          'systemd_start_timeout' => 500,
+          'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
           'max_perm_size' => node['glassfish']['max_perm_size'],
@@ -388,34 +388,6 @@ end
 include_recipe "hopsworks::authbind"
 
 
-case node['platform']
-when "rhel"
-
-  # Needed by sparkmagic
-  package "krb5-libs"
-  package "krb5-devel"
-
-  service_name = "glassfish-#{domain_name}"
-  file "/etc/systemd/system/#{service_name}.service" do
-    owner "root"
-    action :delete
-  end
-
-  template "/usr/lib/systemd/system/#{service_name}.service" do
-    source 'systemd.service.erb'
-    mode '0741'
-    cookbook 'hopsworks'
-    variables(
-      :start_domain_command => "#{asadmin} start-domain #{password_file} --verbose false --debug false --upgrade false #{domain_name}",
-      :restart_domain_command => "#{asadmin} restart-domain #{password_file} #{domain_name}",
-      :stop_domain_command => "#{asadmin} stop-domain #{password_file} #{domain_name}",
-      :authbind => requires_authbind,
-      :listen_ports => [admin_port, node['glassfish']['port']])
-  end
-
-end
-
-
 if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
     owner "root"
@@ -424,7 +396,7 @@ if systemd == true
     action :create
   end
 
-  
+
    template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
      source "limits.conf.erb"
      owner "root"
@@ -444,10 +416,10 @@ ulimit_domain node['hopsworks']['user'] do
     value "unlimited"
   end
 end
-  
 
 
-  
+
+
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
@@ -922,7 +894,7 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
   source "flyway-undo.sh.erb"
   owner node['glassfish']['user']
   mode 0750
-  action :create  
+  action :create
 end
 
 
@@ -943,7 +915,7 @@ end
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']  
+  group node['glassfish']['group']
   mode 0750
   action :create
 end
@@ -951,7 +923,7 @@ end
 template "#{theDomain}/bin/conda-command-ssh.sh" do
   source "conda-command-ssh.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']  
+  group node['glassfish']['group']
   mode 0750
   action :create
 end
