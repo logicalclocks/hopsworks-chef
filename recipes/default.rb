@@ -1109,7 +1109,7 @@ bash "jupyter-sparkmagic" do
     cd #{Chef::Config['file_cache_path']}
     rm -rf sparkmagic
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    cd sparkmagic/sparkmagic
+    cd sparkmagic
     pip install --no-cache-dir ./hdijupyterutils 
     pip install --no-cache-dir --upgrade ./autovizwidget
     pip install --no-cache-dir ./sparkmagic
