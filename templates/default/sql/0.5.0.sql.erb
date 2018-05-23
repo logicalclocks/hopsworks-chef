@@ -155,3 +155,5 @@ INSERT INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hops
 -- Exporting Anaconda environment as yml
 --
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `environment_yml` VARCHAR(10000) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `fault_tolerant` TINYINT(1) NOT NULL;
