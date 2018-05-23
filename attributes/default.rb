@@ -252,6 +252,10 @@ default['tfserving']['max_route_connections']          = "10"
 #
 default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
 
+# Hive
+
+default['hopsworks']['hive2']['scratch_dir_delay']                = "7d"
+default['hopsworks']['hive2']['scratch_dir_cleaner_interval']     = "24h"
 
 #
 # Database upgrades
