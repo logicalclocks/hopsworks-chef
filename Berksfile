@@ -43,7 +43,7 @@ cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
 
-cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
+cookbook 'epipe', github: "maismail/epipe-chef", branch: "HOPSWORKS-558"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
