@@ -47,7 +47,7 @@ export PYLIB=${ANACONDA_ENV}/lib
 
 export HADOOP_VERSION=<%= node['hops']['version'] %>
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export HADOOP_CLIENT_OPTS="-D fs.permissions.umask-mode=0002"
+export HADOOP_CLIENT_OPTS="-Dfs.permissions.umask-mode=0002"
 ## The name of the environment variable must be the same
 ## as in HopsSSLSocketFactory in Hops project
 export MATERIAL_DIRECTORY=$CERTS_DIR
