@@ -13,12 +13,12 @@ include_attribute "dela"
 include_attribute "hive2"
 include_attribute "hops"
 
-default['hopsworks']['version']                  = "0.5.0-SNAPSHOT"
+default['hopsworks']['version']                  = "0.6.0-SNAPSHOT"
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
 # comma-separated string of previous versions hopsworks (not including the current version)
 # E.g., "0.1.1, 0.1.2"
-default['hopsworks']['versions']                 = "0.1.0,0.2.0,0.3.0,0.4.0,0.4.1,0.4.2"
+default['hopsworks']['versions']                 = "0.1.0,0.2.0,0.3.0,0.4.0,0.4.1,0.4.2,0.5.0"
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
