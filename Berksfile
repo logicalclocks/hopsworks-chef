@@ -33,7 +33,7 @@ cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
 =======
 cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
-cookbook 'kagent', github: "robzor92/kagent-chef", branch: "HOPSWORKS-541"
+cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
@@ -63,7 +63,7 @@ cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
 
 
-cookbook 'elasticsearch', '~> 2.5.0'
+cookbook 'elasticsearch', '~> 4.0.0'
 
 cookbook 'compat_resource', '~> 12.19.0'
 cookbook 'authbind', '~> 0.1.10'
