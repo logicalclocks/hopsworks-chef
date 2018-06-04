@@ -728,6 +728,17 @@ attribute "tensorflow/git_url",
 :description => "url for git sourcecode for tensorflow",
 :type => "string"
 
+attribute "tensorflow/custom_url",
+          :description => "User-supplied URL for the tensorflow .whl binaries to be installed.",
+          :type => "string"
+
+##
+##
+## Cuda
+##
+##
+
+
 attribute "cuda/accept_nvidia_download_terms",
 :description => "Accept cuda licensing terms and conditions. Default: 'false'. Change to 'true' to enable cuda.",
 :type => "string"
