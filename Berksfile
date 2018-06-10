@@ -41,7 +41,7 @@ cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
-cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
+cookbook 'tensorflow', github: "robzor92/tensorflow-chef", branch: "revert_tf"
 
 cookbook 'epipe', github: "maismail/epipe-chef", branch: "HOPSWORKS-558"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
