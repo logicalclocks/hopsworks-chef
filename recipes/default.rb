@@ -1430,6 +1430,7 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
   action :create
 end
 
+
 include_recipe "tensorflow::serving"
 
 link "#{node['kagent']['certs_dir']}/cacerts.jks" do
@@ -1442,7 +1443,6 @@ end
 # Need to synchronize conda enviornments for newly joined or rejoining nodes.
 #
 package "rsync"
-
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
