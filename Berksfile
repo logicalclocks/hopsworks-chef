@@ -11,7 +11,7 @@ cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "cudize"
 cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "cudize"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
-cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
+cookbook 'livy', github: "hopshadoop/livy-chef", branch: "cudize"
 cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "cudize"
 
