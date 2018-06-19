@@ -1558,11 +1558,11 @@ attribute "ndb/memcached/private_ips",
           :type => 'array'
 
 attribute "ndb/ndbd/ips_ids",
-          :description =>  "The format should be ["ip1:id1", "ip2:id2", ...] for the ndbd section in the config.ini file. If no value is supplied, one will be assigned by default.",
+          :description =>  "The format should be ['ip1:id1', 'ip2:id2', ...] for the ndbd section in the config.ini file. If no value is supplied, one will be assigned by default.",
           :type => 'array'
 
 attribute "ndb/mysqld/ips_ids",
-          :description =>  "The format should be ["ip1:id1", "ip2:id2", ...] for the mysqld section in the config.ini file. If no value is supplied, one will be assigned by default.",
+          :description =>  "The format should be ['ip1:id1', 'ip2:id2', ...] for the mysqld section in the config.ini file. If no value is supplied, one will be assigned by default.",
           :type => 'array'
 
 attribute "ndb/url",
