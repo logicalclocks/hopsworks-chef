@@ -39,7 +39,7 @@ export JUPYTER_PATH=$JUPYTER_HOME
 export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
 export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
 export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64:${JAVA_HOME}/jre/lib/amd64/server
 export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
 
 export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
