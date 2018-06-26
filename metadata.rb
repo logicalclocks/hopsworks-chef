@@ -329,14 +329,6 @@ attribute "install/addhost",
           :description => "Indicates that this host will be added to an existing Hops cluster.",
           :type => "string"
 
-attribute "install/version",
-          :description => "Hopsworks version.",
-          :type => "string"
-
-attribute "install/versions",
-          :description => "Comma-separated list of previous versions of Hopsworks.",
-          :type => "string"
-
 attribute "hopsworks/monitor_max_status_poll_try",
           :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
           :type => 'string'
@@ -1563,14 +1555,6 @@ attribute "ndb/mysqld/private_ips",
 
 attribute "ndb/memcached/private_ips",
           :description => "ip addrs",
-          :type => 'array'
-
-attribute "ndb/ndbd/ips_ids",
-          :description =>  "The format should be ['ip1:id1', 'ip2:id2', ...] for the ndbd section in the config.ini file. If no value is supplied, one will be assigned by default.",
-          :type => 'array'
-
-attribute "ndb/mysqld/ips_ids",
-          :description =>  "The format should be ['ip1:id1', 'ip2:id2', ...] for the mysqld section in the config.ini file. If no value is supplied, one will be assigned by default.",
           :type => 'array'
 
 attribute "ndb/url",
