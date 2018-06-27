@@ -93,6 +93,10 @@ attribute "hopsworks/service_key_rotation_interval",
           :description => "Interval for Hops service certificates rotation",
           :type => 'string'
 
+attribute "hopsworks/application_certificate_validity_period",
+          :description => "Application certificate validity period. Certificates will be rotated well before the expiration",
+          :type => 'string'
+
 attribute "hopsworks/smtp",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
