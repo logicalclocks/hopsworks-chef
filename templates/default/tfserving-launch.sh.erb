@@ -2,22 +2,18 @@
 
 WAIT_START=20
 MODEL_NAME=$1
-MODEL_VERSION=$2
-TFSERVING_HDFS_DIR=$3
-HADOOP_HOME=<%= node['hops']['base_dir'] %>
-PORT=$4
-SECRET_DIR=$5
-ENABLE_BATCHING=$6
-LOGDIR=${SECRET_DIR}/tfserving/logs/
-MODELDIR=${SECRET_DIR}/tfserving/model
-LOGFILE=${LOGDIR}/${MODEL_NAME}-${PORT}.log
-PID_FILE=${SECRET_DIR}/tfserving/tfserving-${PORT}.pid
+HADOOP_HOME=/srv/hops/hadoop
+PORT=$2
+SECRET_DIR=$3
+LOGDIR=${SECRET_DIR}/logs
+LOGFILE=${LOGDIR}/${MODEL_NAME}.log
+PID_FILE=${SECRET_DIR}/tfserving.pid
 FILE_SYSTEM_POLLING_INTERVAL_SECS=10
 
 
 help() {
     echo ""
-    echo "usage: $0 MODEL_NAME MODEL_VERSION TFSERVING_HDFS_DIR PORT SECRET_DIR ENABLE_BATCHING"
+    echo "usage: $0 MODEL_NAME PORT SECRET_DIR "
     echo ""
     exit 1
 }
@@ -38,18 +34,18 @@ help() {
 
 
 function kill_named {
-    PID=$(ps aux | grep -i tensorflow_model_server | grep "${TFSERVING_HDFS_DIR}" | grep "$PORT" | grep -v grep | awk '{print $2}')
+    PID=$(ps aux | grep -i tensorflow_model_server | grep "$PORT" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 "$PID" > /dev/null 2>&1
-        res=$?
+	    kill -9 "$PID" > /dev/null 2>&1
+      res=$?
     else
-	res=$NOT_FOUND
+      res=$NOT_FOUND
     fi
     return "$res"
 }
 
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 3 ]; then
   help
 fi
 
@@ -63,22 +59,10 @@ mkdir -p "$LOGDIR"
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
-if [ -f "$PID_FILE" ] ; then
- PID=$(cat "$PID_FILE")
- kill -0 "$PID" > /dev/null 2>&1
- if [ $? -eq 0 ] ; then
-     echo "A TensorFlowServing server is already running here. Kill it first."
-     exit 1
- fi
-fi
-
 cd "$SECRET_DIR" || exit
 
-mkdir "${MODELDIR}"
+setsid tensorflow_model_server --port="$PORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> "$LOGFILE" &
 
-# /srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
-
-setsid tensorflow_model_server --port="$PORT" --model_name="${MODEL_NAME}" --model_base_path="${MODELDIR}"/"${MODEL_NAME}" --enable_batching="$ENABLE_BATCHING" --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
 
 # Check that the token is written to the logfile, return when we see it.
@@ -102,6 +86,5 @@ if [ "$timeout" -eq $WAIT_START ] ; then
      kill_named
  fi
 fi
-
 
 exit $?

@@ -3,3 +3,30 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='application_certificate_validity
 DELETE FROM `hopsworks`.`variables` WHERE `id`='elastic_logs_index_expiration';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tensorboard_max_last_accessed';
+
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `local_port` `port` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `local_pid` `pid` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `local_dir` `secret` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `hdfs_model_path` `model_path` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `instances`;
+
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `status` VARCHAR(50) NOT NULL;
+
+-- Restore creator with email
+ALTER TABLE `hopsworks`.`tf_serving` DROP FOREIGN KEY `user_fk`;
+ALTER TABLE `hopsworks`.`tf_serving` DROP INDEX `user_fk`;
+
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `creator` `creator_old` int(11) NOT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `creator` VARCHAR(150) NOT NULL;
+
+UPDATE `hopsworks`.`tf_serving` `t`
+  JOIN `hopsworks`.`users` `u`
+    ON `t`.`creator_old` = `u`.`uid`
+SET `t`.`creator` = `u`.`email`;
+
+ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `creator_old`;
+
+-- Restore hdfs_user_id column
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `hdfs_user_id` int(11) NOT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` ADD FOREIGN KEY `hdfs_user_fk` (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
