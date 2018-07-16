@@ -48,9 +48,9 @@ cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
-cookbook 'elastic', github: "robzor92/elasticsearch-chef", branch: "HOPSWORKS-558"
+cookbook 'elastic', github: "tkakantousis/elasticsearch-chef", branch: "HOPSWORKS-251"
 
-cookbook 'hopslog', github: "robzor92/hopslog-chef", branch: "HOPSWORKS-558"
+cookbook 'hopslog', github: "tkakantousis/hopslog-chef", branch: "HOPSWORKS-251"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
 cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master"
 
