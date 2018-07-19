@@ -63,6 +63,16 @@ attribute "java/install_flavor",
           :display_name =>  "Oracle (default) or openjdk",
           :type => 'string'
 
+attribute "java/jdk/8/x86_64/url",
+          :display_name =>  "Oracle (default) or openjdk",
+          :type => 'string'
+attribute "java/jdk/8/x86_64/checksum",
+          :display_name =>  "Oracle (default) or openjdk",
+          :type => 'string'
+attribute "java/oracle/accept_oracle_download_terms",
+          :display_name =>  "Oracle (default) or openjdk",
+          :type => 'string'
+
 attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
           :type => 'array'
