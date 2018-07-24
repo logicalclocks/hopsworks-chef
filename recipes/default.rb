@@ -1110,6 +1110,7 @@ bash "jupyter-sparkmagic" do
     rm -rf sparkmagic
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
+    pip install --no-cache-dir --upgrade pandas
     pip install --no-cache-dir ./hdijupyterutils 
     pip install --no-cache-dir --upgrade ./autovizwidget
     pip install --no-cache-dir ./sparkmagic
