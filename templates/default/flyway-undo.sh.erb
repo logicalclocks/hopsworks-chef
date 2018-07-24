@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -ne 1 ] ; then
     echo ""
@@ -9,7 +9,7 @@ if [ $# -ne 1 ] ; then
 fi
 undo=<%= node['hopsworks']['domains_dir'] %>/domain1/flyway/undo/U${1}__undo.sql
 
-if [ ! -f $undo ] ; then
+if [ ! -f "$undo" ] ; then
     echo "Could not find the undo sql file for flyway: $undo"
     echo ""
     exit 2
@@ -17,7 +17,7 @@ fi
 
 # Check to see if this version is installed first. if not, exit.
 
-<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT version FROM flyway_schema_history ORDER BY version DESC LIMIT 1" | grep $1
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "SELECT version FROM flyway_schema_history ORDER BY version DESC LIMIT 1" | grep "$1"
 
 if [ $? -ne 0 ] ; then
     echo "This doesn't look like the latest version installed of flyway"
@@ -33,4 +33,4 @@ if [ $? -ne 0 ] ; then
     echo "Exiting..."
     exit 4
 fi
-<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks < $undo
+<%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks < "$undo"

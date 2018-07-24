@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -ne 7  ]; then
  echo "Usage: $0 service countryCode city organization_name email_address orcid "
@@ -23,36 +23,36 @@ cd <%= @int_ca_dir %>
 
 #1 Create a user key
 openssl genrsa \
-      -out private/${DOMAIN}.key.pem 2048
+      -out private/"${DOMAIN}".key.pem 2048
 
-chmod 400 private/${DOMAIN}.key.pem
+chmod 400 private/"${DOMAIN}".key.pem
 
 #2 Create a user certificate
 #	-subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}/emailAddress=${EMAIL}" \
 openssl req -config ../openssl-ca.cnf \
        -subj "/C=${COUNTRY_CODE}/ST=${CITY}/L=${ORCID}/O=${ORG}/CN=${DOMAIN}" \
-       -passin pass:$KEYSTOREPW -passout pass:$KEYSTOREPW \
-       -key private/${DOMAIN}.key.pem \
-       -new -sha256 -out csr/${DOMAIN}.csr.pem
+       -passin pass:"$KEYSTOREPW" -passout pass:"$KEYSTOREPW" \
+       -key private/"${DOMAIN}".key.pem \
+       -new -sha256 -out csr/"${DOMAIN}".csr.pem
 
 openssl ca -batch -config openssl-intermediate.cnf \
-      -passin pass:$MASTERPW \
+      -passin pass:"${MASTERPW}" \
       -extensions usr_cert -days 365 -notext -md sha256 \
-      -in csr/${DOMAIN}.csr.pem \
-      -out certs/${DOMAIN}.cert.pem
+      -in csr/"${DOMAIN}".csr.pem \
+      -out certs/"${DOMAIN}".cert.pem
 
-chmod 444 certs/${DOMAIN}.cert.pem
+chmod 444 certs/"${DOMAIN}".cert.pem
 
 #3 Verify the intermediate certificate
 ## openssl verify -CAfile certs/ca-chain.cert.pem certs/${DOMAIN}.cert.pem
 
 #Create new Keystore 
-openssl pkcs12 -export -in certs/${DOMAIN}.cert.pem -inkey private/${DOMAIN}.key.pem -out cert_and_key.p12 -name $DOMAIN -CAfile certs/intermediate.cert.pem -caname root -password pass:$KEYSTOREPW
-keytool -importkeystore -destkeystore ${DOMAIN}__kstore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias $DOMAIN -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__kstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore ${DOMAIN}__tstore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+openssl pkcs12 -export -in certs/"${DOMAIN}".cert.pem -inkey private/"${DOMAIN}".key.pem -out cert_and_key.p12 -name "${DOMAIN}" -CAfile certs/intermediate.cert.pem -caname root -password pass:"${KEYSTOREPW}"
+keytool -importkeystore -destkeystore "${DOMAIN}"__kstore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias "${DOMAIN}" -srcstorepass "${KEYSTOREPW}" -deststorepass "${KEYSTOREPW}" -destkeypass "${KEYSTOREPW}"
+keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore "${DOMAIN}"__kstore.jks -srcstorepass "${KEYSTOREPW}" -deststorepass "${KEYSTOREPW}" -destkeypass "${KEYSTOREPW}"
+keytool -import -noprompt -trustcacerts -alias CARoot -file certs/intermediate.cert.pem -keystore "${DOMAIN}"__tstore.jks -srcstorepass "${KEYSTOREPW}" -deststorepass "${KEYSTOREPW}" -destkeypass "${KEYSTOREPW}"
 
-chown -R <%= node['glassfish']['user'] %>:<%= node['glassfish']['group'] %> ${DOMAIN}__kstore.jks ${DOMAIN}__tstore.jks
-mv  ${DOMAIN}__kstore.jks /tmp/${DOMAIN}__kstore.jks
-mv  ${DOMAIN}__tstore.jks /tmp/${DOMAIN}__tstore.jks
+chown -R <%= node['glassfish']['user'] %>:<%= node['glassfish']['group'] %> "${DOMAIN}"__kstore.jks "${DOMAIN}"__tstore.jks
+mv  "${DOMAIN}"__kstore.jks /tmp/"${DOMAIN}"__kstore.jks
+mv  "${DOMAIN}"__tstore.jks /tmp/"${DOMAIN}"__tstore.jks
 rm cert_and_key.p12

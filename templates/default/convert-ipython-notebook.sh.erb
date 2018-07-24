@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # This script converts ipython notebooks to/from python programs
@@ -27,36 +27,36 @@ if [ $? -ne 0 ] ; then
 fi    
 cd ipython_conversions
 
-filename=$(basename $1)
-dirname=$(dirname $1)
+filename=$(basename "$1")
+dirname=$(dirname "$1")
 
-base=$(echo $filename | cut -f 1 -d '.')
+base=$(echo "$filename" | cut -f 1 -d '.')
 
 # Remove any old versions that may be here
-rm -f ${base}.py
-rm -f $filename
+rm -f "${base}".py
+rm -f "$filename"
 
 # Stage the jupyter notebook before converting locally and uploading back to hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal $1
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$1"
 if [ $? -ne 0 ] ; then
     echo "Problem staging from hdfs ipython notebook: $1"
     exit 4
 fi    
-jupyter nbconvert --to python $filename
+jupyter nbconvert --to python "$filename"
 if [ $? -ne 0 ] ; then
     echo "Problem converting ipython notebook to python program: $1"
     exit 5
 fi    
 
 # Over-write any old version up on hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f ${base}.py $dirname
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${base}".py "$dirname"
 if [ $? -ne 0 ] ; then
     echo "Problem copying converted ipython program back to hdfs: $dirname/${base}.py"
     exit 6
 fi    
 
 # Current user should have hdfs superuser privileges
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown $2 $dirname/${base}.py
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "$2" "$dirname"/"${base}".py
 if [ $? -ne 0 ] ; then
     echo "Problem changing ownersihp of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
     exit 5

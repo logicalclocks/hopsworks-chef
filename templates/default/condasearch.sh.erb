@@ -10,4 +10,4 @@ CHANNEL=
 if [ "$1" != "defaults" ] ; then
    CHANNEL="-c $1 --override-channels"
 fi    
-<%= node['conda']['base_dir'] %>/bin/conda search $CHANNEL *${2}*  | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"
+<%= node['conda']['base_dir'] %>/bin/conda search "$CHANNEL" *"${2}"*  | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"

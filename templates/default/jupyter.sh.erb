@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script allows Hopsworks to start/kill/ping (check if alive) a Jupyter Notebook Server.
 # There will be 1 notebook-server per ProjectUser.
@@ -54,7 +54,7 @@ if [ "$1" == "kill" ] ; then
     if [ "$2" != "" ] ; then
 	# Try and make sure some silly directory is not deleted, that this
 	if [[ $2 = *"hops/jupyter/Projects"* ]]; then
-            sudo rm -rf ${2}/../*
+            sudo rm -rf "${2}"/../*
 	fi
     fi
     
@@ -116,43 +116,43 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
     
-    parent=$(dirname $8)
-    sudo chown -R ${HOPSWORKS_USER}:${JUPYTER_GROUP} $parent
-    sudo chmod 0730 $parent
-    sudo mkdir -p $8
+    parent=$(dirname "$8")
+    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$parent"
+    sudo chmod 0730 "$parent"
+    sudo mkdir -p "$8"
     if [ $? -ne 0 ] ; then
 	echo "Error: could not create private_dir: $8"
 	exit 1
     fi
-    sudo chmod -R 770 $8
-    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $8
+    sudo chmod -R 770 "$8"
+    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
     
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
     #    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
     # Make the group of the files, the jupyter group so that they can write to the files
-    sudo chown -R ${HOPSWORKS_USER}:${JUPYTER_GROUP} $2/..
+    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$2/"..
     if [ $? -ne 0 ] ; then
 	echo "Error: could not change ownership of config_dir for Jupyter: $2"
 	exit 1
     fi
-    sudo chmod 0730 $2/..    
-    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
-    sudo chmod -R 770 $2
+    sudo chmod 0730 "$2/"..
+    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
+    sudo chmod -R 770 "$2"
      
     # Launch the jupyter notebook
-    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9"
+    su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep $2
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
     if [ $? -ne 0 ] ; then
 	echo "Error checking PID: $2"
 	echo "Are you trying to ping a non jupyter-notebook process?"
 	exit 12
     fi
-    kill -0 $2
+    kill -0 "$2"
 
 # list 
 elif [ "$1" == "list" ] ; then
@@ -172,8 +172,8 @@ elif [ "$1" == "kernel-add" ] ; then
     PROJ_USER=$3
     PROJECT=${PROJ_USER%__*}	
     
-    if [ ! -d /usr/local/share/jupyter/kernels/python-${PROJ_USER} ] ; then
-       sudo ${DOMAINS_DIR}/domain1/bin/jupyter-kernel-install.sh $EXEC_AS_ANACONDA_USER $PROJECT $PROJ_USER $CONDA_DIR $JUPYTER_HOME
+    if [ ! -d "/usr/local/share/jupyter/kernels/python-${PROJ_USER}" ] ; then
+       sudo "${DOMAINS_DIR}"/domain1/bin/jupyter-kernel-install.sh "$EXEC_AS_ANACONDA_USER" "$PROJECT" "$PROJ_USER" "$CONDA_DIR" "$JUPYTER_HOME"
     fi
  
 #   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
@@ -192,7 +192,7 @@ elif [ "$1" == "kernel-remove" ] ; then
 	exit 2
     fi
     
-    sudo rm -rf ${KERNELS_DIR}/python-${2}
+    sudo rm -rf "${KERNELS_DIR}"/python-"${2}"
 else
   help
 fi

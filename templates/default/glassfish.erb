@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 ### BEGIN INIT INFO
 # Provides:          glassfish
@@ -26,7 +26,7 @@ start() {
 stop() {
 su -c "<%= node['glassfish']['base_dir'] %>/versions/current/bin/asadmin --user <%= node['hopsworks']['admin']['user'] %> --passwordfile <%= @password_file %> stop-domain <%= @domain_name %>" <%= node['glassfish']['user'] %> 
 res=$?
-id=`ps -ef | grep ASMain` 
+id=$(ps -ef | grep ASMain)
 if [ "$id" != "" ] ; then
   ps -ef | awk '/ASMain/{print $2}' | xargs kill 2> /dev/null
   res=$?

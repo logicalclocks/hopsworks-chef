@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -21,8 +21,8 @@ CSR_PATH="$4"
 GENERATED_CERT_PATH="$5"
 
 
-openssl ca -batch -config $CA_FILE -passin pass:${MASTERPW} \
-        -extensions $EXTENSION -days $VALID_DAYS -notext -md sha256 -in ${CSR_PATH} -out ${GENERATED_CERT_PATH}
+openssl ca -batch -config "$CA_FILE" -passin pass:"${MASTERPW}" \
+        -extensions "$EXTENSION" -days "$VALID_DAYS" -notext -md sha256 -in "${CSR_PATH}" -out "${GENERATED_CERT_PATH}"
 
 
-chmod +r ${GENERATED_CERT_PATH}
+chmod +r "${GENERATED_CERT_PATH}"
