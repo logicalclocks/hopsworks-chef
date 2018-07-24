@@ -4,11 +4,11 @@ source 'https://supermarket.chef.io'
 metadata
 
 cookbook 'java'
-cookbook 'conda', github: "hopshadoop/conda-chef", branch: "master"
+cookbook 'conda', github: "hopshadoop/conda-chef", branch: "chef_fixes_jd"
 cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
 cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
-cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "master"
+cookbook 'hadoop_spark', github: "hopshadoop/spark-chef", branch: "chef_fixes_jd"
 cookbook 'flink', github: "hopshadoop/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "hopshadoop/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "hopshadoop/livy-chef", branch: "master"
@@ -24,7 +24,7 @@ cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
-cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "master"
+cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "chef_fixes_jd"
 
 cookbook 'ulimit', github: "hopshadoop/chef-ulimit", branch: "master"
 
