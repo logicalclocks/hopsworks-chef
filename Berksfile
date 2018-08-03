@@ -16,11 +16,11 @@ cookbook 'drelephant', github: "hopshadoop/dr-elephant-chef", branch: "master"
 cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "chef_fixes_jd"
 
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
-cookbook 'dela', github: "hopshadoop/dela-chef", branch: "chef_fixes_jd"
+cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "chef_fixes_jd"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "chef_fixes_jd"
-cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "chef_fixes_jd"
+cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "chef_fixes_jd"
 cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "chef_fixes_jd"
