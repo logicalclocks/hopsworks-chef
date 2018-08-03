@@ -19,7 +19,7 @@ cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "chef_fixes_jd"
 
 cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "chef_fixes_jd"
-cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
+cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "chef_fixes_jd"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "chef_fixes_jd"
 
 cookbook 'hopslog', github: "hopshadoop/hopslog-chef", branch: "chef_fixes_jd"
@@ -28,7 +28,7 @@ cookbook 'glassfish', github: "hopshadoop/chef-glassfish", branch: "chef_fixes_j
 
 cookbook 'ulimit', github: "hopshadoop/chef-ulimit", branch: "master"
 
-cookbook 'hive2', github: "hopshadoop/hive-chef", branch: "master"
+cookbook 'hive2', github: "hopshadoop/hive-chef", branch: "chef_fixes_jd"
 
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
