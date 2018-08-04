@@ -768,6 +768,20 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
    secure false
   end
 
+  #
+  # Workaround for https://github.com/payara/Payara/issues/2430
+  # TODO: Remove this when we upgrade to glassfish 5.
+  #
+  glassfish_asadmin "create-jvm-options -Ddeployment.resource.validation=false" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
+
+
+  
   # Setup cron job for HDFS dumper
   cron 'dump_http_logs_to_hdfs' do
     if node['hopsworks']['systemd'] == "true"
