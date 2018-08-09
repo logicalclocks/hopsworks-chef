@@ -4,6 +4,7 @@ source 'https://supermarket.chef.io'
 metadata
 
 cookbook 'java'
+
 cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
 cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "master"
@@ -32,9 +33,6 @@ cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
 
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
-
-
-cookbook 'elasticsearch', '~> 2.5.0'
 
 cookbook 'compat_resource', '~> 12.19.0'
 cookbook 'authbind', '~> 0.1.10'
