@@ -54,6 +54,9 @@ export MATERIAL_DIRECTORY=$CERTS_DIR
 
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 
+# Try to make python code reproducible by setting this random seed
+# https://www.youtube.com/watch?time_continue=1&v=Ys8ofBeR2kA
+export PYTHONHASHSEED=0
 
 if [ -f $PID_FILE ] ; then
  PID=`cat $PID_FILE`
