@@ -987,6 +987,22 @@ link "crl-symlink" do
   group node['glassfish']['group']
 end
 
+template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
+  source "tensorboard.sh.erb"
+  owner node['glassfish']['user']
+  group node['conda']['group']
+  mode 0750
+  action :create
+end
+
+template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
+  source "tensorboard-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['conda']['group']
+  mode 0750
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
   owner node['glassfish']['user']
@@ -1322,6 +1338,14 @@ directory node['hopsworks']['staging_dir'] + "/serving"  do
   mode "0330"
   action :create
 end
+
+directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
+  owner node['conda']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  action :create
+end
+
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
