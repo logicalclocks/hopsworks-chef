@@ -2,7 +2,6 @@
 --  TensorBoard visualization for experiments service
 --
 CREATE TABLE IF NOT EXISTS `tensorboard` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `project_id` INT(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `endpoint` VARCHAR(100) NOT NULL,
@@ -10,10 +9,11 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   `pid` BIGINT NOT NULL,
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `per_project_user_tensorboard` (`project_id`,`user_id`),
+  `hdfs_user_id` int(11) NOT NULL,
+  PRIMARY KEY (`project_id`,`user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hosts` DROP KEY `hostname`;
