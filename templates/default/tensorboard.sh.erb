@@ -72,7 +72,7 @@ elif [ "$1" == "start" ] ; then
     sudo chmod 660 "$5".log
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".log
 
-    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7"
+    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8"
 
 elif [ "$1" == "ping" ] ; then
 
