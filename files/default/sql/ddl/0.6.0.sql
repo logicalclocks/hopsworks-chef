@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   `endpoint` VARCHAR(100) NOT NULL,
   `elastic_id` VARCHAR(100) NOT NULL,
   `pid` BIGINT NOT NULL,
-  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
   PRIMARY KEY (`project_id`,`user_id`),
   FOREIGN KEY `project_id_fk` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
