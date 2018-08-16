@@ -64,6 +64,9 @@ elif [ "$1" == "start" ] ; then
     sudo chmod 770 "$4"
     cd "$4"
 
+    sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$8"
+    sudo chmod 750 "$8"
+
     echo > "$5".pid
     sudo chmod 660 "$5".pid
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".pid
