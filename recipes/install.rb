@@ -183,7 +183,7 @@ when "debian"
   end
   package "dtrx"
   package "libkrb5-dev"
-
+  dtrx="dtrx"
 when "redhat"
   package "krb5-libs"
 
@@ -206,6 +206,7 @@ when "redhat"
   EOF
     not_if "which dtrx"
   end
+  dtrx="/usr/local/bin/dtrx"  
 end
 
 
@@ -692,6 +693,9 @@ template "#{theDomain}/bin/unzip-background.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  variables({
+              :dtrx => dtrx
+            })  
   action :create
 end
 

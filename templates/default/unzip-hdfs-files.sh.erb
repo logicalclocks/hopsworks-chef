@@ -58,7 +58,7 @@ echo "UNZIPPING" > $fsmFile
 # dtrx will also change the permissions to  ensure that the owner can read and write all those files.
 
 cd $workdir
-dtrx -o -n "$file"
+<%= @dtrx %> -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
