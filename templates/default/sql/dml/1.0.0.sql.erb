@@ -33,4 +33,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`="service_stop_script";
 DELETE FROM `hopsworks`.`variables` where id="telegraf";
 DELETE FROM `hopsworks`.`variables` where id="kapacitor";
 
-REPLACE INTO variables VALUES ("hops_verification_version", "<%= node['hadoop_spark']['hops_verification']['version'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hops_verification_version", "<%= node['hadoop_spark']['hops_verification']['version'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");

@@ -405,7 +405,7 @@ template "#{domains_dir}/#{domain_name}/config/log4j.properties" do
   group node['glassfish']['group']
 end
 
-# Add Hadoop glob classpath to Glassfish
+# Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
 # systemd unit environment variables file
 hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
 ruby_block "export_hadoop_classpath" do
@@ -415,6 +415,8 @@ ruby_block "export_hadoop_classpath" do
     variable = "HADOOP_GLOB=#{exec_stdout}"
     file = Chef::Util::FileEdit.new(node['hopsworks']['env_var_file'])
     file.insert_line_if_no_match(/#{variable}/, variable)
+    hadoop_conf_dir_var = "HADOOP_CONF_DIR=#{node['hops']['conf_dir']}"
+    file.insert_line_if_no_match(/#{variable}/, hadoop_conf_dir_var)
     file.write_file
   end
   action :create
@@ -953,7 +955,7 @@ end
 directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
   owner node['jupyter']['user']
   group node['hopsworks']['group']
-  mode "0330"
+  mode "0370"
   action :create
 end
 
