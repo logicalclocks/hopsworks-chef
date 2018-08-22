@@ -40,7 +40,7 @@ export LC_ALL=C
 CLASSPATH=$("${HADOOP_HOME}"/bin/hadoop classpath --glob):"${HADOOP_HOME}"/share/hadoop/hdfs/hadoop-hdfs-"${HADOOP_VERSION}".jar
 export CLASSPATH="${CLASSPATH}"
 
-setsid "${ANACONDA_ENVIRONMENT_PATH}"/bin/tensorboard --port="$PORT" --logdir="$HDFS_LOGDIR" </dev/zero &> "$LOGFILE"  &
+setsid "${ANACONDA_ENVIRONMENT_PATH}"/bin/tensorboard --port="$PORT" --logdir="$HDFS_LOGDIR" --reload_interval 3.0 </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
 
 exit $?
