@@ -17,37 +17,37 @@ function printer {
 
 if [ -e $CHECKPOINT ]
 then
-    printer "Dumping log files since `cat $CHECKPOINT`"
-    find $LOGS_DIR -type f -regextype posix-extended -regex $REGEX -readable -newer $CHECKPOINT  > $FILES_TO_DUMP
+    printer "Dumping log files since $(cat $CHECKPOINT)"
+    find "$LOGS_DIR" -type f -regextype posix-extended -regex "$REGEX" -readable -newer "$CHECKPOINT"  > "$FILES_TO_DUMP"
     cp $CHECKPOINT $CHECKPOINT.bak
 else
     printer "Checkpoint does not exist, dumping all"
-    find $LOGS_DIR -type f -regextype posix-extended -regex $REGEX -readable > $FILES_TO_DUMP
+    find "$LOGS_DIR" -type f -regextype posix-extended -regex "$REGEX" -readable > "$FILES_TO_DUMP"
 fi
 
-echo `date` > $CHECKPOINT
+date > "$CHECKPOINT"
 
 function failed_exit {
-    rm -f $FILES_TO_DUMP
-    mv $CHECKPOINT.bak $CHECKPOINT
-    printer $1
-    exit $2
+    rm -f "$FILES_TO_DUMP"
+    mv "${CHECKPOINT}.bak" "$CHECKPOINT"
+    printer "$1"
+    exit "$2"
 }
 
 while IFS='' read -r log_file || [[ -n "$log_file" ]];
 do
     # Create directory in HDFS
     filename=$(basename "$log_file")
-    date=$(echo $filename | awk -F '.' {'print $2'})
-    year=$(echo $date | awk -F '-' {'print $1'})
-    month=$(echo $date | awk -F '-' {'print $2'})
-    REMOTE_DIR=$HDFS_WEBLOGS_DIR/$year/$month
+    date=$(echo "$filename" | awk -F '.' \{'print $2'\})
+    year=$(echo "$date" | awk -F '-' \{'print $1'\})
+    month=$(echo "$date" | awk -F '-' \{'print $2'\})
+    REMOTE_DIR="${HDFS_WEBLOGS_DIR}/${year}/${month}"
 
-    $HADOOP_HOME/bin/hdfs dfs -test -d $REMOTE_DIR
+    "$HADOOP_HOME"/bin/hdfs dfs -test -d "$REMOTE_DIR"
     if [ $? -ne 0 ]
     then
 	printer "Creating remote directory $REMOTE_DIR"
-	$HADOOP_HOME/bin/hdfs dfs -mkdir -p $REMOTE_DIR
+	"$HADOOP_HOME"/bin/hdfs dfs -mkdir -p "$REMOTE_DIR"
 	if [ $? -ne 0 ]
 	then
 	    failed_exit "Failed to create directory $REMOTE_DIR. Exiting..." 1
@@ -58,23 +58,23 @@ do
     printer "Copying file $log_file"
     # Check if the file already exists. If it does then Glassfish has appended to that
     # file during rotation. Delete the previous file and put the new.
-    $HADOOP_HOME/bin/hdfs dfs -test -e $full_remote_file
+    "$HADOOP_HOME"/bin/hdfs dfs -test -e "$full_remote_file"
     if [ $? -eq 0 ]
     then
 	printer "File $log_file already exist, removing it and putting the new"
-	$HADOOP_HOME/bin/hdfs dfs -rm -f $full_remote_file
+	"$HADOOP_HOME"/bin/hdfs dfs -rm -f "$full_remote_file"
     fi
     
-    $HADOOP_HOME/bin/hdfs dfs -copyFromLocal $log_file $REMOTE_DIR
+    "$HADOOP_HOME"/bin/hdfs dfs -copyFromLocal "$log_file" "$REMOTE_DIR"
     if [ $? -ne 0 ]
     then
         failed_exit "Error while copying $log_file. Exiting..." 2
     fi
 
     # Change permissions to 0750
-    $HADOOP_HOME/bin/hdfs dfs -chmod $REMOTE_FILE_PERMISSIONS $full_remote_file
+    "$HADOOP_HOME"/bin/hdfs dfs -chmod "$REMOTE_FILE_PERMISSIONS" "$full_remote_file"
 done < $FILES_TO_DUMP
 
 printer "Backup finished successfully. Deleting temporary files."
-rm -f $FILES_TO_DUMP
-rm -f $CHECKPOINT.bak
+rm -f "$FILES_TO_DUMP"
+rm -f "${CHECKPOINT}".bak

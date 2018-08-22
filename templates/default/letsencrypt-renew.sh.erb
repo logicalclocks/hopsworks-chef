@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Get new EFF-Certbot
 
@@ -26,7 +26,6 @@ RENEWED=${BASE}/$NEW_DOMAIN
 GF_DOMAIN=<%= node['hopsworks']['domains_dir'] %>/domain1
 GF_USER=<%= node['hopsworks']['user'] %>
 
-
 #git clone https://github.com/certbot/certbot
 cd certbot
 ./certbot-auto certonly --standalone -d hops.site -d www.hops.site
@@ -36,25 +35,25 @@ rm -rf etc
 mkdir etc
 cd etc
 mv -f ${LIVE} /etc/letsencrypt/live/${DOMAIN}.old
-mv -f $RENEWED $LIVE
+mv -f "$RENEWED $LIVE"
 
 
 #Create new Keystore using the LetsEncrypt Certificates
-openssl pkcs12 -export -in $LIVE/cert.pem -inkey $LIVE/privkey.pem -out cert_and_key.p12 -name $DOMAIN -CAfile $LIVE/chain.pem -caname root -password pass:$KEYSTOREPW
-keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias $DOMAIN -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-keytool -import -noprompt -trustcacerts -alias root -file $LIVE/chain.pem -keystore keystore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+openssl pkcs12 -export -in $LIVE/cert.pem -inkey $LIVE/privkey.pem -out cert_and_key.p12 -name $DOMAIN -CAfile $LIVE/chain.pem -caname root -password pass:"$KEYSTOREPW"
+keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias $DOMAIN -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
+keytool -import -noprompt -trustcacerts -alias root -file $LIVE/chain.pem -keystore keystore.jks -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
 
-openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name glassfish-instance -password pass:$KEYSTOREPW
-keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias glassfish-instance -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name s1as -password pass:$KEYSTOREPW
-keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias s1as -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name glassfish-instance -password pass:"$KEYSTOREPW"
+keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias glassfish-instance -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
+openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name s1as -password pass:"$KEYSTOREPW"
+keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias s1as -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
 
 #Add new Certificates to Truststore
-keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass $KEYSTOREPW
-keytool -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass $KEYSTOREPW
+keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass "$KEYSTOREPW"
+keytool -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass "$KEYSTOREPW"
 
-keytool -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass $KEYSTOREPW
-keytool -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
+keytool -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass "$KEYSTOREPW"
+keytool -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass "$KEYSTOREPW"
 
 rm -f cert_and_key.p12 glassfish-instance.cert pkcs.p12 s1as.cert
 

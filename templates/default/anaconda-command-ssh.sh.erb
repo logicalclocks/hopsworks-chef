@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -lt 6  ]; then
     echo "host <op> <proj> <arg> <offline> <hadoop_home>"
@@ -12,9 +12,9 @@ shift
 
 tmpfile=$(mktemp /tmp/hopsworks-anaconda.XXXXXX)
 
-ssh ${doas}@${host} "sudo <%= node['kagent']['base_dir'] %>/bin/anaconda_env.sh <%= node['conda']['user'] %> $@" 2>&1 > ${tmpfile}
+ssh "${doas}"@"${host}" "sudo <%= node['kagent']['base_dir'] %>/bin/anaconda_env.sh <%= node['conda']['user'] %> $*" > "${tmpfile}" 2>&1
 RES=$?
-cat $tmpfile
-rm -f $tmpfile
+cat "$tmpfile"
+rm -f "$tmpfile"
 
 exit $RES

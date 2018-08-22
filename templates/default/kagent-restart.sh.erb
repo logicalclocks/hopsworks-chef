@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -ne 1 ] ; then
   echo "usage: $0 hostname"
@@ -6,4 +6,4 @@ if [ $# -ne 1 ] ; then
 fi
 
 
-ssh <%= node['kagent']['user'] %>@$1 "sudo <%= node['kagent']['base_dir'] %>/bin/restart-service.sh kagent"
+ssh <%= node['kagent']['user'] %>@"$1" "sudo <%= node['kagent']['base_dir'] %>/bin/restart-service.sh kagent"

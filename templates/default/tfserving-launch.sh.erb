@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 WAIT_START=20
 MODEL_NAME=$1
@@ -38,14 +38,14 @@ help() {
 
 
 function kill_named {
-    PID=`ps aux | grep -i tensorflow_model_server | grep ${TFSERVING_HDFS_DIR} | grep $PORT | grep -v grep | awk '{print $2}'`
+    PID=$(ps aux | grep -i tensorflow_model_server | grep "${TFSERVING_HDFS_DIR}" | grep "$PORT" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 $PID > /dev/null 2>&1
+	kill -9 "$PID" > /dev/null 2>&1
         res=$?
     else
 	res=$NOT_FOUND
     fi
-    return $res
+    return "$res"
 }
 
 
@@ -53,52 +53,51 @@ if [ $# -ne 6 ]; then
   help
 fi
 
-if [ ! -d $SECRET_DIR ] ; then
+if [ ! -d "$SECRET_DIR" ] ; then
     echo "Secret dir does not exist: $SECRET_DIR"
     exit 2
 fi
 
-mkdir -p $LOGDIR
+mkdir -p "$LOGDIR"
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
-if [ -f $PID_FILE ] ; then
- PID=`cat $PID_FILE`
- kill -0 $PID 2>&1 > /dev/null
+if [ -f "$PID_FILE" ] ; then
+ PID=$(cat "$PID_FILE")
+ kill -0 "$PID" > /dev/null 2>&1
  if [ $? -eq 0 ] ; then
      echo "A TensorFlowServing server is already running here. Kill it first."
      exit 1
  fi
 fi
 
-cd $SECRET_DIR
+cd "$SECRET_DIR" || exit
 
-mkdir ${MODELDIR}
+mkdir "${MODELDIR}"
 
 # /srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
 
-setsid tensorflow_model_server --port=$PORT --model_name=${MODEL_NAME} --model_base_path=${MODELDIR}/${MODEL_NAME} --enable_batching=$ENABLE_BATCHING --file_system_poll_wait_seconds=$FILE_SYSTEM_POLLING_INTERVAL_SECS </dev/zero &> $LOGFILE  &
-echo $! > $PID_FILE
+setsid tensorflow_model_server --port="$PORT" --model_name="${MODEL_NAME}" --model_base_path="${MODELDIR}"/"${MODEL_NAME}" --enable_batching="$ENABLE_BATCHING" --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" </dev/zero &> "$LOGFILE"  &
+echo $! > "$PID_FILE"
 
 # Check that the token is written to the logfile, return when we see it.
-token=0
 timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
 	sleep 1
-	grep 'serving' $LOGFILE
+	grep 'serving' "$LOGFILE"
         if [ $? -eq 0 ] ; then
           break
         fi
 	echo -n "."
-	timeout=`expr $timeout + 1`
+	timeout=$((timeout + 1))
 done
 echo ""
 
 # If the timeout was exceeded, kill tfserver
-if [ $timeout -eq $WAIT_START ] ; then
- PID=`cat $PID_FILE`
- kill $PID 2>&1 > /dev/null
+if [ "$timeout" -eq $WAIT_START ] ; then
+ PID=$(cat "$PID_FILE")
+ kill "$PID" > /dev/null 2>&1
  if [ $? -ne 0 ] ; then
      kill_named
  fi

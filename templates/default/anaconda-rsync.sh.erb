@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -17,10 +17,10 @@ host=$1
 #
 tmpfile=$(mktemp /tmp/hopsworks-rsync.XXXXXX)
 #rsync -aurpqz <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@$host:<%= node['conda']['dir'] %> 2>&1 > ${tmpfile}
-rsync -S -R -r -aH --delete <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@$host:<%= node['conda']['dir'] %> 2>&1 > ${tmpfile}
+rsync -S -R -r -aH --delete <%= node['conda']['dir'] %>/ <%= node['conda']['user'] %>@"${host}":<%= node['conda']['dir'] %> > "${tmpfile}" 2>&1
 RES=$?
-cat $tmpfile
-rm -f $tmpfile
+cat "$tmpfile"
+rm -f "$tmpfile"
 exit $RES
 
 

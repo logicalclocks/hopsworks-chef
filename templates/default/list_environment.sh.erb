@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # conda search -c $1
 
@@ -7,6 +7,6 @@ if [ $# -ne 1  ]; then
  exit 1
 fi
 
-PROJECT=$1
+PROJECT="$1"
 
 <%= node['conda']['base_dir'] %>/bin/conda list -n ${PROJECT}

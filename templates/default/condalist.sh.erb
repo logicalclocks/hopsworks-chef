@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # conda list [-c $1]
 
@@ -14,7 +14,7 @@ fi
 # pandas,0.19.2
 # pandasql,0.7.3
 
-<%= node['conda']['base_dir'] %>/bin/conda list $channel | awk '{print $1","$2}' | grep -v "^#"
+<%= node['conda']['base_dir'] %>/bin/conda list "$channel" | awk '{print $1","$2}' | grep -v "^#"
 
 
 

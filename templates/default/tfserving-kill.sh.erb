@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 help() {
     echo ""
@@ -19,23 +19,23 @@ SECRET_DIR=$4
 PID_FILE=${SECRET_DIR}/tfserving/tfserving-${PORT}.pid
 
 function kill_named {
-    PID=`ps aux | grep tensorflow_model_server | grep ${PORT} | grep -v grep | awk '{print $2}'`
+    PID=$(ps aux | grep tensorflow_model_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 $PID > /dev/null 2>&1
+	kill -9 "$PID" > /dev/null 2>&1
         res=$?
     else
 	res=$NOT_FOUND
     fi
-    return $res
+    return "$res"
 }
 
 echo "Killing input pid: $PID"
-kill $PID 2>&1 > /dev/null
+kill "$PID" 2>&1 > /dev/null
 if [ $? -ne 0 ] ; then
-    if [ -f $PID_FILE ] ; then
-	PID=`cat $PID_FILE`
+    if [ -f "$PID_FILE" ] ; then
+	PID=$(cat "$PID_FILE")
 	echo "Killing pid: $PID"
-	kill $PID 2>&1 > /dev/null
+	kill "$PID" > /dev/null 2>&1
 	if [ $? -ne 0 ] ; then
 	    kill_named
 	fi

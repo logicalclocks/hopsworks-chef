@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #Get new EFF-Certbot
 
@@ -28,64 +28,64 @@ RENEWED=${BASE}/$NEW_DOMAIN
 GF_DOMAIN=<%= node['hopsworks']['domains_dir'] %>/domain1
 GF_USER=<%= node['hopsworks']['user'] %>
 
-cd $HOME
+cd "$HOME"
 if [ ! -d certbot ] ; then
   git clone https://github.com/certbot/certbot
 fi
 cd certbot
 git pull
 
-sudo rm -rf /etc/letsencrypt/live/${DOMAIN}.old
-if [ -d ${LIVE} ] ; then
-  sudo mv  ${LIVE} /etc/letsencrypt/live/${DOMAIN}.old
+sudo rm -rf /etc/letsencrypt/live/"${DOMAIN}".old
+if [ -d "${LIVE}" ] ; then
+  sudo mv "${LIVE}" /etc/letsencrypt/live/"${DOMAIN}".old
 fi
-cd $HOME/certbot
+cd "$HOME"/certbot
 # Run as root
-./certbot-auto certonly --standalone -d $DOMAIN -n --agree-tos --email node['hopsworks']['email']
+./certbot-auto certonly --standalone -d "$DOMAIN" -n --agree-tos --email node['hopsworks']['email']
 #-d www.hops.site
 
 
-mv -f $RENEWED $LIVE
+mv -f "$RENEWED" "$LIVE"
 
 
-cp $GF_DOMAIN/config/keystore.jks ./
+cp "$GF_DOMAIN"/config/keystore.jks ./
 #Update Keystore using the LetsEncrypt Certificates
-sudo openssl pkcs12 -export -in $LIVE/cert.pem -inkey $LIVE/privkey.pem -out cert_and_key.p12 -name $DOMAIN -CAfile $LIVE/chain.pem -caname root -password pass:$KEYSTOREPW
-sudo keytool -delete -keystore keystore.jks -alias $DOMAIN
-sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias $DOMAIN -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+sudo openssl pkcs12 -export -in "$LIVE/cert.pem" -inkey "$LIVE/privkey.pem" -out cert_and_key.p12 -name "$DOMAIN" -CAfile "$LIVE/chain.pem" -caname root -password pass:"$KEYSTOREPW"
+sudo keytool -delete -keystore keystore.jks -alias "$DOMAIN"
+sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias "$DOMAIN" -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
 sudo keytool -delete -keystore keystore.jks -alias root
-sudo keytool -import -noprompt -trustcacerts -alias root -file $LIVE/chain.pem -keystore keystore.jks -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+sudo keytool -import -noprompt -trustcacerts -alias root -file "$LIVE/chain.pem" -keystore keystore.jks -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
 
-sudo openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name glassfish-instance -password pass:$KEYSTOREPW
+sudo openssl pkcs12 -export -in "$LIVE/fullchain.pem" -inkey "$LIVE/privkey.pem" -out pkcs.p12 -name glassfish-instance -password pass:"$KEYSTOREPW"
 sudo keytool -delete -keystore keystore.jks -alias glassfish-instance
-sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias glassfish-instance -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
-sudo openssl pkcs12 -export -in $LIVE/fullchain.pem -inkey $LIVE/privkey.pem -out pkcs.p12 -name s1as -password pass:$KEYSTOREPW
+sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias glassfish-instance -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
+sudo openssl pkcs12 -export -in "$LIVE/fullchain.pem" -inkey "$LIVE/privkey.pem" -out pkcs.p12 -name s1as -password pass:"$KEYSTOREPW"
 sudo keytool -delete -keystore keystore.jks -alias s1as
-sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias s1as -srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW
+sudo keytool -importkeystore -destkeystore keystore.jks -srckeystore pkcs.p12 -srcstoretype PKCS12 -alias s1as -srcstorepass "$KEYSTOREPW" -deststorepass "$KEYSTOREPW" -destkeypass "$KEYSTOREPW"
 
 #Add new Certificates to Truststore
-sudo keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass $KEYSTOREPW
-sudo keytool -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass $KEYSTOREPW
+sudo keytool -export -alias glassfish-instance -file glassfish-instance.cert -keystore keystore.jks -storepass "$KEYSTOREPW"
+sudo keytool -export -alias s1as -file s1as.cert -keystore keystore.jks -storepass "$KEYSTOREPW"
 
-cp $GF_DOMAIN/config/cacerts.jks ./
-sudo keytool -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass $KEYSTOREPW
-sudo keytool -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
+cp "$GF_DOMAIN"/config/cacerts.jks ./
+sudo keytool -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass "$KEYSTOREPW"
+sudo keytool -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass "$KEYSTOREPW"
 
 rm -f cert_and_key.p12 glassfish-instance.cert pkcs.p12 s1as.cert
 
 #3. Copy keystore.jks & cacerts.jks to domain1/config dir of glassfish
 
-mv -f $GF_DOMAIN/config/keystore.jks $GF_DOMAIN/config/keystore.jks.old
-cp -f keystore.jks $GF_DOMAIN/config
-mv -f $GF_DOMAIN/config/cacerts.jks $GF_DOMAIN/config/cacerts.jks.old
-cp -f cacerts.jks $GF_DOMAIN/config
-chown $GF_USER $GF_DOMAIN/config/*.jks
-chmod 600 $GF_DOMAIN/config/*.jks
+mv -f "$GF_DOMAIN"/config/keystore.jks "$GF_DOMAIN"/config/keystore.jks.old
+cp -f keystore.jks "$GF_DOMAIN"/config
+mv -f "$GF_DOMAIN"/config/cacerts.jks "$GF_DOMAIN"/config/cacerts.jks.old
+cp -f cacerts.jks "$GF_DOMAIN"/config
+chown "$GF_USER" "$GF_DOMAIN"/config/*.jks
+chmod 600 "$GF_DOMAIN"/config/*.jks
 
 
 sudo service glassfish-domain1 start
 
-cd $GF_DOMAIN/bin
+cd "$GF_DOMAIN"/bin
 
 ./domain1_asadmin enable-secure-admin
 ./domain1_asadmin set server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled=false
