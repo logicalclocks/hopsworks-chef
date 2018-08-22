@@ -6,9 +6,9 @@ set -e
 # Impersonate hive
 export HIVE_HOME=<%= node['hive2']['base_dir'] %>
 export SLIDER_HOME=<%= node['slider']['base_dir'] %>
-export PATH=$PATH:$SLIDER_HOME/bin
+export PATH=$PATH:"$SLIDER_HOME"/bin
 
-cd ${HIVE_HOME}/bin
+cd "${HIVE_HOME}"/bin
 
 # Remove previous configuration files
 if [ -d llap_conf ]; then
@@ -16,4 +16,4 @@ if [ -d llap_conf ]; then
 fi
 
 # Start the llap cluster
-./hive --service llap --name hops-llap --instances $1 --xmx $2m --cache $3m -e $4 -t $5 --output llap_conf -z
+./hive --service llap --name hops-llap --instances "$1" --xmx "$2"m --cache "$3"m -e "$4" -t "$5" --output llap_conf -z

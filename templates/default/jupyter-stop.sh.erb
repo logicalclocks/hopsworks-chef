@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 help() {
     echo ""
@@ -15,14 +15,14 @@ fi
 HDFS_USERNAME=$1
 
 function kill_named {
-    PID=`ps aux | grep -i jupyter-notebook | grep ${HDFS_USERNAME} | grep -v grep | awk '{print $2}'`
+    PID=$(ps aux | grep -i jupyter-notebook | grep "${HDFS_USERNAME}" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 $PID > /dev/null 2>&1
+	kill -9 "$PID" > /dev/null 2>&1
         res=$?
     else
 	res=$NOT_FOUND
     fi
-    return $res
+    return "$res"
 }
 
 kill_named

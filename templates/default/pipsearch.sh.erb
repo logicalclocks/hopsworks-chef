@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-LIBRARY=$1
-ENV=$2
+LIBRARY="$1"
+ENV="$2"
 
 # pip search $1
 
@@ -10,4 +10,4 @@ if [ $# -ne 2  ]; then
  exit 2
 fi
 
-<%= node['conda']['base_dir'] %>/envs/${ENV}/bin/pip search ${LIBRARY}
+<%= node['conda']['base_dir'] %>/envs/"${ENV}"/bin/pip search "${LIBRARY}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 WAIT_START=20
 JUPYTER_HOME=$1
@@ -18,14 +18,14 @@ help() {
 }
 
 function kill_named {
-    PID=`ps aux | grep -i jupyter | grep ${JUPYTER_HOME} | grep $PORT | grep -v grep | awk '{print $2}'`
+    PID=$(ps aux | grep -i jupyter | grep "${JUPYTER_HOME}" | grep "$PORT" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 $PID > /dev/null 2>&1
+	kill -9 "$PID" > /dev/null 2>&1
         res=$?
     else
 	res=$NOT_FOUND
     fi
-    return $res
+    return "$res"
 }
 
 if [ $# -ne 8 ]; then
@@ -38,7 +38,8 @@ export PDIR=$SECRET_DIR
 export JUPYTER_PATH=$JUPYTER_HOME
 export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
 export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
-export CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`
+CLASSPATH=$("${HADOOP_HOME}"/bin/hadoop classpath --glob)
+export CLASSPATH
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:/usr/local/cuda/lib64:${JAVA_HOME}/jre/lib/amd64/server
 export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
 
@@ -55,44 +56,43 @@ export MATERIAL_DIRECTORY=$CERTS_DIR
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 
 
-if [ -f $PID_FILE ] ; then
- PID=`cat $PID_FILE`
- kill -0 $PID 2>&1 > /dev/null
+if [ -f "$PID_FILE" ] ; then
+ PID=$(cat "$PID_FILE")
+ kill -0 "$PID" > /dev/null 2>&1
  if [ $? -eq 0 ] ; then
      echo "A jupyter notebook is already running here. Kill it first."
      exit 1
  fi
 fi
 
-cd $JUPYTER_HOME
+cd "$JUPYTER_HOME" || exit
 # Install facets-dist by linking to it
 mkdir -p nbextensions
 ln -s /usr/local/share/jupyter/nbextensions/facets-dist nbextensions/facets-dist
 
-cd $SECRET_DIR
+cd "$SECRET_DIR" || exit
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid jupyter notebook --debug --no-browser --NotebookApp.port=$PORT </dev/zero &> $LOGFILE  &
-echo $! > $PID_FILE
+setsid jupyter notebook --debug --no-browser --NotebookApp.port="$PORT" </dev/zero &> "$LOGFILE"  &
+echo $! > "$PID_FILE"
 
 # Check that the token is written to the logfile, return when we see it.
-token=0
 timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
 	sleep 1
-	grep 'token' $LOGFILE
+	grep 'token' "$LOGFILE"
         if [ $? -eq 0 ] ; then 
           break
         fi
 	echo -n "."
-	timeout=`expr $timeout + 1`
+	timeout=$((timeout + 1))
 done
 echo ""
 
 # If the timeout was exceeded, kill jupyter notebook
-if [ $timeout -eq $WAIT_START ] ; then
- PID=`cat $PID_FILE`
- kill $PID 2>&1 > /dev/null
+if [ "$timeout" -eq $WAIT_START ] ; then
+ PID=$(cat "$PID_FILE")
+ kill "$PID" > /dev/null 2>&1
  if [ $? -ne 0 ] ; then
      kill_named
  fi

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script allows Hopsworks to start/kill/ping (check if alive) a TensorFlow Serving Process.
 # There will be 1 tf-serving process per ProjectUser.
@@ -43,9 +43,9 @@ if [ "$1" == "kill" ] ; then
 	exit 1
     fi
      
-    su ${TFSERVING_USER} -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4 $5"
+    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4 $5"
 
-    rm -rf $5
+    rm -rf "$5"
 
 elif [ "$1" == "start" ] ; then
 
@@ -71,43 +71,43 @@ elif [ "$1" == "start" ] ; then
 	echo "Invalid secret directory. Directory already exists: $SECRET_DIR"
 	exit 3
     fi
-    sudo mkdir -p $SECRET_DIR
-    sudo chown $TFSERVING_USER $SECRET_DIR
+    sudo mkdir -p "$SECRET_DIR"
+    sudo chown "$TFSERVING_USER" "$SECRET_DIR"
     
     pid=$(sudo ps -ef | grep tensorflow_model_server | grep "port=$5" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
-        su $TFSERVING_USER -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $pid $5 $6"
+        su "$TFSERVING_USER" -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $pid $5 $6"
 	sleep 5
     fi
 
-    parent=$(dirname $SECRET_DIR)
-    sudo chown -R ${HOPSWORKS_USER}:${TFSERVING_GROUP} $parent
-    sudo chmod 0730 $parent
-    sudo mkdir -p $SECRET_DIR
+    parent=$(dirname "$SECRET_DIR")
+    sudo chown -R "${HOPSWORKS_USER}":"${TFSERVING_GROUP}" "$parent"
+    sudo chmod 0730 "$parent"
+    sudo mkdir -p "$SECRET_DIR"
     if [ $? -ne 0 ] ; then
 	echo "Error: could not create private_dir: $SECRET_DIR"
 	exit 1
     fi
-    sudo chmod -R 770 $SECRET_DIR
-    sudo chown -R ${TFSERVING_USER}:${TFSERVING_GROUP} $SECRET_DIR
+    sudo chmod -R 770 "$SECRET_DIR"
+    sudo chown -R "${TFSERVING_USER}":"${TFSERVING_GROUP}" "$SECRET_DIR"
     
     # Launch the tensorflow_serving process as user 'tfserving'
-    su ${TFSERVING_USER} -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $3 $4 $5 $6 $7"
+    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $3 $4 $5 $6 $7"
 
-    su ${HOPSWORKS_USER} -c "${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $4/$2 $SECRET_DIR/tfserving/model"
+    su "${HOPSWORKS_USER}" -c "${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $4/$2 $SECRET_DIR/tfserving/model"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
-    sudo ps -ef | grep -v 'grep' | grep tensorflow_model_server | grep $2
+    sudo ps -ef | grep -v 'grep' | grep tensorflow_model_server | grep "$2"
     if [ $? -ne 0 ] ; then
 	echo "Error checking PID: $2"
 	echo "Are you trying to ping a non tensorflow_model_server process?"
 	exit 12
     fi
-    kill -0 $2
+    kill -0 "$2"
 
 # list 
 elif [ "$1" == "list" ] ; then
@@ -116,21 +116,21 @@ elif [ "$1" == "list" ] ; then
 
 # killhard PID    
 elif [ "$1" == "killhard" ] ; then
-    sudo ps -ef | grep -v 'grep' | grep -i tensorflow_model_server | grep $2
+    sudo ps -ef | grep -v 'grep' | grep -i tensorflow_model_server | grep "$2"
     if [ $? -ne 0 ] ; then
 	echo "Error killing PID: $2"
 	echo "Are you trying to kill a non tensorflow_model_server process?"
 	exit 12
     fi
     echo "Trying to 'kill -9' tensorflow_model_server with PID: $2"
-    sudo kill -9 $2 2>&1 > /dev/null
+    sudo kill -9 "$2" > /dev/null 2>&1
 
 # get Logs for serving
 elif [ "$1" == "logs" ] ; then
     HOST=$2
     LOGFILE=$3
 
-    cat ${LOGFILE}
+    cat "${LOGFILE}"
 else
   help
 fi

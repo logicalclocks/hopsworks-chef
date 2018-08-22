@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -12,19 +12,19 @@ if [ $# -ne 3 ] ; then
   help
 fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 filename="$(basename "$2")"
 
-cd $1
-freespace=`df $PWD | awk '/[0-9]%/{print $(NF-2)}'`
-freespace=$(($freespace * 1000))
+cd "$1"
+freespace=$(df "$PWD" | awk '/[0-9]%/{print $(NF-2)}')
+freespace=$((freespace * 1000))
 
-filesize=`<%= node['hops']['base_dir'] %>/bin/hdfs dfs -du -s $hdfsFile | awk  '{print $1}'`
+filesize=$(<%= node['hops']['base_dir'] %>/bin/hdfs dfs -du -s "$2" | awk  '{print $1}')
 # Amount of space needed to download and decompress the file.
 # Guess that we need at least the file size + 1X file size after decompression. 
-filesize=$(($filesize * 2))
+filesize=$((filesize * 2))
 
 if [ $filesize -gt $freespace ] ; then
   echo "Not enough free space on the local harddisk"
@@ -32,5 +32,5 @@ if [ $filesize -gt $freespace ] ; then
 fi
 
 
-nohup ${DIR}/unzip-hdfs-files.sh $1 "$2" $3 > "$1/$filename".log &
+nohup "${DIR}"/unzip-hdfs-files.sh "$1" "$2" "$3" > "$1/$filename".log &
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -ne 1  ]; then
  echo "incorrect usage"
@@ -19,4 +19,4 @@ function delete {
 delete "${DOMAIN}__*"
 
 # Revoke and delete the generic project certificate
-delete ${DOMAIN}
+delete "${DOMAIN}"
