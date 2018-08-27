@@ -905,20 +905,23 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
   action :create
 end
 
-
 directory "#{theDomain}/flyway/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
 end
 
-template "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
-  source "sql/0.0.2__initial_tables.sql.erb"
+directory "#{theDomain}/flyway/dml" do
   owner node['glassfish']['user']
-  mode 0750
-  action :create_if_missing
+  mode "770"
+  action :create
 end
 
+directory "#{theDomain}/flyway/dml/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
 
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"

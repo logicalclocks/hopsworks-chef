@@ -1,0 +1,306 @@
+
+--
+-- Dumping data for table `bbc_group`
+--
+
+REPLACE INTO `bbc_group` (`group_name`, `group_desc`, `gid`) VALUES
+('AUDITOR','Auditors for the platform',1004),
+('HOPS_ADMIN', 'System administrator', 1005),
+('HOPS_USER', 'Registered users in the system', 1006),
+('AGENT', 'Secret Agents in the system', 1007)
+;
+
+
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table `meta_field_types`
+--
+
+REPLACE INTO `meta_field_types` (`id`, `description`) VALUES
+(1, 'text'),
+(2, 'single-select value list'),
+(3, 'multi-select value list');
+
+-- --------------------------------------------------------
+--
+-- Create an admin account
+--
+
+INSERT INTO `users`
+(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+(10000, 'meb10000', '12fa520ec8f65d3a6feacfa97a705e622e1fea95b80b521ec016e43874dfed5a', 'admin@kth.se', 'Admin', 'Admin', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 0, '2015-04-28 15:18:42', NULL, '123456789', 2, 30, 0, 3, '+9mTLmYSpnZROFEJEaednw8+GDH/s2J1QuRZy8okxW5myI/q8ek8Xu+ab5CyE9GzhWX6Sa4cr7KX8cAHi5IC4g==')
+ON DUPLICATE KEY UPDATE `username`="meb10000";
+
+INSERT INTO `users`
+(`uid`, `username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `tours_state` , `salt`) VALUES
+(10001, "agent007", 'fcb581887fcf61bf1a9e3ddd2f64297a9179efdd7ea32443021ea72e1f232b26', 'agent@hops.io', 'Agent', '007', '2015-05-15 10:22:36', 'Mrs', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 0, '2015-04-28 15:18:42', NULL, '123456789', 2, 0, 3, '+9mTLmYSpnZROFEJEaednw8+gDH/s2J1QuRZy8okxW5myI/q8ek8Xu+ab5CyE9GzhWX6Sa4cr7KX8cAHi5IC4g==')
+ON DUPLICATE KEY UPDATE `username`="agent007";
+
+-- --------------------------------------------------------
+
+--
+-- Dumping data for table `organization`
+--
+
+INSERT INTO `organization` (`id`, `uid`, `org_name`, `website`, `contact_person`, `contact_email`, `department`, `phone`, `fax`)
+VALUES (1, 10000, "<%= @org_name %>", "<%= @org_domain %>", 'Admin', "<%= @org_email %>", 'DataScience', '+4670080010', '+4670080015')
+ON DUPLICATE KEY UPDATE `contact_person` = 'Admin';
+
+
+-- --------------------------------------------------------
+--
+--   Adding a new address entry for admin user
+--
+
+INSERT INTO `address` (`uid`, `address1`, `address2`, `address3`, `city`, `state`, `country`, `postalcode`) values (10000, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', "<%= @org_city %>", "<%= @org_country_code %>", '10044')
+ON DUPLICATE KEY UPDATE `address1` = "Admin Office";
+
+
+-- --------------------------------------------------------
+--
+-- Upadte the Account Audit  table
+--
+INSERT INTO `account_audit` (`log_id`, `initiator`, `target`, `action`, `action_timestamp`, `message`, `outcome`, `ip`, `useragent`) values (1, 10000, 10000, 'REGISTRATION', CURRENT_TIMESTAMP, 'Admin account was enabled', 'SUCCESS', '127.0.0.1', 'Firefox')
+ON DUPLICATE KEY UPDATE `action`="REGISTRATION";
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table `user_group`
+--
+
+-- Admin user now has a sysadmin
+REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10000, 1005);
+
+-- Agent user now has an agent role
+REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
+
+
+
+-- --------------------------------------------------------
+--
+-- For enabling two facto authentication
+--
+
+REPLACE INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
+REPLACE INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_exclude_groups %>");
+
+-- kmon
+
+REPLACE INTO hosts(hostname, host_ip) VALUES <%= @hosts %>;
+
+
+
+-- --------------------------------------------------------
+--
+-- Default settings
+--
+
+REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= @spark_dir %>"),  ("flink_dir", "<%= @flink_dir %>"), ("zeppelin_dir", "<%= @zeppelin_dir %>"), ("elastic_dir", "<%= @elastic_dir %>"),  ("mysql_dir", "<%= @mysql_dir %>"), ("ndb_dir", "<%= @ndb_dir %>"), ("hadoop_dir", "<%= @hadoop_dir %>"), ("hdfs_user", "<%= @hdfs_user %>"), ("yarn_user", "<%= @yarn_user %>"), ("mr_user","<%= @mr_user %>"), ("zeppelin_user","<%= @zeppelin_user %>"), ("elastic_user","<%= @elastic_user %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
+
+REPLACE INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
+
+REPLACE INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
+
+REPLACE INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
+
+REPLACE INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
+
+REPLACE INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
+
+REPLACE INTO variables VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
+
+REPLACE INTO variables VALUES ("rm_ip", "<%= @rm_ip %>");
+
+REPLACE INTO variables VALUES ("rm_port", "<%= @rm_port %>");
+
+REPLACE INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
+
+REPLACE INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
+
+REPLACE INTO variables VALUES ("livy_zeppelin_session_timeout", "<%= node['hopsworks']['livy_zeppelin_session_timeout'] %>");
+
+REPLACE INTO variables VALUES ("zeppelin_interpreters", "<%= node['hopsworks']['zeppelin_interpreters'] %>");
+
+REPLACE INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
+
+REPLACE INTO variables VALUES ("yarn_ui_port", "<%= @yarn_ui_port %>");
+
+REPLACE INTO variables VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
+
+REPLACE INTO variables VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
+
+REPLACE INTO variables VALUES ("file_preview_image_size", "<%= @file_preview_image_size %>");
+
+REPLACE INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_size %>");
+
+REPLACE INTO variables VALUES ("recovery_path", "<%= @recovery_path %>");
+
+REPLACE INTO variables VALUES ("verification_path", "<%= @verification_path %>");
+
+-- ------
+-- More settings
+--
+
+REPLACE INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
+
+REPLACE INTO variables VALUES ("spark_user", "<%= @spark_user %>");
+
+REPLACE INTO variables VALUES ("flink_user", "<%= @flink_user %>");
+
+REPLACE INTO variables VALUES ("kafka_user", "<%= @kafka_user %>");
+
+REPLACE INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
+
+REPLACE INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
+
+REPLACE INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
+
+REPLACE INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
+
+REPLACE INTO variables VALUES ("drelephant_port", "<%= @drelephant_port %>");
+
+REPLACE INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
+
+REPLACE INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
+
+REPLACE INTO variables VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
+
+REPLACE INTO variables VALUES ("glassfish_cert", "false");
+
+REPLACE INTO variables VALUES ("certs_dir", "<%= node['certs']['dir'] %>");
+
+-- --------------------------------------------------------
+--
+-- For enabling TLS support in RPCs
+--
+
+REPLACE INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
+
+-- --------------------------------------------------------
+--
+-- Certificate Materializer delay for removing cryptographic material from the local fs
+--
+
+REPLACE INTO variables VALUES ("cert_mater_delay", "<%= @cert_mater_delay %>");
+
+--
+-- Comma-separated list of user emails that their login attempt should not be
+-- persisted in the database for auditing reasons
+--
+
+REPLACE INTO variables VALUES ("whitelist_users", "agent@hops.io");
+
+-- --------------------------------------------------------
+
+REPLACE INTO variables VALUES ("jupyter_dir", "<%= node['hopsworks']['jupyter_dir'] %>");
+
+REPLACE INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
+
+REPLACE INTO variables VALUES ("staging_dir", "<%= node['hopsworks']['staging_dir'] %>");
+
+REPLACE INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_poll_try %>");
+
+REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hops']['hopsutil_version'] %>");
+
+-- --------------------------------------------------------
+--
+-- dela
+--
+
+REPLACE INTO variables VALUES ("dela_cluster_ip","<%= @dela_ip %>");
+
+REPLACE INTO variables VALUES ("dela_cluster_http_port","<%= @dela_cluster_http_port %>");
+
+REPLACE INTO variables VALUES ("dela_hopsworks_public_port","<%= @dela_hopsworks_public_port %>");
+
+REPLACE INTO variables VALUES ("dela_enabled","<%= @dela_enabled %>");
+
+-- dela old
+
+REPLACE INTO variables VALUES ("hops_site_endpoint","<%= node['hopsworks']['hopssite']['base_uri'] %>");
+
+REPLACE INTO variables VALUES ("hops_site_host","<%= node['hopsworks']['hopssite']['domain'] %>");
+
+REPLACE INTO variables VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks']['hopssite']['heartbeat'] %>");
+
+--
+
+REPLACE INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
+
+REPLACE INTO variables VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
+
+REPLACE INTO variables VALUES ("rest_port","<%= node['hopsworks']['port'] %>");
+
+REPLACE INTO variables VALUES ("max_gpu_request_size","<%= node['hopsworks']['max_gpu_request_size'] %>");
+
+REPLACE INTO variables VALUES ("max_cpu_request_size","<%= node['hopsworks']['max_cpu_request_size'] %>");
+
+--
+-- kibana, logstash, grafana, graphite
+--
+
+REPLACE INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
+REPLACE INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
+REPLACE INTO variables VALUES ("logstash_port", "<%= @logstash_port %>");
+REPLACE INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
+REPLACE INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
+REPLACE INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
+REPLACE INTO variables VALUES ("influxdb_user", "<%= @influxdb_user %>");
+REPLACE INTO variables VALUES ("influxdb_pw", "<%= @influxdb_password %>");
+REPLACE INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
+REPLACE INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
+--
+-- pyspark, python
+--
+REPLACE INTO variables VALUES ("python_kernel", "<%= @python_kernel %>");
+
+REPLACE INTO variables VALUES ("cuda_dir", "<%= @cuda_dir %>");
+REPLACE INTO variables VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
+REPLACE INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
+REPLACE INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
+REPLACE INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
+
+REPLACE INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
+
+--
+-- Hive
+--
+
+REPLACE INTO variables VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname %>");
+REPLACE INTO variables VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
+REPLACE INTO variables VALUES ("hive_warehouse", "<%= @hive_warehouse%>");
+REPLACE INTO variables VALUES ("hive_scratchdir", "<%= @hive_scratchdir%>");
+REPLACE INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
+
+--
+-- First-time Login
+--
+
+REPLACE INTO variables VALUES ("first_time_login", "1");
+
+
+--
+-- Alerting
+--
+
+REPLACE INTO variables VALUES ("alert_email_addrs", "<%= node['hopsworks']['alert_email_addrs'] %>");
+
+--
+-- LDAP
+--
+
+REPLACE INTO variables VALUES ("ldap_auth", "<%= node['ldap']['enabled'] %>");
+REPLACE INTO variables VALUES ("ldap_group_mapping", "<%= node['ldap']['group_mapping'] %>");
+REPLACE INTO variables VALUES ("ldap_user_id", "<%= node['ldap']['user_id'] %>");
+REPLACE INTO variables VALUES ("ldap_user_givenName", "<%= node['ldap']['user_givenName'] %>");
+REPLACE INTO variables VALUES ("ldap_user_surname", "<%= node['ldap']['user_surname'] %>");
+REPLACE INTO variables VALUES ("ldap_user_email", "<%= node['ldap']['user_email'] %>");
+REPLACE INTO variables VALUES ("ldap_user_search_filter", "<%= node['ldap']['user_search_filter'] %>");
+REPLACE INTO variables VALUES ("ldap_group_search_filter", "<%= node['ldap']['group_search_filter'] %>");
+REPLACE INTO variables VALUES ("ldap_attr_binary", "<%= node['ldap']['attr_binary'] %>");
+REPLACE INTO variables VALUES ("ldap_group_target", "<%= node['ldap']['group_target'] %>");
+REPLACE INTO variables VALUES ("ldap_dyn_group_target", "<%= node['ldap']['dyn_group_target'] %>");
+REPLACE INTO variables VALUES ("ldap_user_dn", "<%= node['ldap']['user_dn'] %>");
+REPLACE INTO variables VALUES ("ldap_group_dn", "<%= node['ldap']['group_dn'] %>");
+REPLACE INTO variables VALUES ("ldap_account_status", "<%= node['ldap']['account_status'] %>");

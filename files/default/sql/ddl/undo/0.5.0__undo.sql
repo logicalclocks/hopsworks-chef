@@ -2,14 +2,7 @@ DROP TABLE IF EXISTS `hopsworks`.`system_commands`;
 
 -- ALTER TABLE `hopsworks`.`jobs` DROP INDEX `name_project_idx` , ADD UNIQUE INDEX `name_idx` (`name` ASC);
 
-DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_interval';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='conda_default_repo';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='user_cert_valid_days';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='support_email_addr';
-
 DROP TABLE IF EXISTS `pia`;
-
-DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `shutdown_level`;
 

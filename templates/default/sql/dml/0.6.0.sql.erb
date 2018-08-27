@@ -1,0 +1,5 @@
+REPLACE INTO `hopsworks`.`variables` VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
+
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");
