@@ -30,7 +30,7 @@ default['hopsworks']['port']                     = "8080"
 default['hopsworks']['secure_port']              = "8181"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
-default['glassfish']['version']                  = '4.1.2.174' #'5.182'  
+default['glassfish']['version']                  = '4.1.2.174'  # '5.182' 
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
@@ -63,10 +63,6 @@ default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{no
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
-
-default['hopsworks']['transform_graph']          = "tensorflow-graph-hops-#{node['tensorflow']['version']}.tar.gz"
-default['hopsworks']['transform_graph_url']      = "#{node['download_url']}/#{node['hopsworks']['transform_graph']}"
-
 
 default['hopsworks']['pixiedust']['enabled']        = "false"
 

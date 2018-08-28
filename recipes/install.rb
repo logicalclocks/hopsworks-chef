@@ -183,10 +183,11 @@ when "debian"
   end
   package "dtrx"
   package "libkrb5-dev"
-
+  dtrx="dtrx"
 when "redhat"
   package "krb5-libs"
-
+  package "p7zip"
+  
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -203,9 +204,12 @@ when "redhat"
     tar -xzf dtrx.tar.gz
     cd dtrx-7.1
     python setup.py install --prefix=/usr/local
+    # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
+    ln -s /bin/7za /bin/7z
   EOF
     not_if "which dtrx"
   end
+  dtrx="/usr/local/bin/dtrx"  
 end
 
 
@@ -692,6 +696,9 @@ template "#{theDomain}/bin/unzip-background.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  variables({
+              :dtrx => dtrx
+            })  
   action :create
 end
 
