@@ -187,7 +187,7 @@ when "debian"
 when "redhat"
   package "krb5-libs"
   package "p7zip"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -209,7 +209,7 @@ when "redhat"
   EOF
     not_if "which dtrx"
   end
-  dtrx="/usr/local/bin/dtrx"  
+  dtrx="/usr/local/bin/dtrx"
 end
 
 
@@ -698,7 +698,7 @@ template "#{theDomain}/bin/unzip-background.sh" do
   mode "550"
   variables({
               :dtrx => dtrx
-            })  
+            })
   action :create
 end
 
@@ -906,18 +906,6 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
 end
 
 directory "#{theDomain}/flyway/undo" do
-  owner node['glassfish']['user']
-  mode "770"
-  action :create
-end
-
-directory "#{theDomain}/flyway/dml" do
-  owner node['glassfish']['user']
-  mode "770"
-  action :create
-end
-
-directory "#{theDomain}/flyway/dml/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create

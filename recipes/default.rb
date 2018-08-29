@@ -273,7 +273,7 @@ for version in versions do
   end
 
   # Template DML files
-  template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
+  template "#{theDomain}/flyway/sql/R__#{version}.sql" do
     source "sql/dml/#{version}.sql.erb"
     owner node['glassfish']['user']
     mode 0750
@@ -372,7 +372,7 @@ for version in versions do
     action :create
   end
 
-  template "#{theDomain}/flyway/dml/undo/U#{version}__undo.sql" do
+  template "#{theDomain}/flyway/sql/undo/UR#{version}__.sql" do
     source "sql/dml/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
@@ -449,16 +449,6 @@ bash "flyway_migrate" do
     cd #{theDomain}/flyway
     #{theDomain}/flyway/flyway migrate
   EOF
-end
-
-# Run the DML sql script to insert the variables
-for version in versions do
-  bash "run_inserts_#{version}" do
-    user "root"
-    code <<-EOH
-      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
-    EOH
-  end
 end
 
 glassfish_secure_admin domain_name do
