@@ -87,8 +87,7 @@ REPLACE INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_excl
 
 -- kmon
 
-REPLACE INTO hosts(hostname, host_ip) VALUES <%= @hosts %>;
-
+INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDATE load1=NULL;
 
 
 -- --------------------------------------------------------

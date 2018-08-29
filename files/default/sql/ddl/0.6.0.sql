@@ -15,3 +15,8 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hosts` DROP KEY `hostname`;
+ALTER TABLE `hosts` ADD UNIQUE KEY `hostname`(`hostname`);
+ALTER TABLE `hosts` DROP KEY `host_ip`;
+ALTER TABLE `hosts` ADD UNIQUE KEY `host_ip`(`host_ip`);
