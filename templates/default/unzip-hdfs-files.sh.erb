@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 help() {
-  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER"
+  echo "usage: $0 localWorkdir srcFileInHdfs IMPERSONATED_USERNAME"
   exit 1
 }
 
@@ -11,19 +11,19 @@ fi
 
 workdir=$1
 hdfsFile="$2"
-HDFS_USER=$3
+IMPERSONATED_USERNAME=$3
 
 #FSM states: STAGING, UNZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
-fsmFile="$(dirname $1)/fsm-$(basename $1).txt"
+fsmFile="${workdir}/fsm.txt"
 
 function finish {
-    rm -rf $workdir
+    rm -rf "$workdir"
 }
 trap finish EXIT
 
 function check_error {
     if [ $? -ne 0 ] ; then
-      echo "FAILED" > $fsmFile
+      echo "FAILED" > "$fsmFile"
       exit 1	
     fi
 }
@@ -38,16 +38,16 @@ check_error
 dir=$(dirname "$normalizedPath")
 check_error
 
-cd $workdir
+cd "$workdir"
 check_error
 
 filename=$(basename "$hdfsFile")
 
-echo "STAGING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
+echo "STAGING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" $workdir
 check_error
 
-echo "UNZIPPING" > $fsmFile
+echo "UNZIPPING" > "$fsmFile"
 
 # State Machine State Change. File now staged to local FS.
 # Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
@@ -57,8 +57,9 @@ echo "UNZIPPING" > $fsmFile
 # , everything will be written to  a  dedicated  directory  that's named  after  the  archive.
 # dtrx will also change the permissions to  ensure that the owner can read and write all those files.
 
-cd $workdir
-dtrx -o -n "$file"
+
+cd "$workdir"
+<%= @dtrx %> -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
@@ -101,15 +102,15 @@ esac
 #replace any spaces in the directory name with '_'
 #Hadoop doesnt like spaces in paths.
 escapedFiledir=${filedir// /_}
-mv "$filedir" $escapedFiledir
+mv "$filedir" "$escapedFiledir"
 
-echo "UPLOADING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -copyFromLocal $escapedFiledir "$dir"
+echo "UPLOADING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "$escapedFiledir" "$dir"
 check_error
 
-echo "CHOWNING" > $fsmFile
-<%= node["hops"]["base_dir"] %>/bin/hdfs dfs -chown -R ${HDFS_USER} "$dir"
+echo "CHOWNING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"
 check_error
 
-echo "SUCCESS" > $fsmFile
+echo "SUCCESS" > "$fsmFile"
 

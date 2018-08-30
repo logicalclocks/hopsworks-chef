@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+help() {
+  echo "usage: $0 localWorkdir directoryInHdfs IMPERSONATED_USERNAME"
+  exit 1
+}
+
+if [ $# -ne 3 ] ; then
+  help
+fi
+
+workdir=$1
+hdfsFile="$2"
+IMPERSONATED_USERNAME=$3
+
+#FSM states: STAGING, ZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
+fsmFile="${workdir}/fsm.txt"
+
+function finish {
+    rm -rf "$workdir"
+}
+trap finish EXIT
+
+function check_error {
+    if [ $? -ne 0 ] ; then
+      echo "FAILED" > "$fsmFile"
+      exit 1	
+    fi
+}
+
+prefix='hdfs://'
+normalizedPath=${hdfsFile#${prefix}}
+check_error
+
+file=$(basename "$normalizedPath")
+check_error
+dir=$(dirname "$normalizedPath")
+check_error
+
+cd "$workdir"
+check_error
+
+filename=$(basename "$hdfsFile")
+
+echo "STAGING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$hdfsFile" "$workdir"
+check_error
+
+echo "ZIPPING" > "$fsmFile"
+
+# State Machine State Change. File now staged to local FS.
+# Java program checks if this file is written to see if this file exists:  $workdir/$(basename $hdfsfile)
+
+# For now only use zip, the 'most universal' format.
+
+cd "$workdir"
+zip -r "$file".zip "$file"
+check_error
+
+echo "UPLOADING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "$file".zip "$dir"
+check_error
+
+echo "CHOWNING" > "$fsmFile"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"
+check_error
+
+echo "SUCCESS" > "$fsmFile"
+

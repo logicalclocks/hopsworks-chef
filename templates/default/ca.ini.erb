@@ -1,8 +1,16 @@
 [hops-site]
-url = <%= node["hopssite"]["url"] %>
-path-login = hopsworks-api/api/auth/login
-path-register = hopsworks-ca/ca/agentservice/register
-username = <%= node["hopssite"]["user"] %>
-password = <%= node["hopssite"]["password"] %>
-
-
+url = <%= node['hopssite']['url'] %>
+path-login = /hopsworks-api/api/auth/login
+path-sign-cert = /hopsworks-ca/ca/agentservice/hopsworks
+username = <%= node['hopssite']['user'] %>
+password = <%= node['hopssite']['password'] %>
+retry-interval = <%= node['hopssite']['retry_interval'] %>
+max-retries = <%= node['hopssite']['max_retries'] %>
+logging-level = "INFO"
+cert_c = <%= node['hopssite']['cert']['c'] %>
+cert_cn = <%= node['hopssite']['cert']['cn'] %>
+cert_s = <%= node['hopssite']['cert']['s'] %>
+cert_l = <%= node['hopssite']['cert']['l'] %>
+cert_o = <%= node['hopssite']['cert']['o'] %>
+cert_ou = <%= node['hopssite']['cert']['ou'] %>
+cert_email = <%= node['hopssite']['cert']['email'] %>

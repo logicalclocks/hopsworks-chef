@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 1 ] ; then
+  echo "usage: $0 hostname"
+  exit 1
+fi
+
+
+ssh <%= node['kagent']['user'] %>@"$1" "sudo <%= node['kagent']['base_dir'] %>/bin/restart-service.sh kagent"

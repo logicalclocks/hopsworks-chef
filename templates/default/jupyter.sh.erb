@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script allows Hopsworks to start/kill/ping (check if alive) a Jupyter Notebook Server.
 # There will be 1 notebook-server per ProjectUser.
@@ -8,13 +8,19 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [killhard pid]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
     echo ""
     exit 1
 }
 
 PORT=0
-
+CONDA_DIR=<%= node["conda"]["base_dir"] %>
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+JUPYTER_USER=<%= node['jupyter']['user'] %>
+JUPYTER_GROUP=<%= node['jupyter']['group'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+KERNELS_DIR=/usr/local/share/jupyter/kernels
+EXEC_AS_ANACONDA_USER=<%= node['conda']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -23,10 +29,10 @@ if [ "$1" == "kill" ] ; then
     fi
 
     # Sanity checks for injection attacks
-    if [ ! -d "$2" ] ; then
-	echo "Invalid JUPYTER_HOME directory: $2"
-	exit 1
-    fi
+    #    if [ ! -d "$2" ] ; then
+    #	echo "Invalid JUPYTER_HOME directory: $2"
+    #	exit 1
+    #    fi
 
     # Check that the port is an int (and not some injection attack)
     re='^[0-9]+$'
@@ -41,16 +47,20 @@ if [ "$1" == "kill" ] ; then
       help
     fi
 
-     
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-kill.sh $2 $3 $4"
-     
+    # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'jupyter'
+    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $3 $4"
 
     # Remove all the directories in the home jupyter folder for this project-user.
-    sudo rm -rf ${2}/../*
+    if [ "$2" != "" ] ; then
+	# Try and make sure some silly directory is not deleted, that this
+	if [[ $2 = *"hops/jupyter/Projects"* ]]; then
+            sudo rm -rf "${2}"/../*
+	fi
+    fi
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 8 ]; then
+    if [ $# -ne 9 ]; then
 	help
     fi
 
@@ -72,7 +82,12 @@ elif [ "$1" == "start" ] ; then
 	echo "Invalid Anaconda environment directory: $5"
 	exit 3
     fi
-    
+
+    if [ ! -d "${9}" ] ; then
+	echo "Invalid certificates directory: $9"
+	exit 3
+    fi
+	
     re='^[0-9]+$'
     if ! [[ $6 =~ $re ]] ; then
       echo "error: Not a number" >&2
@@ -82,7 +97,7 @@ elif [ "$1" == "start" ] ; then
     pid=$(sudo ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
-        su vagrant -c "/srv/hops/domains/domain1/bin/jupyter-kill.sh $2 $pid $6"
+        su $JUPYTER_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
 	sleep 5
     fi
 
@@ -101,44 +116,83 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
     
-    parent=$(dirname $8)
-    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node['jupyter']['group'] %> $parent
-    sudo chmod 0730 $parent
-    sudo mkdir -p $8
+    parent=$(dirname "$8")
+    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$parent"
+    sudo chmod 0730 "$parent"
+    sudo mkdir -p "$8"
     if [ $? -ne 0 ] ; then
 	echo "Error: could not create private_dir: $8"
 	exit 1
     fi
-    sudo chmod -R 770 $8
-    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $8
+    sudo chmod -R 770 "$8"
+    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
     
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
-    #    sudo chown -R <%= node['jupyter']['user'] %>:<%= node['jupyter']['group'] %> $2
+    #    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
     # Make the group of the files, the jupyter group so that they can write to the files
-    sudo chown -R <%= node['hopsworks']['user'] %>:<%= node["jupyter"]["group"] %> $2/..
+    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$2/"..
     if [ $? -ne 0 ] ; then
 	echo "Error: could not change ownership of config_dir for Jupyter: $2"
 	exit 1
     fi
-    sudo chmod 0730 $2/..    
-    sudo chown -R <%= node['jupyter']['user'] %>:<%= node["jupyter"]["group"] %> $2
-    sudo chmod -R 770 $2
+    sudo chmod 0730 "$2/"..
+    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
+    sudo chmod -R 770 "$2"
      
     # Launch the jupyter notebook
-    su <%= node["jupyter"]["user"] %> -c "<%= node['glassfish']['domains_dir'] %>/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8"
+    su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
-    kill -0 $2
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
+    if [ $? -ne 0 ] ; then
+	echo "Error checking PID: $2"
+	echo "Are you trying to ping a non jupyter-notebook process?"
+	exit 12
+    fi
+    kill -0 "$2"
 
+# list 
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    sudo ps -ef | grep -v 'grep' | grep jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 
-elif [ "$1" == "killhard" ] ; then
-    sudo kill -9 $2 2>&1 > /dev/null
+# kernel-add
+elif [ "$1" == "kernel-add" ] ; then
+    if [ $# -ne 3 ]; then
+	help
+    fi
+
+# stringZ="proj__jim"
+# echo ${stringZ#*__} # prints jim
+# echo ${stringZ%__*} # prints proj
+    JUPYTER_HOME=$2
+    PROJ_USER=$3
+    PROJECT=${PROJ_USER%__*}	
+    
+    if [ ! -d "/usr/local/share/jupyter/kernels/python-${PROJ_USER}" ] ; then
+       sudo "${DOMAINS_DIR}"/domain1/bin/jupyter-kernel-install.sh "$EXEC_AS_ANACONDA_USER" "$PROJECT" "$PROJ_USER" "$CONDA_DIR" "$JUPYTER_HOME"
+    fi
+ 
+#   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
+elif [ "$1" == "kernel-remove" ] ; then
+    if [[ $2 == *".."* ]]; then
+	echo "Injection Attack when removing python kernel with name python-$2 ?"
+	exit 99
+    fi
+    if [[ $2 == "*" ]]; then
+	echo "Injection Attack when removing python kernel with name '*' ?"
+	exit 98
+    fi
+
+    if [ ! -d "${KERNELS_DIR}/python-${2}" ] ; then
+	echo "Invalid KERNEL directory: $2"
+	exit 2
+    fi
+    
+    sudo rm -rf "${KERNELS_DIR}"/python-"${2}"
 else
   help
 fi

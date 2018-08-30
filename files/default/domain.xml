@@ -269,19 +269,6 @@
              <property name="jaas-context" value="fileRealm" />
            </auth-realm>
            <auth-realm classname="com.sun.enterprise.security.auth.realm.certificate.CertificateRealm" name="certificate" />
-           <auth-realm name="gauthRealm" classname="se.kth.bbc.gauth.GauthRealm">
-             <property name="jaas-context" value="gauthRealm"></property>
-             <property name="encoding" value="Hex"></property>
-             <property name="password-column" value="password"></property>
-             <property name="datasource-jndi" value="jdbc/kthfs"></property>
-             <property name="group-table" value="v_People_Group"></property>
-             <property name="user-table" value="People"></property>
-             <property name="charset" value="UTF-8"></property>
-             <property name="group-name-column" value="group_name"></property>
-             <property name="user-name-column" value="email"></property>
-             <property name="otp-secret-column" value="secret"></property>
-             <property name="user-active-column" value="active"></property>
-           </auth-realm>
            <jacc-provider policy-provider="com.sun.enterprise.security.provider.PolicyWrapper" name="default" policy-configuration-factory-provider="com.sun.enterprise.security.provider.PolicyConfigurationFactoryImpl">
              <property name="repository" value="${com.sun.aas.instanceRoot}/generated/policy" />
            </jacc-provider>

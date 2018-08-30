@@ -21,14 +21,9 @@ import requests
 import logging.handlers
 import json
 from OpenSSL import crypto
-import socket
 from os.path import exists, join
-import netifaces
-from IPy import IP
 import logging
 import subprocess
-import string
-import random
 
 
 try:
@@ -43,66 +38,74 @@ logging.getLogger().setLevel(logging.DEBUG)
 requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
-retries = 20
+retries = 5
+retry_count = 0
 
-class Util():
+
+class Util:
 
     def logging_level(self, level):
         return {
-                'INFO': logging.INFO,
-                'WARN': logging.WARN,
-                'WARNING': logging.WARNING,
-                'ERROR': logging.ERROR,
-                'DEBUG' : logging.DEBUG,
-                'CRITICAL': logging.CRITICAL,
-                }.get(level, logging.NOTSET)
+            'INFO': logging.INFO,
+            'WARN': logging.WARN,
+            'WARNING': logging.WARNING,
+            'ERROR': logging.ERROR,
+            'DEBUG': logging.DEBUG,
+            'CRITICAL': logging.CRITICAL,
+        }.get(level, logging.NOTSET)
 
 
-class Register():
+class Register:
 
     def __init__(self, csr, key):
+        global retry_count
         while True:
             cert = Register.register(csr, key)
-            if cert != None:
+            if cert is not None:
                 Cert.store(cert, key)
                 break
-            time.sleep(<%= node[:kagent][:dashboard][:api][:heartbeat] %>)
+            retry_count += 1
+            if retry_count == retries:
+                break
+            time.sleep(retry_interval)
 
     @staticmethod
     def register(csr, key):
-            try:
-		json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
-        	form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
-		payload = {}
-                payload["csr"] = csr
-                payload["agent-password"] = ""
-                payload["host-id"] = host_id
-                logger.info("Registering with HopsWorks...")
-                logger.info("Password: {0}".format(agent_password))                
-		session = requests.Session()
-		session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
-		resp = session.post(register_url, data=json.dumps(payload), headers=json_headers, verify=False)
-		if not resp.status_code == HTTP_OK:
-               		raise Exception('Could not register: Unknown host id or internal error on the dashboard (Status code: {0}).'.format(resp.status_code))
+        try:
+            json_headers = {'User-Agent': 'Agent', 'content-type': 'application/json'}
+            form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
+            payload = {}
+            payload['csr'] = csr
+            payload["agent-password"] = ""
+            logger.info("Registering with HopsWorks...")
+            session = requests.Session()
+            session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
+            resp = session.post(sign_cert_url, data=json.dumps(payload), headers=json_headers, verify=False)
+            if not resp.status_code == HTTP_OK:
+                raise Exception('Could not register: Status code: {0}. response msg: {1}'.format(resp.status_code, resp.content))
 
-                # Loads (Load String) takes a Json file and converts into python data structure (dict or list, depending on JSON)
-                # jData = json.loads(myResponse.content)
-                jData = json.loads(resp.content)
-                cert = jData['pubAgentCert']
-                caCert = jData['caPubCert']
+            jData = json.loads(resp.content)
+            cert = jData['pubAgentCert']
+            caCert = jData['caPubCert']
+            intermediateCaCert = jData['intermediateCaPubCert']
 
-                cert_dir = os.path.dirname(os.path.abspath(__file__))
-                with open(join(cert_dir, CA_FILE), "wt") as f:
-                    f.write(caCert)
-                logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
+            cert_dir = os.path.dirname(os.path.abspath(__file__))
+            with open(join(cert_dir, CA_FILE), "wt") as f:
+                f.write(caCert)
+            logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
 
-                logger.info("Registered successfully.")
-                return cert
-            except Exception as err:
-                logger.error("{0}. Retrying in {1} seconds...".format(err, heartbeat_interval))
-                return None
+            with open(join(cert_dir, INTERMEDIATE_CA_FILE), "wt") as f:
+                f.write(intermediateCaCert)
+            logger.info("Writing intermediate Ca Public key to {0}.".format(INTERMEDIATE_CA_FILE))
 
-class Cert():
+            logger.info("Registered successfully.")
+            return cert
+        except Exception as err:
+            if retry_count + 1 < retries:
+                logger.error("{0}. Number of retries left {1}. Retrying in {2} seconds...".format(err, retries - (retry_count + 1), retry_interval))
+            return None
+
+class Cert:
 
     @staticmethod
     def get_dir():
@@ -114,15 +117,31 @@ class Cert():
         return exists(join(cert_dir, CERT_FILE)) and exists(join(cert_dir, KEY_FILE))
 
     @staticmethod
-    def existsKeystore():
-        return exists(SERVER_KEYSTORE) and exists(SERVER_TRUSTSTORE) and exists(CLIENT_TRUSTSTORE)
+    def exists_keystore():
+        return exists(SERVER_KEYSTORE) and exists(SERVER_TRUSTSTORE)
 
     @staticmethod
-    def read_key_and_csr():
-        csrFile = open("<%= node.hopsworks.domains_dir %>/domain1/config/ca/intermediate/csr/intermediate.csr.pem","r") 
-        csr = csrFile.read()
-        pkFile = open("<%= node.hopsworks.domains_dir %>/domain1/config/ca/intermediate/private/intermediate.key.pem","r") 	
-        private_key = pkFile.read()
+    def create_key_and_csr():
+        """
+        Create key-pair and certificate sign request (CSR)
+        """
+        # create a key pair
+        pkey = crypto.PKey()
+        pkey.generate_key(crypto.TYPE_RSA, 2048)
+        # create certificate sign request
+        req = crypto.X509Req()
+        req.get_subject().C  = cert_c
+        req.get_subject().CN = cert_cn
+        req.get_subject().ST = cert_s
+        req.get_subject().L  = cert_l
+        req.get_subject().O  = cert_o
+        req.get_subject().OU = cert_ou
+        req.get_subject().__setattr__("emailAddress", cert_email)
+
+        req.set_pubkey(pkey)
+        req.sign(pkey, 'sha256')
+        csr = crypto.dump_certificate_request(crypto.FILETYPE_PEM, req)
+        private_key = crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey)
         return csr, private_key
 
     @staticmethod
@@ -137,50 +156,40 @@ class Cert():
             f.write(key)
         logger.info("Writing Cert/Key pair to {0} - {1}.".format(CERT_FILE, KEY_FILE))
 
-var="~#@#@!#@!#!@#@!#"
+var = "~#@#@!#@!#!@#@!#"
 
 config_mutex = Lock()
 
 HTTP_OK = 200
 
-CONFIG_FILE = "<%= node['hopsworks']['domains_dir'] %>/domain1/config/ca.ini"
-LOG_FILE = "<%= node[:kagent][:base_dir] %>/csr.log"
-CERT_FILE = "<%= node[:kagent][:certs_dir] %>/pub.pem"
-CA_FILE = "<%= node[:kagent][:certs_dir] %>/ca_pub.pem"
-KEY_FILE = "<%= node[:kagent][:certs_dir] %>/priv.key"
-SERVER_KEYSTORE = "<%= node.kagent.keystore_dir %>/node_server_keystore.jks"
-SERVER_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_server_truststore.jks"
-CLIENT_TRUSTSTORE = "<%= node.kagent.keystore_dir %>/node_client_truststore.jks"
+CONFIG_FILE = "<%= node['hopssite']['base_dir'] %>/config/ca.ini"
+LOG_FILE = "<%= node['hopssite']['certs_dir'] %>/csr.log"
+CERT_FILE = "<%= node['hopssite']['certs_dir'] %>/pub.pem"
+CA_FILE = "<%= node['hopssite']['certs_dir'] %>/ca_pub.pem"
+INTERMEDIATE_CA_FILE = "<%= node['hopssite']['certs_dir'] %>/intermediate_ca_pub.pem"
+KEY_FILE = "<%= node['hopssite']['certs_dir'] %>/priv.key"
+SERVER_KEYSTORE = "<%= node['hopssite']['keystore_dir'] %>/keystore.jks"
+SERVER_TRUSTSTORE = "<%= node['hopssite']['keystore_dir'] %>/truststore.jks"
 
 # reading config
 try:
-    server_url = "http://<%= @master_ip %>/<%= node.kagent.dashboard_app %>"
-    register_url = server_url + <%= node[:kagent][:dashboard][:api][:register] %>
-    login_url = server_url + <%= node[:kagent][:dashboard][:api][:login] %>
-    server_username = <%= node[:kagent][:dashboard][:user] %>
-    server_password = <%= node[:kagent][:dashboard][:password] %>
-    heartbeat_interval = <%= node[:kagent][:dashboard][:api][:heartbeat] %>
-    logging_level = <%= node[:kagent][:logging_level] %>
-    network_interface = config.get('agent', 'network-interface')
-
-    hostname = socket.gethostbyaddr(eth0_ip)[0]
-    host_id = hostname
-
-    public_ip = None
-    private_ip = None
-    eth0_ip = netifaces.ifaddresses(network_interface)[netifaces.AF_INET][0]['addr']
-    if (IP(eth0_ip).iptype() == "PUBLIC"):
-        public_ip = eth0_ip
-    else:
-        private_ip = eth0_ip
-
-    hostname = socket.gethostbyaddr(eth0_ip)[0]
-
-    if (config.has_option("agent", "host-id")):
-        host_id = config.get("agent", "host-id")
-    else:
-        host_id = hostname
-
+    config = ConfigParser.ConfigParser()
+    config.read(CONFIG_FILE)
+    hopssite_url = config.get('hops-site', 'url')
+    login_url = hopssite_url + config.get('hops-site', 'path-login')
+    sign_cert_url = hopssite_url + config.get('hops-site', 'path-sign-cert')
+    server_username = config.get('hops-site', 'username')
+    server_password = config.get('hops-site', 'password')
+    retry_interval = config.getfloat('hops-site', 'retry-interval')
+    retries = config.getfloat('hops-site', 'max-retries')
+    logging_level = config.get('hops-site', 'logging-level').upper()
+    cert_c = config.get('hops-site', 'cert_c')
+    cert_cn = config.get('hops-site', 'cert_cn')
+    cert_s = config.get('hops-site', 'cert_s')
+    cert_l = config.get('hops-site', 'cert_l')
+    cert_o = config.get('hops-site', 'cert_o')
+    cert_ou = config.get('hops-site', 'cert_ou')
+    cert_email = config.get('hops-site', 'cert_email')
 
 except Exception, e:
     print "Exception while reading {0}: {1}".format(CONFIG_FILE, e)
@@ -193,7 +202,7 @@ except:
     pass
 with open(LOG_FILE, 'w'):  # clear log file
     pass
-logger = logging.getLogger('agent')
+logger = logging.getLogger('csr-ca-agent')
 logger_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 logger_file_handler = logging.handlers.RotatingFileHandler(LOG_FILE, "w", maxBytes=10000000, backupCount=1)
 logger_stream_handler = logging.StreamHandler()
@@ -204,10 +213,8 @@ logger.addHandler(logger_file_handler)
 logger.addHandler(logger_stream_handler)
 logger.setLevel(logging.INFO)
 
-logger.info("Hopsworks Csr-Agent started.")
-logger.info("Register URL: {0}".format(register_url))
-logger.info("Public IP: {0}".format(public_ip))
-logger.info("Private IP: {0}".format(private_ip))
+logger.info("Hopsworks Csr-ca Agent started.")
+logger.info("Register URL: {0}".format(sign_cert_url))
 
 
 if __name__ == '__main__':
@@ -215,25 +222,7 @@ if __name__ == '__main__':
     logger.setLevel(Util().logging_level(logging_level))
 
     if not Cert.exist():
-        (csr, key) = Cert.read_key_and_csr()
-        Register(csr, key) # Registering with the dashboard
-
-
-	chmod 444 intermediate/certs/intermediate.cert.pem
-	#7 Verify the intermediate certificate
-	openssl verify -CAfile certs/ca.cert.pem intermediate/certs/intermediate.cert.pem
-	#8 Create the certificate chain file
-	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
-	chmod 444 intermediate/certs/ca-chain.cert.pem
-        #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
-        # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
-        echo "unique_subject = no \n" > intermediate/index.txt.attr
-        
-        subprocess.call("<%= node[:hopsworks][:domains_dir] %>/domain1/bin/ca-keystore.sh")
+        (csr, key) = Cert.create_key_and_csr()
+        Register(csr, key)
     else:
         logger.info('Certificate files exist. Already registered. Skipping registration phase.')
-
-#    if not Cert.existsKeystore():
-#        subprocess.call("<%= node[:kagent][:base_dir] %>/keystore.sh")
-#    else:
-#        logger.info('Keystore files found.')

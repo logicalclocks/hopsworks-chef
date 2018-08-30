@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e
+
+if [ ! -f ./hs_env.sh ]; then
+   echo "File hs_env.sh does not exist."
+   exit 1
+fi
+
+chown ${MYSQL_USER}:${MYSQL_USER} hs_tables.sql
+chown ${MYSQL_USER}:${MYSQL_USER} hs_rows.sql
+
+echo "setup hops-site"
+./hs_setup.sh
+echo "setup db"
+./hs_db_setup.sh
+echo "create domain2"
+./hs_create_domain2.sh
+echo "setup jdbc connector"
+./hs_jdbc_connector.sh
+echo "setup realm"
+./hs_realm_setup.sh
+echo "setup domain2 certs"
+./hs_domain2_certs.sh
+echo "sign glassfish cert"
+./hs_glassfish_sign.sh
+echo "glassfish certs setup"
+./hs_glassfish_certs.sh
+echo "setup ssl"
+./hs_ssl_setup.sh
+echo "setup admin certs"
+./hs_admin_certs.sh
+echo "setup elastic"
+./hs_elastic.sh
+echo "setup dela certs"
+./hs_dela_certs.sh
+echo "hopssite redeploy"
+./hs_redeploy.sh
+echo "systemctl setup"
+./hs_systemctl.sh

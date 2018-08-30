@@ -1,97 +1,86 @@
+Vagrant.configure("2") do |config|
 
-Vagrant.configure("2") do |c|
-  if Vagrant.has_plugin?("vagrant-omnibus")
-#    require 'vagrant-omnibus'
-    c.omnibus.chef_version = "12.4.3"
-  end
-  if Vagrant.has_plugin?("vagrant-cachier")
-    c.omnibus.cache_packages = true        
-    c.cache.scope = :machine
-    c.cache.auto_detect = false
-    c.cache.enable :apt
-    c.cache.enable :gem    
-  end
-#  c.vm.box = "bento/ubuntu-16.04"
-#  c.vm.box = "opscode-ubuntu-14.04"
-#  c.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-14.04_chef-provisionerless.box"
-   c.vm.box = "bento/centos-7.2"
-#  c.vm.box_url = "https://atlas.hashicorp.com/ubuntu/boxes/trusty64/versions/20150924.0.0/providers/virtualbox.box"
-#  c.vm.hostname = "default-ubuntu-1404.vagrantup.com"
- 
-   
-  c.ssh.insert_key="false"
-# Ssh port on vagrant
-  c.vm.network(:forwarded_port, {:guest=>22, :host=>2223})
-  c.vm.network(:forwarded_port, {:guest=>8090, :host=>8090})
-# MySQL Server
-  c.vm.network(:forwarded_port, {:guest=>9090, :host=>33444})
+    config.ssh.insert_key = false
+    config.vm.box = "bento/ubuntu-16.04"
+    config.vm.box_version = "2.3.5"
+    config.vm.box_check_update = false
+    config.vm.boot_timeout =3600
 
-  c.vm.network(:forwarded_port, {:guest=>3306, :host=>8888})
-# HTTP webserver
-  c.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
-# HTTPS webserver
-  c.vm.network(:forwarded_port, {:guest=>8181, :host=>15009})
-# Glassfish webserver
-  c.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
-# HDFS webserver
-  c.vm.network(:forwarded_port, {:guest=>50070, :host=>50071})
-# Datanode 
-  c.vm.network(:forwarded_port, {:guest=>50075, :host=>50079})
-# YARN webserver
-  c.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
-# Elasticsearch rpc port
-  c.vm.network(:forwarded_port, {:guest=>9200, :host=>9200})
-# Flink webserver
-  c.vm.network(:forwarded_port, {:guest=>9088, :host=>9088})
-# Glassfish Debugger port
-  c.vm.network(:forwarded_port, {:guest=>9009, :host=>9191})
-# Ooozie port
-  c.vm.network(:forwarded_port, {:guest=>11000, :host=>11000})
-# Dr Elephant
-#  c.vm.network(:forwarded_port, {:guest=>11011, :host=>11011})
-# Spark History Server
-  c.vm.network(:forwarded_port, {:guest=>18080, :host=>18080})
-# Kibana Server
-  c.vm.network(:forwarded_port, {:guest=>5601, :host=>50070})
-# Grafana Server
-  c.vm.network(:forwarded_port, {:guest=>3000, :host=>50075})
-# Graphite WebServer
-  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
-# Logstash Server
-#  c.vm.network(:forwarded_port, {:guest=>3000, :host=>8181})
-  
-  c.vm.provider :virtualbox do |p|
-    p.customize ["modifyvm", :id, "--memory", "15000"]
-    p.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-    p.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    p.customize ["modifyvm", :id, "--nictype1", "virtio"]
-    p.customize ["modifyvm", :id, "--cpus", "2"]   
-  end
+    # Enable Hostmanager to manage /etc/hosts
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = false
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.vm.define 'hopsworks0' do |node|
+    	node.vm.hostname = 'hopsworks0'
+        node.vm.network "private_network", ip: "10.0.2.15"
+    end
+
+    config.vm.network :forwarded_port, guest: 22, host: 10022, id: "ssh"
+    # MySQL Server
+    config.vm.network(:forwarded_port, {:guest=>3306, :host=>3306})
+    # karamel http
+    config.vm.network(:forwarded_port, {:guest=>9090, :host=>9090})
+    # Hopsworks http
+    config.vm.network(:forwarded_port, {:guest=>8080, :host=>8080})
+    # Glassfish debug port
+    config.vm.network(:forwarded_port, {:guest=>9009, :host=>9009})
+    # Glassfish admin UI
+    config.vm.network(:forwarded_port, {:guest=>4848, :host=>4848})
+    # Yarn RM
+    config.vm.network(:forwarded_port, {:guest=>8088, :host=>8088})
+    # Kibana
+    config.vm.network(:forwarded_port, {:guest=>5601, :host=>5601})
+    # Grafana Webserver
+    config.vm.network(:forwarded_port, {:guest=>3000, :host=>3000})
+    # Nodemanager
+    config.vm.network(:forwarded_port, {:guest=>8083, :host=>8083})
+    # Influx DB admin (because of clash with nodemanager)
+    config.vm.network(:forwarded_port, {:guest=>8084, :host=>8084})
+    # Influx DB REST API
+    config.vm.network(:forwarded_port, {:guest=>8086, :host=>8086})
+    # Graphite Endpoint
+    config.vm.network(:forwarded_port, {:guest=>2003, :host=>2003})
+    # Jupyter
+    config.vm.network(:forwarded_port, {:guest=>8888, :host=>8888})
+    # membrane proxy
+    config.vm.network(:forwarded_port, {:guest=>11112, :host=>11112})
 
 
-   c.vm.provision :chef_solo do |chef|
+    config.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "~/.ssh/id_rsa"
+    config.vm.provision "shell", inline: "cp /home/vagrant/.ssh/authorized_keys /home/vagrant/.ssh/id_rsa.pub && sudo chown vagrant:vagrant /home/vagrant/.ssh/id_rsa.pub"
+
+    config.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 7000]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.customize ["modifyvm", :id, "--nictype1", "virtio"]
+      v.customize ["modifyvm", :id, "--name", "hopsworks0"]
+      v.customize ["modifyvm", :id, "--cpus", "3"]
+    end
+
+   config.vm.provision :chef_solo do |chef|
+     chef.channel = "stable"
      chef.cookbooks_path = "cookbooks"
      chef.json = {
      "ntp" => {
           "install" => "true",
-#          "user" => "glassfish",
      },
      "install" => {
+  	  "user" => "vagrant",
           "dir" => "/srv/hops",
-#          "user" => "vagrant"
      },
      "ndb" => {
-          "user" => "mysql",
-          "mgmd" => { 
+          "mgmd" => {
      	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	  "ndbd" =>      { 
+	  "ndbd" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	  "mysqld" =>      { 
+	  "mysqld" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
-	  "memcached" =>      { 
+	  "memcached" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
           "public_ips" => ["10.0.2.15"],
@@ -99,26 +88,22 @@ Vagrant.configure("2") do |c|
           "enabled" => "true",
      },
      "hopsworks" => {
-	"default" =>      { 
+	"default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
 	"war_url" => "http://snurran.sics.se/hops/hopsworks/0.1.0/hopsworks-jim.war",
-	"ear_url" => "http://snurran.sics.se/hops/hopsworks/0.1.0/hopsworks-ear-jim.ear",        
+	"ear_url" => "http://snurran.sics.se/hops/hopsworks/0.1.0/hopsworks-ear-jim.ear",
         "user_envs" => "false",
         "twofactor_auth" => "false",
-#        "anaconda_enabled" => "false",        
+#        "anaconda_enabled" => "false",
      },
      "zeppelin" => {
-          "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "elastic" => {
-          "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
@@ -126,91 +111,64 @@ Vagrant.configure("2") do |c|
      "private_ips" => ["10.0.2.15"],
      "hops"  =>    {
 		 "use_hopsworks" => "true",
-		 "rm" =>    { 
+		 "rm" =>    {
        	  	      "private_ips" => ["10.0.2.15"]
                  },
-		 "nn" =>    { 
+		 "nn" =>    {
        	  	      "private_ips" => ["10.0.2.15"]
                  },
-		 "dn" =>    { 
+		 "dn" =>    {
        	  	      "private_ips" => ["10.0.2.15"]
                  },
-		 "nm" =>    { 
+		 "nm" =>    {
        	  	      "private_ips" => ["10.0.2.15"]
                  },
-		 "jhs" =>    { 
+		 "jhs" =>    {
        	  	      "private_ips" => ["10.0.2.15"]
                  },
-     	        "hdfs" => {
-                      "user" => "glassfish"
-                 },
-     	        "yarn" => {
-		      "user" => "glassfish"
-		 },
-		 "mr" => {
-		      "user" => "glassfish"
-                 },
-      },
-     "flink"  =>    {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-     },
-     "adam"  =>    { "user" => "glassfish",
-          "group" => "glassfish",
      },
      "hadoop_spark" => {
-	  "version" => "2.1.0",
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "master" =>    { 
+	  "master" =>    {
        	 	      "private_ips" => ["10.0.2.15"]
           },
-	  "worker" =>    { 
+	  "worker" =>    {
        	 	      "private_ips" => ["10.0.2.15"]
           }
      },
      "kzookeeper" => {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "livy" => {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "epipe" => {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "kibana" => {
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "hopsmonitor" => {
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "hopslog" => {
      },
      "drelephant" => {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "dela" => {
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
@@ -218,32 +176,33 @@ Vagrant.configure("2") do |c|
           "network" => {
                    "interface" => "eth0"
           },
-	  "user" => "glassfish",
-          "group" => "glassfish",
           "allow_ssh_access" => "true",
           "enabled" => "true",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "kkafka" => {
-	  "user" => "glassfish",
-          "group" => "glassfish",
-	  "default" =>      { 
+	  "default" =>      {
    	  	       "private_ips" => ["10.0.2.15"]
 	       },
      },
      "cuda" => {
 	  "enabled": "false",
      },
+     "conda" => {
+	  "user": "vagrant",
+     },
+
      "vagrant" => "true",
      }
 
       chef.add_recipe "kagent::install"
+      chef.add_recipe "hopsworks::install"
+      chef.add_recipe "tensorflow::install"
       chef.add_recipe "hops::install"
       chef.add_recipe "hopslog::install"
-      chef.add_recipe "hopsmonitor::install"      
-      chef.add_recipe "hopsworks::install"
+      chef.add_recipe "hopsmonitor::install"
       chef.add_recipe "ndb::install"
       chef.add_recipe "hadoop_spark::install"
       chef.add_recipe "flink::install"
@@ -252,43 +211,35 @@ Vagrant.configure("2") do |c|
       chef.add_recipe "kzookeeper::install"
       chef.add_recipe "epipe::install"
       chef.add_recipe "livy::install"
-#      chef.add_recipe "adam::install"
-#      chef.add_recipe "oozie::install"
-#      chef.add_recipe "drelephant::install"
+      chef.add_recipe "adam::install"
+      chef.add_recipe "drelephant::install"
       chef.add_recipe "kkafka::install"
-      chef.add_recipe "tensorflow::install"
+      chef.add_recipe "kagent::default"
       chef.add_recipe "ndb::mgmd"
       chef.add_recipe "ndb::ndbd"
       chef.add_recipe "ndb::mysqld"
       chef.add_recipe "hops::ndb"
-      chef.add_recipe "hops::nn"
-      chef.add_recipe "hops::dn"
       chef.add_recipe "hops::rm"
-      chef.add_recipe "hops::nm"
+      chef.add_recipe "hops::nn"
       chef.add_recipe "hops::jhs"
-      chef.add_recipe "elastic::default"
-      chef.add_recipe "zeppelin::default"
-      chef.add_recipe "flink::yarn"
       chef.add_recipe "hadoop_spark::yarn"
       chef.add_recipe "hadoop_spark::historyserver"
+      chef.add_recipe "flink::yarn"
+      chef.add_recipe "elastic::default"
       chef.add_recipe "livy::default"
-      chef.add_recipe "hopslog::default"
-      chef.add_recipe "hopsmonitor::default"      
+      chef.add_recipe "zeppelin::default"
+      chef.add_recipe "kzookeeper::default"
+      chef.add_recipe "kkafka::default"
+      chef.add_recipe "epipe::default"
       chef.add_recipe "hopsworks::default"
       chef.add_recipe "hopsworks::dev"
-      chef.add_recipe "hopsmonitor::telegraf"      
-      chef.add_recipe "hopsmonitor::kapacitor"      
-      chef.add_recipe "hopsworks::dev"
-      chef.add_recipe "epipe::default"
-      chef.add_recipe "kzookeeper::default"
-#      chef.add_recipe "adam::default"
-#      chef.add_recipe "drelephant::default"
-      chef.add_recipe "kagent::default"
-      chef.add_recipe "kkafka::default"
+      chef.add_recipe "hopsmonitor::default"
+      chef.add_recipe "hopslog::default"
+      chef.add_recipe "hops::dn"
+      chef.add_recipe "hops::nm"
       chef.add_recipe "tensorflow::default"
-#      chef.add_recipe "oozie::default"
+      chef.add_recipe "hopsmonitor::telegraf"
 
-  end 
+  end
 
 end
-
