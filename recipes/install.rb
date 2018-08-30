@@ -187,7 +187,7 @@ when "debian"
 when "redhat"
   package "krb5-libs"
   package "p7zip"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -209,7 +209,7 @@ when "redhat"
   EOF
     not_if "which dtrx"
   end
-  dtrx="/usr/local/bin/dtrx"  
+  dtrx="/usr/local/bin/dtrx"
 end
 
 
@@ -698,7 +698,7 @@ template "#{theDomain}/bin/unzip-background.sh" do
   mode "550"
   variables({
               :dtrx => dtrx
-            })  
+            })
   action :create
 end
 
@@ -905,20 +905,23 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
   action :create
 end
 
-
 directory "#{theDomain}/flyway/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
 end
 
-template "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
-  source "sql/0.0.2__initial_tables.sql.erb"
+directory "#{theDomain}/flyway/dml" do
   owner node['glassfish']['user']
-  mode 0750
-  action :create_if_missing
+  mode "770"
+  action :create
 end
 
+directory "#{theDomain}/flyway/dml/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
 
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"

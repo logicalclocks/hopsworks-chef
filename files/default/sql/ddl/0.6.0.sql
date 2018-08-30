@@ -1,9 +1,3 @@
-INSERT INTO `hopsworks`.`variables` VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
-
-
-INSERT INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
-
-
 --
 --  TensorBoard visualization for experiments service
 --
@@ -22,4 +16,7 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-INSERT INTO `hopsworks`.`variables` VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");
+ALTER TABLE `hosts` DROP KEY `hostname`;
+ALTER TABLE `hosts` ADD UNIQUE KEY `hostname`(`hostname`);
+ALTER TABLE `hosts` DROP KEY `host_ip`;
+ALTER TABLE `hosts` ADD UNIQUE KEY `host_ip`(`host_ip`);
