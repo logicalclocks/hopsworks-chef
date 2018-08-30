@@ -911,6 +911,18 @@ directory "#{theDomain}/flyway/undo" do
   action :create
 end
 
+directory "#{theDomain}/flyway/dml" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
+
+directory "#{theDomain}/flyway/dml/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
+
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"
   owner node['glassfish']['user']
