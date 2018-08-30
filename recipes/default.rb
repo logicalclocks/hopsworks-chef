@@ -372,7 +372,7 @@ for version in versions do
     action :create
   end
 
-  template "#{theDomain}/flyway/sql/undo/UR#{version}__.sql" do
+  template "#{theDomain}/flyway/undo/UR#{version}__.sql" do
     source "sql/dml/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
     mode 0750
