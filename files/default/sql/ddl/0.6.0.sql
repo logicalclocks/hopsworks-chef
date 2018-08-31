@@ -3,17 +3,17 @@
 --
 CREATE TABLE IF NOT EXISTS `tensorboard` (
   `project_id` INT(11) NOT NULL,
-  `team_member` VARCHAR(150) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `endpoint` VARCHAR(100) NOT NULL,
   `elastic_id` VARCHAR(100) NOT NULL,
   `pid` BIGINT NOT NULL,
-  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
-  PRIMARY KEY (`project_id`,`team_member`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  PRIMARY KEY (`project_id`,`user_id`),
+  FOREIGN KEY `project_id_fk` (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `user_id_fk` (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `hdfs_user_id_fk` (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hosts` DROP KEY `hostname`;
