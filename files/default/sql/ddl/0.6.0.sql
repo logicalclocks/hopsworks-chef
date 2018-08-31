@@ -63,4 +63,7 @@ SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `creator_old`;
 
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `lock_ip` VARCHAR(15) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `lock_timestamp` BIGINT DEFAULT NULL;
+
 ALTER TABLE `hopsworks`.`tf_serving` ADD FOREIGN KEY `user_fk` (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
