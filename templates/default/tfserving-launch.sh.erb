@@ -2,7 +2,7 @@
 
 WAIT_START=20
 MODEL_NAME=$1
-HADOOP_HOME=/srv/hops/hadoop
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
 PORT=$2
 SECRET_DIR=$3
 LOGDIR=${SECRET_DIR}/logs

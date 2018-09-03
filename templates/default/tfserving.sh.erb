@@ -13,11 +13,11 @@ help() {
     exit 1
 }
 
-TFSERVING_USER=tfserving
-TFSERVING_GROUP=tfserving
-HOPSWORKS_USER=glassfish
-DOMAINS_DIR=/srv/hops/domains
-HADOOP_HOME=/srv/hops/hadoop
+TFSERVING_USER=<%= node['tfserving']['user'] %>
+TFSERVING_GROUP=<%= node['tfserving']['group'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
 
 if [ "$1" == "kill" ] ; then
 
