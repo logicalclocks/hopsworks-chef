@@ -86,7 +86,7 @@ default['hopsworks']['application_certificate_validity_period'] = "3d"
 default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
 
 #Max number of bytes of logs to show in Spark UI
-default['hopsworks']['spark_ui_logs_offset'] = "2048000"
+default['hopsworks']['spark_ui_logs_offset'] = "512000"
 
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
