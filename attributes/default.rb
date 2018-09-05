@@ -30,7 +30,7 @@ default['hopsworks']['port']                     = "8080"
 default['hopsworks']['secure_port']              = "8181"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
-default['glassfish']['version']                  = '4.1.2.174'  # '5.182' 
+default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
