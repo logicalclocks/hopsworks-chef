@@ -85,6 +85,9 @@ default['hopsworks']['application_certificate_validity_period'] = "3d"
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
 default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
 
+#Max number of bytes of logs to show in Spark UI
+default['hopsworks']['spark_ui_logs_offset'] = "2048000"
+
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "sics.se"
