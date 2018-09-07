@@ -5,3 +5,7 @@ REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index
 REPLACE INTO `hopsworks`.`variables` VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("spark_ui_logs_offset", "<%= node['hopsworks']['spark_ui_logs_offset'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("provided_python_lib_names", "<%= node['conda']['provided_lib_names'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("preinstalled_python_lib_names", "<%= node['conda']['preinstalled_lib_names'] %>");
