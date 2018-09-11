@@ -2102,17 +2102,6 @@ attribute "ldap/user_givenName",
 # Airflow settings
 #
 
-attribute "airflow/dir",
-          :description => "Installation directory for the airflow binaries/config files",
-          :type => 'string'
-
-attribute "airflow/user",
-          :description => "Airflow username to run service as",
-          :type => 'string'
-
-attribute "airflow/group",
-          :description => "Airflow group to run service as",
-
 attribute "ldap/user_surname",
           :description => "Surname field of ldap. 'sn' (default)",
           :type => 'string'
