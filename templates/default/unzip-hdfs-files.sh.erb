@@ -59,7 +59,7 @@ echo "UNZIPPING" > "$fsmFile"
 
 
 cd "$workdir"
-<%= @dtrx %> -o -n "$file"
+dtrx -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
@@ -109,7 +109,7 @@ echo "UPLOADING" > "$fsmFile"
 check_error
 
 echo "CHOWNING" > "$fsmFile"
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"/"$escapedFileDir"
 check_error
 
 echo "SUCCESS" > "$fsmFile"
