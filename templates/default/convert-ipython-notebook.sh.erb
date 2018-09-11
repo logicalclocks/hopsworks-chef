@@ -48,8 +48,16 @@ if [ $? -ne 0 ] ; then
     exit 5
 fi    
 
+
+echo "
+from pyspark import SparkContext
+sc = SparkContext(\"yarn\", \"${base}\")
+
+" > /tmp/"${base}".py
+cat "${base}".py >> /tmp/"${base}".py
+
 # Over-write any old version up on hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${base}".py "$dirname"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "/tmp/${base}".py "$dirname"
 if [ $? -ne 0 ] ; then
     echo "Problem copying converted ipython program back to hdfs: $dirname/${base}.py"
     exit 6
