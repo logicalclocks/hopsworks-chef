@@ -1481,8 +1481,12 @@ if node['rstudio']['enabled'].eql? "true"
 
   case node['platform']
   when 'debian', 'ubuntu'
-    package "r-base"
 
+    for r_packages in node['rstudio']['ubuntu_packages']
+      package r_packages
+    end
+
+    
     remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
       user node['glassfish']['user']
       group node['glassfish']['group']
@@ -1500,8 +1504,27 @@ if node['rstudio']['enabled'].eql? "true"
       gdebi #{node['rstudio']['deb']}
     EOF
     end
+
+    # https://github.com/rocker-org/rocker/blob/master/r-base/Dockerfile
+    bash 'install_rstudio_docker' do
+      user "root"
+      ignore_failure true
+      code <<-EOF
+      ln -s /usr/lib/R/site-library/littler/examples/install.r /usr/local/bin/install.r \
+      ln -s /usr/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
+      ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+      ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
+      install.r docopt \
+      rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+      #rm -rf /var/lib/apt/lists/*
+    EOF
+    end
     
   when 'redhat', 'centos', 'fedora'
+
+    for r_packages in node['rstudio']['centos_packages']
+      package r_packages
+    end
 
     remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['rpm']}" do
       user node['glassfish']['user']
@@ -1510,7 +1533,7 @@ if node['rstudio']['enabled'].eql? "true"
       mode 0755
       action :create
     end
-
+    
     bash 'install_rstudio_rhel' do
       user "root"
       code <<-EOF
