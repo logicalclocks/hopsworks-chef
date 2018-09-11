@@ -256,16 +256,25 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
-#
-# If upgrading from version 0.4 or less, you need to run this in bash.
-# /srv/hops/domains/domain1/flyway# /srv/hops/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e "update flyway_schema_history set checksum=-291836840 where installed_rank=3
-#
-#
+cookbook_file "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
+  source "sql/ddl/0.0.2__initial_tables.sql"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+end
 
 for version in versions do
+  # Template DDL files
+  cookbook_file "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
+    source "sql/ddl/#{version}.sql"
+    owner node['glassfish']['user']
+    mode 0750
+    action :create
+  end
 
-  template "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
-    source "sql/#{version}.sql.erb"
+  # Template DML files
+  template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
+    source "sql/dml/#{version}.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     variables({
@@ -310,8 +319,8 @@ for version in versions do
                 :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
                 :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
                 :max_num_proj_per_user => node['hopsworks']['max_num_proj_per_user'],
-		:file_preview_image_size => node['hopsworks']['file_preview_image_size'],
-		:file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
+		            :file_preview_image_size => node['hopsworks']['file_preview_image_size'],
+                :file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
                 :zk_ip => zk_ip,
                 :java_home => node['java']['java_home'],
                 :kafka_ip => kafka_ip,
@@ -353,23 +362,22 @@ for version in versions do
                 :hive_scratchdir => node['hive2']['scratch_dir'],
                 :nonconda_hosts_list => nonconda_hosts_list
            })
-    action :create_if_missing
+    action :create
   end
 
-  #
-  # Delete the undo file for the previous version - not rolling back more than 1 version
-  #
-  #file "#{theDomain}/flyway/undo/U#{previous_version}__undo.sql" do
-  #  action :delete
-  #end
-
-  template "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
-    source "sql/undo/#{version}__undo.sql.erb"
+  cookbook_file "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
+    source "sql/ddl/undo/#{version}__undo.sql"
     owner node['glassfish']['user']
     mode 0750
-    action :create_if_missing
+    action :create
   end
 
+  template "#{theDomain}/flyway/dml/undo/U#{version}__undo.sql" do
+    source "sql/dml/undo/#{version}__undo.sql.erb"
+    owner node['glassfish']['user']
+    mode 0750
+    action :create
+  end
 end
 
 
@@ -424,11 +432,6 @@ hopsworks_grants "reload_sysv" do
  action :reload_sysv
 end
 
-
-# if node['install']['upgrade'] == "true"
-# end
-
-
 bash "flyway_baseline" do
   user "root"
   code <<-EOF
@@ -447,6 +450,17 @@ bash "flyway_migrate" do
     #{theDomain}/flyway/flyway migrate
   EOF
 end
+
+# Run the DML sql script to insert the variables
+for version in versions do
+  bash "run_inserts_#{version}" do
+    user "root"
+    code <<-EOH
+      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
+    EOH
+  end
+end
+
 
 glassfish_secure_admin domain_name do
   domain_name domain_name
@@ -607,15 +621,6 @@ glassfish_asadmin "set server-config.http-service.virtual-server.server.property
    secure false
 end
 
-# glassfish_asadmin "set cluster.availability-service.web-container-availability.sso-failover-enabled=true" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-
 glassfish_asadmin "set server-config.http-service.virtual-server.server.property.sso-max-inactive-seconds=300" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -656,30 +661,6 @@ glassfish_asadmin "set server-config.http-service.virtual-server.server.property
    admin_port admin_port
    secure false
 end
-
-# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.core-pool-size=1500" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.maximum-pool-size=2800" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# glassfish_asadmin "set resources.managed-executor-service.concurrent/__defaultManagedExecutorService.task-queue-capacity=10000" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
    domain_name domain_name
@@ -768,20 +749,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
    secure false
   end
 
-  #
-  # Workaround for https://github.com/payara/Payara/issues/2430
-  # TODO: Remove this when we upgrade to glassfish 5.
-  #
-  #glassfish_asadmin "create-jvm-options -Ddeployment.resource.validation=false" do
-  # domain_name domain_name
-  # password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  # username username
-  # admin_port admin_port
-  # secure false
-  #end
-
-
-  
   # Setup cron job for HDFS dumper
   cron 'dump_http_logs_to_hdfs' do
     if node['hopsworks']['systemd'] == "true"
@@ -797,48 +764,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
     only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh") end
   end
 end
-
-# Needed by AJP and Shibboleth - https://github.com/payara/Payara/issues/350
-
-
-# cluster="hopsworks"
-
-# glassfish_asadmin "create-cluster #{cluster}" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-# glassfish_asadmin "#asadmin --host das_host --port das_port create-local-instance --node #{hostname} instance_#{hostname}" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-
-# glassfish_asadmin "create-local-instance --cluster #{cluster} instance1" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
-
-# TODO - set ejb timer source as a cluster called 'hopsworks'
-# https://docs.oracle.com/cd/E18930_01/html/821-2418/beahw.html#gktqo
-# glassfish_asadmin "set configs.config.hopsworks-config.ejb-container.ejb-timer-service.timer-datasource=#{timerDB}" do
-#    domain_name domain_name
-#    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-#    username username
-#    admin_port admin_port
-#    secure false
-# end
-
 
 if node['hopsworks']['email_password'].eql? "password"
 
@@ -1045,7 +970,6 @@ bash 'enable_sso' do
 end
 
 
-
 bash "pip_upgrade" do
     user "root"
     code <<-EOF
@@ -1113,7 +1037,7 @@ bash "jupyter-sparkmagic" do
     tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     cd sparkmagic
     pip install --no-cache-dir --upgrade pandas
-    pip install --no-cache-dir ./hdijupyterutils 
+    pip install --no-cache-dir ./hdijupyterutils
     pip install --no-cache-dir --upgrade ./autovizwidget
     pip install --no-cache-dir ./sparkmagic
     cd #{Chef::Config['file_cache_path']}
@@ -1384,7 +1308,7 @@ bash "jupyter-root-sparkmagic" do
     # rm -rf sparkmagic
     # tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
     # cd sparkmagic
-    # pip install ./hdijupyterutils 
+    # pip install ./hdijupyterutils
     # pip install --upgrade ./autovizwidget
     # pip install ./sparkmagic
     # cd #{Chef::Config['file_cache_path']}
@@ -1441,7 +1365,6 @@ template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
   action :create
 end
 
-
 include_recipe "tensorflow::serving"
 
 link "#{node['kagent']['certs_dir']}/cacerts.jks" do
@@ -1470,7 +1393,7 @@ kagent_keys "#{homedir}" do
   cb_name "hopsworks"
   cb_recipe "default"
   action :return_publickey
-end  
+end
 
 
 #
@@ -1490,7 +1413,7 @@ if node['rstudio']['enabled'].eql? "true"
       mode 0755
       action :create
     end
-    
+
     bash 'install_rstudio_debian' do
       user "root"
       code <<-EOF
@@ -1500,7 +1423,7 @@ if node['rstudio']['enabled'].eql? "true"
       gdebi #{node['rstudio']['deb']}
     EOF
     end
-    
+
   when 'redhat', 'centos', 'fedora'
 
     remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['rpm']}" do
@@ -1519,8 +1442,8 @@ if node['rstudio']['enabled'].eql? "true"
       yum install --nogpgcheck #{node['rstudio']['rpm']} -y
     EOF
     end
-    
-  end   
+
+  end
 
   bash 'disable_rstudio_systemd_daemons' do
     user "root"

@@ -30,7 +30,7 @@ default['hopsworks']['port']                     = "8080"
 default['hopsworks']['secure_port']              = "8181"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
-default['glassfish']['version']                  = '4.1.2.174'  # '5.182' 
+default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
@@ -84,6 +84,9 @@ default['hopsworks']['application_certificate_validity_period'] = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
 default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
+
+#Max number of bytes of logs to show in Spark UI
+default['hopsworks']['spark_ui_logs_offset'] = "512000"
 
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 

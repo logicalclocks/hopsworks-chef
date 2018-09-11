@@ -11,11 +11,6 @@ CREATE TABLE IF NOT EXISTS `system_commands` (
   FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("conda_default_repo", "<%= @conda_repo %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("support_email_addr", "<%= node['hopsworks']['support_email_addr'] %>");
-
 CREATE TABLE IF NOT EXISTS `pia` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `project_id` INT(11) DEFAULT NULL,
@@ -41,11 +36,7 @@ CREATE TABLE IF NOT EXISTS `pia` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
-INSERT INTO `hopsworks`.`variables` VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
-
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `shutdown_level` INT NOT NULL DEFAULT 6;
-
-
 
 --
 -- RStudio support
@@ -68,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `rstudio_settings` (
   `secret` VARCHAR(255) NOT NULL,
   `log_level` VARCHAR(32) NULL DEFAULT 'INFO',
   `mode` VARCHAR(32) NOT NULL,
-  `umask` VARCHAR(32) DEFAULT '022',  
+  `umask` VARCHAR(32) DEFAULT '022',
   `advanced` tinyint(1) DEFAULT '0',
   `archives` VARCHAR(1500) DEFAULT '',
   `jars` VARCHAR(1500) DEFAULT '',
@@ -115,41 +106,10 @@ CREATE TABLE IF NOT EXISTS `rstudio_interpreter` (
 --  tensorflow_graph optimization
 --
 ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `optimized` TINYINT NOT NULL DEFAULT 0;
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `kafka_max_num_topics` INT NOT NULL DEFAULT <%= node['hopsworks']['kafka_max_num_topics'] %>;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `kafka_max_num_topics` INT NOT NULL DEFAULT 100;
 
 ALTER TABLE `hopsworks`.`hosts` CHANGE COLUMN `has_gpus` `num_gpus` TINYINT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `conda_enabled` TINYINT(1) NOT NULL DEFAULT 1;
-
-<% @nonconda_hosts_list.each do |host| %>
-UPDATE `hopsworks`.`hosts` SET `conda_enabled`=0 WHERE `host_ip`='<%= host %>';
-<% end %>
-
-
-
-INSERT INTO `hopsworks`.`variables` VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("influxdb_version", "<%= node['influxdb']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("grafana_version", "<%= node['grafana']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("telegraf_version", "<%= node['telegraf']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("kapacitor_version", "<%= node['kapacitor']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("logstash_version", "<%= node['logstash']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("kibana_version", "<%= node['kibana']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("filebeat_version", "<%= node['filebeat']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("ndb_version", "<%= node['ndb']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("livy_version", "<%= node['livy']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("zeppelin_version", "<%= node['zeppelin']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("hive2_version", "<%= node['hive2']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("tez_version", "<%= node['tez']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("slider_version", "<%= node['slider']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("spark_version", "<%= node['hadoop_spark']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("flink_version", "<%= node['flink']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("epipe_version", "<%= node['epipe']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("dela_version", "<%= node['dela']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("kafka_version", "<%= node['kkafka']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("elastic_version", "<%= node['elastic']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("drelephant_version", "<%= node['drelephant']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("cuda_version", "<%= node['cuda']['major_version'] %>.<%= node['cuda']['minor_version'] %>_<%= node['cuda']['build_version'] %>");
-INSERT INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>");
 
 --
 -- Exporting Anaconda environment as yml
