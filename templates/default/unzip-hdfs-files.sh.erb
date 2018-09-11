@@ -109,7 +109,7 @@ echo "UPLOADING" > "$fsmFile"
 check_error
 
 echo "CHOWNING" > "$fsmFile"
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"/"$escapedFileDir"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "$dir"/"$escapedFiledir"
 check_error
 
 echo "SUCCESS" > "$fsmFile"
