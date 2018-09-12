@@ -67,3 +67,22 @@ ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `lock_ip` VARCHAR(15) DEFAULT NU
 ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `lock_timestamp` BIGINT DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`tf_serving` ADD FOREIGN KEY `user_fk` (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Table structure for table `invalid_jwt` and `jwt_signing_key`
+--
+CREATE TABLE IF NOT EXISTS `invalid_jwt` (
+  `jti` varchar(45) NOT NULL,
+  `expiration_time` datetime NOT NULL,
+  `renewable_for_sec` int(11) NOT NULL,
+  PRIMARY KEY (`jti`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `jwt_signing_key` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `secret` varchar(128) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `jwt_signing_key_name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
