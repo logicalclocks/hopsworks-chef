@@ -17,7 +17,9 @@ export HADOOP_USER_NAME="${IMPERSONATED_USERNAME}"
 #FSM states: STAGING, ZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
 fsmFile="${workdir}/fsm.txt"
 
+# Sleep is needed, otherwise the user will not see final status (SUCCESS, FAILED) in UI
 function finish {
+    sleep 1m
     rm -rf "$workdir"
 }
 trap finish EXIT
