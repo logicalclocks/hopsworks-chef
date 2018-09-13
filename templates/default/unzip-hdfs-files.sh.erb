@@ -62,7 +62,7 @@ echo "UNZIPPING" > "$fsmFile"
 
 
 cd "$workdir"
-dtrx -o -n "$file"
+<%= @dtrx %> -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
