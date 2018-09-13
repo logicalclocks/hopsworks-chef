@@ -174,7 +174,7 @@ end
 
 
 # For unzipping files
-dtrx="test"
+dtrx=""
 case node['platform_family']
 when "debian"
 
@@ -688,6 +688,11 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  variables(lazy {
+                h = {}
+                h['dtrx'] = dtrx
+                h
+              })
   action :create
 end
 
@@ -696,11 +701,6 @@ template "#{theDomain}/bin/unzip-background.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
-  variables(lazy {
-              h = {}
-              h['dtrx'] = dtrx
-              h
-            })
   action :create
 end
 
