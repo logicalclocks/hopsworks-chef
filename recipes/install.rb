@@ -174,7 +174,7 @@ end
 
 
 # For unzipping files
-
+dtrx="test"
 case node['platform_family']
 when "debian"
 
