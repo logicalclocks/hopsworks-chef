@@ -689,10 +689,10 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   group node['glassfish']['group']
   mode "550"
   variables(lazy {
-                h = {}
-                h['dtrx'] = dtrx
-                h
-              })
+    h = {}
+    h['dtrx'] = dtrx
+    h
+  })
   action :create
 end
 
