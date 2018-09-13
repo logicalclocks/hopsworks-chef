@@ -19,7 +19,7 @@ fsmFile="${workdir}/fsm.txt"
 
 # Sleep is needed, otherwise the user will not see final status (SUCCESS, FAILED) in UI
 function finish {
-    sleep 1m
+    sleep 30s
     rm -rf "$workdir"
 }
 trap finish EXIT
