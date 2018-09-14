@@ -174,7 +174,7 @@ end
 
 
 # For unzipping files
-
+dtrx=""
 case node['platform_family']
 when "debian"
 
@@ -184,7 +184,7 @@ when "debian"
   package "dtrx"
   package "libkrb5-dev"
   dtrx="dtrx"
-when "redhat"
+when "rhel"
   package "krb5-libs"
   package "p7zip"
 
@@ -688,6 +688,11 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  variables(lazy {
+    h = {}
+    h['dtrx'] = dtrx
+    h
+  })
   action :create
 end
 
@@ -696,9 +701,6 @@ template "#{theDomain}/bin/unzip-background.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
-  variables({
-              :dtrx => dtrx
-            })
   action :create
 end
 
