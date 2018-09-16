@@ -35,3 +35,6 @@ ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `lock_ip` VARCHAR(15) DEFAULT N
 ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `lock_timestamp` BIGINT DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`tf_serving` ADD FOREIGN KEY `user_fk` (`creator`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+DROP TABLE IF EXISTS `invalid_jwt`;
+DROP TABLE IF EXISTS `jwt_signing_key`;
