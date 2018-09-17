@@ -106,3 +106,11 @@ CREATE TABLE IF NOT EXISTS `tf_lib_mapping` (
   `nccl_version`    VARCHAR(20) NOT NULL,
   PRIMARY KEY (`tf_version`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`project_topics` REMOVE PARTITIONING;
+ALTER TABLE `hopsworks`.`project_topics` ADD CONSTRAINT `topic_project` UNIQUE (`topic_name`,`project_id`);
+ALTER TABLE `hopsworks`.`project_topics` DROP PRIMARY KEY;
+ALTER TABLE `hopsworks`.`project_topics` ADD COLUMN `id` INT(11) AUTO_INCREMENT PRIMARY KEY;
+
+ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `kafka_topic_id` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`tf_serving` ADD CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `hopsworks`.`project_topics`(`id`) ON DELETE SET NULL;

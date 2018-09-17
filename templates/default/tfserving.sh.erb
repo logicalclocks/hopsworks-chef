@@ -49,7 +49,7 @@ if [ "$1" == "kill" ] ; then
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 6 ]; then
+    if [ $# -ne 7 ]; then
       help
     fi
 
@@ -66,7 +66,14 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    SECRET_DIR=$5
+    # Sanity checks for injection attacks
+    re='^[0-9]+$'
+    if ! [[ $5 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+    SECRET_DIR=$6
     if [ -d "${SECRET_DIR}" ] ; then
       echo "Invalid secret directory. Directory already exists: $SECRET_DIR"
       exit 3
@@ -82,14 +89,14 @@ elif [ "$1" == "start" ] ; then
     sudo chown -R "${TFSERVING_USER}":"${TFSERVING_GROUP}" "$SECRET_DIR"
     sudo chmod -R 770 "$SECRET_DIR"
 
-    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$6 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
+    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$7 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
       echo "Error downloading the model on the local Fs"
       exit 1
     fi
 
     # Launch the tensorflow_serving process as user 'tfserving'
-    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5"
+    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6"
 
 elif [ "$1" == "update" ] ; then
 
