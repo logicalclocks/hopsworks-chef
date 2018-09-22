@@ -1,0 +1,47 @@
+#!/bin/bash
+
+help() {
+  echo "Usage: $0 [toHdfs|fromHdfs] project_name [impersonated_username]"
+  exit 1
+}
+
+function check_error {
+    if [ $? -ne 0 ] ; then
+      echo "FAILED"
+      exit 1	
+    fi
+}
+
+if [ $# -lt 2 ] ; then
+  help
+fi
+
+PROJECT=$2
+IMPERSONATED_USERNAME=
+if [ $# -gt 2 ] ; then
+    IMPERSONATED_USERNAME=$3
+fi    
+
+export HADOOP_USER_NAME="${IMPERSONATED_USERNAME}"
+export HADOOP_HOME=<%= node['hops']['base_dir'] %>
+
+
+HDFS_DAGS=/Projects/${PROJECT}/airflow/dags/
+AIRFLOW_DAGS=<%= node['airflow']['base_dir'] %>/dags
+
+if [ "$1" == "toHdfs" ] ; then
+    <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${AIRFLOW_DAGS}" "${HDFS_DAGS}"
+    check_error
+    echo "CHOWNING"
+    <%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown -R "${IMPERSONATED_USERNAME}" "${HDFS_DAGS}"
+    check_error
+    
+elif [ "$1" == "fromHdfs" ] ; then
+    rm -rf ${AIRFLOW_DAGS}/*
+    <%= node['hops']['base_dir'] %>/bin/hdfs dfs -get "${HDFS_DAGS}" "${AIRFLOW_DAGS}"
+    check_error
+else
+  help()
+fi
+
+
