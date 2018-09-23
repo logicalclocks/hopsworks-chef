@@ -763,6 +763,7 @@ template "/etc/sudoers.d/glassfish" do
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
               :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
+              :airflow_copy => "#{theDomain}/bin/copyHdfsAirflow.sh",              
               :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
   action :create
