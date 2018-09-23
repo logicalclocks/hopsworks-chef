@@ -942,19 +942,12 @@ template "#{theDomain}/bin/conda-command-ssh.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/copyFromHdfsToAirflow.sh" do
-  source "copyFromHdfsToAirflow.sh.erb"
+template "#{theDomain}/bin/copyHdfsAirflow.sh.erb" do
+  source "copyHdfsAirflow.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
-  mode 0750
+  mode 0710
   action :create
 end
 
-template "#{theDomain}/bin/copyToHdfsFromAirflow.sh" do
-  source "copyToHdfsFromAirflow.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
 
