@@ -942,7 +942,7 @@ template "#{theDomain}/bin/conda-command-ssh.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/copyHdfsAirflow.sh.erb" do
+template "#{theDomain}/bin/copyHdfsAirflow.sh" do
   source "copyHdfsAirflow.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
