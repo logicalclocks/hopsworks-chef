@@ -26,10 +26,12 @@ export HADOOP_USER_NAME="${IMPERSONATED_USERNAME}"
 export HADOOP_HOME=<%= node['hops']['base_dir'] %>
 
 
-HDFS_DAGS=/Projects/${PROJECT}/airflow/dags/
+HDFS_DAGS=/Projects/${PROJECT}/Resources/airflow/dags/
 AIRFLOW_DAGS=<%= node['airflow']['base_dir'] %>/dags
 
 if [ "$1" == "toHdfs" ] ; then
+    <%= node['hops']['base_dir'] %>/bin/hdfs dfs -mkdir -p "${HDFS_DAGS}"
+    echo "Copying from local....." 
     <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${AIRFLOW_DAGS}" "${HDFS_DAGS}"
     check_error
     echo "CHOWNING"
