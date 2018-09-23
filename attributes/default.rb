@@ -12,6 +12,7 @@ include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
 include_attribute "hops"
+include_attribute "hops_airflow"
 
 default['hopsworks']['version']                  = node['install']['version']
 
