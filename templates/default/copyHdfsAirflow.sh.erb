@@ -41,7 +41,7 @@ if [ "$1" == "toHdfs" ] ; then
 elif [ "$1" == "fromHdfs" ] ; then
     rm -rf ${AIRFLOW_DAGS}/*
     <%= node['hops']['base_dir'] %>/bin/hdfs dfs -get "${HDFS_DAGS}" "${AIRFLOW_DAGS}"
-    check_error
+    #check_error
     echo "Need to now restart the airflow webserver"
     sudo systemctl restart airflow-webserver
 else
