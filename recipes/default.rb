@@ -1303,16 +1303,6 @@ bash "jupyter-root-sparkmagic" do
     pip install --target #{pythonDir} --upgrade mock
     pip uninstall configparser  -y
     pip install --target #{pythonDir} --upgrade configparser
-    # pip uninstall sparkmagic  -y
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
-    # tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    # cd sparkmagic
-    # pip install ./hdijupyterutils
-    # pip install --upgrade ./autovizwidget
-    # pip install ./sparkmagic
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
    EOF
 end
 

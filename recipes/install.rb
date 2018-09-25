@@ -763,7 +763,7 @@ template "/etc/sudoers.d/glassfish" do
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
               :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
-              :airflow_copy => "#{theDomain}/bin/copyHdfsAirflow.sh",              
+              :airflow_copy => "#{theDomain}/bin/airflowOps.sh",              
               :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
   action :create
@@ -942,8 +942,8 @@ template "#{theDomain}/bin/conda-command-ssh.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/copyHdfsAirflow.sh" do
-  source "copyHdfsAirflow.sh.erb"
+template "#{theDomain}/bin/airflowOps.sh" do
+  source "airflowOps.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0710
