@@ -41,3 +41,5 @@ DROP TABLE IF EXISTS `jwt_signing_key`;
 
 DROP TABLE IF EXISTS `system_commands_args`;
 ALTER TABLE `system_commands` ADD COLUMN `arguments` VARCHAR(255) DEFAULT NULL AFTER `op`;
+
+DROP TABLE IF EXISTS `tf_lib_mapping`;

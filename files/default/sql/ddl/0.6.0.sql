@@ -98,3 +98,11 @@ CREATE TABLE IF NOT EXISTS `system_commands_args` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `system_commands` DROP COLUMN `arguments`;
+
+CREATE TABLE IF NOT EXISTS `tf_lib_mapping` (
+  `tf_version`      VARCHAR(20) NOT NULL,
+  `cuda_version`    VARCHAR(20) NOT NULL,
+  `cudnn_version`   VARCHAR(20) NOT NULL,
+  `nccl_version`    VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`tf_version`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
