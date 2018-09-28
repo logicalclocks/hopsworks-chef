@@ -38,3 +38,6 @@ ALTER TABLE `hopsworks`.`tf_serving` ADD FOREIGN KEY `user_fk` (`creator`) REFER
 
 DROP TABLE IF EXISTS `invalid_jwt`;
 DROP TABLE IF EXISTS `jwt_signing_key`;
+
+DROP TABLE IF EXISTS `system_commands_args`;
+ALTER TABLE `system_commands` ADD COLUMN `arguments` VARCHAR(255) DEFAULT NULL AFTER `op`;
