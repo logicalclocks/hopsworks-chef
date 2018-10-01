@@ -86,3 +86,15 @@ CREATE TABLE IF NOT EXISTS `jwt_signing_key` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `jwt_signing_key_name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- Table for extended system commands arguments
+CREATE TABLE IF NOT EXISTS `system_commands_args` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `command_id` BIGINT NOT NULL,
+  `arguments` VARCHAR(13900) DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `command_id_idx` (`command_id`),
+  FOREIGN KEY `command_id_fk` (`command_id`) REFERENCES `system_commands` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `system_commands` DROP COLUMN `arguments`;
