@@ -27,15 +27,15 @@ EOF
 
 sudo -u $KAGENT_USER sh -s ${HOPSSITE_AUX}<<'EOF'
 . $1/hs_env.sh
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/start-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/start-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
 echo start >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
 
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/shutdown-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/shutdown-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
 echo stop >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
 
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/status-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/status-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
 echo status >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
 EOF
