@@ -205,6 +205,7 @@ when "rhel"
     cd dtrx-7.1
     python setup.py install --prefix=/usr/local
     # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
+    rm -f /bin/7z
     ln -s /bin/7za /bin/7z
   EOF
     not_if "which dtrx"

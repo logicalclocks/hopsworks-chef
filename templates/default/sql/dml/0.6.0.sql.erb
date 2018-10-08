@@ -9,3 +9,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("spark_ui_logs_offset", "<%= node['
 REPLACE INTO `hopsworks`.`variables` VALUES ("provided_python_lib_names", "<%= node['conda']['provided_lib_names'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("preinstalled_python_lib_names", "<%= node['conda']['preinstalled_lib_names'] %>");
+
+REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.10.0", "9.0", "7", "2.2");
+REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.11.0", "9.0", "7.3.0", "2.2");
