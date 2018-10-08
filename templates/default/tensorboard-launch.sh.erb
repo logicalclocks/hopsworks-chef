@@ -1,5 +1,5 @@
 #!/bin/bash
-#hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopHome hadoopVersion certsDir
+#hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopHome hadoopVersion certsDir javaHome
 
 HDFS_USER=$1
 HDFS_LOGDIR=$2
@@ -9,15 +9,16 @@ ANACONDA_ENVIRONMENT_PATH=$5
 HADOOP_HOME=$6
 HADOOP_VERSION=$7
 CERTS_DIR=$8
+JAVA_HOME=$9
 
 help() {
     echo ""
-    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH"
+    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH HADOOP_HOME HADOOP_VERSION CERTSDIR JAVA_HOME"
     echo ""
     exit 1
 }
 
-if [ $# -ne 8 ]; then
+if [ $# -ne 9 ]; then
   help
 fi
 
@@ -34,13 +35,14 @@ PID_FILE=${TENSORBOARD_DIR}/${PORT}.pid
 export MATERIAL_DIRECTORY=$CERTS_DIR
 export HADOOP_USER_NAME=$HDFS_USER
 export HADOOP_HDFS_HOME=${HADOOP_HOME}/etc/hadoop
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+export LD_LIBRARY_PATH=${JAVA_HOME}/jre/lib/amd64/server:${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 export LC_ALL=C
+export CUDA_VISIBLE_DEVICES=''
 
 CLASSPATH=$("${HADOOP_HOME}"/bin/hadoop classpath --glob):"${HADOOP_HOME}"/share/hadoop/hdfs/hadoop-hdfs-"${HADOOP_VERSION}".jar
 export CLASSPATH="${CLASSPATH}"
 
-setsid "${ANACONDA_ENVIRONMENT_PATH}"/bin/tensorboard --port="$PORT" --logdir="$HDFS_LOGDIR" --reload_interval 3.0 </dev/zero &> "$LOGFILE"  &
+setsid "${ANACONDA_ENVIRONMENT_PATH}"/bin/tensorboard --port="$PORT" --logdir="$HDFS_LOGDIR" </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
 
 exit $?
