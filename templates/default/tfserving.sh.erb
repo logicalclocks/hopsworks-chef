@@ -123,7 +123,7 @@ elif [ "$1" == "logs" ] ; then
 
     cat "${LOGFILE}"
 elif [ "$1" == "alive" ] ; then
-    su "${TFSERVING_USER}" -c "pgrep -f tensorflow_model_server | grep -v pgrep | grep $2 | grep $3"
+    su "${TFSERVING_USER}" -c "pgrep -f -a tensorflow_model_server | grep -v pgrep | grep $2 | grep $3"
 else
   help
 fi
