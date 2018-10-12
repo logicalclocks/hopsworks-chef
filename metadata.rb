@@ -1920,6 +1920,10 @@ attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
           :type => 'string'
 
+attribute "hopssite/dela/version",
+       :description => "The hopssite tracker imposed version of dela",
+       :type => 'string'
+
 attribute "hopssite/cert/cn",
 	  :description => "hopssite Organization Common Name (default: hopsworks/cert)",
 	  :type => 'string'

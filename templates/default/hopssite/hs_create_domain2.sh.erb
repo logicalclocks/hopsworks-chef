@@ -2,7 +2,7 @@
 set -e
 
 . hs_env.sh
-sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX}<<'EOF'
+sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
 cd ${GLASSFISH_PATH}/bin
 echo "AS_ADMIN_PASSWORD=${KEYSTOREPW}" > $DOMAINPW_FILE

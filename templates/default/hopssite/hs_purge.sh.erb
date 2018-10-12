@@ -2,13 +2,13 @@
 
 . hs_env.sh
 
-sudo -u $MYSQL_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+sudo -u $MYSQL_USER sh -s ${HOPS_SITE_DIR} <<'EOF'
 . $1/hs_env.sh
 cd ${MYSQL_DIR}
 ./mysql-client.sh -e "DROP DATABASE IF EXISTS hops_site"
 EOF
 
-sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR} <<'EOF'
 . $1/hs_env.sh
 cd ${GLASSFISH_PATH}/bin
 ./asadmin $ASADMIN_PW stop-domain ${DOMAIN}

@@ -201,7 +201,9 @@ default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
+default['hopssite']['download_url']                    = "#{node['download_url']}/hopssite/hops-site.war"
 default['hopssite']['manual_register']                 = "false"
+default['hopssite']['dela']['version']                 = "0.1.0"
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
 default['hopssite']['user']                            = node['hopsworks']['email']
