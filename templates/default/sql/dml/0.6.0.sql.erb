@@ -41,4 +41,13 @@ REPLACE INTO `hopsworks`.`schema_topics`(`name`, `version`, `contents`) VALUES (
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("kafka_max_num_topics", "<%= node['hopsworks']['kafka_max_num_topics'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_serving", "<%= node['logstash']['beats']['serving_port'] %>");
+
 REPLACE INTO `hopsworks`.`variables` VALUES ("py4j_archive", "<%= node['hadoop_spark']['yarn']['py4j_archive'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_signature_algorithm', "<%= node['hopsworks']['jwt']['signature_algorithm'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_lifetime_ms', "<%= node['hopsworks']['jwt']['lifetime_ms'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_exp_leeway_sec', "<%= node['hopsworks']['jwt']['exp_leeway_sec'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_signing_key_name', "<%= node['hopsworks']['jwt']['signing_key_name'] %>");
