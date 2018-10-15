@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-curl -XPUT '<%= @elastic_ip %>:<%= node[elastic][port] %>/hops-site?pretty' -H 'Content-Type: application/json' -d '{"mappings":{"dataset":{"dynamic":"strict","properties":{"description":{"type":"text"},"name":{"type":"text"}, "dsv":{"type":"integer"},"id":{"type":"text"},"xattr":{"type":"nested","dynamic":true}}}}}'
+curl -XPUT '<%= @elastic_ip %>:<%= node['elastic']['port'] %>/hops-site?pretty' -H 'Content-Type: application/json' -d '{"mappings":{"dataset":{"dynamic":"strict","properties":{"description":{"type":"text"},"name":{"type":"text"}, "dsv":{"type":"integer"},"id":{"type":"text"},"xattr":{"type":"nested","dynamic":true}}}}}'
