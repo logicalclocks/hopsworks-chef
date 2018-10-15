@@ -1,25 +1,25 @@
 #!/bin/bash
 
-export HOPS_SITE_DIR='<%= node['install']['dir'] %>/hops-site'
+export HOPS_SITE_DIR="<%= node['install']['dir'] %>/hopssite"
 export HOPS_SITE_WAR="${HOPS_SITE_DIR}/lib/hops-site.war"
-export HOPS_SITE_DOWNLOAD_URL='<%= node['hopssite']['download_url'] %>''
+export HOPS_SITE_DOWNLOAD_URL="<%= node['hopssite']['download_url'] %>"
 
 export MYSQL_USER=<%= node['ndb']['user'] %>
 export MYSQL_SERVER=<%= @ndb_ip %>
 export MYSQL_PORT=<%= node['ndb']['mysql_port'] %>
-export MYSQL_DIR=<%= node['ndb']['scripts_dir'] %>
-export MSQL_CONNECTOR='mysql-connector-java-5.1.29-bin.jar'
-export DB_NAME='hops_site'
+export MYSQL_DIR="<%= node['ndb']['scripts_dir'] %>"
+export MSQL_CONNECTOR="mysql-connector-java-5.1.29-bin.jar"
+export DB_NAME="hops_site"
 export HOPS_SITE_TABLES="${HOPS_SITE_DIR}/hs_tables.sql"
 export HOPS_SITE_ROWS="${HOPS_SITE_DIR}/hs_rows.sql"
 
-export GLASSFISH_PATH='<%= node['glassfish']['install_dir'] %>/versions/current'
+export GLASSFISH_PATH="<%= node['glassfish']['install_dir'] %>/versions/current"
 export GLASSFISH_USER=<%= node['hopsworks']['user'] %>
-export DOMAIN_DIR=<%= node['glassfish']['domains_dir'] %>
-export DOMAIN='domain2'
+export DOMAIN_DIR="<%= node['glassfish']['domains_dir'] %>"
+export DOMAIN="domain2"
 export DOMAINPW_FILE="${DOMAIN_DIR}/master-password"
 export ASADMIN_PW="--user adminuser --passwordfile ${DOMAINPW_FILE}"
-export KEYSTOREPW='adminpw'
+export KEYSTOREPW="adminpw"
 export KEYSTORE_PASSWORD="-srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW"
 export KEY_PASSWORD="-keypass $KEYSTOREPW -storepass $KEYSTOREPW"
 export ADMIN_CERT_ALIAS="hops.site-admin"
@@ -27,4 +27,4 @@ export DOMAIN_BASE_PORT=50000
 export ADMIN_PORT=`expr $DOMAIN_BASE_PORT + 48` # HTTPS listener port: portbase + 81
 
 export KAGENT_USER=<%= node['kagent']['user'] %>
-export CERTS_DIR=<%= node['kagent']['certs_dir'] %>
+export CERTS_DIR="<%= node['kagent']['certs_dir'] %>"
