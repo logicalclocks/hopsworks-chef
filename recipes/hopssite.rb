@@ -6,7 +6,7 @@ rescue
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
 end
 begin
-  ndb_ip = private_recipe_ip("ndb","default")
+  ndb_ip = private_recipe_ip("ndb","mysqld")
 rescue
   ndb_ip = ""
   Chef::Log.warn "could not find the ndb server ip for HopsWorks!"
