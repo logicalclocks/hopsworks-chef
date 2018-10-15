@@ -16,7 +16,7 @@ cd ${GLASSFISH_PATH}/bin
 rm ${DOMAINPW_FILE}
 EOF
 
-curl -XDELETE '10.0.2.15:9200/hops-site?pretty'
+curl -XDELETE '<%= @elastic_ip %>:<%= node['elastic']['port'] %>/hops-site?pretty'
 
 sudo truncate -s 0 ${CERTS_DIR}/index.txt
 sudo rm -rf /srv/hops/hops-site

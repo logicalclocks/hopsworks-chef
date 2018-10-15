@@ -150,6 +150,9 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   group node['glassfish']['group']
   action :create
   mode 0755
+  variables({
+    :elastic_ip => elastic_ip
+    })
 end
 
 template "#{node['hopssite']['home']}/hs_tables.sql" do
