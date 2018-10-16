@@ -114,3 +114,5 @@ ALTER TABLE `hopsworks`.`project_topics` ADD COLUMN `id` INT(11) AUTO_INCREMENT 
 
 ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `kafka_topic_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`tf_serving` ADD CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `hopsworks`.`project_topics`(`id`) ON DELETE SET NULL;
+
+ALTER TABLE `hopsworks`.`tf_serving` ADD KEY `model_name_k`(`model_name`);
