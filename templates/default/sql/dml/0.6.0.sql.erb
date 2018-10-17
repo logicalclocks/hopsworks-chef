@@ -12,3 +12,7 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("preinstalled_python_lib_names", "<
 
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.10.0", "9.0", "7", "2.2");
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.11.0", "9.0", "7.3.0", "2.2");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_rest_log_level", "<%= node['hopsworks']['hopsworks_rest_log_level'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['secure_port'] %>");
