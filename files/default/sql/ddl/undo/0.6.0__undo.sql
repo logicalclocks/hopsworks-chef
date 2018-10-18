@@ -43,3 +43,13 @@ DROP TABLE IF EXISTS `system_commands_args`;
 ALTER TABLE `system_commands` ADD COLUMN `arguments` VARCHAR(255) DEFAULT NULL AFTER `op`;
 
 DROP TABLE IF EXISTS `tf_lib_mapping`;
+
+ALTER TABLE `hopsworks`.`tf_serving` DROP FOREIGN KEY `kafka_fk`;
+ALTER TABLE `hopsworks`.`tf_serving` DROP COLUMN `kafka_topic_id`;
+
+ALTER TABLE `hopsworks`.`project_topics` DROP PRIMARY KEY;
+ALTER TABLE `hopsworks`.`project_topics` DROP COLUMN `id`;
+ALTER TABLE `hopsworks`.`project_topics` ADD CONSTRAINT `project_topics_pk` PRIMARY KEY(`topic_name`,`project_id`);
+
+ALTER TABLE `hopsworks`.`tf_serving` DROP KEY `model_name_k`;
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `enable_batching` `enable_batching` TINYINT(1) NOT NULL;

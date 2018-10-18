@@ -14,7 +14,7 @@ FILE_SYSTEM_POLLING_INTERVAL_SECS=10
 
 help() {
     echo ""
-    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR "
+    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR BATCHING"
     echo ""
     exit 1
 }
@@ -31,7 +31,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 4 ]; then
+if [ $# -ne 5 ]; then
   help
 fi
 
@@ -47,7 +47,12 @@ export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 cd "$SECRET_DIR" || exit
 
-setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> "$LOGFILE" &
+BATCHING_COMMAND=''
+if [ "$ENABLE_BATCHING" == "1" ]
+  BATCHING_COMMAND='--enable_batching=true'
+fi
+
+setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> "$LOGFILE" &
 
 echo $! > "$PID_FILE"
 

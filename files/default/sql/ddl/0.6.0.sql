@@ -116,3 +116,4 @@ ALTER TABLE `hopsworks`.`tf_serving` ADD COLUMN `kafka_topic_id` INT(11) DEFAULT
 ALTER TABLE `hopsworks`.`tf_serving` ADD CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `hopsworks`.`project_topics`(`id`) ON DELETE SET NULL;
 
 ALTER TABLE `hopsworks`.`tf_serving` ADD KEY `model_name_k`(`model_name`);
+ALTER TABLE `hopsworks`.`tf_serving` CHANGE COLUMN `enable_batching` `enable_batching` TINYINT(1) DEFAULT 0;
