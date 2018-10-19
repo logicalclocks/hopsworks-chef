@@ -6,6 +6,8 @@ HADOOP_HOME=<%= node['hops']['base_dir'] %>
 GRPCPORT=$2
 RESTPORT=$3
 SECRET_DIR=$4
+ENABLE_BATCHING=$5
+PROJECT_NAME=$6
 LOGDIR=${SECRET_DIR}/logs
 LOGFILE=${LOGDIR}/${MODEL_NAME}.log
 PID_FILE=${SECRET_DIR}/tfserving.pid
@@ -14,7 +16,7 @@ FILE_SYSTEM_POLLING_INTERVAL_SECS=10
 
 help() {
     echo ""
-    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR BATCHING"
+    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR BATCHING PROJECTNAME"
     echo ""
     exit 1
 }
@@ -31,7 +33,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
   help
 fi
 
@@ -53,7 +55,7 @@ then
   BATCHING_COMMAND='--enable_batching=true'
 fi
 
-setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> "$LOGFILE" &
+setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> >(sed -u 's/.*/'"$PROJECT_NAME"'__'"$MODEL_NAME"' &/' &> "$LOGFILE") &
 
 echo $! > "$PID_FILE"
 

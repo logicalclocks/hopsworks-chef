@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start model_name hdfs_model_path port secretdir username enable_batching] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
+    echo "usage: $0 [start model_name hdfs_model_path port secretdir username enable_batching project_name] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
     echo ""
     exit 1
 }
@@ -49,7 +49,7 @@ if [ "$1" == "kill" ] ; then
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 8 ]; then
+    if [ $# -ne 9 ]; then
       help
     fi
 
@@ -92,11 +92,18 @@ elif [ "$1" == "start" ] ; then
     su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$7 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
       echo "Error downloading the model on the local Fs"
+      sudo rm -r "$SECRET_DIR"
       exit 1
     fi
 
     # Launch the tensorflow_serving process as user 'tfserving'
-    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8"
+    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9"
+
+    if [ $? -ne 0 ] ; then
+      echo "Error starting the serving server"
+      sudo rm -r "$SECRET_DIR"
+      exit 1
+    fi
 
 elif [ "$1" == "update" ] ; then
 
