@@ -1974,6 +1974,12 @@ attribute "hopssite/retry_interval",
 attribute "hopssite/max_retries",
           :description => "Certificate signing request maximum number of retries for hops.site.",
           :type => 'string'
+#
+# hops.site admin
+#
+attribute "hopssite/admin/password",
+          :description => "Password for domain2 - running the hopssite tracker",
+          :type => 'string'
 
 # Dela Transfer specific
 

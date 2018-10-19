@@ -213,6 +213,7 @@ default['hopssite']['certs_dir']                       = "#{node['hopsworks']['d
 default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
 default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
+default['hopssite']['admin']['password']               = "adminpw"
 #
 # Hopssite cert
 #

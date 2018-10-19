@@ -22,13 +22,12 @@ export HOPS_SITE_TABLES="${HOPS_SITE_DIR}/hs_tables.sql"
 export HOPS_SITE_ROWS="${HOPS_SITE_DIR}/hs_rows.sql"
 #glassfish domain2
 export DOMAIN="domain2"
-export ADMIN_CERT_ALIAS="hops.site-admin"
 export DOMAIN_BASE_PORT=50000
-# HTTPS listener port: portbase + 81
 export ADMIN_PORT=`expr $DOMAIN_BASE_PORT + 48`
-#certs
+export ADMIN_CERT_ALIAS="hops.site-admin"
 export DOMAINPW_FILE="${DOMAIN_DIR}/master-password"
-export KEYSTOREPW="adminpw"
+export KEYSTOREPW="<%= node['hopssite']['admin']['password'] %>"
+#aux
 export ASADMIN_PW="--user adminuser --passwordfile ${DOMAINPW_FILE}"
 export KEYSTORE_PASSWORD="-srcstorepass $KEYSTOREPW -deststorepass $KEYSTOREPW -destkeypass $KEYSTOREPW"
 export KEY_PASSWORD="-keypass $KEYSTOREPW -storepass $KEYSTOREPW"
