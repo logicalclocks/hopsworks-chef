@@ -1920,6 +1920,10 @@ attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
           :type => 'string'
 
+attribute "hopssite/dela/version",
+       :description => "The hopssite tracker imposed version of dela",
+       :type => 'string'
+
 attribute "hopssite/cert/cn",
 	  :description => "hopssite Organization Common Name (default: hopsworks/cert)",
 	  :type => 'string'
@@ -1969,6 +1973,12 @@ attribute "hopssite/retry_interval",
 
 attribute "hopssite/max_retries",
           :description => "Certificate signing request maximum number of retries for hops.site.",
+          :type => 'string'
+#
+# hops.site admin
+#
+attribute "hopssite/admin/password",
+          :description => "Password for domain2 - running the hopssite tracker",
           :type => 'string'
 
 # Dela Transfer specific
