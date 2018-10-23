@@ -55,7 +55,7 @@ then
   BATCHING_COMMAND='--enable_batching=true'
 fi
 
-setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> >(sed -u 's/.*/'"$PROJECT_NAME"'__'"$MODEL_NAME"' &/' &> "$LOGFILE") &
+setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> >(sed -u 's/.*/'"$PROJECT_NAME"','"$MODEL_NAME"' &/' &> "$LOGFILE") &
 
 echo $! > "$PID_FILE"
 

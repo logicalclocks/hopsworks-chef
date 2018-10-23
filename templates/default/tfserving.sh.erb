@@ -87,7 +87,7 @@ elif [ "$1" == "start" ] ; then
     sudo mkdir "$SECRET_DIR/$2"
 
     sudo chown -R "${TFSERVING_USER}":"${TFSERVING_GROUP}" "$SECRET_DIR"
-    sudo chmod -R 770 "$SECRET_DIR"
+    sudo chmod -R 771 "$SECRET_DIR"
 
     su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$7 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
