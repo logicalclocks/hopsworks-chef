@@ -1,4 +1,17 @@
 #START hopssite install scripts
+begin
+  elastic_ip = private_recipe_ip("elastic","default")
+rescue
+  elastic_ip = ""
+  Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
+end
+begin
+  ndb_ip = private_recipe_ip("ndb","mysqld")
+rescue
+  ndb_ip = ""
+  Chef::Log.warn "could not find the ndb server ip for HopsWorks!"
+end
+
 directory node['hopssite']['home'] do
   owner node['glassfish']['user']
   mode 0755
@@ -11,6 +24,9 @@ template "#{node['hopssite']['home']}/hs_env.sh" do
   group node['glassfish']['group']
   action :create
   mode 0755
+  variables({
+    :ndb_ip => ndb_ip
+    })
 end
 
 template "#{node['hopssite']['home']}/hs_install.sh" do
@@ -115,6 +131,9 @@ template "#{node['hopssite']['home']}/hs_elastic.sh" do
   group node['glassfish']['group']
   action :create
   mode 0755
+  variables({
+    :elastic_ip => elastic_ip
+    })
 end
 
 template "#{node['hopssite']['home']}/hs_dela_certs.sh" do
@@ -131,6 +150,9 @@ template "#{node['hopssite']['home']}/hs_purge.sh" do
   group node['glassfish']['group']
   action :create
   mode 0755
+  variables({
+    :elastic_ip => elastic_ip
+    })
 end
 
 template "#{node['hopssite']['home']}/hs_tables.sql" do
@@ -147,6 +169,9 @@ template "#{node['hopssite']['home']}/hs_rows.sql" do
   group node['glassfish']['group']
   action :create
   mode 0755
+  variables({
+    :elastic_ip => elastic_ip
+    })
 end
 
 template "#{node['hopssite']['home']}/glassfish-domain2.service" do

@@ -2,10 +2,10 @@
 set -e
 
 . hs_env.sh
-sudo -u $MYSQL_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+sudo -u $MYSQL_USER sh -s ${HOPS_SITE_DIR} <<'EOF'
 . $1/hs_env.sh
 cd ${MYSQL_DIR}
-./mysql-client.sh -e "CREATE DATABASE IF NOT EXISTS hops_site"
+./mysql-client.sh -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
 ./mysql-client.sh hops_site < ${HOPS_SITE_TABLES}
 ./mysql-client.sh hops_site < ${HOPS_SITE_ROWS}
 EOF

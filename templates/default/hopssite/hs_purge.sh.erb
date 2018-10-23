@@ -2,13 +2,13 @@
 
 . hs_env.sh
 
-sudo -u $MYSQL_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+sudo -u $MYSQL_USER sh -s ${HOPS_SITE_DIR} <<'EOF'
 . $1/hs_env.sh
 cd ${MYSQL_DIR}
 ./mysql-client.sh -e "DROP DATABASE IF EXISTS hops_site"
 EOF
 
-sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX} <<'EOF'
+sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR} <<'EOF'
 . $1/hs_env.sh
 cd ${GLASSFISH_PATH}/bin
 ./asadmin $ASADMIN_PW stop-domain ${DOMAIN}
@@ -16,7 +16,7 @@ cd ${GLASSFISH_PATH}/bin
 rm ${DOMAINPW_FILE}
 EOF
 
-curl -XDELETE '10.0.2.15:9200/hops-site?pretty'
+curl -XDELETE '<%= @elastic_ip %>:<%= node['elastic']['port'] %>/hops-site?pretty'
 
 sudo truncate -s 0 ${CERTS_DIR}/index.txt
 sudo rm -rf /srv/hops/hops-site
