@@ -1232,7 +1232,7 @@ end
 directory node['hopsworks']['staging_dir'] + "/serving"  do
   owner node['tfserving']['user']
   group node['hopsworks']['group']
-  mode "0330"
+  mode "0730"
   action :create
 end
 
