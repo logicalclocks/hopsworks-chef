@@ -3,6 +3,14 @@ domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 
+if node['hopsworks']['dela']['enabled'] == "true"
+  if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
+    hopsworks_certs "sign-ca-with-root-hopssite-ca" do
+      action :sign_hopssite
+    end
+  end
+end
+
 case node['platform']
 when "ubuntu"
  if node['platform_version'].to_f <= 14.04
