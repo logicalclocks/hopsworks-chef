@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start model_name hdfs_model_path port secretdir username] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
+    echo "usage: $0 [start model_name hdfs_model_path port secretdir username enable_batching project_name] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
     echo ""
     exit 1
 }
@@ -49,7 +49,7 @@ if [ "$1" == "kill" ] ; then
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 6 ]; then
+    if [ $# -ne 9 ]; then
       help
     fi
 
@@ -66,7 +66,14 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    SECRET_DIR=$5
+    # Sanity checks for injection attacks
+    re='^[0-9]+$'
+    if ! [[ $5 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+    SECRET_DIR=$6
     if [ -d "${SECRET_DIR}" ] ; then
       echo "Invalid secret directory. Directory already exists: $SECRET_DIR"
       exit 3
@@ -80,16 +87,23 @@ elif [ "$1" == "start" ] ; then
     sudo mkdir "$SECRET_DIR/$2"
 
     sudo chown -R "${TFSERVING_USER}":"${TFSERVING_GROUP}" "$SECRET_DIR"
-    sudo chmod -R 770 "$SECRET_DIR"
+    sudo chmod -R 771 "$SECRET_DIR"
 
-    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$6 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
+    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$7 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
       echo "Error downloading the model on the local Fs"
+      sudo rm -r "$SECRET_DIR"
       exit 1
     fi
 
     # Launch the tensorflow_serving process as user 'tfserving'
-    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5"
+    su "${TFSERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9"
+
+    if [ $? -ne 0 ] ; then
+      echo "Error starting the serving server"
+      sudo rm -r "$SECRET_DIR"
+      exit 1
+    fi
 
 elif [ "$1" == "update" ] ; then
 
@@ -115,6 +129,8 @@ elif [ "$1" == "logs" ] ; then
     LOGFILE=$3
 
     cat "${LOGFILE}"
+elif [ "$1" == "alive" ] ; then
+    su "${TFSERVING_USER}" -c "pgrep -f -a tensorflow_model_server | grep -v pgrep | grep $2 | grep $3"
 else
   help
 fi
