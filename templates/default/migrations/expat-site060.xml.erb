@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<expat>
+    <database>
+        <url>jdbc:mysql://<%= @mysql_ip %>/hopsworks</url>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <user><%= node['mysql']['user'] %></user>
+        <password><%= node['mysql']['password'] %></password>
+    </database>
+
+    <masterPwdFile><%= node['certs']['dir'] %>/encryption_master_password</masterPwdFile>
+
+    <x509>
+        <masterPwdFile><%= node['certs']['dir'] %>/encryption_master_password</masterPwdFile>
+        <intermediateCA><%= node['certs']['dir'] %>/intermediate</intermediateCA>
+        <userCertsScript>createusercerts.sh</userCertsScript>
+    </x509>
+
+    <version-060>
+        io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
+        io.hops.hopsworks.expat.migrations.x509.GenerateUserCertificates
+        io.hops.hopsworks.expat.migrations.jobs.JobsGpuMigration
+    </version-060>
+
+</expat>

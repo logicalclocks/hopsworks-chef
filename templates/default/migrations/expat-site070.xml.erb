@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<expat>
+    <database>
+        <url>jdbc:mysql://<%= @mysql_ip %>/hopsworks</url>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <user><%= node['mysql']['user'] %></user>
+        <password><%= node['mysql']['password'] %></password>
+    </database>
+</expat>
