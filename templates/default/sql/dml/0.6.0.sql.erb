@@ -41,3 +41,4 @@ REPLACE INTO `hopsworks`.`schema_topics`(`name`, `version`, `contents`) VALUES (
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("kafka_max_num_topics", "<%= node['hopsworks']['kafka_max_num_topics'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_serving", "<%= node['logstash']['beats']['serving_port'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("py4j_archive", "<%= node['hadoop_spark']['yarn']['py4j_archive'] %>");
