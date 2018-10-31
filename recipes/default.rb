@@ -432,6 +432,25 @@ hopsworks_grants "reload_sysv" do
  action :reload_sysv
 end
 
+if myVersion.eql?("0.6.0")
+ cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
+  source "sql/ddl/flyway_schema_history_0.6.0.sql"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+ end
+
+ # Re-create the table only if it already exists
+ bash "mod_flyway_history_0.6.0" do
+  user "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
+  EOH
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+ end
+end
+
+
 bash "flyway_baseline" do
   user "root"
   code <<-EOF
