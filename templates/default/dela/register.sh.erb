@@ -9,4 +9,4 @@ if [ ${CURL_RES} != 200 ] ; then
   exit 1
 fi
 echo "Register success"
-<%= node['hopsworks']['domains_dir'] %>/domain1/bin/csr-ca.py
+<%= node['conda']['base_dir'] %>/envs/hops-system/bin/python <%= node['hopsworks']['domains_dir'] %>/domain1/bin/csr-ca.py

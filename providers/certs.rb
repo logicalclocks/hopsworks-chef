@@ -96,7 +96,7 @@ action :sign_hopssite do
     code <<-EOF
       set -eo pipefail
       export PYTHON_EGG_CACHE=/tmp
-      #{node['hopsworks']['domains_dir']}/domain1/bin/csr-ca.py
+      #{node['conda']['base_dir']}/envs/hops-system/bin/python #{node['hopsworks']['domains_dir']}/domain1/bin/csr-ca.py
       touch #{signed}
   EOF
     not_if { ::File.exists?( "#{signed}" ) }
