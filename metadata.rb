@@ -2233,3 +2233,21 @@ attribute "rstudio/enabled",
 attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
           :type => 'string'
+
+### JWT
+
+attribute "hopsworks/jwt/signature_algorithm",
+          :description => "Default signature algorithm for jwt. (default HS512)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/lifetime_ms",
+          :description => "Default lifetime in ms for jwt expiration. (default 1800000)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/exp_leeway_sec",
+          :description => "Default expiration leeway in sec. (default 900)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/signing_key_name",
+          :description => "Default signing key name. (default apiKey)",
+          :type => 'string'
