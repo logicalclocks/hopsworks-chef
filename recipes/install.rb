@@ -174,7 +174,7 @@ end
 
 
 # For unzipping files
-
+dtrx=""
 case node['platform_family']
 when "debian"
 
@@ -184,10 +184,10 @@ when "debian"
   package "dtrx"
   package "libkrb5-dev"
   dtrx="dtrx"
-when "redhat"
+when "rhel"
   package "krb5-libs"
   package "p7zip"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -205,11 +205,12 @@ when "redhat"
     cd dtrx-7.1
     python setup.py install --prefix=/usr/local
     # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
+    rm -f /bin/7z
     ln -s /bin/7za /bin/7z
   EOF
     not_if "which dtrx"
   end
-  dtrx="/usr/local/bin/dtrx"  
+  dtrx="/usr/local/bin/dtrx"
 end
 
 
@@ -688,6 +689,11 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
+  variables(lazy {
+    h = {}
+    h['dtrx'] = dtrx
+    h
+  })
   action :create
 end
 
@@ -696,9 +702,6 @@ template "#{theDomain}/bin/unzip-background.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
-  variables({
-              :dtrx => dtrx
-            })  
   action :create
 end
 
@@ -853,15 +856,6 @@ template "#{theDomain}/bin/csr-ca.py" do
   action :create
 end
 
-if node['hopsworks']['dela']['enabled'] == "true"
-  if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
-    hopsworks_certs "sign-ca-with-root-hopssite-ca" do
-      action :sign_hopssite
-    end
-  end
-end
-
-
 flyway_tgz = File.basename(node['hopsworks']['flyway_url'])
 flyway =  "flyway-" + node['hopsworks']['flyway']['version']
 
@@ -905,20 +899,23 @@ template "#{theDomain}/flyway/flyway-undo.sh" do
   action :create
 end
 
-
 directory "#{theDomain}/flyway/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
 end
 
-template "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
-  source "sql/0.0.2__initial_tables.sql.erb"
+directory "#{theDomain}/flyway/dml" do
   owner node['glassfish']['user']
-  mode 0750
-  action :create_if_missing
+  mode "770"
+  action :create
 end
 
+directory "#{theDomain}/flyway/dml/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
 
 template "#{theDomain}/bin/anaconda-command-ssh.sh" do
   source "anaconda-command-ssh.sh.erb"

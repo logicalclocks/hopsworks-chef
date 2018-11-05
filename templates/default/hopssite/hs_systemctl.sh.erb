@@ -2,40 +2,40 @@
 set -e
 
 . hs_env.sh
-sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX}<<'EOF'
+sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
 /srv/hops/glassfish/versions/current/glassfish/bin/asadmin stop-domain --passwordfile=/srv/hops/domains/domain1_admin_passwd --domaindir /srv/hops/domains domain2
 EOF
 
-sudo -u root sh -s ${HOPSSITE_AUX}<<'EOF'
+sudo -u root sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
 cp $1/glassfish-domain2.service /lib/systemd/system/
 chmod 644 /lib/systemd/system/
 EOF
 
-sudo -u $GLASSFISH_USER sh -s ${HOPSSITE_AUX}<<'EOF'
+sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
 echo "testing systemctl glassfish domain2 service"
 sudo systemctl enable glassfish-domain2.service
-echo "gladssfish domain2 start"
+echo "glassfish domain2 start"
 sudo systemctl start glassfish-domain2
-echo "gladssfish domain2 stop"
+echo "glassfish domain2 stop"
 sudo systemctl stop glassfish-domain2
-echo "gladssfish domain2 start"
+echo "glassfish domain2 start"
 sudo systemctl start glassfish-domain2
 EOF
 
-sudo -u $KAGENT_USER sh -s ${HOPSSITE_AUX}<<'EOF'
+sudo -u $KAGENT_USER sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/start-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/start-all-local-services.sh
-echo start >> /srv/hops/kagent/bin/start-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
+echo start >> /srv/hops/kagent/kagent/bin/start-all-local-services.sh
 
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/shutdown-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/shutdown-all-local-services.sh
-echo stop >> /srv/hops/kagent/bin/shutdown-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
+echo stop >> /srv/hops/kagent/kagent/bin/shutdown-all-local-services.sh
 
-echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/bin/status-all-local-services.sh
-echo 'active="glassfish-domain2"' >> /srv/hops/kagent/bin/status-all-local-services.sh
-echo status >> /srv/hops/kagent/bin/status-all-local-services.sh
+echo 'services="$services glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
+echo 'active="glassfish-domain2"' >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
+echo status >> /srv/hops/kagent/kagent/bin/status-all-local-services.sh
 EOF

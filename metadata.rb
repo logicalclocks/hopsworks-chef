@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.6.0"
+version          "0.7.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -1920,6 +1920,10 @@ attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
           :type => 'string'
 
+attribute "hopssite/dela/version",
+       :description => "The hopssite tracker imposed version of dela",
+       :type => 'string'
+
 attribute "hopssite/cert/cn",
 	  :description => "hopssite Organization Common Name (default: hopsworks/cert)",
 	  :type => 'string'
@@ -1969,6 +1973,12 @@ attribute "hopssite/retry_interval",
 
 attribute "hopssite/max_retries",
           :description => "Certificate signing request maximum number of retries for hops.site.",
+          :type => 'string'
+#
+# hops.site admin
+#
+attribute "hopssite/admin/password",
+          :description => "Password for domain2 - running the hopssite tracker",
           :type => 'string'
 
 # Dela Transfer specific
@@ -2216,4 +2226,28 @@ attribute "hopsworks/kafka_num_partitions",
 
 attribute "rstudio/enabled",
           :description => "Set to 'true' to enable RStudio in Hopsworks. Default 'false'.",
+          :type => 'string'
+
+### PyPi
+
+attribute "hopsworks/pypi_rest_endpoint",
+          :description => "Url to PyPi REST API to query package information",
+          :type => 'string'
+
+### JWT
+
+attribute "hopsworks/jwt/signature_algorithm",
+          :description => "Default signature algorithm for jwt. (default HS512)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/lifetime_ms",
+          :description => "Default lifetime in ms for jwt expiration. (default 1800000)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/exp_leeway_sec",
+          :description => "Default expiration leeway in sec. (default 900)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/signing_key_name",
+          :description => "Default signing key name. (default apiKey)",
           :type => 'string'

@@ -1,6 +1,6 @@
-insert into dataset_status select 0, "upload";
-insert into dataset_status select 1, "download";
-insert into variables select "dela_version", "0.1";
-insert into variables select "dela_heartbeat_interval", "600000";
-insert into variables select "elastic_ip", "10.0.2.15";
-insert into variables select "elastic_port", 9300;
+REPLACE INTO `hops_site`.`dataset_status` (`id`, `status`) VALUES (0, "upload");
+REPLACE INTO `hops_site`.`dataset_status` (`id`, `status`) VALUES (1, "download");
+REPLACE INTO `hops_site`.`variables` (`id`, `value`) VALUES ("dela_version", "<%= node['hopssite']['dela']['version'] %>");
+REPLACE INTO `hops_site`.`variables` (`id`, `value`) VALUES ("dela_heartbeat_interval", "600000");
+REPLACE INTO `hops_site`.`variables` (`id`, `value`) VALUES ("elastic_ip", "<%= @elastic_ip %>");
+REPLACE INTO `hops_site`.`variables` (`id`, `value`) VALUES ("elastic_port", "<%= node['elastic']['ntn_port'] %>");

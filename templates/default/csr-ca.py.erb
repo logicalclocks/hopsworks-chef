@@ -76,7 +76,6 @@ class Register:
             form_headers = {'User-Agent': 'Agent', 'content-type': 'application/x-www-form-urlencoded'}
             payload = {}
             payload['csr'] = csr
-            payload["agent-password"] = ""
             logger.info("Registering with HopsWorks...")
             session = requests.Session()
             session.post(login_url, data={'email': server_username, 'password': server_password}, headers=form_headers, verify=False)
@@ -85,13 +84,13 @@ class Register:
                 raise Exception('Could not register: Status code: {0}. response msg: {1}'.format(resp.status_code, resp.content))
 
             jData = json.loads(resp.content)
-            cert = jData['pubAgentCert']
-            caCert = jData['caPubCert']
-            intermediateCaCert = jData['intermediateCaPubCert']
+            cert = jData['signedCert']
+            intermediateCaCert = jData['intermediateCaCert']
+            rootCaCert = jData['rootCaCert']
 
             cert_dir = os.path.dirname(os.path.abspath(__file__))
             with open(join(cert_dir, CA_FILE), "wt") as f:
-                f.write(caCert)
+                f.write(rootCaCert)
             logger.info("Writing Ca Public key to {0}.".format(CA_FILE))
 
             with open(join(cert_dir, INTERMEDIATE_CA_FILE), "wt") as f:

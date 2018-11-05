@@ -7,13 +7,6 @@ CREATE TABLE IF NOT EXISTS `remote_material_references` (
        PRIMARY KEY (`username`, `path`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
-INSERT INTO `hopsworks`.`variables` VALUES ("hopsexamples_version", "<%= node['hops']['hopsexamples_version'] %>");
-UPDATE `hopsworks`.`variables` SET `value`='<%= node['hostname'] %>:<%= node['hopsworks']['secure_port'] %>' WHERE `id`='hopsworks_endpoint';
-UPDATE `hopsworks`.`variables` SET `value`='<%= node['hops']['hopsutil_version'] %>' WHERE `id`='hopsutil_version';
-
-
 
 ALTER TABLE python_dep ADD COLUMN `install_type` INT(11) NOT NULL;
 ALTER TABLE python_dep ADD COLUMN `machine_type` INT(11) NOT NULL;

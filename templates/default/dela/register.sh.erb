@@ -2,8 +2,6 @@
 set -e
 cd <%= node['hopssite']['home'] %>
 CONTENT_TYPE="Content-Type: application/json"
-HS_DOMAIN=<%= node['hopsworks']['hopssite']['domain'] %>
-HS_REGISTER_PORT=<%= node['hopsworks']['hopssite']['domain'] %>
 TARGET=http://<%= node['hopsworks']['hopssite']['domain'] %>:<%= node['hopsworks']['hopssite']['register_port'] %>/hopsworks-cluster/api/cluster/register
 CURL_RES=$(curl -s -o /dev/null -w "%{http_code}" -d "@register_data.json" -H "$CONTENT_TYPE" -X POST $TARGET)
 if [ ${CURL_RES} != 200 ] ; then
@@ -11,5 +9,4 @@ if [ ${CURL_RES} != 200 ] ; then
   exit 1
 fi
 echo "Register success"
-DOMAINS_DIR=<%= node['hopsworks']['domains_dir'] %>
-${DOMAINS_DIR}/domain1/bin/csr-ca.py
+<%= node['conda']['base_dir'] %>/envs/hops-system/bin/python <%= node['hopsworks']['domains_dir'] %>/domain1/bin/csr-ca.py

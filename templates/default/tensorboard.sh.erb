@@ -7,7 +7,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopVersion] | [kill pid] | [ping pid]"
+    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopVersion certsDir] | [kill pid] | [ping pid]"
     echo ""
     exit 1
 }
@@ -16,6 +16,7 @@ ANACONDA_USER=<%= node['conda']['user'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
+CERTS_GROUP=<%= node['kagent']['certs_group'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -39,7 +40,7 @@ if [ "$1" == "kill" ] ; then
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 7 ]; then
+    if [ $# -ne 9 ]; then
 	help
     fi
 
@@ -64,6 +65,9 @@ elif [ "$1" == "start" ] ; then
     sudo chmod 770 "$4"
     cd "$4"
 
+    sudo chown $ANACONDA_USER:$CERTS_GROUP "$8"
+    sudo chmod 750 "$8"
+
     echo > "$5".pid
     sudo chmod 660 "$5".pid
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".pid
@@ -72,7 +76,7 @@ elif [ "$1" == "start" ] ; then
     sudo chmod 660 "$5".log
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".log
 
-    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7"
+    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9"
 
 elif [ "$1" == "ping" ] ; then
 

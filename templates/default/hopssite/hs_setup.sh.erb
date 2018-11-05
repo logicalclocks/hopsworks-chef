@@ -3,7 +3,7 @@ set -e
 
 . hs_env.sh
 cd ${INSTALL_PATH}
-sudo mkdir -p ${HOPS_SITE_BASE}/lib
-cd ${HOPS_SITE_BASE}/lib
+sudo mkdir -p ${HOPS_SITE_DIR}/lib
+cd ${HOPS_SITE_DIR}/lib
 sudo wget ${HOPS_SITE_DOWNLOAD_URL}
-sudo chown -R ${GLASSFISH_USER}:${GLASSFISH_USER} ${HOPS_SITE_BASE}
+sudo chown -R ${GLASSFISH_USER}:${GLASSFISH_USER} ${HOPS_SITE_DIR}

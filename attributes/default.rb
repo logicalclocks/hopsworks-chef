@@ -30,7 +30,7 @@ default['hopsworks']['port']                     = "8080"
 default['hopsworks']['secure_port']              = "8181"
 default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
 default['glassfish']['port']                     = node['hopsworks']['port'].to_i
-default['glassfish']['version']                  = '4.1.2.174'  # '5.182' 
+default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
@@ -84,6 +84,11 @@ default['hopsworks']['application_certificate_validity_period'] = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
 default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
+
+#Max number of bytes of logs to show in Spark UI
+default['hopsworks']['spark_ui_logs_offset'] = "512000"
+#Log level of REST API
+default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
@@ -196,7 +201,9 @@ default['hopsworks']['hopssite']['heartbeat']          = "600000"
 #
 # hops.site settings for cert signing
 #
+default['hopssite']['download_url']                    = "#{node['download_url']}/hopssite/hops-site.war"
 default['hopssite']['manual_register']                 = "false"
+default['hopssite']['dela']['version']                 = "0.1.0"
 default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
 default['hopssite']['user']                            = node['hopsworks']['email']
@@ -206,6 +213,7 @@ default['hopssite']['certs_dir']                       = "#{node['hopsworks']['d
 default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
 default['hopssite']['retry_interval']                  = 60
 default['hopssite']['max_retries']                     = 5
+default['hopssite']['admin']['password']               = "adminpw"
 #
 # Hopssite cert
 #
@@ -243,6 +251,10 @@ default['tfserving']['base_dir']                       = node['install']['dir'].
 default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 
+#
+# PyPi
+#
+default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
 
 # Livy
 default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
@@ -310,3 +322,13 @@ default['rstudio']['ubuntu_packages']                = %w{ r-base r-base-dev r-r
 default['rstudio']['centos_packages']                = %w{ R }
 
 default['hopsworks']['kafka_max_num_topics']         = '100'
+
+#
+# JWT
+#
+
+default['hopsworks']['jwt']['signature_algorithm']   = 'HS512'
+default['hopsworks']['jwt']['lifetime_ms']           = '1800000'
+default['hopsworks']['jwt']['exp_leeway_sec']        = '900'
+default['hopsworks']['jwt']['signing_key_name']      = 'apiKey'
+ 

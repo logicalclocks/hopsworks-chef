@@ -3,4 +3,5 @@ set -e
 
 . hs_env.sh
 cd ${DOMAIN_DIR}
-sudo su -c 'python domain1/bin/csr-ca.py' ${GLASSFISH_USER}
+PYTHON_EXEC=<%= node['conda']['base_dir'] %>/envs/hops-system/bin/python
+sudo su -c '${PYTHON_EXEC} domain1/bin/csr-ca.py' ${GLASSFISH_USER}

@@ -2,35 +2,34 @@
 
 help() {
     echo ""
-    echo "usage: $0 MODEL_NAME PID PORT SECRET_DIR"
+    echo "usage: $0 PID PORT SECRET_DIR"
     echo ""
     exit 1
 }
 
 
-if [ $# -ne 4 ]; then
+if [ $# -ne 3 ]; then
   help
 fi
 
-MODEL_NAME=$1
-PID=$2
-PORT=$3
-SECRET_DIR=$4
-PID_FILE=${SECRET_DIR}/tfserving/tfserving-${PORT}.pid
+PID=$1
+PORT=$2
+SECRET_DIR=$3
+PID_FILE="${SECRET_DIR}/${PORT}.pid"
 
 function kill_named {
     PID=$(ps aux | grep tensorflow_model_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
-	kill -9 "$PID" > /dev/null 2>&1
-        res=$?
+      kill -9 "$PID" > /dev/null 2>&1
+      res=$?
     else
-	res=$NOT_FOUND
+      res=$NOT_FOUND
     fi
     return "$res"
 }
 
 echo "Killing input pid: $PID"
-kill "$PID" 2>&1 > /dev/null
+kill "$PID" > /dev/null 2>&1
 if [ $? -ne 0 ] ; then
     if [ -f "$PID_FILE" ] ; then
 	PID=$(cat "$PID_FILE")
@@ -39,9 +38,6 @@ if [ $? -ne 0 ] ; then
 	if [ $? -ne 0 ] ; then
 	    kill_named
 	fi
-    else
-	kill_named
-    fi    
 fi
 
 exit $?

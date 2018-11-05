@@ -1,0 +1,33 @@
+DELETE FROM `hopsworks`.`variables` WHERE `id`='application_certificate_validity_period';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='elastic_logs_index_expiration';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='tensorboard_max_last_accessed';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='spark_ui_logs_offset';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='provided_python_lib_names';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='preinstalled_python_lib_names';
+
+DELETE FROM `hopsworks`.`tf_lib_mapping` WHERE `tf_version` = '1.10.0';
+
+DELETE FROM `hopsworks`.`tf_lib_mapping` WHERE `tf_version` = '1.11.0';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsworks_rest_log_level';
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['hostname'] %>:<%= node['hopsworks']['secure_port'] %>");
+
+DELETE FROM `hopsworks`.`users` WHERE `username`='srvmanager';
+
+DELETE FROM `hopsworks`.`schema_topics` WHERE `name` = 'inferenceschema' AND `version` = 1;
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='py4j_archive';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='jwt_signature_algorithm';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`= 'jwt_lifetime_ms';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`= 'jwt_exp_leeway_sec';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='jwt_signing_key_name';
