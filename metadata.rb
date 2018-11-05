@@ -2233,3 +2233,9 @@ attribute "hopsworks/kafka_num_partitions",
 attribute "rstudio/enabled",
           :description => "Set to 'true' to enable RStudio in Hopsworks. Default 'false'.",
           :type => 'string'
+
+### PyPi
+
+attribute "hopsworks/pypi_rest_endpoint",
+          :description => "Url to PyPi REST API to query package information",
+          :type => 'string'

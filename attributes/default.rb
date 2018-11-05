@@ -252,6 +252,10 @@ default['tfserving']['base_dir']                       = node['install']['dir'].
 default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 
+#
+# PyPi
+#
+default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
 
 # Livy
 default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
