@@ -442,7 +442,7 @@ end
 
 if myVersion.eql?("0.6.0")
  cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
-  source "sql/ddl/flyway_schema_history_0.6.0.sql"
+  source "sql/flyway_schema_history_0.6.0.sql"
   owner node['glassfish']['user']
   mode 0750
   action :create
