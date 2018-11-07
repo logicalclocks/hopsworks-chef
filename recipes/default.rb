@@ -1186,28 +1186,7 @@ end
    EOF
   end
 
-
 homedir = "/home/#{node['hopsworks']['user']}"
-
-
-# directory "#{homedir}/.sparkmagic"  do
-#   owner node['hopsworks']['user']
-#   group node['hopsworks']['group']
-#   mode "755"
-#   action :create
-# end
-
-
-# template "#{homedir}/.sparkmagic/config.json" do
-#   source "config.json.erb"
-#   owner node['hopsworks']['user']
-#   mode 0750
-#   action :create
-#   variables({
-#               :livy_ip => livy_ip,
-#                :homedir => homedir
-#   })
-# end
 
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
@@ -1330,34 +1309,6 @@ bash "jupyter-root-sparkmagic" do
     pip install --target #{pythonDir} --upgrade mock
     pip uninstall configparser  -y
     pip install --target #{pythonDir} --upgrade configparser
-    # pip uninstall sparkmagic  -y
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
-    # tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    # cd sparkmagic
-    # pip install ./hdijupyterutils
-    # pip install --upgrade ./autovizwidget
-    # pip install ./sparkmagic
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
-   EOF
-end
-
-
-bash "fix_owner_ship_pip_files" do
-  user 'root'
-  code <<-EOF
-    if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
-       chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
-    fi
-   EOF
-end
-
-
-bash "jupyter-user-sparkmagic" do
-  user 'root'
-  code <<-EOF
-    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
    EOF
 end
 
