@@ -2234,6 +2234,12 @@ attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
           :type => 'string'
 
+### TensorBoard
+
+attribute "hopsworks/tensorboard_max_last_accessed",
+          :description => "Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)",
+          :type => 'string'
+
 ### JWT
 
 attribute "hopsworks/jwt/signature_algorithm",

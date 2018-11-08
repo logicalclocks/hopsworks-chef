@@ -83,7 +83,7 @@ default['hopsworks']['service_key_rotation_interval'] = "2d"
 default['hopsworks']['application_certificate_validity_period'] = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
-default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
+default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
 
 #Max number of bytes of logs to show in Spark UI
 default['hopsworks']['spark_ui_logs_offset'] = "512000"
