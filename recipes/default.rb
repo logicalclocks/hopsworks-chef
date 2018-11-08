@@ -446,7 +446,7 @@ if myVersion.eql?("0.6.0")
   code <<-EOH
     #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
   EOH
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep \"0.5.0\""
  end
 end
 
