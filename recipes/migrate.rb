@@ -35,10 +35,8 @@ remote_file "#{node['hopsworks']['expat_dir']}/lib/mysql-connector-java.jar" do
 end
 
 mysql_ip = private_recipe_ip("ndb", "mysqld")
-template_version=node['install']['version'].gsub(/\./, '')
-template_version=template_version.gsub(/"-SNAPSHOT"/, '')
 template "#{node['hopsworks']['expat_dir']}/etc/expat-site.xml" do
-  source "migrations/expat-site#{template_version}.xml.erb"
+  source "expat-site.xml.erb"
   owner 'root'
   mode '0750'
   variables ({
