@@ -34,6 +34,7 @@ depends 'tensorflow'
 depends 'hopslog'
 depends 'hopsmonitor'
 depends 'hive2'
+depends 'kube-hops'
 
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
@@ -47,6 +48,8 @@ recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks d
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
+
+recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
