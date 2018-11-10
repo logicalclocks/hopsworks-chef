@@ -17,3 +17,6 @@ dependencies:
   - recipe: hopsworks::delaregister
     global:
       - hopsworks::default
+  - recipe: hopsworks::migrate
+    global:
+      - hopsworks::default

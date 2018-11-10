@@ -48,6 +48,8 @@ recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
+recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
+
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
 recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
