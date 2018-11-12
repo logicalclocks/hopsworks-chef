@@ -1,5 +1,4 @@
 action :jndi do
-
  gmailProps = {
    'mail-smtp-host' => node['hopsworks']['smtp'],
    'mail-smtp-user' => node['hopsworks']['email'],
@@ -12,8 +11,6 @@ action :jndi do
    'mail.smtp.ssl.enable' => 'true',
    'mail-smtp-socketFactory-fallback' => 'false'
  }
-  
- Chef::Log.info("gmail password is #{decoded}")
 
  glassfish_javamail_resource "gmail" do
    jndi_name "mail/BBCMail"
@@ -28,6 +25,4 @@ action :jndi do
    secure false
    action :create
  end
-
-
 end
