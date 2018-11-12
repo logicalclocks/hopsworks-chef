@@ -271,19 +271,22 @@ node.override = {
         },
         'managed_thread_factories' => {
           'concurrent/hopsThreadFactory' => {
-            'threadpriority' => 12,
+            'threadpriority' => 10,
             'description' => 'Hopsworks Thread Factory'
           }
         },
         'managed_executor_services' => {
           'concurrent/hopsExecutorService' => {
-            'threadpriority' => 12,
+            'threadpriority' => 10,
+            'corepoolsize' => 50,
+            'maximumpoolsize' => 400,
+            'taskqueuecapacity' => 20000,
             'description' => 'Hopsworks Executor Service'
           }
         },
         'managed_scheduled_executor_services' => {
           'concurrent/hopsScheduledExecutorService' => {
-            'corepoolsize' => 12,
+            'corepoolsize' => 10,
             'description' => 'Hopsworks Executor Service'
           }
         },
