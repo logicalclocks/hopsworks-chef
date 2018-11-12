@@ -792,22 +792,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
   end
 end
 
-if node['hopsworks']['email_password'].eql? "password"
-
-  bash 'gmail' do
-    user "root"
-    code <<-EOF
-      cd #{Chef::Config['file_cache_path']}
-      rm -f #{Chef::Config['file_cache_path']}/hopsworks.email
-      wget #{node['hopsworks']['gmail']['placeholder']}
-      cat #{Chef::Config['file_cache_path']}/hopsworks.email | base64 -d > #{Chef::Config['file_cache_path']}/hopsworks.encoded
-      chmod 775 #{Chef::Config['file_cache_path']}/hopsworks.encoded
-    EOF
-  end
-
-end
-
-
 hopsworks_mail "gmail" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -815,8 +799,6 @@ hopsworks_mail "gmail" do
    admin_port admin_port
    action :jndi
 end
-
-
 
 node.override['glassfish']['asadmin']['timeout'] = 400
 
