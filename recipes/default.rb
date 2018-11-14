@@ -433,6 +433,20 @@ template "#{log4j_cnf}" do
   group node['glassfish']['group']
 end
 
+# Add Hadoop glob classpath to Glassfish
+# systemd unit environment variables file
+hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
+ruby_block "export_hadoop_classpath" do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    exec_stdout = shell_out(hadoop_glob_command).stdout
+    variable = "HADOOP_GLOB=#{exec_stdout}"
+    file = Chef::Util::FileEdit.new(node['hopsworks']['env_var_file'])
+    file.insert_line_if_no_match(/#{variable}/, variable)
+    file.write_file
+  end
+  action :create
+end
 
 hopsworks_grants "reload_sysv" do
  tables_path  ""
