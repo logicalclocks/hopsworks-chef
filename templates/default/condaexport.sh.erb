@@ -2,7 +2,7 @@
 
 # conda list [-c $1]
 
-if [[ $# -ne 5 ]]; then
+if [[ $# -ne 6 ]]; then
   echo "incorrect usage"
   echo "exportdir project host environment user"
   exit 1
@@ -13,9 +13,10 @@ GLASSFISH_USER=<%= node['glassfish']['user'] %>
 
 EXPORTDIR=$1
 PROJECT=$2
-HOST=$3
-ENVIRONMENTFILE=$4
-IMPERSONATED_USERNAME=$5
+CONDA_ENV_NAME=$3
+HOST=$4
+ENVIRONMENTFILE=$5
+IMPERSONATED_USERNAME=$6
 
 if [ ! -d "${EXPORTDIR}" ] ; then
     exit 1
@@ -32,9 +33,9 @@ cd "$EXPORTDIR"
 HOSTNAME=$(hostname)
 
 if [[ "${HOST}" == "${HOSTNAME}" ]]; then
-  su "${CONDA_USER}" -c "<%= node['conda']['base_dir'] %>/bin/conda env export -n ${PROJECT}" > "${EXPORTDIR}"/"${ENVIRONMENTFILE}"
+  su "${CONDA_USER}" -c "<%= node['conda']['base_dir'] %>/bin/conda env export -n ${CONDA_ENV_NAME}" > "${EXPORTDIR}"/"${ENVIRONMENTFILE}"
 else
-  su "${GLASSFISH_USER}" -c "ssh ${CONDA_USER}@${HOST} <%= node['conda']['base_dir'] %>/bin/conda env export -n ${PROJECT}" > "${EXPORTDIR}"/"${ENVIRONMENTFILE}"
+  su "${GLASSFISH_USER}" -c "ssh ${CONDA_USER}@${HOST} <%= node['conda']['base_dir'] %>/bin/conda env export -n ${CONDA_ENV_NAME}" > "${EXPORTDIR}"/"${ENVIRONMENTFILE}"
 fi
 
 if [ $? -ne 0 ] ; then
