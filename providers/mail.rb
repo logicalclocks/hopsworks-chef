@@ -1,27 +1,16 @@
 action :jndi do
-
-decoded = node['hopsworks']['email_password']
-
-# If the email_password is the 'default' password
-if decoded.eql? "password"
-  decoded = ::File.read("#{Chef::Config['file_cache_path']}/hopsworks.encoded")
-  node.override['hopsworks']['email_password'] = decoded
-end
-
-gmailProps = {
-  'mail-smtp-host' => node['hopsworks']['smtp'],
-  'mail-smtp-user' => node['hopsworks']['email'],
-  'mail-smtp-password' => decoded,
-  'mail-smtp-auth' => 'true',
-  'mail-smtp-port' => node['hopsworks']['smtp_port'],
-  'mail-smtp-socketFactory-port' => node['hopsworks']['smtp_ssl_port'],
-  'mail-smtp-socketFactory-class' => 'javax.net.ssl.SSLSocketFactory',
-  'mail-smtp-starttls-enable' => 'true',
-  'mail.smtp.ssl.enable' => 'true',
-  'mail-smtp-socketFactory-fallback' => 'false'
-}
-
- Chef::Log.info("gmail password is #{decoded}")
+ gmailProps = {
+   'mail-smtp-host' => node['hopsworks']['smtp'],
+   'mail-smtp-user' => node['hopsworks']['email'],
+   'mail-smtp-password' => node['hopsworks']['email_password'],
+   'mail-smtp-auth' => 'true',
+   'mail-smtp-port' => node['hopsworks']['smtp_port'],
+   'mail-smtp-socketFactory-port' => node['hopsworks']['smtp_ssl_port'],
+   'mail-smtp-socketFactory-class' => 'javax.net.ssl.SSLSocketFactory',
+   'mail-smtp-starttls-enable' => 'true',
+   'mail.smtp.ssl.enable' => 'true',
+   'mail-smtp-socketFactory-fallback' => 'false'
+ }
 
  glassfish_javamail_resource "gmail" do
    jndi_name "mail/BBCMail"
@@ -36,6 +25,4 @@ gmailProps = {
    secure false
    action :create
  end
-
-
 end

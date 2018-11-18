@@ -90,7 +90,7 @@ default['hopsworks']['spark_ui_logs_offset'] = "512000"
 #Log level of REST API
 default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
-default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
+default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-5.1.29-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "sics.se"
 default['hopsworks']['cert']['o']                   = "swedish ict"
@@ -117,7 +117,6 @@ default['hopsworks']['smtp_port']                = node['smtp']['port']
 default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
 default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
-default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
 default['hopsworks']['alert_email_addrs']        = ""
 
