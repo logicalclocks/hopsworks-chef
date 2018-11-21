@@ -55,7 +55,7 @@ default['glassfish']['max_perm_size']            = node['hopsworks']['max_perm_s
 default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
 default['hopsworks']['http_logs']['enabled']     = "true"
-
+default['hopsworks']['env_var_file']             = "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_environment_variables"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_version']            = "otp-auth-0.3.0.jar"
@@ -84,14 +84,14 @@ default['hopsworks']['service_key_rotation_interval'] = "2d"
 default['hopsworks']['application_certificate_validity_period'] = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
-default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
+default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
 
 #Max number of bytes of logs to show in Spark UI
 default['hopsworks']['spark_ui_logs_offset'] = "512000"
 #Log level of REST API
 default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
-default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
+default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-5.1.29-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "sics.se"
 default['hopsworks']['cert']['o']                   = "swedish ict"
@@ -118,7 +118,6 @@ default['hopsworks']['smtp_port']                = node['smtp']['port']
 default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
 default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
-default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
 default['hopsworks']['alert_email_addrs']        = ""
 
@@ -274,7 +273,7 @@ default['hopsworks']['flyway_url']                     = node['download_url'] + 
 
 #
 #
-# Virtulbox Image support
+# Virtualbox Image support
 #
 
 default["lightdm"]["service_name"] = "lightdm"
@@ -321,3 +320,19 @@ default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.
 default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
+
+#
+# JWT
+#
+
+default['hopsworks']['jwt']['signature_algorithm']   = 'HS512'
+default['hopsworks']['jwt']['lifetime_ms']           = '1800000'
+default['hopsworks']['jwt']['exp_leeway_sec']        = '900'
+default['hopsworks']['jwt']['signing_key_name']      = 'apiKey'
+
+#
+# EXPAT
+#
+ 
+default['hopsworks']['expat_url']                    = "#{node['download_url']}/expat/#{node['install']['version']}/expat-#{node['install']['version']}.tar.gz"
+default['hopsworks']['expat_dir']                    = "#{node['install']['dir']}/expat-#{node['install']['version']}"

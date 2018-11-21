@@ -49,6 +49,8 @@ recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
+recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
+
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
 recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
@@ -2238,4 +2240,28 @@ attribute "rstudio/enabled",
 
 attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
+          :type => 'string'
+
+### TensorBoard
+
+attribute "hopsworks/tensorboard_max_last_accessed",
+          :description => "Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)",
+          :type => 'string'
+
+### JWT
+
+attribute "hopsworks/jwt/signature_algorithm",
+          :description => "Default signature algorithm for jwt. (default HS512)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/lifetime_ms",
+          :description => "Default lifetime in ms for jwt expiration. (default 1800000)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/exp_leeway_sec",
+          :description => "Default expiration leeway in sec. (default 900)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/signing_key_name",
+          :description => "Default signing key name. (default apiKey)",
           :type => 'string'

@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -156,21 +156,20 @@ elif [ "$1" == "list" ] ; then
 
 # kernel-add
 elif [ "$1" == "kernel-add" ] ; then
-    if [ $# -ne 3 ]; then
+    if [ $# -ne 4 ]; then
 	help
     fi
 
 # stringZ="proj__jim"
+# ${PROJ_USER%__*}	
 # echo ${stringZ#*__} # prints jim
 # echo ${stringZ%__*} # prints proj
     JUPYTER_HOME=$2
     PROJ_USER=$3
-    PROJECT=${PROJ_USER%__*}	
+    PROJECT=$4
     
-    if [ ! -d "/usr/local/share/jupyter/kernels/python-${PROJ_USER}" ] ; then
-       sudo "${DOMAINS_DIR}"/domain1/bin/jupyter-kernel-install.sh "$EXEC_AS_ANACONDA_USER" "$PROJECT" "$PROJ_USER" "$CONDA_DIR" "$JUPYTER_HOME"
-    fi
- 
+    sudo rm -rf "${KERNELS_DIR}"/python-"${2}"
+    sudo "${DOMAINS_DIR}"/domain1/bin/jupyter-kernel-install.sh "$EXEC_AS_ANACONDA_USER" "$PROJECT" "$PROJ_USER" "$CONDA_DIR" "$JUPYTER_HOME"
 #   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
 elif [ "$1" == "kernel-remove" ] ; then
     if [[ $2 == *".."* ]]; then

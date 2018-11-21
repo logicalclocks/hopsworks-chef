@@ -433,6 +433,20 @@ template "#{log4j_cnf}" do
   group node['glassfish']['group']
 end
 
+# Add Hadoop glob classpath to Glassfish
+# systemd unit environment variables file
+hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
+ruby_block "export_hadoop_classpath" do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    exec_stdout = shell_out(hadoop_glob_command).stdout
+    variable = "HADOOP_GLOB=#{exec_stdout}"
+    file = Chef::Util::FileEdit.new(node['hopsworks']['env_var_file'])
+    file.insert_line_if_no_match(/#{variable}/, variable)
+    file.write_file
+  end
+  action :create
+end
 
 hopsworks_grants "reload_sysv" do
  tables_path  ""
@@ -442,7 +456,7 @@ end
 
 if myVersion.eql?("0.6.0")
  cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
-  source "sql/ddl/flyway_schema_history_0.6.0.sql"
+  source "sql/flyway_schema_history_0.6.0.sql"
   owner node['glassfish']['user']
   mode 0750
   action :create
@@ -454,7 +468,7 @@ if myVersion.eql?("0.6.0")
   code <<-EOH
     #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
   EOH
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep \"0.5.0\""
  end
 end
 
@@ -792,22 +806,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
   end
 end
 
-if node['hopsworks']['email_password'].eql? "password"
-
-  bash 'gmail' do
-    user "root"
-    code <<-EOF
-      cd #{Chef::Config['file_cache_path']}
-      rm -f #{Chef::Config['file_cache_path']}/hopsworks.email
-      wget #{node['hopsworks']['gmail']['placeholder']}
-      cat #{Chef::Config['file_cache_path']}/hopsworks.email | base64 -d > #{Chef::Config['file_cache_path']}/hopsworks.encoded
-      chmod 775 #{Chef::Config['file_cache_path']}/hopsworks.encoded
-    EOF
-  end
-
-end
-
-
 hopsworks_mail "gmail" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -815,8 +813,6 @@ hopsworks_mail "gmail" do
    admin_port admin_port
    action :jndi
 end
-
-
 
 node.override['glassfish']['asadmin']['timeout'] = 400
 
@@ -1186,28 +1182,7 @@ end
    EOF
   end
 
-
 homedir = "/home/#{node['hopsworks']['user']}"
-
-
-# directory "#{homedir}/.sparkmagic"  do
-#   owner node['hopsworks']['user']
-#   group node['hopsworks']['group']
-#   mode "755"
-#   action :create
-# end
-
-
-# template "#{homedir}/.sparkmagic/config.json" do
-#   source "config.json.erb"
-#   owner node['hopsworks']['user']
-#   mode 0750
-#   action :create
-#   variables({
-#               :livy_ip => livy_ip,
-#                :homedir => homedir
-#   })
-# end
 
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
@@ -1330,24 +1305,6 @@ bash "jupyter-root-sparkmagic" do
     pip install --target #{pythonDir} --upgrade mock
     pip uninstall configparser  -y
     pip install --target #{pythonDir} --upgrade configparser
-   EOF
-end
-
-
-bash "fix_owner_ship_pip_files" do
-  user 'root'
-  code <<-EOF
-    if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
-       chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
-    fi
-   EOF
-end
-
-
-bash "jupyter-user-sparkmagic" do
-  user 'root'
-  code <<-EOF
-    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
    EOF
 end
 
