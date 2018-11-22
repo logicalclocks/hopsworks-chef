@@ -1,6 +1,3 @@
-<%= @user %> ALL=NOPASSWD: <%= @int_sh_dir %>
-<%= @user %> ALL=NOPASSWD: <%= @delete_projectcert %>
-<%= @user %> ALL=NOPASSWD: <%= @delete_usercert %>
 <%= @user %> ALL=NOPASSWD: <%= @ndb_backup %>
 <%= @user %> ALL=NOPASSWD: <%= @jupyter %>
 <%= @user %> ALL=NOPASSWD: <%= @jupyter_cleanup %>
@@ -13,4 +10,3 @@
 <%= @user %> ALL=NOPASSWD: <%= @anaconda_prepare %>
 <%= @user %> ALL=NOPASSWD: <%= @airflow_copy %>
 <%= @user %> ALL=(<%= @hive_user %>) NOPASSWD: <%= @start_llap %>
-
