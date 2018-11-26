@@ -72,10 +72,9 @@ bash 'certificateauthority' do
 	#8 Create the certificate chain file
 	cat intermediate/certs/intermediate.cert.pem certs/ca.cert.pem > intermediate/certs/ca-chain.cert.pem
 	chmod 444 intermediate/certs/ca-chain.cert.pem
-        #9 Make the subject non-unique. Otherwise, running /var/lib/kagent-certs/csr.py becomes non idempotent
         # http://www.mad-hacking.net/documentation/linux/security/ssl-tls/signing-csr.xml
-        echo "unique_subject = no \n" > intermediate/index.txt.attr
-        
+        echo "unique_subject = yes\n" > intermediate/index.txt.attr
+
         # 10 Generate CRL for intermediate CA
         openssl ca -config intermediate/openssl-intermediate.cnf -gencrl -passin pass:${KEYSTOREPW} -out intermediate/crl/intermediate.crl.pem
 	chown #{node['glassfish']['user']}:#{node['glassfish']['group']} intermediate/crl/intermediate.crl.pem
