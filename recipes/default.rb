@@ -168,10 +168,6 @@ rescue
 end
 
 
-vagrant_enabled = 0
-if node['hopsworks']['user'] == "vagrant"
-  vagrant_enabled = 1
-end
 
 db="hopsworks"
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
@@ -299,75 +295,26 @@ for version in versions do
                 :spark_history_server_ip => spark_history_server_ip,
                 :hopsworks_ip => hopsworks_ip,
                 :elastic_ip => elastic_ip,
-                :spark_dir => node['hadoop_spark']['dir'] + "/spark",
-                :spark_user => node['hadoop_spark']['user'],
-                :hadoop_dir => node['hops']['dir'] + "/hadoop",
-                :yarn_user => node['hops']['yarn']['user'],
                 :yarn_ui_ip => public_recipe_ip("hops","rm"),
-                :yarn_ui_port => node['hops']['rm']['http_port'],
                 :hdfs_ui_ip => public_recipe_ip("hops","nn"),
                 :hdfs_ui_port => hdfs_ui_port,
-                :hopsworks_user => node['hopsworks']['user'],
-                :hdfs_user => node['hops']['hdfs']['user'],
-                :mr_user => node['hops']['mr']['user'],
-                :flink_dir => node['flink']['dir'] + "/flink",
-                :flink_user => node['flink']['user'],
-                :zeppelin_dir => node['zeppelin']['dir'] + "/zeppelin",
-                :zeppelin_user => node['zeppelin']['user'],
-                :ndb_dir => node['ndb']['dir'] + "/mysql-cluster",
-                :mysql_dir => node['mysql']['dir'] + "/mysql",
-                :elastic_dir => node['elastic']['dir'] + "/elastic",
                 :hopsworks_dir => domains_dir,
-                :twofactor_auth => node['hopsworks']['twofactor_auth'],
-                :twofactor_exclude_groups => node['hopsworks']['twofactor_exclude_groups'],
                 :hops_rpc_tls => hops_rpc_tls_val,
-                :cert_mater_delay => node['hopsworks']['cert_mater_delay'],
-                :elastic_user => node['elastic']['user'],
                 :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
                 :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
                 :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
-                :max_num_proj_per_user => node['hopsworks']['max_num_proj_per_user'],
-		            :file_preview_image_size => node['hopsworks']['file_preview_image_size'],
-                :file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
                 :zk_ip => zk_ip,
                 :java_home => node['java']['java_home'],
                 :kafka_ip => kafka_ip,
-                :kafka_num_replicas => node['hopsworks']['kafka_num_replicas'],
-                :kafka_num_partitions => node['hopsworks']['kafka_num_partitions'],
-                :drelephant_port => node['drelephant']['port'],
-                :drelephant_db => node['drelephant']['db'],
                 :drelephant_ip => drelephant_ip,
-                :kafka_user => node['kkafka']['user'],
                 :kibana_ip => kibana_ip,
                 :python_kernel => python_kernel,
                 :grafana_ip => grafana_ip,
                 :influxdb_ip => influxdb_ip,
-                :influxdb_port => node['influxdb']['http']['port'],
-                :influxdb_user => node['influxdb']['db_user'],
-                :influxdb_password => node['influxdb']['db_password'],
-                :graphite_port => node['influxdb']['graphite']['port'],
-                :cuda_dir => node['cuda']['base_dir'],
-                :anaconda_dir => node['conda']['base_dir'],
-                :org_name => node['hopsworks']['org_name'],
-                :org_domain => node['hopsworks']['org_domain'],
-                :org_email => node['hopsworks']['org_email'],
-                :org_country_code => node['hopsworks']['org_country_code'],
-                :org_city => node['hopsworks']['org_city'],
-                :vagrant_enabled => vagrant_enabled,
                 :public_ip => public_ip,
-                :monitor_max_status_poll_try => node['hopsworks']['monitor_max_status_poll_try'],
-                :dela_enabled => node['hopsworks']['dela']['enabled'],
                 :dela_ip => dela_ip,
-                :dela_port => node['dela']['http_port'],
-                :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
-                :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
-                :public_https_port => node['hopsworks']['public_https_port'],
-                :recovery_path => node['hopsworks']['recovery_path'],
-                :verification_path => node['hopsworks']['verification_path'],
                 :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
                 :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-                :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
-                :hive_scratchdir => node['hive2']['scratch_dir'],
                 :nonconda_hosts_list => nonconda_hosts_list
            })
     action :create
@@ -756,7 +703,7 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
    username username
    admin_port admin_port
    secure false
-  end
+d
 
   glassfish_asadmin "set server.http-service.access-log.max-history-files=10" do
    domain_name domain_name
