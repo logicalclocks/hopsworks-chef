@@ -238,18 +238,7 @@ if node['hops']['tls']['enabled'].eql? "true"
   hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
-versions = node['hopsworks']['versions'].split(/\s*,\s*/)
-previous_version=""
-if versions.any?
-   previous_version=versions.last
-end
-
-myVersion = node['hopsworks']['version']
-flyway_version = myVersion.sub("-SNAPSHOT", "")
-versions.push(flyway_version)
-
 condaRepo = 'defaults'
-
 if node['conda']['mirror_list'].empty? == false
    repos = node['conda']['mirror_list'].split(/\s*,\s*/)
    condaRepo = repos[0]
@@ -260,70 +249,82 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
-cookbook_file "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
-  source "sql/ddl/0.0.2__initial_tables.sql"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-end
+versions = node['hopsworks']['versions'].split(/\s*,\s*/)
+target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
+versions.push(target_version)
+current_version = node['hopsworks']['current_version']
 
-for version in versions do
-  # Template DDL files
-  cookbook_file "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
-    source "sql/ddl/#{version}.sql"
+if current_version.eql?("") 
+  # New installation template the current version schema file
+  cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
+    source "sql/ddl/#{target_version}__initial_tables.sql"
     owner node['glassfish']['user']
     mode 0750
     action :create
   end
+else
+  current_version_idx = versions.index(current_version)
 
+  for i in current_version_idx..versions.length
+    # Update, template all the dml files from the current version to the target version
+    cookbook_file "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
+      source "sql/ddl/updates/#{version}.sql"
+      owner node['glassfish']['user']
+      mode 0750
+      action :create
+    end
+
+    cookbook_file "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
+      source "sql/ddl/undo/#{version}__undo.sql"
+      owner node['glassfish']['user']
+      mode 0750
+      action :create
+    end
+  end
+end
+
+for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
     source "sql/dml/#{version}.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     variables({
-                :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
-                :conda_repo => condaRepo,
-                :hosts => hosts,
-                :epipe_ip => epipe_ip,
-                :livy_ip => livy_ip,
-                :jhs_ip => jhs_ip,
-                :rm_ip => rm_ip,
-                :rm_port => rm_port,
-                :logstash_ip => logstash_ip,
-                :logstash_port => logstash_port,
-                :spark_history_server_ip => spark_history_server_ip,
-                :hopsworks_ip => hopsworks_ip,
-                :elastic_ip => elastic_ip,
-                :yarn_ui_ip => public_recipe_ip("hops","rm"),
-                :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-                :hdfs_ui_port => hdfs_ui_port,
-                :hopsworks_dir => domains_dir,
-                :hops_rpc_tls => hops_rpc_tls_val,
-                :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
-                :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
-                :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
-                :zk_ip => zk_ip,
-                :java_home => node['java']['java_home'],
-                :kafka_ip => kafka_ip,
-                :drelephant_ip => drelephant_ip,
-                :kibana_ip => kibana_ip,
-                :python_kernel => python_kernel,
-                :grafana_ip => grafana_ip,
-                :influxdb_ip => influxdb_ip,
-                :public_ip => public_ip,
-                :dela_ip => dela_ip,
-                :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
-                :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-                :nonconda_hosts_list => nonconda_hosts_list
-           })
-    action :create
-  end
-
-  cookbook_file "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
-    source "sql/ddl/undo/#{version}__undo.sql"
-    owner node['glassfish']['user']
-    mode 0750
+         :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
+         :conda_repo => condaRepo,
+         :hosts => hosts,
+         :epipe_ip => epipe_ip,
+         :livy_ip => livy_ip,
+         :jhs_ip => jhs_ip,
+         :rm_ip => rm_ip,
+         :rm_port => rm_port,
+         :logstash_ip => logstash_ip,
+         :logstash_port => logstash_port,
+         :spark_history_server_ip => spark_history_server_ip,
+         :hopsworks_ip => hopsworks_ip,
+         :elastic_ip => elastic_ip,
+         :yarn_ui_ip => public_recipe_ip("hops","rm"),
+         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+         :hdfs_ui_port => hdfs_ui_port,
+         :hopsworks_dir => domains_dir,
+         :hops_rpc_tls => hops_rpc_tls_val,
+         :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
+         :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
+         :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
+         :zk_ip => zk_ip,
+         :java_home => node['java']['java_home'],
+         :drelephant_ip => drelephant_ip,
+         :kafka_ip => kafka_ip,
+         :kibana_ip => kibana_ip,
+         :python_kernel => python_kernel,
+         :grafana_ip => grafana_ip,
+         :influxdb_ip => influxdb_ip,
+         :public_ip => public_ip,
+         :dela_ip => dela_ip,
+         :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
+         :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
+         :nonconda_hosts_list => nonconda_hosts_list
+    })
     action :create
   end
 
@@ -332,6 +333,42 @@ for version in versions do
     owner node['glassfish']['user']
     mode 0750
     action :create
+  end
+end
+
+if current_version < "0.6.0"
+ cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
+  source "sql/flyway_schema_history_0.6.0.sql"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+ end
+
+ # Re-create the table only if it already exists
+ bash "mod_flyway_history_0.6.0" do
+  user "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
+  EOH
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep -v \"0.6.0\""
+ end
+end
+
+bash "flyway_migrate" do
+  user "root"
+  cwd "#{theDomain}/flyway"  
+  code <<-EOF
+    #{theDomain}/flyway/flyway migrate
+  EOF
+end
+
+# Run the DML sql script to insert the variables
+for version in versions do
+  bash "run_inserts_#{version}" do
+    user "root"
+    code <<-EOH
+      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
+    EOH
   end
 end
 
@@ -395,60 +432,9 @@ ruby_block "export_hadoop_classpath" do
   action :create
 end
 
-hopsworks_grants "reload_sysv" do
- tables_path  ""
- rows_path  ""
- action :reload_sysv
+hopsworks_grants "restart_glassfish" do
+  action :reload_systemd
 end
-
-if myVersion.eql?("0.6.0")
- cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
-  source "sql/flyway_schema_history_0.6.0.sql"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
- end
-
- # Re-create the table only if it already exists
- bash "mod_flyway_history_0.6.0" do
-  user "root"
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
-  EOH
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep \"0.5.0\""
- end
-end
-
-
-bash "flyway_baseline" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway baseline
-  EOF
- not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
-end
-
-bash "flyway_migrate" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway migrate
-  EOF
-end
-
-# Run the DML sql script to insert the variables
-for version in versions do
-  bash "run_inserts_#{version}" do
-    user "root"
-    code <<-EOH
-      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
-    EOH
-  end
-end
-
 
 glassfish_secure_admin domain_name do
   domain_name domain_name
@@ -458,7 +444,6 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
-
 
 props =  {
   'datasource-jndi' => jndiDB,
@@ -703,7 +688,7 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
    username username
    admin_port admin_port
    secure false
-d
+  end
 
   glassfish_asadmin "set server.http-service.access-log.max-history-files=10" do
    domain_name domain_name
