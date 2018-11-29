@@ -4,8 +4,8 @@ source 'https://supermarket.chef.io'
 metadata
 
 cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
-cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
-cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "master"
+cookbook 'kagent', github: "siroibaf/kagent-chef", branch: "HOPSWORKS-683"
+cookbook 'hops', github: "siroibaf/hops-hadoop-chef", branch: "HOPSWORKS-683"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "logicalclocks/spark-chef", branch: "master"
 cookbook 'flink', github: "logicalclocks/flink-chef", branch: "master"
@@ -21,7 +21,7 @@ cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
 cookbook 'hopslog', github: "logicalclocks/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "master"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "master"
-cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
+cookbook 'hive2', github: "siroibaf/hive-chef", branch: "HOPSWORKS-683"
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
 cookbook 'java'
