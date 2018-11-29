@@ -254,7 +254,7 @@ target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
 versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
-if current_version.eql?("") 
+if current_version.eql?("")
   # New installation template the current version schema file
   cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
     source "sql/ddl/#{target_version}__initial_tables.sql"
@@ -263,19 +263,20 @@ if current_version.eql?("")
     action :create
   end
 else
-  current_version_idx = versions.index(current_version)
+  current_version_idx = versions.index(current_version).to_i
+  versions_length = versions.length.to_i
 
-  for i in current_version_idx..versions.length
+  for i in current_version_idx..versions_length
     # Update, template all the dml files from the current version to the target version
-    cookbook_file "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
-      source "sql/ddl/updates/#{version}.sql"
+    cookbook_file "#{theDomain}/flyway/sql/V#{versions[i]}__hopsworks.sql" do
+      source "sql/ddl/updates/#{versions[i]}.sql"
       owner node['glassfish']['user']
       mode 0750
       action :create
     end
 
-    cookbook_file "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
-      source "sql/ddl/undo/#{version}__undo.sql"
+    cookbook_file "#{theDomain}/flyway/undo/U#{versions[i]}__undo.sql" do
+      source "sql/ddl/undo/#{versions[i]}__undo.sql"
       owner node['glassfish']['user']
       mode 0750
       action :create
@@ -356,7 +357,7 @@ end
 
 bash "flyway_migrate" do
   user "root"
-  cwd "#{theDomain}/flyway"  
+  cwd "#{theDomain}/flyway"
   code <<-EOF
     #{theDomain}/flyway/flyway migrate
   EOF
