@@ -255,7 +255,7 @@ versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
 if current_version.eql?("")
-  # New installation template the current version schema file
+  # New installation -> template the current version schema file
   cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
     source "sql/ddl/#{target_version}__initial_tables.sql"
     owner node['glassfish']['user']
@@ -264,7 +264,7 @@ if current_version.eql?("")
   end
 else
   current_version_idx = versions.index(current_version).to_i
-  versions_length = versions.length.to_i
+  versions_length = versions.length.to_i - 1
 
   for i in current_version_idx..versions_length
     # Update, template all the dml files from the current version to the target version
@@ -276,7 +276,7 @@ else
     end
 
     cookbook_file "#{theDomain}/flyway/undo/U#{versions[i]}__undo.sql" do
-      source "sql/ddl/undo/#{versions[i]}__undo.sql"
+      source "sql/ddl/updates/undo/#{versions[i]}__undo.sql"
       owner node['glassfish']['user']
       mode 0750
       action :create
