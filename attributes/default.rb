@@ -343,7 +343,7 @@ default['hopsworks']['jwt']['service_exp_leeway_sec']        = '900'
 #
 # EXPAT
 #
- 
+
 default['hopsworks']['expat_url']                    = "#{node['download_url']}/expat/#{node['install']['version']}/expat-#{node['install']['version']}.tar.gz"
 default['hopsworks']['expat_dir']                    = "#{node['install']['dir']}/expat-#{node['install']['version']}"
 
@@ -354,3 +354,10 @@ default['hopsworks']['featurestore_default_storage_format']   = "ORC"
 
 default['scala']['version']                   = "2.11.8"
 default['scala']['download_url']              = "#{node['download_url']}/scala-#{node['scala']['version']}.rpm"
+
+#
+# Glassfish Http configuration
+#
+
+# Number of seconds to keep an inactive connection alive
+default['glassfish']['http']['keep_alive_timeout']   = "30"
