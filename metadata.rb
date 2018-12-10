@@ -2265,3 +2265,8 @@ attribute "hopsworks/jwt/exp_leeway_sec",
 attribute "hopsworks/jwt/signing_key_name",
           :description => "Default signing key name. (default apiKey)",
           :type => 'string'
+
+# Fabio remove this before merging
+attribute "install/current_version",
+          :description => "Current installed Hopsworks version",
+          :type => "string"

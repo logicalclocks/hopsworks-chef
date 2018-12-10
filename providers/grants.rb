@@ -23,20 +23,6 @@ end
 
 end
 
-
-action :reload_sysv do
-
-  bash 'reload_sysv' do
-    user "root"
-    code <<-EOF
-          service glassfish-domain1 restart
-    EOF
-  end
-
-end
-
-
-
 action :create_timers do
   exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
