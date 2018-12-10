@@ -2032,8 +2032,6 @@ attribute "mysql/password",
 # SMTP
 #
 #
-
-
 attribute "smtp/host",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'

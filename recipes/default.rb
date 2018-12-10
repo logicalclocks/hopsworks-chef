@@ -548,7 +548,7 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 
 # Http listeners configuration
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.ssl.ssl-inactivity-timeout=#{node['glassfish']['http']['keep_alive_timeout']}" do
+glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -917,6 +917,34 @@ directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   action :create
 end
 
+<<<<<<< HEAD
+=======
+
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  action :generate
+end
+
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  cb_name "hopsworks"
+  cb_recipe "default"
+  action :return_publickey
+end
+
+# Generate a service JWT token to be used internally in Hopsworks
+bash "generate_jwt" do
+  user "root"
+  environment (lazy {{'JWT' => get_service_jwt()}})
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh -e "REPLACE INTO hopsworks.variables(id, value) VALUE ('service_jwt', '$JWT');"
+  EOH
+end
+
+# Force variables reload
+>>>>>>> Bug fixes in generating service token
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
