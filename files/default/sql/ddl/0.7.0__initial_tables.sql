@@ -233,6 +233,7 @@ CREATE TABLE `conda_commands` (
   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `machine_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `environment_yml` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
+  `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `host_id` (`host_id`),
   KEY `project_id` (`project_id`),
