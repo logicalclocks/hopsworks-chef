@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir hadoop_username] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -60,7 +60,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 9 ]; then
+    if [ $# -ne 10 ]; then
 	help
     fi
 
@@ -135,7 +135,7 @@ elif [ "$1" == "start" ] ; then
     sudo chmod -R 770 "$2"
      
     # Launch the jupyter notebook
-    su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9"
+    su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10}"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
@@ -153,40 +153,6 @@ elif [ "$1" == "ping" ] ; then
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
     sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
-
-# kernel-add
-elif [ "$1" == "kernel-add" ] ; then
-    if [ $# -ne 4 ]; then
-	help
-    fi
-
-# stringZ="proj__jim"
-# ${PROJ_USER%__*}	
-# echo ${stringZ#*__} # prints jim
-# echo ${stringZ%__*} # prints proj
-    JUPYTER_HOME=$2
-    PROJ_USER=$3
-    PROJECT=$4
-    
-    sudo rm -rf "${KERNELS_DIR}"/python-"${2}"
-    sudo "${DOMAINS_DIR}"/domain1/bin/jupyter-kernel-install.sh "$EXEC_AS_ANACONDA_USER" "$PROJECT" "$PROJ_USER" "$CONDA_DIR" "$JUPYTER_HOME"
-#   This function can remove either an individual user with the 'hdfsusername' or all users in a project with 'projectname*' 
-elif [ "$1" == "kernel-remove" ] ; then
-    if [[ $2 == *".."* ]]; then
-	echo "Injection Attack when removing python kernel with name python-$2 ?"
-	exit 99
-    fi
-    if [[ $2 == "*" ]]; then
-	echo "Injection Attack when removing python kernel with name '*' ?"
-	exit 98
-    fi
-
-    if [ ! -d "${KERNELS_DIR}/python-${2}" ] ; then
-	echo "Invalid KERNEL directory: $2"
-	exit 2
-    fi
-    
-    sudo rm -rf "${KERNELS_DIR}"/python-"${2}"
 else
   help
 fi
