@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <expat>
+
+    <expat>
+        <dir><%= node['hopsworks']['expat_dir'] %></dir>
+    </expat>
+
     <database>
         <url>jdbc:mysql://<%= @mysql_ip %>/hopsworks</url>
         <driver>com.mysql.jdbc.Driver</driver>
