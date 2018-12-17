@@ -1,7 +1,1 @@
 REPLACE INTO `hopsworks`.`variables` VALUES ("pypi_rest_endpoint", "<%= node['hopsworks']['pypi_rest_endpoint'] %>");
-
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_lifetime_ms", "<%= node['hopsworks']['jwt']['service_lifetime_ms'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_exp_leeway_sec", "<%= node['hopsworks']['jwt']['service_exp_leeway_sec'] %>");
-
-REPLACE INTO `hopsworks`.`variables` VALUES ("keepalive_timeout", "<%= node['glassfish']['http']['keep_alive_timeout']  %>");
-

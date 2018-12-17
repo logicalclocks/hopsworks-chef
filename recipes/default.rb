@@ -917,9 +917,6 @@ directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   action :create
 end
 
-<<<<<<< HEAD
-=======
-
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
@@ -944,7 +941,6 @@ bash "generate_jwt" do
 end
 
 # Force variables reload
->>>>>>> Bug fixes in generating service token
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
