@@ -330,15 +330,15 @@ default['hopsworks']['kafka_max_num_topics']                   = '100'
 # JWT
 #
 
-default['hopsworks']['jwt']['signature_algorithm']           = 'HS512'
-default['hopsworks']['jwt']['lifetime_ms']                   = '1800000'
-default['hopsworks']['jwt']['exp_leeway_sec']                = '900'
-default['hopsworks']['jwt']['signing_key_name']              = 'apiKey'
+default['hopsworks']['jwt']['signature_algorithm']        = 'HS512'
+default['hopsworks']['jwt']['lifetime_ms']                = '1800000'
+default['hopsworks']['jwt']['exp_leeway_sec']             = '900'
+default['hopsworks']['jwt']['signing_key_name']           = 'apiKey'
 
 default['hopsworks']['jwt']['issuer']                = 'hopsworks@logicalclocks.com'
 
-default['hopsworks']['jwt']['service_lifetime_ms']           = '1800000'
-default['hopsworks']['jwt']['service_exp_leeway_sec']        = '900'
+default['hopsworks']['jwt']['service_lifetime_ms']        = '604800000' # 1 week
+default['hopsworks']['jwt']['service_exp_leeway_sec']     = '172800000' # 2 days
 
 #
 # EXPAT
