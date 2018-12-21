@@ -345,10 +345,10 @@ CREATE TABLE `executions` (
   UNIQUE KEY `app_id` (`app_id`),
   KEY `job_id` (`job_id`),
   KEY `user` (`user`),
-  KEY `submission_time` (`submission_time` DESC, `job_id` ASC)
-  KEY `state` (`state` ASC, `job_id` ASC)
-  KEY `finalStatus` (`finalStatus` ASC, `job_id` ASC)
-  KEY `submission_time` (`progress` ASC, `job_id` ASC)
+  KEY `submission_time_idx` (`submission_time` DESC, `job_id`)
+  KEY `state_idx` (`state`, `job_id`)
+  KEY `finalStatus_idx` (`finalStatus`, `job_id`)
+  KEY `progress_idx` (`progress` DESC, `job_id`)
   CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_347_365` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -542,8 +542,9 @@ CREATE TABLE `jobs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_project_idx` (`name`,`project_id`),
   KEY `project_id` (`project_id`),
+  KEY `creator` (`creator`),
   KEY `creator_project_idx` (`creator`, `project_id`),
-  KEY `creation_time_project_idx` (`creation_time` DESC, `project_id` ),
+  KEY `creation_time_project_idx` (`creation_time` DESC, `project_id`),
   KEY `type_project_id_idx` (`type`, `project_id`)
   CONSTRAINT `FK_262_353` FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_284_352` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
