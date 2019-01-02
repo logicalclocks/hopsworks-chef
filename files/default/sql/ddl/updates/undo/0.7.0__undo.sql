@@ -24,3 +24,5 @@ ALTER TABLE `hopsworks`.`ops_log` MODIFY COLUMN `inode_id` INT(11);
 
 ALTER TABLE `hopsworks`.`meta_log` MODIFY COLUMN `meta_pk2` INT(11);
 ALTER TABLE `hopsworks`.`meta_log` MODIFY COLUMN `meta_pk3` INT(11);
+
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `install_jupyter`;

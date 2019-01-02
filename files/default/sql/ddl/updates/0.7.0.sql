@@ -25,3 +25,5 @@ ALTER TABLE `hopsworks`.`ops_log` MODIFY COLUMN `inode_id` BIGINT(20);
 
 ALTER TABLE `hopsworks`.`meta_log` MODIFY COLUMN `meta_pk2` BIGINT(20);
 ALTER TABLE `hopsworks`.`meta_log` MODIFY COLUMN `meta_pk3` BIGINT(20);
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `install_jupyter` tinyint(1) NOT NULL DEFAULT '0';

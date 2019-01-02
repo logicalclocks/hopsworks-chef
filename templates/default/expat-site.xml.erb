@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <expat>
+
+    <expat>
+        <dir><%= node['hopsworks']['expat_dir'] %></dir>
+    </expat>
+
     <database>
         <url>jdbc:mysql://<%= @mysql_ip %>/hopsworks</url>
         <driver>com.mysql.jdbc.Driver</driver>
@@ -13,6 +18,11 @@
         <userCertsScript>createusercerts.sh</userCertsScript>
     </x509>
 
+    <conda>
+        <dir><%= node['conda']['dir'] %></dir>
+        <user><%= node['conda']['user'] %></user>
+    </conda>
+
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
         io.hops.hopsworks.expat.migrations.x509.GenerateUserCertificates
@@ -21,6 +31,7 @@
 
     <version-07>
         io.hops.hopsworks.expat.migrations.jobs.UpdateJobConfiguration
+        io.hops.hopsworks.expat.migrations.conda.JupyterInConda
     </version-07>
 
 </expat>

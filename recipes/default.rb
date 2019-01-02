@@ -940,21 +940,9 @@ bash 'enable_sso' do
     EOF
 end
 
-
-bash "pip_upgrade" do
-    user "root"
-    code <<-EOF
-      set -e
-      pip install --upgrade pip
-    EOF
-end
-
-scala_home=
 case node['platform']
  when 'debian', 'ubuntu'
-   scala_home="/usr/share/scala-2.11"
-   package "scala" do
-   end
+   package "scala" 
  when 'redhat', 'centos', 'fedora'
 
   bash 'scala-install-redhat' do
@@ -967,171 +955,9 @@ case node['platform']
     EOF
     not_if "which scala"
   end
-
-
-  scala_home="/usr/share/scala-2.11"
 end
-
-
-pythondir=""
-case node['platform']
- when 'debian', 'ubuntu'
-  pythondir="/usr/local/lib/python2.7/dist-packages"
- when 'redhat', 'centos', 'fedora'
-  pythondir="/usr/lib/python2.7/site-packages"
-end
-
-
-
-remote_file "#{Chef::Config['file_cache_path']}/sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz" do
-  user node['jupyter']['user']
-  group node['glassfish']['group']
-  source node['jupyter']['sparkmagic']['url']
-  mode 0755
-  action :create_if_missing
-end
-
-#
-# https://github.com/jupyter-incubator/sparkmagic
-#
-bash "jupyter-sparkmagic" do
-  user 'root'
-    retries 1
-    code <<-EOF
-    set -e
-    pip install --no-cache-dir --upgrade urllib3
-    pip install --no-cache-dir --upgrade requests
-    pip install --no-cache-dir --upgrade jupyter
-
-    cd #{Chef::Config['file_cache_path']}
-    rm -rf sparkmagic
-    tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    cd sparkmagic
-    pip install --no-cache-dir --upgrade pandas
-    pip install --no-cache-dir ./hdijupyterutils
-    pip install --no-cache-dir --upgrade ./autovizwidget
-    pip install --no-cache-dir ./sparkmagic
-    cd #{Chef::Config['file_cache_path']}
-    rm -rf sparkmagic
-EOF
-end
-
-
-bash "pydoop" do
-    user 'root'
-    retries 1
-    environment ({'JAVA_HOME' => node['java']['java_home'],
-                 'HADOOP_HOME' => node['hops']['base_dir']})
-    code <<-EOF
-      set -e
-      pip install --no-cache-dir --upgrade hdfscontents
-    EOF
-end
-
-
-
-bash "jupyter-sparkmagic-enable" do
-    user "root"
-    code <<-EOF
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension
-EOF
-end
-
-
-if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
-  cloudant="cloudant-spark-v2.0.0-185.jar"
-  # Pixiedust is a visualization library for Jupyter
-  pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
-  bash "jupyter-pixiedust" do
-    user "root"
-    retries 1
-    ignore_failure true
-    code <<-EOF
-      set -e
-      mkdir -p #{pixiedust_home}/bin
-      cd #{pixiedust_home}/bin
-      export PIXIEDUST_HOME=#{pixiedust_home}
-      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
-      export SCALA_HOME=#{scala_home}
-      pip --no-cache-dir install matplotlib
-      pip --no-cache-dir install pixiedust
-      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-      jupyter pixiedust install --silent
- #      chown #{node['jupyter']['user']} -R #{pixiedust_home}
-# pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
-      if [ -d /home/#{node['hopsworks']['user']}/.local/share/jupyter/kernels ] ; then
-         jupyter-kernelspec install /root/.local/share/jupyter/kernels/pythonwithpixiedustspark22
-#/usr/local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
-#/home/#{node['jupyter']['user']}/.local/
-      fi
-    EOF
-    not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
-  end
-
-end
-
-bash "jupyter-kernels" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{pythondir}
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter-kernelspec install sparkmagic/kernels/sparkkernel
-    jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
-    jupyter-kernelspec install sparkmagic/kernels/pyspark3kernel
-    jupyter-kernelspec install sparkmagic/kernels/sparkrkernel
-   EOF
-end
-
-
-#
-# (Optional) Enable the server extension so that clusters can be programatically changed
-#
-
-case node['platform']
-when 'debian', 'ubuntu'
-
-  bash "jupyter-sparkmagic-kernel-extension" do
-    user "root"
-    code <<-EOF
-    set -e
-    cd #{pythondir}
-    # workaround for https://github.com/ipython/ipython/issues/9656
-    pip uninstall -y backports.shutil_get_terminal_size
-    pip install --upgrade backports.shutil_get_terminal_size
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter serverextension enable --py sparkmagic
-   EOF
-  end
-when 'redhat', 'centos', 'fedora'
-
-  bash "jupyter-sparkmagic-kernel" do
-    user "root"
-    code <<-EOF
-    set -e
-    # workaround for https://github.com/ipython/ipython/issues/9656
-    pip uninstall -y backports.shutil_get_terminal_size
-    pip install --upgrade backports.shutil_get_terminal_size
-    # https://github.com/conda/conda/issues/4823
-    pip install 'configparser===3.5.0b2'
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter serverextension enable --py sparkmagic
-   EOF
-  end
-
-end
-
-
-  bash "pip_backports_workaround" do
-    user "root"
-    code <<-EOF
-    pip uninstall backports.functools_lru_cache
-    pip install backports.functools_lru_cache
-   EOF
-  end
 
 homedir = "/home/#{node['hopsworks']['user']}"
-
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
 #
@@ -1225,35 +1051,6 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   owner node['glassfish']['user']
   mode 0750
   action :create
-end
-
-pythonDir="/usr/lib/python2.7/site-packages"
-case node['platform']
- when 'debian', 'ubuntu'
-   pythonDir="/usr/local/lib/python2.7/dist-packages"
- when 'redhat', 'centos', 'fedora'
-   pythonDir="/usr/lib/python2.7/site-packages"
-end
-
-
-bash "jupyter-root-sparkmagic" do
-  user 'root'
-  code <<-EOF
-    set -e
-    source ~/.bashrc
-    pip uninstall numpy -y
-    pip install --target #{pythonDir} --upgrade numpy
-    pip uninstall pbr -y
-    pip install --target #{pythonDir} --upgrade pbr
-    pip uninstall funcsigs -y
-    pip install --target #{pythonDir} --upgrade funcsigs
-    pip uninstall setuptools  -y
-    pip install --target #{pythonDir} --upgrade setuptools
-    pip uninstall mock  -y
-    pip install --target #{pythonDir} --upgrade mock
-    pip uninstall configparser  -y
-    pip install --target #{pythonDir} --upgrade configparser
-   EOF
 end
 
 directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
