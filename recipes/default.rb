@@ -330,7 +330,8 @@ for version in versions do
          :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
          :nonconda_hosts_list => nonconda_hosts_list,
-         :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format']
+         :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format'],
+         :tf_spark_connector_version => node['hops']['tf_spark_connector_version']
     })
     action :create
   end
