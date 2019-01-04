@@ -18,3 +18,5 @@ Vagrantfile.paul
 nohup.out
 start-dev.sh
 vagrant.pid
+
+.idea

@@ -267,6 +267,10 @@ attribute "hopsworks/hive_default_quota_mbs",
           :description => "Default amount in MB of available storage per project",
           :type => 'string'
 
+attribute "hopsworks/featurestore_default_quota_mbs",
+          :description => "Default amount in MB of available storage for the featurestore service per project",
+          :type => 'string'
+
 attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
@@ -2260,3 +2264,8 @@ attribute "hopsworks/jwt/signing_key_name",
 attribute "install/current_version",
           :description => "Current installed Hopsworks version",
           :type => "string"
+
+### Feature Store
+attribute "hopsworks/featurestore_default_storage_format",
+          :description => "Default storage format for the hive database of the feature stores (ORC/PARQUET)",
+          :type => 'string'
