@@ -6,12 +6,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 path hdfs_username"
+    echo "usage: $0 path hdfs_username jupyter_path"
     echo ""
     exit 1
 }
 
-if [ "$#" -ne 2 ] ; then
+if [ "$#" -ne 3 ] ; then
     help
 fi
 
@@ -23,7 +23,7 @@ fi
 mkdir -p ipython_conversions
 if [ $? -ne 0 ] ; then
     echo "Could not create directory in the staging directory for converting iPython notebook. Problem dir: <%= node['hopsworks']['staging_dir'] %>/ipython_conversions as user $USER"
-    exit 2
+    exit 3
 fi    
 cd ipython_conversions
 
@@ -41,11 +41,17 @@ rm -f "$filename"
 if [ $? -ne 0 ] ; then
     echo "Problem staging from hdfs ipython notebook: $1"
     exit 4
-fi    
-jupyter nbconvert --to python "$filename"
+fi
+
+if [ ! -f "$3"/bin/jupyter ]; then
+    echo "Is Python enabled? No jupyter binary found on path $3/bin/jupyter"
+    exit 5
+fi
+
+"$3"/bin/jupyter nbconvert --to python "$filename"
 if [ $? -ne 0 ] ; then
     echo "Problem converting ipython notebook to python program: $1"
-    exit 5
+    exit 6
 fi    
 
 
@@ -60,14 +66,14 @@ cat "${base}".py >> /tmp/"${base}".py
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "/tmp/${base}".py "$dirname"
 if [ $? -ne 0 ] ; then
     echo "Problem copying converted ipython program back to hdfs: $dirname/${base}.py"
-    exit 6
+    exit 7
 fi    
 
 # Current user should have hdfs superuser privileges
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "$2" "$dirname"/"${base}".py
 if [ $? -ne 0 ] ; then
-    echo "Problem changing ownersihp of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
-    exit 5
+    echo "Problem changing ownership of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
+    exit 8
 fi    
 
 

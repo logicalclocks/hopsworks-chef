@@ -249,6 +249,10 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
+# Hive metastore should be created before the hopsworks tables are created
+# Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
+include_recipe "hive2::db"
+
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
 versions.push(target_version)
@@ -312,6 +316,7 @@ for version in versions do
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
          :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
+         :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
          :zk_ip => zk_ip,
          :java_home => node['java']['java_home'],
          :drelephant_ip => drelephant_ip,
@@ -324,7 +329,9 @@ for version in versions do
          :dela_ip => dela_ip,
          :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-         :nonconda_hosts_list => nonconda_hosts_list
+         :nonconda_hosts_list => nonconda_hosts_list,
+         :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format'],
+         :tf_spark_connector_version => node['hadoop_spark']['tf_spark_connector_version']
     })
     action :create
   end
@@ -582,7 +589,7 @@ glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.Request
    secure false
 end
 
-# Set correct thread-priority for the executor services - required during updates 
+# Set correct thread-priority for the executor services - required during updates
 glassfish_asadmin "set resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority=10" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -942,7 +949,7 @@ end
 
 case node['platform']
  when 'debian', 'ubuntu'
-   package "scala" 
+   package "scala"
  when 'redhat', 'centos', 'fedora'
 
   bash 'scala-install-redhat' do
