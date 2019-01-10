@@ -57,14 +57,6 @@ recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for dem
 # Required Attributes
 #######################################################################################
 
-attribute "java/jdk_version",
-          :display_name =>  "Jdk version",
-          :type => 'string'
-
-attribute "java/install_flavor",
-          :display_name =>  "Oracle (default) or openjdk",
-          :type => 'string'
-
 attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
           :type => 'array'
