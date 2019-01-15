@@ -168,10 +168,6 @@ rescue
 end
 
 
-vagrant_enabled = 0
-if node['hopsworks']['user'] == "vagrant"
-  vagrant_enabled = 1
-end
 
 db="hopsworks"
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
@@ -242,18 +238,7 @@ if node['hops']['tls']['enabled'].eql? "true"
   hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
-versions = node['hopsworks']['versions'].split(/\s*,\s*/)
-previous_version=""
-if versions.any?
-   previous_version=versions.last
-end
-
-myVersion = node['hopsworks']['version']
-flyway_version = myVersion.sub("-SNAPSHOT", "")
-versions.push(flyway_version)
-
 condaRepo = 'defaults'
-
 if node['conda']['mirror_list'].empty? == false
    repos = node['conda']['mirror_list'].split(/\s*,\s*/)
    condaRepo = repos[0]
@@ -264,119 +249,90 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
-cookbook_file "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
-  source "sql/ddl/0.0.2__initial_tables.sql"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-end
+# Hive metastore should be created before the hopsworks tables are created
+# Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
+include_recipe "hive2::db"
 
-for version in versions do
-  # Template DDL files
-  cookbook_file "#{theDomain}/flyway/sql/V#{version}__hopsworks.sql" do
-    source "sql/ddl/#{version}.sql"
+versions = node['hopsworks']['versions'].split(/\s*,\s*/)
+target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
+versions.push(target_version)
+current_version = node['hopsworks']['current_version']
+
+if current_version.eql?("")
+  # New installation -> template the current version schema file
+  cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
+    source "sql/ddl/#{target_version}__initial_tables.sql"
     owner node['glassfish']['user']
     mode 0750
     action :create
   end
+else
+  current_version_idx = versions.index(current_version).to_i
+  versions_length = versions.length.to_i - 1
 
+  for i in current_version_idx..versions_length
+    # Update, template all the dml files from the current version to the target version
+    cookbook_file "#{theDomain}/flyway/sql/V#{versions[i]}__hopsworks.sql" do
+      source "sql/ddl/updates/#{versions[i]}.sql"
+      owner node['glassfish']['user']
+      mode 0750
+      action :create
+    end
+
+    cookbook_file "#{theDomain}/flyway/undo/U#{versions[i]}__undo.sql" do
+      source "sql/ddl/updates/undo/#{versions[i]}__undo.sql"
+      owner node['glassfish']['user']
+      mode 0750
+      action :create
+    end
+  end
+end
+
+for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
     source "sql/dml/#{version}.sql.erb"
     owner node['glassfish']['user']
     mode 0750
     variables({
-                :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
-                :conda_repo => condaRepo,
-                :hosts => hosts,
-                :epipe_ip => epipe_ip,
-                :livy_ip => livy_ip,
-                :jhs_ip => jhs_ip,
-                :rm_ip => rm_ip,
-                :rm_port => rm_port,
-                :logstash_ip => logstash_ip,
-                :logstash_port => logstash_port,
-                :spark_history_server_ip => spark_history_server_ip,
-                :hopsworks_ip => hopsworks_ip,
-                :elastic_ip => elastic_ip,
-                :spark_dir => node['hadoop_spark']['dir'] + "/spark",
-                :spark_user => node['hadoop_spark']['user'],
-                :hadoop_dir => node['hops']['dir'] + "/hadoop",
-                :yarn_user => node['hops']['yarn']['user'],
-                :yarn_ui_ip => public_recipe_ip("hops","rm"),
-                :yarn_ui_port => node['hops']['rm']['http_port'],
-                :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-                :hdfs_ui_port => hdfs_ui_port,
-                :hopsworks_user => node['hopsworks']['user'],
-                :hdfs_user => node['hops']['hdfs']['user'],
-                :mr_user => node['hops']['mr']['user'],
-                :flink_dir => node['flink']['dir'] + "/flink",
-                :flink_user => node['flink']['user'],
-                :zeppelin_dir => node['zeppelin']['dir'] + "/zeppelin",
-                :zeppelin_user => node['zeppelin']['user'],
-                :ndb_dir => node['ndb']['dir'] + "/mysql-cluster",
-                :mysql_dir => node['mysql']['dir'] + "/mysql",
-                :elastic_dir => node['elastic']['dir'] + "/elastic",
-                :hopsworks_dir => domains_dir,
-                :twofactor_auth => node['hopsworks']['twofactor_auth'],
-                :twofactor_exclude_groups => node['hopsworks']['twofactor_exclude_groups'],
-                :hops_rpc_tls => hops_rpc_tls_val,
-                :cert_mater_delay => node['hopsworks']['cert_mater_delay'],
-                :elastic_user => node['elastic']['user'],
-                :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
-                :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
-                :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
-                :max_num_proj_per_user => node['hopsworks']['max_num_proj_per_user'],
-		            :file_preview_image_size => node['hopsworks']['file_preview_image_size'],
-                :file_preview_txt_size => node['hopsworks']['file_preview_txt_size'],
-                :zk_ip => zk_ip,
-                :java_home => node['java']['java_home'],
-                :kafka_ip => kafka_ip,
-                :kafka_num_replicas => node['hopsworks']['kafka_num_replicas'],
-                :kafka_num_partitions => node['hopsworks']['kafka_num_partitions'],
-                :drelephant_port => node['drelephant']['port'],
-                :drelephant_db => node['drelephant']['db'],
-                :drelephant_ip => drelephant_ip,
-                :kafka_user => node['kkafka']['user'],
-                :kibana_ip => kibana_ip,
-                :python_kernel => python_kernel,
-                :grafana_ip => grafana_ip,
-                :influxdb_ip => influxdb_ip,
-                :influxdb_port => node['influxdb']['http']['port'],
-                :influxdb_user => node['influxdb']['db_user'],
-                :influxdb_password => node['influxdb']['db_password'],
-                :graphite_port => node['influxdb']['graphite']['port'],
-                :cuda_dir => node['cuda']['base_dir'],
-                :anaconda_dir => node['conda']['base_dir'],
-                :org_name => node['hopsworks']['org_name'],
-                :org_domain => node['hopsworks']['org_domain'],
-                :org_email => node['hopsworks']['org_email'],
-                :org_country_code => node['hopsworks']['org_country_code'],
-                :org_city => node['hopsworks']['org_city'],
-                :vagrant_enabled => vagrant_enabled,
-                :public_ip => public_ip,
-                :monitor_max_status_poll_try => node['hopsworks']['monitor_max_status_poll_try'],
-                :dela_enabled => node['hopsworks']['dela']['enabled'],
-                :dela_ip => dela_ip,
-                :dela_port => node['dela']['http_port'],
-                :dela_cluster_http_port => node['hopsworks']['dela']['cluster_http_port'],
-                :dela_hopsworks_public_port => node['hopsworks']['dela']['public_hopsworks_port'],
-                :public_https_port => node['hopsworks']['public_https_port'],
-                :recovery_path => node['hopsworks']['recovery_path'],
-                :verification_path => node['hopsworks']['verification_path'],
-                :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
-                :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-                :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
-                :hive_scratchdir => node['hive2']['scratch_dir'],
-                :nonconda_hosts_list => nonconda_hosts_list
-           })
-    action :create
-  end
-
-  cookbook_file "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
-    source "sql/ddl/undo/#{version}__undo.sql"
-    owner node['glassfish']['user']
-    mode 0750
+         :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
+         :conda_repo => condaRepo,
+         :hosts => hosts,
+         :epipe_ip => epipe_ip,
+         :livy_ip => livy_ip,
+         :jhs_ip => jhs_ip,
+         :rm_ip => rm_ip,
+         :rm_port => rm_port,
+         :logstash_ip => logstash_ip,
+         :logstash_port => logstash_port,
+         :spark_history_server_ip => spark_history_server_ip,
+         :hopsworks_ip => hopsworks_ip,
+         :elastic_ip => elastic_ip,
+         :yarn_ui_ip => public_recipe_ip("hops","rm"),
+         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
+         :hdfs_ui_port => hdfs_ui_port,
+         :hopsworks_dir => domains_dir,
+         :hops_rpc_tls => hops_rpc_tls_val,
+         :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
+         :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
+         :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
+         :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
+         :zk_ip => zk_ip,
+         :java_home => node['java']['java_home'],
+         :drelephant_ip => drelephant_ip,
+         :kafka_ip => kafka_ip,
+         :kibana_ip => kibana_ip,
+         :python_kernel => python_kernel,
+         :grafana_ip => grafana_ip,
+         :influxdb_ip => influxdb_ip,
+         :public_ip => public_ip,
+         :dela_ip => dela_ip,
+         :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
+         :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
+         :nonconda_hosts_list => nonconda_hosts_list,
+         :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format'],
+         :tf_spark_connector_version => node['hadoop_spark']['tf_spark_connector_version']
+    })
     action :create
   end
 
@@ -385,6 +341,42 @@ for version in versions do
     owner node['glassfish']['user']
     mode 0750
     action :create
+  end
+end
+
+if !current_version.eql?("") && current_version < "0.6.0"
+ cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
+  source "sql/flyway_schema_history_0.6.0.sql"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+ end
+
+ # Re-create the table only if it already exists
+ bash "mod_flyway_history_0.6.0" do
+  user "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
+  EOH
+  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep -v \"0.6.0\""
+ end
+end
+
+bash "flyway_migrate" do
+  user "root"
+  cwd "#{theDomain}/flyway"
+  code <<-EOF
+    #{theDomain}/flyway/flyway migrate
+  EOF
+end
+
+# Run the DML sql script to insert the variables
+for version in versions do
+  bash "run_inserts_#{version}" do
+    user "root"
+    code <<-EOH
+      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
+    EOH
   end
 end
 
@@ -433,61 +425,24 @@ template "#{log4j_cnf}" do
   group node['glassfish']['group']
 end
 
-
-hopsworks_grants "reload_sysv" do
- tables_path  ""
- rows_path  ""
- action :reload_sysv
-end
-
-if myVersion.eql?("0.6.0")
- cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
-  source "sql/ddl/flyway_schema_history_0.6.0.sql"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
- end
-
- # Re-create the table only if it already exists
- bash "mod_flyway_history_0.6.0" do
-  user "root"
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
-  EOH
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
- end
-end
-
-
-bash "flyway_baseline" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway baseline
-  EOF
- not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
-end
-
-bash "flyway_migrate" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway migrate
-  EOF
-end
-
-# Run the DML sql script to insert the variables
-for version in versions do
-  bash "run_inserts_#{version}" do
-    user "root"
-    code <<-EOH
-      #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
-    EOH
+# Add Hadoop glob classpath to Glassfish
+# systemd unit environment variables file
+hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
+ruby_block "export_hadoop_classpath" do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+    exec_stdout = shell_out(hadoop_glob_command).stdout
+    variable = "HADOOP_GLOB=#{exec_stdout}"
+    file = Chef::Util::FileEdit.new(node['hopsworks']['env_var_file'])
+    file.insert_line_if_no_match(/#{variable}/, variable)
+    file.write_file
   end
+  action :create
 end
 
+hopsworks_grants "restart_glassfish" do
+  action :reload_systemd
+end
 
 glassfish_secure_admin domain_name do
   domain_name domain_name
@@ -497,7 +452,6 @@ glassfish_secure_admin domain_name do
   secure false
   action :enable
 end
-
 
 props =  {
   'datasource-jndi' => jndiDB,
@@ -635,11 +589,26 @@ glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.Request
    secure false
 end
 
+# Set correct thread-priority for the executor services - required during updates
+glassfish_asadmin "set resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority=10" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority=10" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
 
 #
 # Enable Single Sign on
 #
-
 glassfish_asadmin "set server-config.http-service.virtual-server.server.property.sso-enabled='true'" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -792,22 +761,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
   end
 end
 
-if node['hopsworks']['email_password'].eql? "password"
-
-  bash 'gmail' do
-    user "root"
-    code <<-EOF
-      cd #{Chef::Config['file_cache_path']}
-      rm -f #{Chef::Config['file_cache_path']}/hopsworks.email
-      wget #{node['hopsworks']['gmail']['placeholder']}
-      cat #{Chef::Config['file_cache_path']}/hopsworks.email | base64 -d > #{Chef::Config['file_cache_path']}/hopsworks.encoded
-      chmod 775 #{Chef::Config['file_cache_path']}/hopsworks.encoded
-    EOF
-  end
-
-end
-
-
 hopsworks_mail "gmail" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -815,8 +768,6 @@ hopsworks_mail "gmail" do
    admin_port admin_port
    action :jndi
 end
-
-
 
 node.override['glassfish']['asadmin']['timeout'] = 400
 
@@ -996,21 +947,9 @@ bash 'enable_sso' do
     EOF
 end
 
-
-bash "pip_upgrade" do
-    user "root"
-    code <<-EOF
-      set -e
-      pip install --upgrade pip
-    EOF
-end
-
-scala_home=
 case node['platform']
  when 'debian', 'ubuntu'
-   scala_home="/usr/share/scala-2.11"
-   package "scala" do
-   end
+   package "scala"
  when 'redhat', 'centos', 'fedora'
 
   bash 'scala-install-redhat' do
@@ -1023,192 +962,9 @@ case node['platform']
     EOF
     not_if "which scala"
   end
-
-
-  scala_home="/usr/share/scala-2.11"
 end
-
-
-pythondir=""
-case node['platform']
- when 'debian', 'ubuntu'
-  pythondir="/usr/local/lib/python2.7/dist-packages"
- when 'redhat', 'centos', 'fedora'
-  pythondir="/usr/lib/python2.7/site-packages"
-end
-
-
-
-remote_file "#{Chef::Config['file_cache_path']}/sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz" do
-  user node['jupyter']['user']
-  group node['glassfish']['group']
-  source node['jupyter']['sparkmagic']['url']
-  mode 0755
-  action :create_if_missing
-end
-
-#
-# https://github.com/jupyter-incubator/sparkmagic
-#
-bash "jupyter-sparkmagic" do
-  user 'root'
-    retries 1
-    code <<-EOF
-    set -e
-    pip install --no-cache-dir --upgrade urllib3
-    pip install --no-cache-dir --upgrade requests
-    pip install --no-cache-dir --upgrade jupyter
-
-    cd #{Chef::Config['file_cache_path']}
-    rm -rf sparkmagic
-    tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    cd sparkmagic
-    pip install --no-cache-dir --upgrade pandas
-    pip install --no-cache-dir ./hdijupyterutils
-    pip install --no-cache-dir --upgrade ./autovizwidget
-    pip install --no-cache-dir ./sparkmagic
-    cd #{Chef::Config['file_cache_path']}
-    rm -rf sparkmagic
-EOF
-end
-
-
-bash "pydoop" do
-    user 'root'
-    retries 1
-    environment ({'JAVA_HOME' => node['java']['java_home'],
-                 'HADOOP_HOME' => node['hops']['base_dir']})
-    code <<-EOF
-      set -e
-      pip install --no-cache-dir --upgrade hdfscontents
-    EOF
-end
-
-
-
-bash "jupyter-sparkmagic-enable" do
-    user "root"
-    code <<-EOF
-    jupyter nbextension enable --py --sys-prefix widgetsnbextension
-EOF
-end
-
-
-if node['hopsworks']['pixiedust']['enabled'].to_str.eql?("true")
-  cloudant="cloudant-spark-v2.0.0-185.jar"
-  # Pixiedust is a visualization library for Jupyter
-  pixiedust_home="#{node['jupyter']['base_dir']}/pixiedust"
-  bash "jupyter-pixiedust" do
-    user "root"
-    retries 1
-    ignore_failure true
-    code <<-EOF
-      set -e
-      mkdir -p #{pixiedust_home}/bin
-      cd #{pixiedust_home}/bin
-      export PIXIEDUST_HOME=#{pixiedust_home}
-      export SPARK_HOME=#{node['hadoop_spark']['base_dir']}
-      export SCALA_HOME=#{scala_home}
-      pip --no-cache-dir install matplotlib
-      pip --no-cache-dir install pixiedust
-      wget https://github.com/cloudant-labs/spark-cloudant/releases/download/v2.0.0/#{cloudant}
-      jupyter pixiedust install --silent
- #      chown #{node['jupyter']['user']} -R #{pixiedust_home}
-# pythonwithpixiedustspark22 - install in /usr/local/share/jupyter/kernels
-      if [ -d /home/#{node['hopsworks']['user']}/.local/share/jupyter/kernels ] ; then
-         jupyter-kernelspec install /root/.local/share/jupyter/kernels/pythonwithpixiedustspark22
-#/usr/local/share/jupyter/kernels/pythonwithpixiedustspark2[0-9]
-#/home/#{node['jupyter']['user']}/.local/
-      fi
-    EOF
-    not_if "test -f #{pixiedust_home}/bin/#{cloudant}"
-  end
-
-end
-
-bash "jupyter-kernels" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{pythondir}
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter-kernelspec install sparkmagic/kernels/sparkkernel
-    jupyter-kernelspec install sparkmagic/kernels/pysparkkernel
-    jupyter-kernelspec install sparkmagic/kernels/pyspark3kernel
-    jupyter-kernelspec install sparkmagic/kernels/sparkrkernel
-   EOF
-end
-
-
-#
-# (Optional) Enable the server extension so that clusters can be programatically changed
-#
-
-case node['platform']
-when 'debian', 'ubuntu'
-
-  bash "jupyter-sparkmagic-kernel-extension" do
-    user "root"
-    code <<-EOF
-    set -e
-    cd #{pythondir}
-    # workaround for https://github.com/ipython/ipython/issues/9656
-    pip uninstall -y backports.shutil_get_terminal_size
-    pip install --upgrade backports.shutil_get_terminal_size
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter serverextension enable --py sparkmagic
-   EOF
-  end
-when 'redhat', 'centos', 'fedora'
-
-  bash "jupyter-sparkmagic-kernel" do
-    user "root"
-    code <<-EOF
-    set -e
-    # workaround for https://github.com/ipython/ipython/issues/9656
-    pip uninstall -y backports.shutil_get_terminal_size
-    pip install --upgrade backports.shutil_get_terminal_size
-    # https://github.com/conda/conda/issues/4823
-    pip install 'configparser===3.5.0b2'
-    export HADOOP_HOME=#{node['hops']['base_dir']}
-    jupyter serverextension enable --py sparkmagic
-   EOF
-  end
-
-end
-
-
-  bash "pip_backports_workaround" do
-    user "root"
-    code <<-EOF
-    pip uninstall backports.functools_lru_cache
-    pip install backports.functools_lru_cache
-   EOF
-  end
-
 
 homedir = "/home/#{node['hopsworks']['user']}"
-
-
-# directory "#{homedir}/.sparkmagic"  do
-#   owner node['hopsworks']['user']
-#   group node['hopsworks']['group']
-#   mode "755"
-#   action :create
-# end
-
-
-# template "#{homedir}/.sparkmagic/config.json" do
-#   source "config.json.erb"
-#   owner node['hopsworks']['user']
-#   mode 0750
-#   action :create
-#   variables({
-#               :livy_ip => livy_ip,
-#                :homedir => homedir
-#   })
-# end
-
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
 #
@@ -1302,63 +1058,6 @@ template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
   owner node['glassfish']['user']
   mode 0750
   action :create
-end
-
-pythonDir="/usr/lib/python2.7/site-packages"
-case node['platform']
- when 'debian', 'ubuntu'
-   pythonDir="/usr/local/lib/python2.7/dist-packages"
- when 'redhat', 'centos', 'fedora'
-   pythonDir="/usr/lib/python2.7/site-packages"
-end
-
-
-bash "jupyter-root-sparkmagic" do
-  user 'root'
-  code <<-EOF
-    set -e
-    source ~/.bashrc
-    pip uninstall numpy -y
-    pip install --target #{pythonDir} --upgrade numpy
-    pip uninstall pbr -y
-    pip install --target #{pythonDir} --upgrade pbr
-    pip uninstall funcsigs -y
-    pip install --target #{pythonDir} --upgrade funcsigs
-    pip uninstall setuptools  -y
-    pip install --target #{pythonDir} --upgrade setuptools
-    pip uninstall mock  -y
-    pip install --target #{pythonDir} --upgrade mock
-    pip uninstall configparser  -y
-    pip install --target #{pythonDir} --upgrade configparser
-    # pip uninstall sparkmagic  -y
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
-    # tar zxf sparkmagic-#{node['jupyter']['sparkmagic']['version']}.tar.gz
-    # cd sparkmagic
-    # pip install ./hdijupyterutils
-    # pip install --upgrade ./autovizwidget
-    # pip install ./sparkmagic
-    # cd #{Chef::Config['file_cache_path']}
-    # rm -rf sparkmagic
-   EOF
-end
-
-
-bash "fix_owner_ship_pip_files" do
-  user 'root'
-  code <<-EOF
-    if [ -d /home/#{node['jupyter']['user']}/.local ] ; then
-       chown -R #{node['jupyter']['user']} /home/#{node['jupyter']['user']}/.local
-    fi
-   EOF
-end
-
-
-bash "jupyter-user-sparkmagic" do
-  user 'root'
-  code <<-EOF
-    su -l #{node['jupyter']['user']} -c "pip install --upgrade --no-cache-dir --user sparkmagic"
-   EOF
 end
 
 directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do

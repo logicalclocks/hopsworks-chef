@@ -7,6 +7,7 @@ dependencies:
       - conda::default
     global:
       - hops::ndb
+      - hive2::db
   - recipe: hopsworks::dev
     global:
       - hopsworks::default
@@ -17,5 +18,8 @@ dependencies:
     global:
       - hopsworks::default
   - recipe: hopsworks::delaregister
+    global:
+      - hopsworks::default
+  - recipe: hopsworks::migrate
     global:
       - hopsworks::default

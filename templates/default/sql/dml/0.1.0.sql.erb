@@ -44,7 +44,7 @@ ON DUPLICATE KEY UPDATE `username`="agent007";
 --
 
 INSERT INTO `organization` (`id`, `uid`, `org_name`, `website`, `contact_person`, `contact_email`, `department`, `phone`, `fax`)
-VALUES (1, 10000, "<%= @org_name %>", "<%= @org_domain %>", 'Admin', "<%= @org_email %>", 'DataScience', '+4670080010', '+4670080015')
+VALUES (1, 10000, "<%= node['hopsworks']['org_name'] %>", "<%= node['hopsworks']['org_domain'] %>", 'Admin', "<%= node['hopsworks']['org_email'] %>", 'DataScience', '+4670080010', '+4670080015')
 ON DUPLICATE KEY UPDATE `contact_person` = 'Admin';
 
 
@@ -53,7 +53,7 @@ ON DUPLICATE KEY UPDATE `contact_person` = 'Admin';
 --   Adding a new address entry for admin user
 --
 
-INSERT INTO `address` (`uid`, `address1`, `address2`, `address3`, `city`, `state`, `country`, `postalcode`) values (10000, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', "<%= @org_city %>", "<%= @org_country_code %>", '10044')
+INSERT INTO `address` (`uid`, `address1`, `address2`, `address3`, `city`, `state`, `country`, `postalcode`) values (10000, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', "<%= node['hopsworks']['org_city'] %>", "<%= node['hopsworks']['org_country_code'] %>", '10044')
 ON DUPLICATE KEY UPDATE `address1` = "Admin Office";
 
 
@@ -82,8 +82,8 @@ REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
 -- For enabling two facto authentication
 --
 
-REPLACE INTO variables VALUES ("twofactor_auth", "<%= @twofactor_auth %>");
-REPLACE INTO variables VALUES ("twofactor-excluded-groups", "<%= @twofactor_exclude_groups %>");
+REPLACE INTO variables VALUES ("twofactor_auth", "<%= node['hopsworks']['twofactor_auth'] %>");
+REPLACE INTO variables VALUES ("twofactor-excluded-groups", "<%= node['hopsworks']['twofactor_exclude_groups'] %>");
 
 -- kmon
 
@@ -95,11 +95,11 @@ INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDAT
 -- Default settings
 --
 
-REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= @spark_dir %>"),  ("flink_dir", "<%= @flink_dir %>"), ("zeppelin_dir", "<%= @zeppelin_dir %>"), ("elastic_dir", "<%= @elastic_dir %>"),  ("mysql_dir", "<%= @mysql_dir %>"), ("ndb_dir", "<%= @ndb_dir %>"), ("hadoop_dir", "<%= @hadoop_dir %>"), ("hdfs_user", "<%= @hdfs_user %>"), ("yarn_user", "<%= @yarn_user %>"), ("mr_user","<%= @mr_user %>"), ("zeppelin_user","<%= @zeppelin_user %>"), ("elastic_user","<%= @elastic_user %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
+REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("zeppelin_dir", "<%= node['zeppelin']['dir'] %>/zeppelin"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("zeppelin_user","<%= node['zeppelin']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
 
 REPLACE INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
 
-REPLACE INTO variables VALUES ("max_num_proj_per_user", "<%= @max_num_proj_per_user %>");
+REPLACE INTO variables VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
 
 REPLACE INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
 
@@ -123,45 +123,45 @@ REPLACE INTO variables VALUES ("zeppelin_interpreters", "<%= node['hopsworks']['
 
 REPLACE INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
 
-REPLACE INTO variables VALUES ("yarn_ui_port", "<%= @yarn_ui_port %>");
+REPLACE INTO variables VALUES ("yarn_ui_port", "<%= node['hops']['rm']['http_port'] %>");
 
 REPLACE INTO variables VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
 
 REPLACE INTO variables VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
-REPLACE INTO variables VALUES ("file_preview_image_size", "<%= @file_preview_image_size %>");
+REPLACE INTO variables VALUES ("file_preview_image_size", "<%= node['hopsworks']['file_preview_image_size'] %>");
 
-REPLACE INTO variables VALUES ("file_preview_txt_size", "<%= @file_preview_txt_size %>");
+REPLACE INTO variables VALUES ("file_preview_txt_size", "<%= node['hopsworks']['file_preview_txt_size'] %>");
 
-REPLACE INTO variables VALUES ("recovery_path", "<%= @recovery_path %>");
+REPLACE INTO variables VALUES ("recovery_path", "<%= node['hopsworks']['recovery_path'] %>");
 
-REPLACE INTO variables VALUES ("verification_path", "<%= @verification_path %>");
+REPLACE INTO variables VALUES ("verification_path", "<%= node['hopsworks']['verification_path'] %>");
 
 -- ------
 -- More settings
 --
 
-REPLACE INTO variables VALUES ("hopsworks_user", "<%= @hopsworks_user %>");
+REPLACE INTO variables VALUES ("hopsworks_user", "<%= node['hopsworks']['user'] %>");
 
-REPLACE INTO variables VALUES ("spark_user", "<%= @spark_user %>");
+REPLACE INTO variables VALUES ("spark_user", "<%= node['hadoop_spark']['user'] %>");
 
-REPLACE INTO variables VALUES ("flink_user", "<%= @flink_user %>");
+REPLACE INTO variables VALUES ("flink_user", "<%= node['flink']['user'] %>");
 
-REPLACE INTO variables VALUES ("kafka_user", "<%= @kafka_user %>");
+REPLACE INTO variables VALUES ("kafka_user", "<%= node['kkafka']['user'] %>");
 
 REPLACE INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
 
 REPLACE INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
 
-REPLACE INTO variables VALUES ("kafka_num_partitions", "<%= @kafka_num_partitions %>");
+REPLACE INTO variables VALUES ("kafka_num_partitions", "<%= node['hopsworks']['kafka_num_partitions'] %>");
 
-REPLACE INTO variables VALUES ("kafka_num_replicas", "<%= @kafka_num_replicas %>");
+REPLACE INTO variables VALUES ("kafka_num_replicas", "<%= node['hopsworks']['kafka_num_replicas'] %>");
 
-REPLACE INTO variables VALUES ("drelephant_port", "<%= @drelephant_port %>");
+REPLACE INTO variables VALUES ("drelephant_port", "<%= node['drelephant']['port'] %>");
 
 REPLACE INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
-REPLACE INTO variables VALUES ("drelephant_db", "<%= @drelephant_db %>");
+REPLACE INTO variables VALUES ("drelephant_db", "<%= node['drelephant']['db'] %>");
 
 REPLACE INTO variables VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
 
@@ -181,7 +181,7 @@ REPLACE INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
 -- Certificate Materializer delay for removing cryptographic material from the local fs
 --
 
-REPLACE INTO variables VALUES ("cert_mater_delay", "<%= @cert_mater_delay %>");
+REPLACE INTO variables VALUES ("cert_mater_delay", "<%= node['hopsworks']['cert_mater_delay'] %>");
 
 --
 -- Comma-separated list of user emails that their login attempt should not be
@@ -198,7 +198,7 @@ REPLACE INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
 
 REPLACE INTO variables VALUES ("staging_dir", "<%= node['hopsworks']['staging_dir'] %>");
 
-REPLACE INTO variables VALUES ("max_status_poll_retry", "<%= @monitor_max_status_poll_try %>");
+REPLACE INTO variables VALUES ("max_status_poll_retry", "<%= node['hopsworks']['monitor_max_status_poll_try'] %>");
 
 REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hops']['hopsutil_version'] %>");
 
@@ -209,11 +209,11 @@ REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hops']['hopsutil_v
 
 REPLACE INTO variables VALUES ("dela_cluster_ip","<%= @dela_ip %>");
 
-REPLACE INTO variables VALUES ("dela_cluster_http_port","<%= @dela_cluster_http_port %>");
+REPLACE INTO variables VALUES ("dela_cluster_http_port","<%= node['hopsworks']['dela']['cluster_http_port'] %>");
 
-REPLACE INTO variables VALUES ("dela_hopsworks_public_port","<%= @dela_hopsworks_public_port %>");
+REPLACE INTO variables VALUES ("dela_hopsworks_public_port","<%= node['hopsworks']['dela']['public_hopsworks_port'] %>");
 
-REPLACE INTO variables VALUES ("dela_enabled","<%= @dela_enabled %>");
+REPLACE INTO variables VALUES ("dela_enabled","<%= node['hopsworks']['dela']['enabled'] %>");
 
 -- dela old
 
@@ -244,23 +244,21 @@ REPLACE INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
 REPLACE INTO variables VALUES ("logstash_port", "<%= @logstash_port %>");
 REPLACE INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
 REPLACE INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
-REPLACE INTO variables VALUES ("influxdb_port", "<%= @influxdb_port %>");
-REPLACE INTO variables VALUES ("influxdb_user", "<%= @influxdb_user %>");
-REPLACE INTO variables VALUES ("influxdb_pw", "<%= @influxdb_password %>");
+REPLACE INTO variables VALUES ("influxdb_port", "<%= node['influxdb']['http']['port'] %>");
+REPLACE INTO variables VALUES ("influxdb_user", "<%= node['influxdb']['db_user'] %>");
+REPLACE INTO variables VALUES ("influxdb_pw", "<%= node['influxdb']['db_password'] %>");
 REPLACE INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
-REPLACE INTO variables VALUES ("graphite_port", "<%= @graphite_port %>");
+REPLACE INTO variables VALUES ("graphite_port", "<%= node['influxdb']['graphite']['port'] %>");
 --
 -- pyspark, python
 --
 REPLACE INTO variables VALUES ("python_kernel", "<%= @python_kernel %>");
 
-REPLACE INTO variables VALUES ("cuda_dir", "<%= @cuda_dir %>");
+REPLACE INTO variables VALUES ("cuda_dir", "<%= node['cuda']['base_dir'] %>");
 REPLACE INTO variables VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
-REPLACE INTO variables VALUES ("anaconda_dir", "<%= @anaconda_dir %>");
+REPLACE INTO variables VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
 REPLACE INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
 REPLACE INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
-
-REPLACE INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
 
 --
 -- Hive
@@ -268,8 +266,8 @@ REPLACE INTO variables VALUES ("vagrant_enabled", "<%= @vagrant_enabled %>");
 
 REPLACE INTO variables VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname %>");
 REPLACE INTO variables VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
-REPLACE INTO variables VALUES ("hive_warehouse", "<%= @hive_warehouse%>");
-REPLACE INTO variables VALUES ("hive_scratchdir", "<%= @hive_scratchdir%>");
+REPLACE INTO variables VALUES ("hive_warehouse", "<%= node['hive2']['hopsfs_dir'] %>/warehouse");
+REPLACE INTO variables VALUES ("hive_scratchdir", "<%= node['hive2']['scratch_dir'] %>");
 REPLACE INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
 
 --

@@ -14,6 +14,7 @@ include_attribute "hive2"
 include_attribute "hops"
 
 default['hopsworks']['version']                  = node['install']['version']
+default['hopsworks']['current_version']          = node['install']['current_version']
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
 # comma-separated string of previous versions hopsworks (not including the current version)
@@ -54,7 +55,7 @@ default['glassfish']['max_perm_size']            = node['hopsworks']['max_perm_s
 default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
 default['hopsworks']['http_logs']['enabled']     = "true"
-
+default['hopsworks']['env_var_file']             = "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_environment_variables"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_version']            = "otp-auth-0.3.0.jar"
@@ -83,14 +84,14 @@ default['hopsworks']['service_key_rotation_interval'] = "2d"
 default['hopsworks']['application_certificate_validity_period'] = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
-default['hopsworks']['tensorboard_max_last_accessed'] = "1800000"
+default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
 
 #Max number of bytes of logs to show in Spark UI
 default['hopsworks']['spark_ui_logs_offset'] = "512000"
 #Log level of REST API
 default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
-default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
+default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-5.1.29-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "sics.se"
 default['hopsworks']['cert']['o']                   = "swedish ict"
@@ -117,17 +118,17 @@ default['hopsworks']['smtp_port']                = node['smtp']['port']
 default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
 default['hopsworks']['email']                    = node['smtp']['email']
 default['hopsworks']['email_password']           = node['smtp']['email_password']
-default['hopsworks']['gmail']['placeholder']     = "http://snurran.sics.se/hops/hopsworks.email"
 
 default['hopsworks']['alert_email_addrs']        = ""
 
 default['hopsworks']['support_email_addr']       = "support@hops.io"
 
 # #quotas
-default['hopsworks']['yarn_default_quota_mins']  = "1000000"
-default['hopsworks']['hdfs_default_quota_mbs']   = "500000"
-default['hopsworks']['hive_default_quota_mbs']   = "250000"
-default['hopsworks']['max_num_proj_per_user']    = "10"
+default['hopsworks']['yarn_default_quota_mins']          = "1000000"
+default['hopsworks']['hdfs_default_quota_mbs']           = "500000"
+default['hopsworks']['hive_default_quota_mbs']           = "250000"
+default['hopsworks']['featurestore_default_quota_mbs']   = "250000"
+default['hopsworks']['max_num_proj_per_user']            = "10"
 
 # file preview
 default['hopsworks']['file_preview_image_size']  = "10000000"
@@ -241,8 +242,6 @@ default['jupyter']['base_dir']                         = node['install']['dir'].
 default['jupyter']['user']                             = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
-default['jupyter']['sparkmagic']['version']            = "0.12.5"
-default['jupyter']['sparkmagic']['url']                = node['download_url'] + "/sparkmagic-" + node['jupyter']['sparkmagic']['version'] + ".tar.gz"
 
 #
 # TensorFlow Serving
@@ -273,7 +272,7 @@ default['hopsworks']['flyway_url']                     = node['download_url'] + 
 
 #
 #
-# Virtulbox Image support
+# Virtualbox Image support
 #
 
 default["lightdm"]["service_name"] = "lightdm"
@@ -331,4 +330,15 @@ default['hopsworks']['jwt']['signature_algorithm']   = 'HS512'
 default['hopsworks']['jwt']['lifetime_ms']           = '1800000'
 default['hopsworks']['jwt']['exp_leeway_sec']        = '900'
 default['hopsworks']['jwt']['signing_key_name']      = 'apiKey'
+
+#
+# EXPAT
+#
  
+default['hopsworks']['expat_url']                    = "#{node['download_url']}/expat/#{node['install']['version']}/expat-#{node['install']['version']}.tar.gz"
+default['hopsworks']['expat_dir']                    = "#{node['install']['dir']}/expat-#{node['install']['version']}"
+
+#
+# Feature Store
+#
+default['hopsworks']['featurestore_default_storage_format']   = "ORC"

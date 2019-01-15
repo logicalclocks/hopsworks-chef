@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.7.0"
+version          "0.9.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -48,20 +48,14 @@ recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
+recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
+
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
 recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
 #######################################################################################
 # Required Attributes
 #######################################################################################
-
-attribute "java/jdk_version",
-          :display_name =>  "Jdk version",
-          :type => 'string'
-
-attribute "java/install_flavor",
-          :display_name =>  "Oracle (default) or openjdk",
-          :type => 'string'
 
 attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
@@ -263,6 +257,10 @@ attribute "hopsworks/hdfs_default_quota_mbs",
 
 attribute "hopsworks/hive_default_quota_mbs",
           :description => "Default amount in MB of available storage per project",
+          :type => 'string'
+
+attribute "hopsworks/featurestore_default_quota_mbs",
+          :description => "Default amount in MB of available storage for the featurestore service per project",
           :type => 'string'
 
 attribute "hopsworks/max_num_proj_per_user",
@@ -1446,10 +1444,6 @@ attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
           :type => 'string'
 
-attribute "jupyter/sparkmagic/version",
-          :description => "Version of sparkmagic for Jupyter to install. ",
-          :type => 'string'
-
 ##
 ##
 ## Kagent
@@ -2234,6 +2228,12 @@ attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
           :type => 'string'
 
+### TensorBoard
+
+attribute "hopsworks/tensorboard_max_last_accessed",
+          :description => "Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)",
+          :type => 'string'
+
 ### JWT
 
 attribute "hopsworks/jwt/signature_algorithm",
@@ -2250,4 +2250,14 @@ attribute "hopsworks/jwt/exp_leeway_sec",
 
 attribute "hopsworks/jwt/signing_key_name",
           :description => "Default signing key name. (default apiKey)",
+          :type => 'string'
+
+# Fabio remove this before merging
+attribute "install/current_version",
+          :description => "Current installed Hopsworks version",
+          :type => "string"
+
+### Feature Store
+attribute "hopsworks/featurestore_default_storage_format",
+          :description => "Default storage format for the hive database of the feature stores (ORC/PARQUET)",
           :type => 'string'
