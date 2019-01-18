@@ -1,1 +1,5 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='jupyter_shutdown_timer_interval';
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("provided_python_lib_names", "hops, pandas, tensorflow-serving-api, hopsfacets, mmlspark, numpy");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("preinstalled_python_lib_names", "tensorflow-gpu, tensorflow, pydoop, pyspark, tensorboard, jupyter, sparkmagic, hdfscontents");
