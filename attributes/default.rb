@@ -314,8 +314,8 @@ default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
-default['rstudio']['deb']                            = "rstudio-server-1.1.447-amd64.deb"
-default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.447-x86_64.rpm"
+default['rstudio']['deb']                            = "rstudio-server-1.1.463-amd64.deb"
+default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.463-x86_64.rpm"
 default['rstudio']['enabled']                        = "false"
 default['rstudio']['ubuntu_packages']                = %w{ r-base r-base-dev r-recommended r-cran-rcpp littler r-cran-littler}
 default['rstudio']['centos_packages']                = %w{ R }
