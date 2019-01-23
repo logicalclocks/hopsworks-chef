@@ -1422,12 +1422,6 @@ attribute "zeppelin/dir",
 
 ##
 ##
-## Presto
-##
-##
-
-##
-##
 ## Jupyter
 ##
 ##
@@ -2217,6 +2211,15 @@ attribute "hopsworks/kafka_num_partitions",
 
 
 ### RStudio
+
+
+attribute "rstudio/user",
+          :description => "Rstudio username to run rstudio servers as",
+          :type => 'string'
+
+attribute "rstudio/group",
+          :description => "Rstudio group to run rstudio servers as",
+          :type => 'string'
 
 attribute "rstudio/enabled",
           :description => "Set to 'true' to enable RStudio in Hopsworks. Default 'false'.",

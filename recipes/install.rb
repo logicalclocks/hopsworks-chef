@@ -72,6 +72,12 @@ group node['tfserving']['group'] do
   not_if "getent group #{node['tfserving']['group']}"
 end
 
+group node['rstudio']['group'] do
+  action :create
+  not_if "getent group #{node['rstudio']['group']}"
+end
+
+
 #
 # hdfs superuser group is 'hdfs'
 #
@@ -100,7 +106,8 @@ group node['tfserving']['group'] do
   members ["#{node['hopsworks']['user']}"]
   append true
 end
-group node['jupyter']['group'] do
+
+group node['rstudio']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
@@ -128,6 +135,15 @@ user node['jupyter']['user'] do
   not_if "getent passwd #{node['jupyter']['user']}"
 end
 
+user node['rstudio']['user'] do
+  home node['rstudio']['base_dir']
+  gid node['rstudio']['group']
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node['rstudio']['user']}"
+end
+
 user node['tfserving']['user'] do
   gid node['tfserving']['group']
   action :create
@@ -144,7 +160,7 @@ end
 
 group node['hops']['group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['jupyter']['user']}"]
   append true
 end
 
@@ -155,6 +171,15 @@ directory node['jupyter']['base_dir']  do
   mode "770"
   action :create
 end
+
+#update permissions of base_dir to 770
+directory node['rstudio']['base_dir']  do
+  owner node['rstudio']['user']
+  group node['rstudio']['group']
+  mode "770"
+  action :create
+end
+
 
 directory node['hopsworks']['dir']  do
   owner node['hopsworks']['user']
@@ -550,6 +575,11 @@ template "#{theDomain}/bin/ndb_backup.sh" do
   action :create
 end
 
+
+#
+# jupyter
+#
+
 template "#{theDomain}/bin/jupyter.sh" do
   source "jupyter.sh.erb"
   owner node['glassfish']['user']
@@ -589,6 +619,64 @@ template "#{theDomain}/bin/jupyter-launch.sh" do
   mode "550"
   action :create
 end
+
+
+#
+# RStudio
+#
+
+template "#{theDomain}/bin/rstudio.sh" do
+  source "rstudio.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/rstudio-project-cleanup.sh" do
+  source "rstudio-project-cleanup.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/rstudio-kill.sh" do
+  source "rstudio-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['rstudio']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/rstudio-stop.sh" do
+  source "rstudio-stop.sh.erb"
+  owner node['glassfish']['user']
+  group node['rstudio']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/rstudio-launch.sh" do
+  source "rstudio-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['rstudio']['group']
+  mode "550"
+  action :create
+end
+
+template "/etc/pam.d/rstudio" do
+  source "rstudio.pam.erb"
+  owner "root"
+  mode "644"
+  action :create
+end
+
+
+
+#
+# tf-serving
+#
 
 template "#{theDomain}/bin/tfserving.sh" do
   source "tfserving.sh.erb"
@@ -754,11 +842,14 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
+              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
+              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
+              :rstudio =>  "#{theDomain}/bin/rstudio.sh",              
+              :rstudio_cleanup =>  "#{theDomain}/bin/rstudio-project-cleanup.sh",
+              :rstudio_kernel =>  "#{theDomain}/bin/rstudio-install-kernel.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",
               :conda_export =>  "#{theDomain}/bin/condaexport.sh",
               :tensorboard =>  "#{theDomain}/bin/tensorboard.sh",
-              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
-              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
@@ -818,6 +909,31 @@ directory node["jupyter"]["base_dir"]  do
   mode "770"
   action :create
 end
+
+
+
+#
+# RStudio Configuration
+#
+
+user node["rstudio"]["user"] do
+  home node["rstudio"]["base_dir"]
+  gid node["rstudio"]["group"]
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node["rstudio"]["user"]}"
+end
+
+#update permissions of base_dir to 770
+directory node["rstudio"]["base_dir"]  do
+  owner node["rstudio"]["user"]
+  group node["rstudio"]["group"]
+  mode "770"
+  action :create
+end
+
+
 
 bash "python_openssl" do
   user "root"
