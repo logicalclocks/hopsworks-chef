@@ -2252,6 +2252,10 @@ attribute "hopsworks/jwt/signing_key_name",
           :description => "Default signing key name. (default apiKey)",
           :type => 'string'
 
+attribute "hopsworks/jwt/issuer",
+          :description => "JWT issuer identifier. (default hopsworks@logicalclocks.com)",
+          :type => 'string'
+
 # Fabio remove this before merging
 attribute "install/current_version",
           :description => "Current installed Hopsworks version",
