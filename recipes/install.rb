@@ -223,10 +223,7 @@ end
 node.override = {
   'java' => {
     'install_flavor' => node['java']['install_flavor'],
-    'jdk_version' => node['java']['jdk_version'],
-    'oracle' => {
-      'accept_oracle_download_terms' => true
-    }
+    'jdk_version' => node['java']['jdk_version']
   },
   'glassfish' => {
     'version' => node['glassfish']['version'],
