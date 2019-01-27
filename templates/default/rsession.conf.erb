@@ -1,0 +1,16 @@
+# https://github.com/OSC/bc_osc_rstudio_server/issues/1
+
+r-libs-user=<%= node['rstudio']['base_dir'] %>/jim/R
+r-cran-repos=http://cran.at.r-project.org/
+allow-r-cran-repos-edit=0
+allow-shell=0
+allow-external-publish=0
+allow-publish=0
+allow-file-downloads=0
+limit-file-upload-size-mb=10000
+#limit-cpu-time-minutes=2
+session-timeout-kill-hours=16
+#
+# https://support.rstudio.com/hc/en-us/articles/218417097-Filling-up-the-home-directory-with-RStudio-Server
+# stops filling up home directly
+session-timeout-minutes=0

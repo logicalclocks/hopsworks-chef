@@ -25,7 +25,7 @@ end
 
 
 case node['platform_family']
-when "redhat"
+when "rhel"
   if node['glassfish']['port'] == 80
     bash "authbind-centos" do
       user "root"
@@ -625,6 +625,16 @@ end
 # RStudio
 #
 
+
+template node['rstudio']['base_dir'] + "/rsession.conf" do
+  source "rsession.conf.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
+
 template "#{theDomain}/bin/rstudio.sh" do
   source "rstudio.sh.erb"
   owner node['glassfish']['user']
@@ -657,12 +667,30 @@ template "#{theDomain}/bin/rstudio-stop.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/rsession.sh" do
+  source "rsession.sh.erb"
+  owner node['glassfish']['user']
+  group node['rstudio']['group']
+  mode "550"
+  action :create
+end
+
 template "#{theDomain}/bin/rstudio-launch.sh" do
   source "rstudio-launch.sh.erb"
   owner node['glassfish']['user']
   group node['rstudio']['group']
   mode "550"
   action :create
+  case node['platform_family']
+  when "debian"
+    variables({
+        :rstudio_binary => "/usr/lib/rstudio-server/bin/rserver"
+              })
+  when "rhel"
+    variables({
+        :rstudio_binary => "/usr/lib/rstudio-server/bin/rserver"
+              })
+  end
 end
 
 template "/etc/pam.d/rstudio" do
@@ -1079,7 +1107,7 @@ if node['rstudio']['enabled'].eql? "true"
       set -e
       cd #{Chef::Config['file_cache_path']}
       apt-get install gdebi-core -y
-      gdebi #{node['rstudio']['deb']}
+      gdebi -n #{node['rstudio']['deb']}
     EOF
     end
 

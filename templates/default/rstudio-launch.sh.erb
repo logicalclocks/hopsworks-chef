@@ -4,7 +4,7 @@ WAIT_START=20
 RSTUDIO_HOME=$1
 export HADOOP_HOME=$2
 export JAVA_HOME=$3
-export ANACONDA_ENV=$4
+export RSTUDIO_ENV=$4
 PORT=$5
 LOGFILE=${RSTUDIO_HOME}/logs/$6
 SECRET_DIR=$7
@@ -12,7 +12,7 @@ CERTS_DIR=$8
 
 help() {
     echo ""
-    echo "usage: $0 RSTUDIO_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME"
+    echo "usage: $0 RSTUDIO_HOME HADOOP_HOME RSTUDIO_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME"
     echo ""
     exit 1
 }
@@ -31,6 +31,25 @@ function kill_named {
 if [ $# -ne 9 ]; then
   help
 fi
+
+
+if [ $# -ne 3 ] ; then
+ echo "usage: $0 username secret_dir port"
+ exit 1
+fi
+
+#
+# https://www.r-bloggers.com/shiny-server-series-part-2-running-shiny-on-multiple-ports/
+# https://github.com/OSC/bc_osc_rstudio_server/issues/1
+# 
+
+
+#setsid
+#  </dev/zero &> "$LOGFILE"  &
+<% @rstudio_binary %> --rsession-config-file $2/rsession.conf --www-address 0.0.0.0 --www-port $3  --auth-none 1 --config-file $2/rserver.conf --server-working-dir $2 --server-daemonize 1 --www-frame-origin same --rsession-path <%= node['hopsworks']['domains_dir'] %>/domain1/bin/rsession.sh </dev/zero &> "$LOGFILE" 
+echo $! > "$PID_FILE"
+
+
 
 export RSTUDIO_PATH=$RSTUDIO_HOME
 export RSTUDIO_DATA_DIR=$RSTUDIO_HOME

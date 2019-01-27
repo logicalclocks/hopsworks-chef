@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script allows Hopsworks to start/kill/ping (check if alive) a Rstudio Notebook Server.
+# This script allows Hopsworks to start/kill/ping (check if alive) a Rstudio  Server.
 # There will be 1 notebook-server per ProjectUser.
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 # it changes user to 'rstudio' to run the command as user 'rstudio'.
@@ -8,18 +8,17 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start rstudio_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir hadoop_username] | [kill rstudio_home pid port] | [ping pid] | [list] | [kernel-add rstudio_home  project_user conda_environment] [kernel-remove project_user]"
+    echo "usage: $0 [start rstudio_home hadoop_home java_home port logfile secret_dir certs_dir hadoop_username] | [kill rstudio_home pid port] | [ping pid] | [list] | [kernel-add rstudio_home project_user] [kernel-remove project_user]"
     echo ""
     exit 1
 }
 
 PORT=0
-CONDA_DIR=<%= node["conda"]["base_dir"] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 RSTUDIO_USER=<%= node['rstudio']['user'] %>
 RSTUDIO_GROUP=<%= node['rstudio']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
-EXEC_AS_ANACONDA_USER=<%= node['conda']['user'] %>
+
 
 if [ "$1" == "kill" ] ; then
 
@@ -28,11 +27,6 @@ if [ "$1" == "kill" ] ; then
     fi
 
     # Sanity checks for injection attacks
-    #    if [ ! -d "$2" ] ; then
-    #	echo "Invalid RSTUDIO_HOME directory: $2"
-    #	exit 1
-    #    fi
-
     # Check that the port is an int (and not some injection attack)
     re='^[0-9]+$'
      if ! [[ $3 =~ $re ]] ; then
@@ -47,12 +41,12 @@ if [ "$1" == "kill" ] ; then
     fi
 
     # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'rstudio'
-    su ${RSTUDIO_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    su ${RSTUDIO_USER} -c "${DOMAINS_DIR}/domain1/bin/rstudio-kill.sh $2 $3 $4"
 
-    # Remove all the directories in the home jupyter folder for this project-user.
+    # Remove all the directories in the home rstudio folder for this project-user.
     if [ "$2" != "" ] ; then
 	# Try and make sure some silly directory is not deleted, that this
-	if [[ $2 = *"hops/jupyter/Projects"* ]]; then
+	if [[ $2 = *"hops/rstudio/Projects"* ]]; then
             sudo rm -rf "${2}"/../*
 	fi
     fi
@@ -88,10 +82,10 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(sudo ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
+    pid=$(sudo ps -ef | grep rstudio-server | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
-        su $RSTUDIO_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
+        su $RSTUDIO_USER -c "${DOMAINS_DIR}/domain1/bin/rstudio-kill.sh $2 $pid $6"
 	sleep 5
     fi
 
@@ -103,13 +97,6 @@ elif [ "$1" == "start" ] ; then
 	exit 4
     fi
 
-#    if [[ $8 =~ ^\/$|(^(?=\/)|^\.|^\.\.)(\/(?=[^/\0])[^/\0]+)*\/?$ ]] ; then
-#	echo "secret_dir looks like a path has, ok"
-#    else
-#	echo "Invalid secret_dir parameter, doesn't look like a path: $8"
-#	exit 4
-#    fi
-    
     parent=$(dirname "$8")
     sudo chown -R "${HOPSWORKS_USER}":"${RSTUDIO_GROUP}" "$parent"
     sudo chmod 0730 "$parent"
@@ -121,37 +108,37 @@ elif [ "$1" == "start" ] ; then
     sudo chmod -R 770 "$8"
     sudo chown -R "${RSTUDIO_USER}":"${RSTUDIO_GROUP}" "$8"
     
-    # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
+    # These files below were created by hopsworks. Change ownership now to Rstudio (if needed)
     #    sudo chown -R ${RSTUDIO_USER}:${RSTUDIO_GROUP} $2
-    # Make the group of the files, the jupyter group so that they can write to the files
+    # Make the group of the files, the rstudio group so that they can write to the files
     sudo chown -R "${HOPSWORKS_USER}":"${RSTUDIO_GROUP}" "$2/"..
     if [ $? -ne 0 ] ; then
-	echo "Error: could not change ownership of config_dir for Jupyter: $2"
+	echo "Error: could not change ownership of config_dir for Rstudio: $2"
 	exit 1
     fi
     sudo chmod 0730 "$2/"..
     sudo chown -R "${RSTUDIO_USER}":"${RSTUDIO_GROUP}" "$2"
     sudo chmod -R 770 "$2"
      
-    # Launch the jupyter notebook
-    su "${RSTUDIO_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10}"
+    # Launch the rstudio server
+    su "${RSTUDIO_USER}" -c "${DOMAINS_DIR}/domain1/bin/rstudio-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10}"
 
 elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
+    sudo ps -ef | grep -v 'grep' | grep -i rstudio-server | grep "$2"
     if [ $? -ne 0 ] ; then
 	echo "Error checking PID: $2"
-	echo "Are you trying to ping a non jupyter-notebook process?"
+	echo "Are you trying to ping a non rstudio-server process?"
 	exit 12
     fi
     kill -0 "$2"
 
 # list 
 elif [ "$1" == "list" ] ; then
-    # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    # This command will output line-separated PIDs for all running rstudio-servers into the tmp file, from where it is read by Hopsworks
+    sudo ps -ef | grep -v 'grep' | grep -i rstudio-server | awk '{print $2}' > /tmp/rstudioNotebookServer.pids
 else
   help
 fi

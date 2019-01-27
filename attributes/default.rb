@@ -247,14 +247,13 @@ default['jupyter']['python']                           = "true"
 #
 # RStudio
 #
-
 default['rstudio']['user']                             = node['install']['user'].empty? ? "rstudio" : node['install']['user']
 default['rstudio']['group']                            = node['install']['user'].empty? ? "rstudio" : node['install']['user']
 default['rstudio']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/rstudio" : node['install']['dir'] + "/rstudio"
 default['hopsworks']['rstudio_dir']                    = node['hopsworks']['dir'] + "/rstudio"
-
-default['rstudio']['deb']                              = "rstudio-server-1.1.463-amd64.deb"
-default['rstudio']['rpm']                              = "rstudio-server-rhel-1.1.463-x86_64.rpm"
+default['rstudio']['version']                          = "1.1.463"
+default['rstudio']['deb']                              = "rstudio-server-" + node['rstudio']['version'] + "-amd64.deb"
+default['rstudio']['rpm']                              = "rstudio-server-rhel-" + node['rstudio']['version'] + "-x86_64.rpm"
 default['rstudio']['enabled']                          = "false"
 default['rstudio']['ubuntu_packages']                  = %w{ r-base r-base-dev r-recommended r-cran-rcpp littler r-cran-littler}
 default['rstudio']['centos_packages']                  = %w{ R }
