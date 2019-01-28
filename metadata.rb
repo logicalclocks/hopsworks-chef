@@ -1422,9 +1422,17 @@ attribute "zeppelin/dir",
 
 ##
 ##
-## Presto
+## TFServing
 ##
 ##
+
+attribute "hopsworks/tfserving/pool_size",
+          :description => "size of the connection pool for serving inference requests",
+          :type => 'numeric'
+
+attribute "hopsworks/tfserving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route",
+          :type => 'numeric'
 
 ##
 ##

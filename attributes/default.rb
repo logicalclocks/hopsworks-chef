@@ -249,6 +249,8 @@ default['jupyter']['python']                           = "true"
 default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
 default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+default['tfserving']['pool_size']                      = 40
+default['tfserving']['max_route_connections']          = 10
 
 #
 # PyPi
