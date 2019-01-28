@@ -247,6 +247,7 @@ default['jupyter']['python']                           = "true"
 #
 # RStudio
 #
+default['rstudio']['cran_repo_url']                    = "https://ftp.acc.umu.se/mirror/CRAN/"
 default['rstudio']['user']                             = node['install']['user'].empty? ? "rstudio" : node['install']['user']
 default['rstudio']['group']                            = node['install']['user'].empty? ? "rstudio" : node['install']['user']
 default['rstudio']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/rstudio" : node['install']['dir'] + "/rstudio"

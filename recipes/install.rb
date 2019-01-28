@@ -626,8 +626,8 @@ end
 #
 
 
-template node['rstudio']['base_dir'] + "/rsession.conf" do
-  source "rsession.conf.erb"
+template node['rstudio']['base_dir'] + "/rstudio.conf" do
+  source "rstudio.conf.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
@@ -653,22 +653,6 @@ end
 
 template "#{theDomain}/bin/rstudio-kill.sh" do
   source "rstudio-kill.sh.erb"
-  owner node['glassfish']['user']
-  group node['rstudio']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/rstudio-stop.sh" do
-  source "rstudio-stop.sh.erb"
-  owner node['glassfish']['user']
-  group node['rstudio']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/rsession.sh" do
-  source "rsession.sh.erb"
   owner node['glassfish']['user']
   group node['rstudio']['group']
   mode "550"

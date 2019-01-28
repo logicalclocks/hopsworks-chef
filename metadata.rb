@@ -2212,6 +2212,9 @@ attribute "hopsworks/kafka_num_partitions",
 
 ### RStudio
 
+attribute "rstudio/cran_repo_url",
+          :description => "URL to Cran repository for R packages",
+          :type => 'string'
 
 attribute "rstudio/user",
           :description => "Rstudio username to run rstudio servers as",
