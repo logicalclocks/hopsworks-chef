@@ -130,9 +130,10 @@ default['hopsworks']['hive_default_quota_mbs']           = "250000"
 default['hopsworks']['featurestore_default_quota_mbs']   = "250000"
 default['hopsworks']['max_num_proj_per_user']            = "10"
 
-# file preview
+# file preview and download
 default['hopsworks']['file_preview_image_size']  = "10000000"
 default['hopsworks']['file_preview_txt_size']    = "100"
+default['hopsworks']['download_allowed']         = "true"
 
 default['hops']['user_envs']                     = "false"
 
