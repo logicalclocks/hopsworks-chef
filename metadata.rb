@@ -36,13 +36,9 @@ depends 'hopsmonitor'
 depends 'hive2'
 depends 'hops_airflow'
 
-#link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
 
-#link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
-recipe  "hopsworks::master", "Hopsworks master instance that will store the certificate authtority."
-recipe  "hopsworks::slave", "Hopsworks master instance that will store only an intermediate certificate authtority."
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
@@ -145,10 +141,6 @@ attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
 
-#attribute "hopsworks/http_secure_enabled",
-#          :description => "Indicates if there is an HTTPS listener enabled",
-#          :type => 'string'
-
 attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
@@ -199,12 +191,8 @@ attribute "glassfish/group",
           :description => "glassfish/group",
           :type => 'string'
 
-attribute "hopsworks/port",
+attribute "hopsworks/https/port",
           :description => "Port that webserver will listen on",
-          :type => 'string'
-
-attribute "hopsworks/secure_port",
-          :description => "TLS Port that webserver will listen on",
           :type => 'string'
 
 attribute "hopsworks/max_mem",
@@ -229,10 +217,6 @@ attribute "hopsworks/max_perm_size",
 
 attribute "hopsworks/reinstall",
           :description => "Enter 'true' if this is a reinstallation",
-          :type => 'string'
-
-attribute "hopsworks/pixiedust/enabled",
-          :description => "Enter 'true' to install pixiedust, 'false' otherwise",
           :type => 'string'
 
 attribute "hopsworks/war_url",

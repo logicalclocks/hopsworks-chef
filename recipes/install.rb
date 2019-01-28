@@ -3,13 +3,9 @@ require 'base64'
 require 'digest'
 
 my_ip = my_private_ip()
-username=node['hopsworks']['admin']['user']
-password=node['hopsworks']['admin']['password']
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
-admin_port = node['glassfish']['admin']['port']
-web_port = node['glassfish']['port']
 mysql_user=node['mysql']['user']
 mysql_password=node['mysql']['password']
 password_file = "#{theDomain}_admin_passwd"
@@ -22,34 +18,6 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
   EOF
 end
-
-
-case node['platform_family']
-when "redhat"
-  if node['glassfish']['port'] == 80
-    bash "authbind-centos" do
-      user "root"
-      code <<-EOF
-         cd #{Chef::Config['file_cache_path']}
-         rm -f authbind_2.1.1.tar.gz
-         wget #{node['download_url']}/authbind_2.1.1.tar.gz
-         tar authbind_2.1.1.tar.gz
-         cd authbind-2.1.1
-         make
-         make install
-         ln -s /usr/local/bin/authbind /usr/bin/authbind
-         mkdir -p /etc/authbind/byport
-         touch /etc/authbind/byport/80
-         chmod 550 /etc/authbind/byport/80
-         touch /etc/authbind/byport/443
-         chmod 550 /etc/authbind/byport/443
-     EOF
-       not_if { ::File.exists?("/usr/bin/authbind") }
-    end
-  end
-end
-
-
 
 if node['hopsworks']['systemd'] == "true"
   systemd = true
@@ -181,17 +149,16 @@ when "debian"
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end
-  package "dtrx"
-  package "libkrb5-dev"
+  package ["dtrx", "libkrb5-dev"]
+
   dtrx="dtrx"
 when "rhel"
-  package "krb5-libs"
-  package "p7zip"
+  package ["krb5-libs", "p7zip"]
 
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
-    source node['download_url'] + "/#{node['dtrx']['version']}"
+    source node['dtrx']['download_url']
     mode 0755
     action :create
   end
@@ -199,18 +166,51 @@ when "rhel"
   bash "unpack_dtrx" do
     user "root"
     code <<-EOF
-    set -e
-    cd #{Chef::Config['file_cache_path']}
-    tar -xzf dtrx.tar.gz
-    cd dtrx-7.1
-    python setup.py install --prefix=/usr/local
-    # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
-    rm -f /bin/7z
-    ln -s /bin/7za /bin/7z
-  EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      tar -xzf dtrx.tar.gz
+      cd dtrx-7.1
+      python setup.py install --prefix=/usr/local
+      # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
+      rm -f /bin/7z
+      ln -s /bin/7za /bin/7z
+    EOF
     not_if "which dtrx"
   end
   dtrx="/usr/local/bin/dtrx"
+end
+
+# Install authbind to allow glassfish to bind on ports < 1024
+case node['platform_family']
+when "debian"
+  package "authbind"
+when "rhel"
+  authbind_rpm = ::File.basename(node['authbind']['download_url'])
+
+  remote_file "#{Chef::Config['file_cache_path']}/#{authbind_rpm}" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source node['authbind']['download_url']
+    mode 0755
+    action :create
+  end
+
+  package 'authbind' do
+    source "#{Chef::Config['file_cache_path']}/#{authbind_rpm}"
+  end
+end
+
+# Configure authbind ports
+authbind_port "Authbind Glassfish Admin port" do
+  port node['hopsworks']['admin']['port'].to_i
+  user node['glassfish']['user']
+  only_if {node['hopsworks']['admin']['port'].to_i < 1024}
+end
+
+authbind_port "Authbind Glassfish https port" do
+  port node['hopsworks']['https']['port'].to_i
+  user node['glassfish']['user']
+  only_if {node['hopsworks']['https']['port'].to_i < 1024}
 end
 
 file "#{node['hopsworks']['env_var_file']}" do
@@ -237,10 +237,11 @@ node.override = {
           'max_memory' => node['glassfish']['max_mem'],
           'max_perm_size' => node['glassfish']['max_perm_size'],
           'max_stack_size' => node['glassfish']['max_stack_size'],
-          'port' => web_port,
-          'admin_port' => admin_port,
-          'username' => username,
-          'password' => password,
+          'port' => 8080, #This is hardcoded as it's not used. Http listener is disabled in hopsworks::default.
+          'https_port' => node['hopsworks']['https']['port'].to_i,
+          'admin_port' => node['hopsworks']['admin']['port'].to_i,
+          'username' => node['hopsworks']['admin']['user'],
+          'password' => node['hopsworks']['admin']['password'],
           'master_password' => node['hopsworks']['master']['password'],
           'remote_access' => false,
           'secure' => false,
@@ -380,20 +381,18 @@ remote_file "#{theDomain}/lib/#{cauth}"  do
 end
 
 
-
 # If the install.rb recipe failed and is re-run, install_dir needs to reset it
 if node['glassfish']['install_dir'].include?("versions") == false
   node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
-
 
 template "#{theDomain}/docroot/404.html" do
   source "404.html.erb"
   owner node['glassfish']['user']
   mode 0777
   variables({
-              :org_name => node['hopsworks']['org_name']
-            })
+    :org_name => node['hopsworks']['org_name']
+  })
   action :create
 end
 
@@ -404,20 +403,6 @@ cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
   mode '0755'
   action :create_if_missing
 end
-
-case node['platform']
- when 'debian', 'ubuntu'
- if node['glassfish']['port'] == 80
-   authbind_port "AuthBind GlassFish Port 80" do
-     port 80
-     user node['glassfish']['user']
-   end
- end
-end
-
-
-include_recipe "hopsworks::authbind"
-
 
 if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do

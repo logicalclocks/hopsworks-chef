@@ -27,12 +27,15 @@ default['hopsworks']['user']                     = node['install']['user'].empty
 default['glassfish']['user']                     = node['hopsworks']['user']
 default['hopsworks']['group']                    = node['install']['user'].empty? ? "glassfish" : node['install']['user']
 default['glassfish']['group']                    = node['hopsworks']['group']
+
+default['hopsworks']['https']['port']            = 8181
+
 default['hopsworks']['admin']['port']            = 4848
-default['hopsworks']['port']                     = "8080"
-default['hopsworks']['secure_port']              = "8181"
-default['glassfish']['admin']['port']            = node['hopsworks']['admin']['port']
-default['glassfish']['port']                     = node['hopsworks']['port'].to_i
+default['hopsworks']['admin']['user']            = "adminuser"
+default['hopsworks']['admin']['password']        = "adminpw"
+
 default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
+default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
 default['glassfish']['install_dir']              = node['hopsworks']['dir']
@@ -66,10 +69,6 @@ default['hopsworks']['war_url']                  = "#{node['download_url']}/hops
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
 
-default['hopsworks']['pixiedust']['enabled']        = "false"
-
-default['hopsworks']['admin']['user']               = "adminuser"
-default['hopsworks']['admin']['password']           = "adminpw"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
@@ -80,9 +79,9 @@ default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## m: minutes (default)
 ## h: hours
 ## d: days
-default['hopsworks']['cert_mater_delay']         = "3m"
-default['hopsworks']['service_key_rotation_interval'] = "2d"
-default['hopsworks']['application_certificate_validity_period'] = "3d"
+default['hopsworks']['cert_mater_delay']                            = "3m"
+default['hopsworks']['service_key_rotation_interval']               = "2d"
+default['hopsworks']['application_certificate_validity_period']     = "3d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
 default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
@@ -94,25 +93,17 @@ default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
 default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-5.1.29-bin.jar"
 
-default['hopsworks']['cert']['cn']                  = "sics.se"
-default['hopsworks']['cert']['o']                   = "swedish ict"
-default['hopsworks']['cert']['ou']                  = "sics"
-default['hopsworks']['cert']['l']                   = "kista"
+default['hopsworks']['cert']['cn']                  = "logicalclocks.com"
+default['hopsworks']['cert']['o']                   = "Logical Clocks AB"
+default['hopsworks']['cert']['ou']                  = "Logical Clocks AB"
+default['hopsworks']['cert']['l']                   = "Hägersten"
 default['hopsworks']['cert']['s']                   = "stockholm"
 default['hopsworks']['cert']['c']                   = "se"
 
 default['hopsworks']['cert']['password']            = "changeit"
 default['hopsworks']['master']['password']          = "adminpw"
 
-
-
 default['hopsworks']['cert']['user_cert_valid_days'] = "12"
-
-default['hopsworks']['public_ips']                  = ['10.0.2.15']
-default['hopsworks']['private_ips']                 = ['10.0.2.15']
-#default['hopsworks']['http_secure_enabled']         = "1"
-
-default['kagent']['enabled']                     = "false"
 
 default['hopsworks']['smtp']                     = node['smtp']['host']
 default['hopsworks']['smtp_port']                = node['smtp']['port']
@@ -122,7 +113,7 @@ default['hopsworks']['email_password']           = node['smtp']['email_password'
 
 default['hopsworks']['alert_email_addrs']        = ""
 
-default['hopsworks']['support_email_addr']       = "support@hops.io"
+default['hopsworks']['support_email_addr']       = "support@logicalclocks.com"
 
 # #quotas
 default['hopsworks']['yarn_default_quota_mins']          = "1000000"
@@ -147,9 +138,9 @@ default['hopsworks']['kafka_num_partitions']     = "1"
 default['glassfish']['ciphersuite']				= "+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,+TLS_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,+TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,+TLS_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,+TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,+TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,+TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA"
 default['hopsworks']['monitor_max_status_poll_try'] = "5"
 
-default['hopsworks']['org_name']                       = "hopsworks"
-default['hopsworks']['org_domain']                     = "www.hops.io"
-default['hopsworks']['org_email']                      = "user@hops.site"
+default['hopsworks']['org_name']                       = "Logical Clocks"
+default['hopsworks']['org_domain']                     = "www.logicalclocks.com"
+default['hopsworks']['org_email']                      = ""
 default['hopsworks']['org_country_code']               = "SE"
 default['hopsworks']['org_city']                       = "Stockholm"
 
@@ -161,9 +152,9 @@ default['hopsworks']['encryption_password']      = "adminpw"
 #
 # Dela  - please do not change without consulting dela code
 #
-default['hopsworks']['public_https_port']              = node['hopsworks']['secure_port']
+default['hopsworks']['public_https_port']              = node['hopsworks']['https']['port']
 default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['port']
+default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['https']['port']
 default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
 # Dela - hopssite settings
 default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
@@ -318,6 +309,8 @@ default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
+default['dtrx']['download_url']                      = "#{node['download_url']}/#{node['dtrx']['version']}"
+
 default['rstudio']['deb']                            = "rstudio-server-1.1.447-amd64.deb"
 default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.447-x86_64.rpm"
 default['rstudio']['enabled']                        = "false"
@@ -346,3 +339,5 @@ default['hopsworks']['expat_dir']                    = "#{node['install']['dir']
 #
 default['hopsworks']['featurestore_default_storage_format']   = "ORC"
 
+default['scala']['version']                   = "2.11.8"
+default['scala']['download_url']              = "#{node['download_url']}/scala-#{node['scala']['version']}.rpm"

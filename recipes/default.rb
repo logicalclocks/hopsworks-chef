@@ -1,4 +1,3 @@
-
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -33,10 +32,9 @@ if node['glassfish']['install_dir'].include?("versions") == false
   node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
 
-private_ip=my_private_ip()
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
-realmname="kthfsrealm"
+realmname = "kthfsrealm"
 
 begin
   elastic_ip = private_recipe_ip("elastic","default")
@@ -51,7 +49,6 @@ rescue
   hopsworks_ip = ""
   Chef::Log.warn "could not find the hopsworks server ip for HopsWorks!"
 end
-
 
 begin
   spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
@@ -329,9 +326,7 @@ for version in versions do
          :dela_ip => dela_ip,
          :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
-         :nonconda_hosts_list => nonconda_hosts_list,
-         :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format'],
-         :tf_spark_connector_version => node['hadoop_spark']['tf_spark_connector_version']
+         :nonconda_hosts_list => nonconda_hosts_list
     })
     action :create
   end
@@ -385,40 +380,28 @@ end
 # config glassfish
 ###############################################################################
 
-username=node['hopsworks']['admin']['user']
-password=node['hopsworks']['admin']['password']
-admin_port = 4848
+username = node['hopsworks']['admin']['user']
+password = node['hopsworks']['admin']['password']
+admin_port = node['hopsworks']['admin']['port']
 mysql_host = private_recipe_ip("ndb","mysqld")
 
-
 jndiDB = "jdbc/hopsworks"
-timerDB = "jdbc/hopsworksTimers"
 
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
-admin_pwd="#{domains_dir}/#{domain_name}_admin_passwd"
+admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
-login_cnf="#{domains_dir}/#{domain_name}/config/login.conf"
-log4j_cnf="#{domains_dir}/#{domain_name}/config/log4j.properties"
-
-file "#{login_cnf}" do
-   action :delete
-end
-
-template "#{login_cnf}" do
+template "#{domains_dir}/#{domain_name}/config/login.conf" do
   cookbook 'hopsworks'
   source "login.conf.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "0600"
+  action :create
 end
 
-file "#{log4j_cnf}" do
-   action :delete
-end
-
-template "#{log4j_cnf}" do
+template "#{domains_dir}/#{domain_name}/config/log4j.properties" do
   cookbook 'hopsworks'
   source "log4j.properties.erb"
   owner node['glassfish']['user']
@@ -508,155 +491,44 @@ props =  {
  end
 
 
+glassfish_conf = {
+  'server-config.security-service.default-realm' => 'cauthRealm',
+  # Jobs in Hopsworks use the Timer service
+  'server-config.ejb-container.ejb-timer-service.timer-datasource' => 'jdbc/hopsworksTimers',
+  'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"",
+  # Enable/Disable HTTP listener
+  'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
+  # Make sure the https listener is listening on the requested port 
+  'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port' => node['hopsworks']['https']['port'],
+  # Disable SSL3
+  'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false, 
+  'server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled' => false,
+  # Disable TLS 1.0
+  'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
+  'server.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled' => false,
+  # Restrict ciphersuite
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  'configs.config.server-config.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  # Set correct thread-priority for the executor services - required during updates
+  'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
+  'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
+  # Enable Single Sign on
+  'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
+  'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
+  # Allow following symlinks from docroot
+  'server-config.http-service.virtual-server.server.property.allowLinking' => true 
+}
 
-glassfish_asadmin "set server-config.security-service.default-realm=cauthRealm" do
+glassfish_conf.each do |property, value|
+  glassfish_asadmin "set #{property}=#{value}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
    admin_port admin_port
    secure false
+  end
 end
 
-
-# Jobs in Hopsworks use the Timer service
-glassfish_asadmin "set server-config.ejb-container.ejb-timer-service.timer-datasource=#{timerDB}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set server.http-service.virtual-server.server.property.send-error_1=\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled=false" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-# Restrict ciphersuite
-glassfish_asadmin "set configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers=#{node['glassfish']['ciphersuite']}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-# Restrict ciphersuite
-glassfish_asadmin "set configs.config.server-config.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers=#{node['glassfish']['ciphersuite']}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-# Needed by Shibboleth
-glassfish_asadmin "create-network-listener --protocol http-listener-1 --listenerport 8009 --jkenabled true jk-connector" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-http-listeners | grep 'jk-connect'"
-end
-
-# Needed by Shibboleth
-glassfish_asadmin "set-log-levels org.glassfish.grizzly.http.server.util.RequestUtils=SEVERE" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-# Set correct thread-priority for the executor services - required during updates
-glassfish_asadmin "set resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority=10" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority=10" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-#
-# Enable Single Sign on
-#
-glassfish_asadmin "set server-config.http-service.virtual-server.server.property.sso-enabled='true'" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set server-config.http-service.virtual-server.server.property.sso-max-inactive-seconds=300" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set server-config.http-service.virtual-server.server.property.sso-reap-interval-seconds=60" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set server-config.http-service.virtual-server.server.property.ssoCookieSecure=no" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-glassfish_asadmin "set default-config.http-service.virtual-server.server.property.ssoCookieSecure=no" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-
-# Allow following symlinks from docroot
-glassfish_asadmin "set server-config.http-service.virtual-server.server.property.allowLinking=true" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
    domain_name domain_name
@@ -669,7 +541,7 @@ end
 
 # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
 # connection pool for Airflow
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{private_ip}\\:3306/\" airflowPool" do
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{mysql_host}\\:3306/\" airflowPool" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -714,55 +586,26 @@ if node['ldap']['enabled'].eql? "true"
 end
 
 if node['hopsworks']['http_logs']['enabled'].eql? "true"
-  # Enable http logging
-  glassfish_asadmin "set server.http-service.access-logging-enabled=true" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
+  http_logging_conf = {
+    # Enable http logging
+    'server.http-service.access-logging-enabled' => 'true',
+    # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
+    # ':' is not a legal filename character in HDFS, thus '_'
+    'server.http-service.access-log.rotation-suffix' => 'yyyy-MM-dd-kk_mm',
+    'server.http-service.access-log.max-history-files' => '10',
+    'server.http-service.access-log.buffer-size-bytes' => '32768',
+    'server.http-service.access-log.write-interval-seconds' => '120',
+    'server.http-service.access-log.rotation-interval-in-minutes' => "1400"
+  }
 
-  # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
-  # ':' is not a legal filename character in HDFS, thus '_'
-  glassfish_asadmin "set server.http-service.access-log.rotation-suffix=yyyy-MM-dd-kk_mm" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-
-  glassfish_asadmin "set server.http-service.access-log.max-history-files=10" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-
-  glassfish_asadmin "set server.http-service.access-log.buffer-size-bytes=32768" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-
-  glassfish_asadmin "set server.http-service.access-log.write-interval-seconds=120" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-
-  glassfish_asadmin "set server.http-service.access-log.rotation-interval-in-minutes=1400" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
+  http_logging_conf.each do |property, value|
+    glassfish_asadmin "set #{property}=#{value}" do
+      domain_name domain_name
+      password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+      username username
+      admin_port admin_port
+      secure false
+    end
   end
 
   # Setup cron job for HDFS dumper
@@ -790,7 +633,6 @@ hopsworks_mail "gmail" do
 end
 
 node.override['glassfish']['asadmin']['timeout'] = 400
-
 
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
@@ -889,7 +731,6 @@ glassfish_deployable "undeploy_hopsworks-ca" do
 end
 
 
-
 template "/bin/hopsworks-2fa" do
     source "hopsworks-2fa.erb"
     owner "root"
@@ -958,27 +799,27 @@ template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
   action :create
 end
 
-bash 'enable_sso' do
-  user "root"
-  code <<-EOF
-      sleep 10
-      curl --data "email=admin@kth.se&password=admin&otp=" http://localhost:8080/hopsworks-api/api/auth/login/
-      curl --insecure --user #{username}:#{password} -s https://localhost:4848/asadmin
-    EOF
-end
-
-case node['platform']
- when 'debian', 'ubuntu'
+case node['platform_family']
+ when 'debian'
    package "scala"
- when 'redhat', 'centos', 'fedora'
+
+ when 'rhel'
+
+  scala_rpm_path="#{Chef::Config['file_cache_path']}/scala-#{node['scala']['version']}.rpm"
+  remote_file scala_rpm_path do
+    source node['scala']['download_url'] 
+    owner 'root'
+    group 'root'
+    mode '0755'
+    action :create
+  end
 
   bash 'scala-install-redhat' do
     user "root"
+    cwd Chef::Config['file_cache_path']
     code <<-EOF
-       cd #{Chef::Config['file_cache_path']}
-       wget http://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.rpm
-       sudo yum install scala-2.11.8.rpm
-       rm scala-2.11.8.rpm
+      set -e  
+      yum install -y scala-#{node['scala']['version']}.rpm
     EOF
     not_if "which scala"
   end
@@ -1046,25 +887,9 @@ directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   action :create
 end
 
-
-kagent_keys "#{homedir}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  action :generate
-end
-
-kagent_keys "#{homedir}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  cb_name "hopsworks"
-  cb_recipe "default"
-  action :return_publickey
-end
-
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
-
 
 template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   source "letsencrypt.sh.erb"
@@ -1199,5 +1024,4 @@ if node['rstudio']['enabled'].eql? "true"
       systemctl disable rstudio-server
     EOF
   end
-
 end
