@@ -8,6 +8,7 @@ dependencies:
     global:
       - hops::ndb
       - hive2::db
+      - airflow::db
   - recipe: hopsworks::dev
     global:
       - hopsworks::default

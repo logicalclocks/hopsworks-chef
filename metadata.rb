@@ -36,7 +36,6 @@ depends 'hopsmonitor'
 depends 'hive2'
 depends 'hops_airflow'
 
-
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
 
@@ -2113,11 +2112,6 @@ attribute "ldap/user_id",
 attribute "ldap/user_givenName",
           :description => "Given name field of ldap 'givenName' (default)",
           :type => 'string'
-
-
-#
-# Airflow settings
-#
 
 attribute "ldap/user_surname",
           :description => "Surname field of ldap. 'sn' (default)",
