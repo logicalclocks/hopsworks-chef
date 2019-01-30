@@ -1,0 +1,1 @@
+ALTER TABLE jupyter_project DROP KEY unique_hdfs_user;

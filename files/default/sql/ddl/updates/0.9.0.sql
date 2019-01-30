@@ -1,0 +1,1 @@
+ALTER TABLE jupyter_project ADD CONSTRAINT unique_hdfs_user UNIQUE (hdfs_user_id);

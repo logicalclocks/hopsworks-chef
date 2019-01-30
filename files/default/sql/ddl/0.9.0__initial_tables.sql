@@ -617,6 +617,7 @@ CREATE TABLE `jupyter_project` (
   `pid` bigint(20) NOT NULL,
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`port`),
+  UNIQUE KEY `unique_hdfs_user` (`hdfs_user_id`),
   KEY `hdfs_user_idx` (`hdfs_user_id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `FK_103_525` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
