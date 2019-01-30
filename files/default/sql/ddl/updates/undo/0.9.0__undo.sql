@@ -1,1 +1,0 @@
-ALTER TABLE jupyter_project DROP CONSTRAINT project_hdfs_user;
