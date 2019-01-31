@@ -279,6 +279,10 @@ attribute "hopsworks/file_preview_txt_size",
           :description => "Maximum size in lines of file that can be previewed in DataSets",
           :type => 'string'
 
+attribute "hopsworks/download_allowed",
+          :description => "Whether users should be allowed to download files from datasets. Default value is true.",
+          :type => 'string'
+
 attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
