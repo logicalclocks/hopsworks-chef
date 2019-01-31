@@ -14,6 +14,7 @@ help() {
 
 ANACONDA_USER=<%= node['conda']['user'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+HOPSWORKS_GROUP=<%= node['hopsworks']['group'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
 CERTS_GROUP=<%= node['kagent']['certs_group'] %>
@@ -61,7 +62,7 @@ elif [ "$1" == "start" ] ; then
         exit 1
     fi
 
-    sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$4"
+    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$4"
     sudo chmod 770 "$4"
     cd "$4"
 
@@ -70,11 +71,11 @@ elif [ "$1" == "start" ] ; then
 
     echo > "$5".pid
     sudo chmod 660 "$5".pid
-    sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".pid
+    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$5".pid
 
     echo > "$5".log
     sudo chmod 660 "$5".log
-    sudo chown $ANACONDA_USER:$HOPSWORKS_USER "$5".log
+    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$5".log
 
     su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9"
 
