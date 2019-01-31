@@ -8,9 +8,9 @@ if [ $# -lt 5  ]; then
  exit 1
 fi
 
-VALID_DAYS="12"
+EXPIRATION_DATE=$(date -d "+12 days" '+%y%m%d%H%M%S%z')
 if [ $# -gt 5 ]; then
-  VALID_DAYS="$6"    
+  EXPIRATION_DATE="$6"    
 fi
 
 #Variables
@@ -20,9 +20,8 @@ EXTENSION="$3"
 CSR_PATH="$4"
 GENERATED_CERT_PATH="$5"
 
-
 openssl ca -batch -config "$CA_FILE" -passin pass:"${MASTERPW}" \
-        -extensions "$EXTENSION" -days "$VALID_DAYS" -notext -md sha256 -in "${CSR_PATH}" -out "${GENERATED_CERT_PATH}"
+        -extensions "$EXTENSION" -enddate "$EXPIRATION_DATE" -notext -md sha256 -in "${CSR_PATH}" -out "${GENERATED_CERT_PATH}"
 
 
 chmod +r "${GENERATED_CERT_PATH}"
