@@ -625,24 +625,6 @@ end
 # RStudio
 #
 
-
-template node['rstudio']['base_dir'] + "/rstudio.conf" do
-  source "rstudio.conf.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
-
-template "#{theDomain}/bin/rstudio.sh" do
-  source "rstudio.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
 template "#{theDomain}/bin/rstudio-project-cleanup.sh" do
   source "rstudio-project-cleanup.sh.erb"
   owner node['glassfish']['user']
