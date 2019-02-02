@@ -56,7 +56,7 @@ rm -f $2/rsession.conf
 #  </dev/zero &> "$LOGFILE"  &
 
 
-HOME=$RSTUDIO_HOME <%= @rstudio_binary %> --rsession-config-file ${RSTUDIO_HOME}/rsession.conf --www-address 0.0.0.0 --www-port $PORT  --auth-none 1 --config-file <%= node['rstudio']['home] %>/rserver.conf --server-working-dir ${RSTUDIO_HOME} --server-daemonize 1 --www-frame-origin same --rsession-path ${RSTUDIO_HOME}/rsession.sh </dev/zero &> "$LOGFILE" 
+HOME=$RSTUDIO_HOME <%= @rstudio_binary %> --rsession-config-file ${RSTUDIO_HOME}/rsession.conf --www-address 0.0.0.0 --www-port $PORT  --auth-none 1 --config-file <%= node['rstudio']['home'] %>/rserver.conf --server-working-dir ${RSTUDIO_HOME} --server-daemonize 1 --www-frame-origin same --rsession-path ${RSTUDIO_HOME}/rsession.sh </dev/zero &> "$LOGFILE" 
 echo $! > "$PID_FILE"
 
 exit $?
