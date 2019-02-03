@@ -131,9 +131,10 @@ default['hopsworks']['hive_default_quota_mbs']           = "250000"
 default['hopsworks']['featurestore_default_quota_mbs']   = "250000"
 default['hopsworks']['max_num_proj_per_user']            = "10"
 
-# file preview
+# file preview and download
 default['hopsworks']['file_preview_image_size']  = "10000000"
 default['hopsworks']['file_preview_txt_size']    = "100"
+default['hopsworks']['download_allowed']         = "true"
 
 default['hops']['user_envs']                     = "false"
 
@@ -250,6 +251,8 @@ default['jupyter']['python']                           = "true"
 default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
 default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
+default['tfserving']['pool_size']                      = "40"
+default['tfserving']['max_route_connections']          = "10"
 
 #
 # PyPi
@@ -329,6 +332,7 @@ default['hopsworks']['jwt']['signature_algorithm']   = 'HS512'
 default['hopsworks']['jwt']['lifetime_ms']           = '1800000'
 default['hopsworks']['jwt']['exp_leeway_sec']        = '900'
 default['hopsworks']['jwt']['signing_key_name']      = 'apiKey'
+default['hopsworks']['jwt']['issuer']                = 'hopsworks@logicalclocks.com'
 
 #
 # EXPAT
