@@ -220,6 +220,7 @@ file "#{node['hopsworks']['env_var_file']}" do
   group node['glassfish']['group']
 end
 
+
 node.override = {
   'java' => {
     'install_flavor' => node['java']['install_flavor'],
@@ -310,6 +311,26 @@ node.override = {
             'resources' => {
               'jdbc/hopsworks' => {
                 'description' => 'Resource for Hopsworks Pool',
+              }
+            }
+          },
+          'airflowPool' => {
+            'config' => {
+              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'restype' => 'javax.sql.DataSource',
+              'isconnectvalidatereq' => 'true',
+              'validationmethod' => 'auto-commit',
+              'ping' => 'true',
+              'description' => 'Airflow Connection Pool',
+              'properties' => {
+                'Url' => "jdbc:mysql://#{my_ip}:3306/",
+                'User' => node['airflow']['mysql_user'],
+                'Password' => node['airflow']['mysql_password']
+              }
+            },
+            'resources' => {
+              'jdbc/airflow' => {
+                'description' => 'Resource for Airflow Pool',
               }
             }
           },
@@ -760,6 +781,7 @@ template "/etc/sudoers.d/glassfish" do
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
               :hive_user => node['hive2']['user'],
               :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
+              :airflow_copy => "#{theDomain}/bin/airflowOps.sh",              
               :start_llap => "#{theDomain}/bin/start-llap.sh"
             })
   action :create
@@ -928,3 +950,13 @@ template "#{theDomain}/bin/conda-command-ssh.sh" do
   mode 0750
   action :create
 end
+
+template "#{theDomain}/bin/airflowOps.sh" do
+  source "airflowOps.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0710
+  action :create
+end
+
+

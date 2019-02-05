@@ -11,5 +11,6 @@
 <%= @user %> ALL=NOPASSWD: <%= @conda_export %>
 <%= @user %> ALL=NOPASSWD: <%= @tensorboard %>
 <%= @user %> ALL=NOPASSWD: <%= @anaconda_prepare %>
+<%= @user %> ALL=NOPASSWD: <%= @airflow_copy %>
 <%= @user %> ALL=(<%= @hive_user %>) NOPASSWD: <%= @start_llap %>
 
