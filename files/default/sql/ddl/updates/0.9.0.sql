@@ -11,5 +11,3 @@ DEALLOCATE PREPARE stmt1;
 ALTER TABLE jupyter_project ADD CONSTRAINT `fk_hdfs_user_id` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE jupyter_project DROP KEY `hdfs_user_idx`;
-
-ALTER TABLE jupyter_project CHANGE `last_accessed` `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
