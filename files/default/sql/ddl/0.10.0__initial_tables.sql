@@ -593,7 +593,7 @@ CREATE TABLE `jupyter_interpreter` (
   `port` int(11) NOT NULL,
   `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`port`,`name`),
   CONSTRAINT `FK_523_530` FOREIGN KEY (`port`) REFERENCES `jupyter_project` (`port`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
