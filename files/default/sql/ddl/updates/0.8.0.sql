@@ -150,6 +150,5 @@ ALTER TABLE `hopsworks`.`dataset`
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
-ALTER TABLE `hopsworks`.`jobs` ADD INDEX `creation_time_project_idx` (`creation_time` DESC, `project_id`), ADD INDEX `type_project_id_idx` (`type`, `project_id`);
 ALTER TABLE `hopsworks`.`jobs` ADD INDEX `creation_time_project_idx` (`creation_time` DESC, `project_id`), ADD INDEX `type_project_id_idx` (`type`, `project_id`), ADD INDEX `creator_project_idx` (`creator`, `project_id`);
 ALTER TABLE `hopsworks`.`executions` ADD INDEX `submission_time_idx` (`submission_time` DESC, `job_id`), ADD INDEX `state_idx` (`state`, `job_id`), ADD INDEX `finalStatus_idx` (`finalStatus`, `job_id`), ADD INDEX `progress_idx` (`progress` DESC, `job_id`);
