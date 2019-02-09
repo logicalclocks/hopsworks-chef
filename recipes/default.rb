@@ -331,7 +331,8 @@ for version in versions do
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
          :nonconda_hosts_list => nonconda_hosts_list,
          :featurestore_default_storage_format => node['hopsworks']['featurestore_default_storage_format'],
-         :tf_spark_connector_version => node['hadoop_spark']['tf_spark_connector_version']
+         :tf_spark_connector_version => node['hadoop_spark']['tf_spark_connector_version'],
+         :spark_avro_package_version => node['hadoop_spark']['spark_avro_package_version']
     })
     action :create
   end
