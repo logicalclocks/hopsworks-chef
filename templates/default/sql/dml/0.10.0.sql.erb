@@ -1,2 +1,2 @@
 REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_shutdown_timer_interval", "<%= node['jupyter']['shutdown_timer_interval'] %>");
-REPLACE INTO variables VALUES ("spark_avro_package_version", "<%= @spark_avro_package_version %>");
+REPLACE INTO variables VALUES ("spark_avro_package_version", "<%= node['hadoop_spark']['spark_avro_package_version'] %>");
