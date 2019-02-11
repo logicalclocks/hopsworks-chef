@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.9.0"
+version          "0.10.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -34,7 +34,7 @@ depends 'tensorflow'
 depends 'hopslog'
 depends 'hopsmonitor'
 depends 'hive2'
-
+depends 'hops_airflow'
 
 #link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
@@ -277,6 +277,10 @@ attribute "hopsworks/file_preview_image_size",
 
 attribute "hopsworks/file_preview_txt_size",
           :description => "Maximum size in lines of file that can be previewed in DataSets",
+          :type => 'string'
+
+attribute "hopsworks/download_allowed",
+          :description => "Whether users should be allowed to download files from datasets. Default value is true.",
           :type => 'string'
 
 attribute "hopsworks/anaconda_enabled",
@@ -1422,6 +1426,20 @@ attribute "zeppelin/dir",
 
 ##
 ##
+## TFServing
+##
+##
+
+attribute "tfserving/pool_size",
+          :description => "size of the connection pool for serving inference requests",
+          :type => 'string'
+
+attribute "tfserving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route",
+          :type => 'string'
+
+##
+##
 ## Jupyter
 ##
 ##
@@ -2256,6 +2274,10 @@ attribute "hopsworks/jwt/exp_leeway_sec",
 
 attribute "hopsworks/jwt/signing_key_name",
           :description => "Default signing key name. (default apiKey)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/issuer",
+          :description => "JWT issuer identifier. (default hopsworks@logicalclocks.com)",
           :type => 'string'
 
 # Fabio remove this before merging

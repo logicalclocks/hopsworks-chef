@@ -200,7 +200,7 @@ REPLACE INTO variables VALUES ("staging_dir", "<%= node['hopsworks']['staging_di
 
 REPLACE INTO variables VALUES ("max_status_poll_retry", "<%= node['hopsworks']['monitor_max_status_poll_try'] %>");
 
-REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hops']['hopsutil_version'] %>");
+REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hadoop_spark']['hopsutil_version'] %>");
 
 -- --------------------------------------------------------
 --
