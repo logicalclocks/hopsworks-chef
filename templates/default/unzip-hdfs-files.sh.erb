@@ -12,7 +12,6 @@ fi
 workdir=$1
 hdfsFile="$2"
 IMPERSONATED_USERNAME=$3
-export HADOOP_USER_NAME="${IMPERSONATED_USERNAME}"
 
 #FSM states: STAGING, UNZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
 fsmFile="${workdir}/fsm.txt"
