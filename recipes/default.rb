@@ -595,7 +595,7 @@ if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_pat
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0600"
-    action :create_if_missing
+    action :create
   end
 end
 
@@ -607,7 +607,7 @@ if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_k
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "0600"
-    action :create_if_missing
+    action :create
   end
 end
 
