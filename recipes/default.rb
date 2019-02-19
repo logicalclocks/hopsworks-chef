@@ -545,6 +545,7 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+end
 
 # Http listeners configuration
 glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
