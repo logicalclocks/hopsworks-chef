@@ -27,3 +27,10 @@ solarisRealm {
 cauthRealm{
     io.hops.crealm.CustomAuthLoginModule required;
 };
+spnego-client {
+    com.sun.security.auth.module.Krb5LoginModule required;
+};
+spnego-server {
+    com.sun.security.auth.module.Krb5LoginModule required
+    keyTab=<%= node['kerberos']['krb_server_key_tab_name'] %><%= node['kerberos']['spnego_server_conf'] %>;
+};
