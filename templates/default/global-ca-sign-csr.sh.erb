@@ -8,9 +8,9 @@ if [ $# -lt 5  ]; then
  exit 1
 fi
 
-EXPIRATION_DATE=$(date -d "+12 days" '+%y%m%d%H%M%S%z')
+EXPIRATION_DATE=$(date -u -d "+12 days" '+%y%m%d%H%M%S')'Z'
 if [ $# -gt 5 ]; then
-  EXPIRATION_DATE="$6"    
+  EXPIRATION_DATE="$6"
 fi
 
 #Variables
