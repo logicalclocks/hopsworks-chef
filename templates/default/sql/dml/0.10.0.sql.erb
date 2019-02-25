@@ -2,3 +2,4 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_shutdown_timer_interval", 
 REPLACE INTO `hopsworks`.`variables` VALUES ("kerberos_auth", "<%= node['kerberos']['enabled'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_search_filter", "<%= node['ldap']['krb_search_filter'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_dyn_grp_search_filter", "<%= node['ldap']['krb_dyn_grp_search_filter'] %>");
+DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_spark_connector_version';
