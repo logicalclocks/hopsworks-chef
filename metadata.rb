@@ -19,7 +19,6 @@ depends 'hops'
 depends 'elastic'
 depends 'hadoop_spark'
 depends 'flink'
-depends 'zeppelin'
 depends 'compat_resource'
 depends 'ulimit2'
 depends 'authbind'
@@ -482,10 +481,6 @@ attribute "livy/keystore",
 attribute "livy/keystore_password",
           :dscription => "ivy.keystore_password",
           :type => "string"
-
-attribute "hopsworks/livy_zeppelin_session_timeout",
-          :description => "Session timeout for Livy on Zeppelin, to differentiate from the default for Jupyter.",
-          :type => 'string'
 
 ##
 ##
@@ -1385,26 +1380,6 @@ attribute "hive2/metastore/private_ips",
 attribute "hive2/server2/private_ips",
           :description => "Set ip addresses",
           :type => "array"
-
-
-##
-##
-## Zeppelin
-##
-##
-
-attribute "zeppelin/user",
-          :description => "User to install/run zeppelin as",
-          :type => 'string'
-
-attribute "zeppelin/group",
-          :description => "Group to install/run zeppelin as",
-          :type => 'string'
-
-attribute "zeppelin/dir",
-          :description => "zeppelin base dir",
-          :type => 'string'
-
 
 
 

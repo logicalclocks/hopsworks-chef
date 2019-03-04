@@ -4,7 +4,6 @@ include_attribute "ndb"
 include_attribute "hadoop_spark"
 include_attribute "flink"
 include_attribute "elastic"
-include_attribute "zeppelin"
 include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
@@ -250,12 +249,6 @@ default['tfserving']['max_route_connections']          = "10"
 # PyPi
 #
 default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
-
-# Livy
-default['hopsworks']['livy_zeppelin_session_timeout']  = "3600"
-
-# Zeppelin
-default['hopsworks']['zeppelin_interpreters']  = "org.apache.zeppelin.hopshive.HopsHiveInterpreter"
 
 
 #
