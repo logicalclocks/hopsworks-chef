@@ -95,7 +95,7 @@ INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDAT
 -- Default settings
 --
 
-REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("zeppelin_dir", "<%= node['zeppelin']['dir'] %>/zeppelin"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("zeppelin_user","<%= node['zeppelin']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
+REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
 
 REPLACE INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
 
@@ -116,10 +116,6 @@ REPLACE INTO variables VALUES ("rm_port", "<%= @rm_port %>");
 REPLACE INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
 
 REPLACE INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
-
-REPLACE INTO variables VALUES ("livy_zeppelin_session_timeout", "<%= node['hopsworks']['livy_zeppelin_session_timeout'] %>");
-
-REPLACE INTO variables VALUES ("zeppelin_interpreters", "<%= node['hopsworks']['zeppelin_interpreters'] %>");
 
 REPLACE INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
 

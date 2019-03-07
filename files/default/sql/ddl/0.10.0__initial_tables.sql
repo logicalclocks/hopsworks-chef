@@ -1203,22 +1203,6 @@ CREATE TABLE `project_topics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `projectgenericuser_certs`
---
-
-DROP TABLE IF EXISTS `projectgenericuser_certs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `projectgenericuser_certs` (
-  `project_generic_username` varchar(120) COLLATE latin1_general_cs NOT NULL,
-  `pgu_key` varbinary(7000) DEFAULT NULL,
-  `pgu_cert` varbinary(3000) DEFAULT NULL,
-  `cert_password` varchar(200) COLLATE latin1_general_cs NOT NULL DEFAULT '',
-  PRIMARY KEY (`project_generic_username`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `python_dep`
 --
 
@@ -1681,24 +1665,6 @@ CREATE TABLE `variables` (
   `id` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `value` varchar(1024) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `zeppelin_interpreter_confs`
---
-
-DROP TABLE IF EXISTS `zeppelin_interpreter_confs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `zeppelin_interpreter_confs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `project_id` int(11) NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `interpreter_conf` text COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `project_id_UNIQUE` (`project_id`),
-  CONSTRAINT `FK_284_499` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

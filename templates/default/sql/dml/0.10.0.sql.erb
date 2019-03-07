@@ -3,3 +3,11 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("kerberos_auth", "<%= node['kerbero
 REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_search_filter", "<%= node['ldap']['krb_search_filter'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_dyn_grp_search_filter", "<%= node['ldap']['krb_dyn_grp_search_filter'] %>");
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_spark_connector_version';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_dir';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_projects_dir';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_sync_interval';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_user';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_version';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_interpreters';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='livy_zeppelin_session_timeout';
