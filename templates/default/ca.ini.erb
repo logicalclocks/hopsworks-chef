@@ -1,7 +1,7 @@
 [hops-site]
 url = <%= node['hopssite']['url'] %>
 path-login = /hopsworks-api/api/auth/login
-path-sign-cert = /hopsworks-ca/v2/certificate/dela
+path-sign-cert = /hopsworks-cluster/api/cluster/certificate
 username = <%= node['hopssite']['user'] %>
 password = <%= node['hopssite']['password'] %>
 retry-interval = <%= node['hopssite']['retry_interval'] %>
