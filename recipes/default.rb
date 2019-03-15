@@ -1,3 +1,5 @@
+include_recipe "java"
+
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -9,21 +11,6 @@ if node['hopsworks']['dela']['enabled'] == "true"
     end
   end
 end
-
-case node['platform']
-when "ubuntu"
- if node['platform_version'].to_f <= 14.04
-   node.override['hopsworks']['systemd'] = "false"
- end
-end
-
-if node['hopsworks']['systemd'] === "true"
-  systemd = true
-else
-  systemd = false
-end
-
-include_recipe "java"
 
 # If the install.rb recipe was in a different run, the location of the install dir may
 # not be correct. install_dir is updated by install.rb, but not persisted, so we need to
@@ -308,7 +295,7 @@ for version in versions do
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
          :hdfs_ui_ip => public_recipe_ip("hops","nn"),
          :hdfs_ui_port => hdfs_ui_port,
-         :hopsworks_dir => domains_dir,
+         :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
@@ -558,6 +545,23 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+end
+
+# Http listeners configuration
+glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
+
+glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
 end
 
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
@@ -913,6 +917,30 @@ directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   action :create
 end
 
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  action :generate
+end
+
+kagent_keys "#{homedir}" do
+  cb_user node['hopsworks']['user']
+  cb_group node['hopsworks']['group']
+  cb_name "hopsworks"
+  cb_recipe "default"
+  action :return_publickey
+end
+
+# Generate a service JWT token to be used internally in Hopsworks
+bash "generate_jwt" do
+  user "root"
+  environment (lazy {{'JWT' => get_service_jwt()}})
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh -e "REPLACE INTO hopsworks.variables(id, value) VALUE ('service_jwt', '$JWT');"
+  EOH
+end
+
+# Force variables reload
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end

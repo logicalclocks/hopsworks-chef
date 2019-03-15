@@ -512,39 +512,6 @@ template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   action :create
 end
 
-template "#{ca_dir}/intermediate/createusercerts.sh" do
-  source "createusercerts.sh.erb"
-  owner "root"
-  group node['glassfish']['group']
-  mode "510"
-  variables({
-              :int_ca_dir =>  "#{ca_dir}/intermediate/"
-            })
-  action :create
-end
-
-template "#{ca_dir}/intermediate/deleteusercerts.sh" do
-  source "deleteusercerts.sh.erb"
-  owner "root"
-  group node['glassfish']['group']
-  mode "510"
-  variables({
-              :int_ca_dir =>  "#{ca_dir}/intermediate/"
-            })
-  action :create
-end
-
-template "#{ca_dir}/intermediate/deleteprojectcerts.sh" do
-  source "deleteprojectcerts.sh.erb"
-  owner "root"
-  group node['glassfish']['group']
-  mode "510"
-  variables({
-              :int_ca_dir =>  "#{ca_dir}/intermediate/"
-            })
-  action :create
-end
-
 template "#{theDomain}/bin/ndb_backup.sh" do
   source "ndb_backup.sh.erb"
   owner node['glassfish']['user']
@@ -752,9 +719,6 @@ template "/etc/sudoers.d/glassfish" do
   mode "0440"
   variables({
               :user => node['glassfish']['user'],
-              :int_sh_dir =>  "#{ca_dir}/intermediate/createusercerts.sh",
-              :delete_usercert =>  "#{ca_dir}/intermediate/deleteusercerts.sh",
-              :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",

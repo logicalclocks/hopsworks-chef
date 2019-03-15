@@ -330,16 +330,20 @@ default['hopsworks']['kafka_max_num_topics']                   = '100'
 # JWT
 #
 
-default['hopsworks']['jwt']['signature_algorithm']   = 'HS512'
-default['hopsworks']['jwt']['lifetime_ms']           = '1800000'
-default['hopsworks']['jwt']['exp_leeway_sec']        = '900'
-default['hopsworks']['jwt']['signing_key_name']      = 'apiKey'
+default['hopsworks']['jwt']['signature_algorithm']        = 'HS512'
+default['hopsworks']['jwt']['lifetime_ms']                = '1800000'
+default['hopsworks']['jwt']['exp_leeway_sec']             = '900'
+default['hopsworks']['jwt']['signing_key_name']           = 'apiKey'
+
 default['hopsworks']['jwt']['issuer']                = 'hopsworks@logicalclocks.com'
+
+default['hopsworks']['jwt']['service_lifetime_ms']        = '604800000' # 1 week
+default['hopsworks']['jwt']['service_exp_leeway_sec']     = '172800000' # 2 days
 
 #
 # EXPAT
 #
- 
+
 default['hopsworks']['expat_url']                    = "#{node['download_url']}/expat/#{node['install']['version']}/expat-#{node['install']['version']}.tar.gz"
 default['hopsworks']['expat_dir']                    = "#{node['install']['dir']}/expat-#{node['install']['version']}"
 
@@ -350,3 +354,10 @@ default['hopsworks']['featurestore_default_storage_format']   = "ORC"
 
 default['scala']['version']                   = "2.11.8"
 default['scala']['download_url']              = "#{node['download_url']}/scala-#{node['scala']['version']}.rpm"
+
+#
+# Glassfish Http configuration
+#
+
+# Number of seconds to keep an inactive connection alive
+default['glassfish']['http']['keep_alive_timeout']   = "30"
