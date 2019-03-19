@@ -1456,6 +1456,9 @@ attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
           :type => 'string'
 
+attribute "jupyter/shutdown_timer_interval",
+          :description => "notebook cleaner interval for shutting down expired notebooks",
+          :type => 'string'
 ##
 ##
 ## Kagent
