@@ -31,3 +31,5 @@ ALTER TABLE `jupyter_settings` ADD COLUMN `log_level` varchar(32) COLLATE latin1
 ALTER TABLE `jupyter_settings` ADD COLUMN `umask` varchar(32) COLLATE latin1_general_cs DEFAULT '022';
 ALTER TABLE `jupyter_settings` DROP COLUMN `base_dir`;
 ALTER TABLE `jupyter_settings` DROP COLUMN `json_config`;
+
+DROP TABLE IF EXISTS `airflow_material`;
