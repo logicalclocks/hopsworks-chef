@@ -6,38 +6,44 @@
 
 help() {
     echo ""
-    echo "usage: $0 path hdfs_username jupyter_path output_path"
+    echo "usage: $0 path hdfs_username jupyter_path output_path conversion_dir"
     echo ""
     exit 1
 }
 
-if [ "$#" -ne 4 ] ; then
+if [ "$#" -ne 5 ] ; then
     help
 fi
 
-cd <%= node['hopsworks']['staging_dir'] %>
+staging_dir=<%= node['hopsworks']['staging_dir'] %>
+cd $staging_dir
 if [ $? -ne 0 ] ; then
     echo "The staging directory does not exist. Cannot continue. Missing dir: <%= node['hopsworks']['staging_dir'] %>"
     exit 2
-fi    
-mkdir -p ipython_conversions
+fi
+
+conversion_dir=$staging_dir/ipython_conversions/$5
+function finish {
+    rm -rf $conversion_dir
+}
+trap finish EXIT
+
+mkdir -p $conversion_dir
+
 if [ $? -ne 0 ] ; then
     echo "Could not create directory in the staging directory for converting iPython notebook. Problem dir: <%= node['hopsworks']['staging_dir'] %>/ipython_conversions as user $USER"
     exit 3
 fi    
-cd ipython_conversions
+
+cd $conversion_dir
 
 filename=$(basename "$1")
 dirname=$(dirname "$1")
 
 base=$(echo "$filename" | cut -f 1 -d '.')
 
-# Remove any old versions that may be here
-rm -f "${base}".py
-rm -f "$filename"
-
 # Stage the jupyter notebook before converting locally and uploading back to hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$1"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$1" tmp.ipynb
 if [ $? -ne 0 ] ; then
     echo "Problem staging from hdfs ipython notebook: $1"
     exit 4
@@ -48,14 +54,16 @@ if [ ! -f "$3"/bin/jupyter ]; then
     exit 5
 fi
 
-"$3"/bin/jupyter nbconvert --to python "$filename"
+"$3"/bin/jupyter nbconvert --to python tmp.ipynb
 if [ $? -ne 0 ] ; then
     echo "Problem converting ipython notebook to python program: $1"
     exit 6
-fi    
+fi
 
-# Over-write any old version up on hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${base}".py "$4"
+printf '%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "$(cat tmp.py)" > tmp.py
+
+# Over-write any old version on hdfs
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f tmp.py "$4"
 if [ $? -ne 0 ] ; then
     echo "Problem copying converted ipython program back to hdfs: $4"
     exit 7
