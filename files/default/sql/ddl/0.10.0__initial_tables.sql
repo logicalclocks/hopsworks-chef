@@ -1831,3 +1831,15 @@ ALTER TABLE `hopsworks`.`dataset`
   ADD FOREIGN KEY `featurestore_fk` (`feature_store_id`) REFERENCES `feature_store` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+CREATE TABLE IF NOT EXISTS `airflow_material` (
+  `project_id` INT(11) NOT NULL,
+  `user_id`    INT(11) NOT NULL,
+  PRIMARY KEY (`project_id`, `user_id`),
+  FOREIGN KEY `airflow_material_project` (`project_id`) REFERENCES `project` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  FOREIGN KEY `airflow_material_user` (`user_id`) REFERENCES `users` (`uid`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
