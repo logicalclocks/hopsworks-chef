@@ -1,5 +1,3 @@
-ALTER TABLE jupyter_project CHANGE `expires` `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-
 CREATE TABLE IF NOT EXISTS `jupyter_interpreter` (
   `port` int(11) NOT NULL,
   `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
