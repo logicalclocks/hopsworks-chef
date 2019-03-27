@@ -520,6 +520,14 @@ template "#{theDomain}/bin/ndb_backup.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/convert-ipython-notebook.sh" do
+  source "convert-ipython-notebook.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
 template "#{theDomain}/bin/jupyter.sh" do
   source "jupyter.sh.erb"
   owner node['glassfish']['user']

@@ -952,13 +952,6 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/convert-ipython-notebook.sh" do
-  source "convert-ipython-notebook.sh.erb"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-end
-
 directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
   owner "root"
   group "root"
