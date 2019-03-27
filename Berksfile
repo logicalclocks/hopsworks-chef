@@ -3,15 +3,15 @@ source 'https://supermarket.chef.io'
 
 metadata
 
-cookbook 'conda', github: "robzor92/conda-chef", branch: "HOPSWORKS-875"
-cookbook 'kagent', github: "robzor92/kagent-chef", branch: "HOPSWORKS-875"
+cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
+cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
 cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "logicalclocks/spark-chef", branch: "master"
 cookbook 'flink', github: "logicalclocks/flink-chef", branch: "master"
 cookbook 'livy', github: "logicalclocks/livy-chef", branch: "master"
 cookbook 'drelephant', github: "logicalclocks/dr-elephant-chef", branch: "master"
-cookbook 'tensorflow', github: "robzor92/tensorflow-chef", branch: "HOPSWORKS-875"
+cookbook 'tensorflow', github: "logicalclocks/tensorflow-chef", branch: "master"
 cookbook 'epipe', github: "logicalclocks/epipe-chef", branch: "master"
 cookbook 'dela', github: "logicalclocks/dela-chef", branch: "master"
 cookbook 'kzookeeper', github: "logicalclocks/kzookeeper", branch: "master"
