@@ -1419,7 +1419,11 @@ attribute "jupyter/shutdown_timer_interval",
           :description => "notebook cleaner interval for shutting down expired notebooks",
           :type => 'string'
 
-##
+attribute "jupyter/ws_ping_interval",
+          :description => "Ping frequency for the jupyter websocket",
+          :type => 'string'
+
+#
 ##
 ## Kagent
 ##

@@ -15,3 +15,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_lifetime_ms", "<%= nod
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_exp_leeway_sec", "<%= node['hopsworks']['jwt']['service_exp_leeway_sec'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("keepalive_timeout", "<%= node['glassfish']['http']['keep_alive_timeout']  %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_ws_ping_interval", "<%= node['jupyter']['ws_ping_interval'] %>");

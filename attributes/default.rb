@@ -235,6 +235,7 @@ default['jupyter']['user']                             = node['install']['user']
 default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
+default['jupyter']['ws_ping_interval']                 = "10s"
 
 #
 # TensorFlow Serving
