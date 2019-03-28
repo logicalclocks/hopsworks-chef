@@ -19,7 +19,6 @@ depends 'hops'
 depends 'elastic'
 depends 'hadoop_spark'
 depends 'flink'
-depends 'zeppelin'
 depends 'compat_resource'
 depends 'ulimit2'
 depends 'authbind'
@@ -36,13 +35,9 @@ depends 'hopsmonitor'
 depends 'hive2'
 depends 'hops_airflow'
 
-#link:Click <a target='_blank' href='https://%host%:4848'>here</a> to launch Glassfish in your browser (http)
 recipe  "hopsworks::install", "Installs Glassfish"
 
-#link:Click <a target='_blank' href='http://%host%:8080/hopsworks'>here</a> to launch hopsworks in your browser (http)
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
-recipe  "hopsworks::master", "Hopsworks master instance that will store the certificate authtority."
-recipe  "hopsworks::slave", "Hopsworks master instance that will store only an intermediate certificate authtority."
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
 recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
@@ -145,10 +140,6 @@ attribute "hopsworks/master/password",
           :description => "Web Application Server master password",
           :type => 'string'
 
-#attribute "hopsworks/http_secure_enabled",
-#          :description => "Indicates if there is an HTTPS listener enabled",
-#          :type => 'string'
-
 attribute "download_url",
           :description => "URL for downloading binaries",
           :type => 'string'
@@ -199,12 +190,8 @@ attribute "glassfish/group",
           :description => "glassfish/group",
           :type => 'string'
 
-attribute "hopsworks/port",
+attribute "hopsworks/https/port",
           :description => "Port that webserver will listen on",
-          :type => 'string'
-
-attribute "hopsworks/secure_port",
-          :description => "TLS Port that webserver will listen on",
           :type => 'string'
 
 attribute "hopsworks/max_mem",
@@ -229,10 +216,6 @@ attribute "hopsworks/max_perm_size",
 
 attribute "hopsworks/reinstall",
           :description => "Enter 'true' if this is a reinstallation",
-          :type => 'string'
-
-attribute "hopsworks/pixiedust/enabled",
-          :description => "Enter 'true' to install pixiedust, 'false' otherwise",
           :type => 'string'
 
 attribute "hopsworks/war_url",
@@ -498,10 +481,6 @@ attribute "livy/keystore",
 attribute "livy/keystore_password",
           :dscription => "ivy.keystore_password",
           :type => "string"
-
-attribute "hopsworks/livy_zeppelin_session_timeout",
-          :description => "Session timeout for Livy on Zeppelin, to differentiate from the default for Jupyter.",
-          :type => 'string'
 
 ##
 ##
@@ -1403,26 +1382,6 @@ attribute "hive2/server2/private_ips",
           :type => "array"
 
 
-##
-##
-## Zeppelin
-##
-##
-
-attribute "zeppelin/user",
-          :description => "User to install/run zeppelin as",
-          :type => 'string'
-
-attribute "zeppelin/group",
-          :description => "Group to install/run zeppelin as",
-          :type => 'string'
-
-attribute "zeppelin/dir",
-          :description => "zeppelin base dir",
-          :type => 'string'
-
-
-
 
 ##
 ##
@@ -2073,8 +2032,6 @@ attribute "mysql/password",
 # SMTP
 #
 #
-
-
 attribute "smtp/host",
           :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
           :type => 'string'
@@ -2133,6 +2090,10 @@ attribute "ldap/group_search_filter",
           :description => "LDAP group search filter. 'member=%d' (default)",
           :type => 'string'
 
+attribute "ldap/krb_search_filter",
+          :description => "LDAP user krb search filter. 'krbPrincipalName=%s' (default)",
+          :type => 'string'
+
 attribute "ldap/attr_binary",
           :description => "LDAP global Unique Identity Code of the object attribute. 'java.naming.ldap.attributes.binary' (default)",
           :type => 'string'
@@ -2187,6 +2148,42 @@ attribute "ldap/referral",
 
 attribute "ldap/additional_props",
           :description => "LDAP additional properties. '' (default)",
+          :type => 'string'
+
+#
+# Kerberos
+#
+
+attribute "kerberos/enabled",
+          :description => "Enable Kerberos auth. 'false' (default)",
+          :type => 'string'
+
+attribute "kerberos/kerberos_fqdn",
+          :description => "Kerberos fully qualified domain name. '' (default)",
+          :type => 'string'
+
+attribute "kerberos/spnego_principal",
+          :description => "Spnego principal . 'HTTP/server.example.com' (default)",
+          :type => 'string'
+
+attribute "kerberos/spnego_keytab_file",
+          :description => "Spnego principal keytab file path. '/etc/security/keytabs/service.keytab' (default)",
+          :type => 'string'
+          
+attribute "kerberos/krb_conf_path",
+          :description => "Kerberos conf path. '/etc/krb5.conf' (default)",
+          :type => 'string'
+
+attribute "kerberos/spnego_server_conf",
+          :description => "Spnego server extra conf. 'storeKey=true\nisInitiator=false' (default)",
+          :type => 'string' 
+          
+attribute "kerberos/krb_server_key_tab_path",
+          :description => "Spnego server keyTab file location. '/etc/security/keytabs/service.keytab' (default)",
+          :type => 'string'
+
+attribute "kerberos/krb_server_key_tab_name",
+          :description => "Spnego server keyTab file name. 'service.keytab' (default)", 
           :type => 'string'
 
 ### Conda
@@ -2284,12 +2281,12 @@ attribute "hopsworks/jwt/issuer",
           :description => "JWT issuer identifier. (default hopsworks@logicalclocks.com)",
           :type => 'string'
 
-# Fabio remove this before merging
-attribute "install/current_version",
-          :description => "Current installed Hopsworks version",
-          :type => "string"
-
 ### Feature Store
 attribute "hopsworks/featurestore_default_storage_format",
           :description => "Default storage format for the hive database of the feature stores (ORC/PARQUET)",
+          :type => 'string'
+
+# Glassfish Http Configuration
+attribute "glassfish/http/keep_alive_timeout",
+          :description => "Glassfish http listeners Keep alive timeout seconds",
           :type => 'string'

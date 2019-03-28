@@ -111,9 +111,6 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
     
-    parent=$(dirname "$8")
-    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$parent"
-    sudo chmod 0730 "$parent"
     sudo mkdir -p "$8"
     if [ $? -ne 0 ] ; then
 	echo "Error: could not create private_dir: $8"
