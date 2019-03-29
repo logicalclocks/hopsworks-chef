@@ -1874,7 +1874,7 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
   `token` varchar(2048) DEFAULT NULL,
   `nonce` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `login_state_UNIQUE` (`state`),
+  UNIQUE KEY `state_UNIQUE` (``),
   FOREIGN KEY `fk_oauth_login_state_client` (`client_id`) REFERENCES `oauth_client` (`client_id`) 
     ON DELETE CASCADE 
     ON UPDATE NO ACTION

@@ -76,10 +76,10 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
   `token` varchar(2048) DEFAULT NULL,
   `nonce` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `state_UNIQUE` (``),
+  UNIQUE KEY `state_UNIQUE` (`state`),
   FOREIGN KEY `fk_oauth_login_state_client` (`client_id`) REFERENCES `oauth_client` (`client_id`) 
     ON DELETE CASCADE 
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
+ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
