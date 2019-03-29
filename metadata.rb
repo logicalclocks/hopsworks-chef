@@ -2296,3 +2296,13 @@ attribute "hopsworks/featurestore_default_storage_format",
 attribute "glassfish/http/keep_alive_timeout",
           :description => "Glassfish http listeners Keep alive timeout seconds",
           :type => 'string'
+
+# kagent liveness monitor configuration
+attribute "hopsworks/kagent_liveness/enabled",
+          :description => "Enables kagent service monitoring and restart",
+          :type => 'string'
+
+attribute "hopsworks/kagent_liveness/threshold",
+          :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
+          :type => 'string'
+
