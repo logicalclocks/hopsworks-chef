@@ -797,6 +797,14 @@ template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/bin/tensorboard-cleanup.sh" do
+  source "tensorboard-cleanup.sh.erb"
+  owner node['glassfish']['user']
+  group node['conda']['group']
+  mode 0750
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
   owner node['glassfish']['user']
