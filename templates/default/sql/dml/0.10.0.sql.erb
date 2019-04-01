@@ -18,7 +18,7 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("keepalive_timeout", "<%= node['gla
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_ws_ping_interval", "<%= node['jupyter']['ws_ping_interval'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_enabled", "<%= node['oauth']['enabled'] %>"),
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_account_status", "<%= node['oauth']['account_status'] %>"),
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_redirect_uri", "<%= node['oauth']['redirect_uri'] %>"),
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>"),
+REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_enabled", "<%= node['oauth']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_account_status", "<%= node['oauth']['account_status'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_redirect_uri", "<%= node['oauth']['redirect_uri'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>");
