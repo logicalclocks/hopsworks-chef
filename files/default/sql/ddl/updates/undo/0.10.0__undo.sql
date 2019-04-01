@@ -43,4 +43,3 @@ ALTER TABLE `remote_user` ADD CONSTRAINT `entry_uuid_pk` PRIMARY KEY (`entry_uui
 ALTER TABLE `remote_user` RENAME TO `ldap_user`;
 
 ALTER TABLE `tensorboard` DROP COLUMN `secret`;
-
