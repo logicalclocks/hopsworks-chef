@@ -35,12 +35,9 @@ DROP TABLE IF EXISTS `airflow_material`;
 DROP TABLE IF EXISTS `oauth_client`;
 DROP TABLE IF EXISTS `oauth_login_state`;
 
-DROP TABLE IF EXISTS `remote_user`;
-CREATE TABLE IF NOT EXISTS `ldap_user` (
-  `entry_uuid` varchar(128) COLLATE latin1_general_cs NOT NULL,
-  `auth_key` varchar(64) COLLATE latin1_general_cs NOT NULL,
-  `uid` int(11) NOT NULL,
-  PRIMARY KEY (`entry_uuid`),
-  UNIQUE KEY `uid_UNIQUE` (`uid`),
-  CONSTRAINT `FK_257_557` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+ALTER TABLE `remote_user` DROP COLUMN `id`;
+ALTER TABLE `remote_user` DROP COLUMN `type`;
+ALTER TABLE `remote_user` CHANGE COLUMN `uuid` `entry_uuid` varchar(128) NOT NULL;
+ALTER TABLE `remote_user` ADD CONSTRAINT `entry_uuid_pk` PRIMARY KEY (`entry_uuid`);
+
+ALTER TABLE `remote_user` RENAME TO `ldap_user`;
