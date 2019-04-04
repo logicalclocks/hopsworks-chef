@@ -19,7 +19,6 @@ RSTUDIO_USER=<%= node['rstudio']['user'] %>
 RSTUDIO_GROUP=<%= node['rstudio']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 
-
 if [ "$1" == "kill" ] ; then
 
     if [ $# -ne 4 ]; then

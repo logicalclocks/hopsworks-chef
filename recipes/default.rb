@@ -223,8 +223,8 @@ if node['hops']['tls']['enabled'].eql? "true"
 end
 
 condaRepo = 'defaults'
-if node['conda']['mirror_list'].empty? == false
-   repos = node['conda']['mirror_list'].split(/\s*,\s*/)
+if node['conda']['channels']['default_mirrors'].empty? == false
+   repos = node['conda']['channels']['default_mirrors'].split(/\s*,\s*/)
    condaRepo = repos[0]
 end
 
