@@ -19,10 +19,8 @@ if [ ! -d "$TENSORBOARD_DIR" ] ; then
 fi
 
 # Remove the TensorBoard directory in the staging directory
-if [ $TENSORBOARD_DIR != "" ] ; then
-    if [[ $TENSORBOARD_DIR = "<%= node['hopsworks']['staging_dir'] %>/tensorboard/"* ]]; then
-            rm -rf $TENSORBOARD_DIR
-    fi
+if [ $TENSORBOARD_DIR != "" ] && [[ $TENSORBOARD_DIR = "<%= node['hopsworks']['staging_dir'] %>/tensorboard/"* ]]; then
+    rm -rf $TENSORBOARD_DIR
 fi
 
 exit $?
