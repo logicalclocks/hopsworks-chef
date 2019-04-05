@@ -31,3 +31,13 @@ ALTER TABLE `jupyter_settings` DROP COLUMN `base_dir`;
 ALTER TABLE `jupyter_settings` DROP COLUMN `json_config`;
 
 DROP TABLE IF EXISTS `airflow_material`;
+
+DROP TABLE IF EXISTS `oauth_client`;
+DROP TABLE IF EXISTS `oauth_login_state`;
+
+ALTER TABLE `remote_user` DROP COLUMN `id`;
+ALTER TABLE `remote_user` DROP COLUMN `type`;
+ALTER TABLE `remote_user` CHANGE COLUMN `uuid` `entry_uuid` varchar(128) NOT NULL;
+ALTER TABLE `remote_user` ADD CONSTRAINT `entry_uuid_pk` PRIMARY KEY (`entry_uuid`);
+
+ALTER TABLE `remote_user` RENAME TO `ldap_user`;
