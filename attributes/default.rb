@@ -324,7 +324,7 @@ default['ldap']['group_target']                      = "cn"
 default['ldap']['dyn_group_target']                  = "memberOf"
 default['ldap']['user_dn']                           = ""
 default['ldap']['group_dn']                          = ""
-default['ldap']['account_status']                    = 4
+default['ldap']['account_status']                    = 1
 
 #LDAP External JNDI Resource
 default['ldap']['provider_url']                      = ""
@@ -335,6 +335,12 @@ default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
 default['ldap']['referral']                          = "follow"
 default['ldap']['additional_props']                  = ""
+
+# OAuth2
+default['oauth']['enabled']                          = "false"
+default['oauth']['redirect_uri']                     = "hopsworks/callback"
+default['oauth']['account_status']                   = 1
+default['oauth']['group_mapping']                    = ""
 
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
 default['dtrx']['download_url']                      = "#{node['download_url']}/#{node['dtrx']['version']}"

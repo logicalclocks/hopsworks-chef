@@ -40,3 +40,46 @@ CREATE TABLE IF NOT EXISTS `airflow_material` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `ldap_user` REMOVE PARTITIONING;
+ALTER TABLE `ldap_user` DROP PRIMARY KEY;
+ALTER TABLE `ldap_user` ADD COLUMN `id` INT(11) AUTO_INCREMENT PRIMARY KEY;
+
+ALTER TABLE `ldap_user` RENAME TO `remote_user`;
+ALTER TABLE `remote_user` CHANGE COLUMN `entry_uuid` `uuid` varchar(128) NOT NULL;
+ALTER TABLE `remote_user` ADD CONSTRAINT `uuid_UNIQUE` UNIQUE (`uuid`);
+ALTER TABLE `remote_user` ADD COLUMN `type` varchar(45) NOT NULL;
+
+CREATE TABLE IF NOT EXISTS `oauth_client` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(256) NOT NULL,
+  `client_secret` varchar(2048) NOT NULL,
+  `provider_logo_uri` varchar(2048) DEFAULT NULL,
+  `provider_uri` varchar(2048) NOT NULL,
+  `provider_name` varchar(256) NOT NULL,
+  `provider_display_name` varchar(45) NOT NULL,
+  `authorisation_endpoint` varchar(1024) DEFAULT NULL,
+  `token_endpoint` varchar(1024) DEFAULT NULL,
+  `userinfo_endpoint` varchar(1024) DEFAULT NULL,
+  `jwks_uri` varchar(1024) DEFAULT NULL,
+  `provider_metadata_endpoint_supported` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `client_id_UNIQUE` (`client_id`),
+  UNIQUE KEY `provider_name_UNIQUE` (`provider_name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `oauth_login_state` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `state` varchar(128) NOT NULL,
+  `client_id` varchar(256) NOT NULL,
+  `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token` varchar(2048) DEFAULT NULL,
+  `nonce` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `state_UNIQUE` (``),
+  FOREIGN KEY `fk_oauth_login_state_client` (`client_id`) REFERENCES `oauth_client` (`client_id`) 
+    ON DELETE CASCADE 
+    ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
