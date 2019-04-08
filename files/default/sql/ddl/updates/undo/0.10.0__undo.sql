@@ -41,3 +41,6 @@ ALTER TABLE `remote_user` CHANGE COLUMN `uuid` `entry_uuid` varchar(128) NOT NUL
 ALTER TABLE `remote_user` ADD CONSTRAINT `entry_uuid_pk` PRIMARY KEY (`entry_uuid`);
 
 ALTER TABLE `remote_user` RENAME TO `ldap_user`;
+
+ALTER TABLE `tensorboard` DROP COLUMN `secret`;
+

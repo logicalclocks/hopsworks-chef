@@ -1,0 +1,26 @@
+#!/bin/bash
+
+TENSORBOARD_DIR="$1"
+
+help() {
+    echo ""
+    echo "usage: $0 TENSORBOARD_DIR"
+    echo ""
+    exit 1
+}
+
+if [ $# -ne 1 ]; then
+  help
+fi
+
+if [ ! -d "$TENSORBOARD_DIR" ] ; then
+    echo "Secret dir does not exist: $TENSORBOARD_DIR"
+    exit 2
+fi
+
+# Remove the TensorBoard directory in the staging directory
+if [ $TENSORBOARD_DIR != "" ] && [[ $TENSORBOARD_DIR = "<%= node['hopsworks']['staging_dir'] %>/tensorboard/"* ]]; then
+    rm -rf $TENSORBOARD_DIR
+fi
+
+exit $?

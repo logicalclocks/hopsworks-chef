@@ -1422,6 +1422,7 @@ CREATE TABLE `tensorboard` (
   `pid` bigint(20) NOT NULL,
   `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`project_id`,`user_id`),
   KEY `user_id_fk` (`user_id`),
   KEY `hdfs_user_id_fk` (`hdfs_user_id`),
