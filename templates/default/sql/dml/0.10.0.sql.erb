@@ -22,3 +22,11 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_enabled", "<%= node['oauth']
 REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_account_status", "<%= node['oauth']['account_status'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_redirect_uri", "<%= node['oauth']['redirect_uri'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_env';
+REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_user", "<%= node['kagent']['user'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_monitor_enabled", "<%= node['hopsworks']['kagent_liveness']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_threshold", "<%= node['hopsworks']['kagent_liveness']['threshold'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");

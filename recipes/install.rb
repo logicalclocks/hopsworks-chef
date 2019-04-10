@@ -616,15 +616,6 @@ template "#{theDomain}/bin/anaconda-rsync.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/kagent-restart.sh" do
-  source "kagent-restart.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "500"
-  action :create
-end
-
-
 command=""
 case node['platform']
  when 'debian', 'ubuntu'

@@ -11,3 +11,11 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`="oauth_enabled";
 DELETE FROM `hopsworks`.`variables` WHERE `id`="oauth_account_status";
 DELETE FROM `hopsworks`.`variables` WHERE `id`="oauth_redirect_uri";
 DELETE FROM `hopsworks`.`variables` WHERE `id`="oauth_group_mapping";
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_user';
+REPLACE INTO `hopsworks`.`variables` VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_monitor_enabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_threshold';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='service_restart_script';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='service_start_script';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='service_stop_script';
