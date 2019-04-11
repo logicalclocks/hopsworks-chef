@@ -577,7 +577,7 @@ DROP TABLE IF EXISTS `jwt_signing_key`;
 CREATE TABLE `jwt_signing_key` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `secret` varchar(128) COLLATE latin1_general_cs NOT NULL,
-  `name` varchar(45) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `jwt_signing_key_name_UNIQUE` (`name`)

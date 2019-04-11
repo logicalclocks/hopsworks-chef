@@ -939,13 +939,23 @@ kagent_keys "#{homedir}" do
   action :return_publickey
 end
 
-# Generate a service JWT token to be used internally in Hopsworks
-bash "generate_jwt" do
-  user "root"
-  environment (lazy {{'JWT' => get_service_jwt()}})
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh -e "REPLACE INTO hopsworks.variables(id, value) VALUE ('service_jwt', '$JWT');"
-  EOH
+# Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
+ruby_block "generate_service_jwt" do
+  block do
+    master_token, renew_tokens = get_service_jwt()
+    sql_command_template = "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value) VALUE ('%s', '%s');\""
+    master_token_command = sql_command_template % ['service_master_jwt', master_token]
+    execute_shell_command master_token_command
+
+    idx = 0
+    variable_key_template = "service_renew_token_%d"
+    renew_tokens.each do |token|
+      variable_key = variable_key_template % idx
+      renew_token_command = sql_command_template % [variable_key, token]
+      execute_shell_command renew_token_command
+      idx += 1
+    end
+  end
 end
 
 # Force variables reload

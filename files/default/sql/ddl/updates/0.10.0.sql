@@ -106,3 +106,5 @@ CREATE TABLE IF NOT EXISTS `maggy_driver` (
 DROP TABLE IF EXISTS `hopsworks`.`jobs_history`;
 DROP TABLE IF EXISTS `hopsworks`.`job_input_files`;
 DROP TABLE IF EXISTS `hopsworks`.`job_output_files`;
+
+ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(255) NOT NULL;

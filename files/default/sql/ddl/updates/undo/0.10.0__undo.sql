@@ -83,5 +83,6 @@ CREATE TABLE `jobs_history` (
   UNIQUE KEY `inode_idx` (`app_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-
 DROP TABLE `hopsworks`.`maggy_driver`;
+
+ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(45) NOT NULL;
