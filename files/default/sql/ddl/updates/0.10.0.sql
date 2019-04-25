@@ -82,4 +82,4 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
+ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
