@@ -240,13 +240,24 @@ default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 
 #
+# Serving
+#
+default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
+default['serving']['user']                           = node['install']['user'].empty? ? "serving" : node['install']['user']
+default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
+
+#
 # TensorFlow Serving
 #
-default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
-default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
-default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
 default['tfserving']['pool_size']                      = "40"
 default['tfserving']['max_route_connections']          = "10"
+
+
+#
+# SkLearn Serving
+#
+default['sklearn_serving']['pool_size']                      = "40"
+default['sklearn_serving']['max_route_connections']          = "10"
 
 #
 # PyPi

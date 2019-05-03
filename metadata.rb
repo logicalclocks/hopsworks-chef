@@ -1397,6 +1397,23 @@ attribute "hive2/server2/private_ips",
           :type => "array"
 
 
+##
+##
+## Serving
+##
+##
+
+attribute "serving/base_dir",
+          :description => "base directory for temporary directories for serving servers",
+          :type => 'string'
+
+attribute "serving/user",
+          :description => "user to launch serving servers as",
+          :type => 'string'
+
+attribute "serving/group",
+          :description => "group to launch serving servers as",
+          :type => 'string'
 
 ##
 ##
@@ -1405,11 +1422,25 @@ attribute "hive2/server2/private_ips",
 ##
 
 attribute "tfserving/pool_size",
-          :description => "size of the connection pool for serving inference requests",
+          :description => "size of the connection pool for serving inference requests to tensorflow serving servers",
           :type => 'string'
 
 attribute "tfserving/max_route_connections",
-          :description => "max number of connections to serve requests to a unique route",
+          :description => "max number of connections to serve requests to a unique route for tensorflow serving servers",
+          :type => 'string'
+
+##
+##
+## SkLearn Serving
+##
+##
+
+attribute "sklearn_serving/pool_size",
+          :description => "size of the connection pool for serving inference requests to sklearn serving servers",
+          :type => 'string'
+
+attribute "sklearn_serving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route for sklearn serving servers",
           :type => 'string'
 
 ##
