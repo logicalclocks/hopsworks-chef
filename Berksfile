@@ -20,7 +20,7 @@ cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
 cookbook 'hopslog', github: "logicalclocks/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "master"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "master"
-cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "master"
+cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "mysql_bug"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
