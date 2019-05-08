@@ -1836,14 +1836,15 @@ ALTER TABLE `hopsworks`.`dataset`
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
-CREATE TABLE IF NOT EXISTS `airflow_material` (
+CREATE TABLE IF NOT EXISTS `materialized_jwt` (
   `project_id` INT(11) NOT NULL,
   `user_id`    INT(11) NOT NULL,
-  PRIMARY KEY (`project_id`, `user_id`),
-  FOREIGN KEY `airflow_material_project` (`project_id`) REFERENCES `project` (`id`)
+  `usage`      TINYINT(4) NOT NULL,
+  PRIMARY KEY (`project_id`, `user_id`, `usage`),
+  FOREIGN KEY `jwt_material_project` (`project_id`) REFERENCES `project` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  FOREIGN KEY `airflow_material_user` (`user_id`) REFERENCES `users` (`uid`)
+  FOREIGN KEY `jwt_material_user` (`user_id`) REFERENCES `users` (`uid`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
