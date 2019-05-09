@@ -23,6 +23,8 @@ cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "systemd_d
 cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "systemd_deps"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "systemd_deps"
 
+cookbook 'cvat', github: "logicalclocks/cvat-chef", branch: "master"
+
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
 cookbook 'java'
 

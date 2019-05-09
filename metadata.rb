@@ -35,6 +35,8 @@ depends 'hopsmonitor'
 depends 'hive2'
 depends 'hops_airflow'
 
+depends 'cvat'
+
 recipe  "hopsworks::install", "Installs Glassfish"
 
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
