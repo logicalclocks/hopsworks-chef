@@ -1835,8 +1835,9 @@ CREATE TABLE IF NOT EXISTS `maggy_driver` (
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
-DROP TABLE IF EXISTS `hopsworks`.`gateways`;    
-CREATE TABLE `hopsworks`.`gateways` (
+
+DROP TABLE IF EXISTS `gateways`;    
+CREATE TABLE `gateways` (
   `gateway_id` INT(11) NOT NULL,
   `hostname` VARCHAR(45) NOT NULL,
   `port` INT(11) NOT NULL,
