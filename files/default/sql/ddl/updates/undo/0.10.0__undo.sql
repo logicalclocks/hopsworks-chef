@@ -30,7 +30,7 @@ ALTER TABLE `jupyter_settings` ADD COLUMN `umask` varchar(32) COLLATE latin1_gen
 ALTER TABLE `jupyter_settings` DROP COLUMN `base_dir`;
 ALTER TABLE `jupyter_settings` DROP COLUMN `json_config`;
 
-DROP TABLE IF EXISTS `airflow_material`;
+DROP TABLE IF EXISTS `materialized_jwt`;
 
 DROP TABLE IF EXISTS `oauth_client`;
 DROP TABLE IF EXISTS `oauth_login_state`;
