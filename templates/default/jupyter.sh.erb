@@ -116,9 +116,9 @@ elif [ "$1" == "start" ] ; then
 	echo "Error: could not create private_dir: $8"
 	exit 1
     fi
-    sudo chmod -R 770 "$8"
-    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
-    sudo chgrp "${JUPYTER_GROUP}" "${8}/token.jwt"
+    sudo chmod 770 "$8"
+    sudo chown "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
+#    sudo chgrp "${JUPYTER_GROUP}" "${8}/token.jwt"
     
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
     #    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
