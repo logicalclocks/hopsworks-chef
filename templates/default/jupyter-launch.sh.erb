@@ -5,6 +5,8 @@ JUPYTER_HOME=$1
 export HADOOP_HOME=$2
 export JAVA_HOME=$3
 export ANACONDA_ENV=$4
+export REST_ENDPOINT=${10}
+export HOPSWORKS_PROJECT_ID=${11}
 PORT=$5
 LOGFILE=${JUPYTER_HOME}/logs/$6
 SECRET_DIR=$7
@@ -12,7 +14,7 @@ CERTS_DIR=$8
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME JAVA_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME REST_ENDPOINT HOPSWORKS_PROJECT_ID"
     echo ""
     exit 1
 }
@@ -28,7 +30,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 9 ]; then
+if [ $# -ne 11 ]; then
   help
 fi
 
