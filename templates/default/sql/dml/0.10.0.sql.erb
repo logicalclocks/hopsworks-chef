@@ -30,3 +30,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_threshold", "<%= n
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_user", "<%= node['jupyter']['user'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_group", "<%= node['jupyter']['group'] %>");
