@@ -1891,7 +1891,7 @@ CREATE TABLE IF NOT EXISTS `maggy_driver` (
   `port` int(11) NOT NULL,
   `secret` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `created`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`app_id`)
+  PRIMARY KEY (`app_id`, `port`)
 )
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
