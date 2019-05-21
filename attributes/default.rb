@@ -33,6 +33,7 @@ default['hopsworks']['https']['port']            = 8181
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
 default['hopsworks']['admin']['password']        = "adminpw"
+default['hopsworks']['admin']['email']           = "admin@hopsworks.com"
 
 default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
