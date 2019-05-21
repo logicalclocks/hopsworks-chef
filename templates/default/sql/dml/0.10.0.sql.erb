@@ -30,3 +30,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_threshold", "<%= n
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_delay", "<%= node['hopsworks']['hive2']['scratch_dir_delay'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_cleaner_interval", "<%= node['hopsworks']['hive2']['scratch_dir_cleaner_interval'] %>");
