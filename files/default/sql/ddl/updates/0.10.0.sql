@@ -84,3 +84,7 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
+
+DROP TABLE IF EXISTS `hopsworks`.`jobs_history`;
+DROP TABLE IF EXISTS `hopsworks`.`job_input_files`;
+DROP TABLE IF EXISTS `hopsworks`.`job_output_files`;
