@@ -1375,6 +1375,16 @@ attribute "kzookeeper/dir",
 ##
 ##
 
+attribute "hopsworks/hive2/scratch_dir_delay",
+          :description => "How much to wait before deleting the directory",
+          :type => "string"
+
+attribute "hopsworks/hive2/scratch_dir_cleaner_interval",
+          :description => "Interval between scratch dir cleaner runs",
+          :type => "string"
+
+
+
 attribute "hive2/metastore/private_ips",
           :description => "Set ip addresses",
           :type => "array"
