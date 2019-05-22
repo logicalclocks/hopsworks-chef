@@ -56,6 +56,10 @@ attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
           :type => 'array'
 
+attribute "hopsworks/admin/email",
+          :description => "Email address of the default admin user",
+          :type => 'string'
+
 attribute "hopsworks/email",
           :description => "Email account to send notifications from. ",
           :required => "required",
