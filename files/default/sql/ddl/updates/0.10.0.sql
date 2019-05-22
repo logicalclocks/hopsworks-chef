@@ -29,14 +29,15 @@ ALTER TABLE `jupyter_settings` DROP COLUMN `log_level`;
 ALTER TABLE `jupyter_settings` ADD COLUMN `base_dir` VARCHAR(255) DEFAULT '/Jupyter/';
 ALTER TABLE `jupyter_settings` ADD COLUMN `json_config` TEXT NOT NULL;
 
-CREATE TABLE IF NOT EXISTS `airflow_material` (
+CREATE TABLE IF NOT EXISTS `materialized_jwt` (
   `project_id` INT(11) NOT NULL,
   `user_id`    INT(11) NOT NULL,
-  PRIMARY KEY (`project_id`, `user_id`),
-  FOREIGN KEY `airflow_material_project` (`project_id`) REFERENCES `project` (`id`)
+  `usage`      TINYINT(4) NOT NULL,
+  PRIMARY KEY (`project_id`, `user_id`, `usage`),
+  FOREIGN KEY `jwt_material_project` (`project_id`) REFERENCES `project` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  FOREIGN KEY `airflow_material_user` (`user_id`) REFERENCES `users` (`uid`)
+  FOREIGN KEY `jwt_material_user` (`user_id`) REFERENCES `users` (`uid`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -83,3 +84,7 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
+
+DROP TABLE IF EXISTS `hopsworks`.`jobs_history`;
+DROP TABLE IF EXISTS `hopsworks`.`job_input_files`;
+DROP TABLE IF EXISTS `hopsworks`.`job_output_files`;
