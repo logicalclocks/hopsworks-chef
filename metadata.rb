@@ -46,6 +46,7 @@ recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
+recipe  "hopsworks::restart", "Hotfix"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
 recipe  "hopsworks::hopssite", "Install hopssite on current vm"
@@ -2185,21 +2186,21 @@ attribute "kerberos/spnego_principal",
 attribute "kerberos/spnego_keytab_file",
           :description => "Spnego principal keytab file path. '/etc/security/keytabs/service.keytab' (default)",
           :type => 'string'
-          
+
 attribute "kerberos/krb_conf_path",
           :description => "Kerberos conf path. '/etc/krb5.conf' (default)",
           :type => 'string'
 
 attribute "kerberos/spnego_server_conf",
           :description => "Spnego server extra conf. 'storeKey=true\nisInitiator=false' (default)",
-          :type => 'string' 
-          
+          :type => 'string'
+
 attribute "kerberos/krb_server_key_tab_path",
           :description => "Spnego server keyTab file location. '/etc/security/keytabs/service.keytab' (default)",
           :type => 'string'
 
 attribute "kerberos/krb_server_key_tab_name",
-          :description => "Spnego server keyTab file name. 'service.keytab' (default)", 
+          :description => "Spnego server keyTab file name. 'service.keytab' (default)",
           :type => 'string'
 
 # OAuth2
@@ -2207,7 +2208,7 @@ attribute "oauth/enabled",
           :description => "Enable OAuth. 'false' (default)",
           :type => 'string'
 attribute "oauth/redirect_uri",
-          :description => "OAuth redirect uri. 'hopsworks/callback' (default)", 
+          :description => "OAuth redirect uri. 'hopsworks/callback' (default)",
           :type => 'string'
 attribute "oauth/account_status",
           :description => "Hopsworks account status given for new OAuth user. '1' verified account (default)",
