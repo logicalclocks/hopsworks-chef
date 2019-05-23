@@ -12,6 +12,9 @@ dependencies:
   - recipe: hopsworks::dev
     global:
       - hopsworks::default
+  - recipe: hopsworks::restart
+    global:
+      - hops::nm
   - recipe: hopsworks::image
     global:
       - hopsworks::dev
