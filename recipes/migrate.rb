@@ -54,3 +54,12 @@ bash 'run-expat' do
   EOH
   action :run
 end
+
+bash "set_project_storage_type" do
+  user node['hops']['hdfs']['user']
+  code <<-EOH
+    #{node['hops']['bin_dir']}/hdfs storagepolicies -setStoragePolicy -path /Projects -policy DB 
+  EOH
+  action :run
+  only_if "#{node['hops']['bin_dir']}/hdfs dfs -test -d /Projects"
+end
