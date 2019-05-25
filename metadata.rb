@@ -1415,32 +1415,12 @@ attribute "serving/group",
           :description => "group to launch serving servers as",
           :type => 'string'
 
-##
-##
-## TFServing
-##
-##
-
-attribute "tfserving/pool_size",
-          :description => "size of the connection pool for serving inference requests to tensorflow serving servers",
+attribute "serving/pool_size",
+          :description => "size of the connection pool for serving inference requests to model serving servers",
           :type => 'string'
 
-attribute "tfserving/max_route_connections",
-          :description => "max number of connections to serve requests to a unique route for tensorflow serving servers",
-          :type => 'string'
-
-##
-##
-## SkLearn Serving
-##
-##
-
-attribute "sklearn_serving/pool_size",
-          :description => "size of the connection pool for serving inference requests to sklearn serving servers",
-          :type => 'string'
-
-attribute "sklearn_serving/max_route_connections",
-          :description => "max number of connections to serve requests to a unique route for sklearn serving servers",
+attribute "serving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route for model serving servers",
           :type => 'string'
 
 ##

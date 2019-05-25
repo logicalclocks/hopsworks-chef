@@ -247,17 +247,10 @@ default['serving']['user']                           = node['install']['user'].e
 default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
 
 #
-# TensorFlow Serving
+# Model Serving
 #
-default['tfserving']['pool_size']                      = "40"
-default['tfserving']['max_route_connections']          = "10"
-
-
-#
-# SkLearn Serving
-#
-default['sklearn_serving']['pool_size']                      = "40"
-default['sklearn_serving']['max_route_connections']          = "10"
+default['serving']['pool_size']                      = "40"
+default['serving']['max_route_connections']          = "10"
 
 #
 # PyPi
