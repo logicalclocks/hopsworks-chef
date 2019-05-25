@@ -245,10 +245,6 @@ default['jupyter']['ws_ping_interval']                 = "10s"
 default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
 default['serving']['user']                           = node['install']['user'].empty? ? "serving" : node['install']['user']
 default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
-
-#
-# Model Serving
-#
 default['serving']['pool_size']                      = "40"
 default['serving']['max_route_connections']          = "10"
 
