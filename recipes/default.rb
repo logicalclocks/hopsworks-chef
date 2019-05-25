@@ -968,6 +968,15 @@ directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
   recursive true
 end
 
+directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
+  owner "root"
+  group "root"
+  mode "775"
+  action :create
+  recursive true
+end
+
+
 template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html" do
   source "facets-jupyter.html.erb"
   owner "root"
