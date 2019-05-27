@@ -34,3 +34,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['h
 REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_delay", "<%= node['hopsworks']['hive2']['scratch_dir_delay'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_cleaner_interval", "<%= node['hopsworks']['hive2']['scratch_dir_cleaner_interval'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("admin_email", "<%= node['hopsworks']['admin']['email'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
