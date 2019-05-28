@@ -26,4 +26,4 @@ dependencies:
       - hopsworks::default
   - recipe: hopsworks::migrate
     global:
-      - hopsworks::default
+      - hops::dn
