@@ -85,6 +85,26 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
 
 ALTER TABLE `tensorboard` ADD COLUMN `secret` VARCHAR(255);
 
+
+--
+--  Maggy Driver Service Lookup Table in Hopsworks
+--
+CREATE TABLE IF NOT EXISTS `maggy_driver` (
+  `id` MEDIUMINT NOT NULL AUTO_INCREMENT,
+  `app_id` char(30) COLLATE latin1_general_cs NOT NULL,
+  `host_ip` varchar(128) COLLATE latin1_general_cs NOT NULL,
+  `port` int(11) NOT NULL,
+  `secret` varchar(128) COLLATE latin1_general_cs NOT NULL,
+  `created`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY (`app_id`, `port`),
+  PRIMARY KEY (`id`)
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
+
 DROP TABLE IF EXISTS `hopsworks`.`jobs_history`;
 DROP TABLE IF EXISTS `hopsworks`.`job_input_files`;
 DROP TABLE IF EXISTS `hopsworks`.`job_output_files`;
+
+ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(255) NOT NULL;
