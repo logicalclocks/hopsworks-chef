@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", help="port that the flask server will listen to",
                         default=5000)
-    parser.add_argument("-f", "--file", help="ip that the flask server will listen to",
+    parser.add_argument("-f", "--file", help="user-supplied script that implements the prediction service, should have a class called Predict",
                         default="predict.py")
     parser.add_argument("-i", "--ip", help="ip that the flask server will listen to",
                         default="0.0.0.0")
