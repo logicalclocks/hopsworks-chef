@@ -912,7 +912,7 @@ directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
 end
 
 directory node['hopsworks']['staging_dir'] + "/serving"  do
-  owner node['tfserving']['user']
+  owner node['serving']['user']
   group node['hopsworks']['group']
   mode "0730"
   action :create

@@ -86,3 +86,8 @@ CREATE TABLE `jobs_history` (
 DROP TABLE `hopsworks`.`maggy_driver`;
 
 ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(45) NOT NULL;
+
+ALTER TABLE `hopsworks`.`serving` RENAME TO `hopsworks`.`tf_serving`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `serving_type`;
+ALTER TABLE `hopsworks`.`serving` CHANGE `name` `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`serving` CHANGE `artifact_path` `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL;

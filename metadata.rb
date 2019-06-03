@@ -1397,19 +1397,30 @@ attribute "hive2/server2/private_ips",
           :type => "array"
 
 
+##
+##
+## Serving
+##
+##
 
-##
-##
-## TFServing
-##
-##
-
-attribute "tfserving/pool_size",
-          :description => "size of the connection pool for serving inference requests",
+attribute "serving/base_dir",
+          :description => "base directory for temporary directories for serving servers",
           :type => 'string'
 
-attribute "tfserving/max_route_connections",
-          :description => "max number of connections to serve requests to a unique route",
+attribute "serving/user",
+          :description => "user to launch serving servers as",
+          :type => 'string'
+
+attribute "serving/group",
+          :description => "group to launch serving servers as",
+          :type => 'string'
+
+attribute "serving/pool_size",
+          :description => "size of the connection pool for serving inference requests to model serving servers",
+          :type => 'string'
+
+attribute "serving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route for model serving servers",
           :type => 'string'
 
 ##

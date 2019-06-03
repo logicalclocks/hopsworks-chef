@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+help() {
+    echo ""
+    echo "usage: $0 PID PORT SECRET_DIR"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 3 ]; then
+  help
+fi
+
+PID=$1
+PORT=$2
+SECRET_DIR=$3
+PID_FILE="${SECRET_DIR}/${PORT}.pid"
+
+function kill_named {
+    PID=$(ps aux | grep sklearn_flask_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
+    if [ "$PID" != "" ] ; then
+      kill -9 "$PID" > /dev/null 2>&1
+      res=$?
+    else
+      res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+echo "Killing input pid: $PID"
+kill "$PID" > /dev/null 2>&1
+if [ $? -ne 0 ] ; then
+    if [ -f "$PID_FILE" ] ; then
+	PID=$(cat "$PID_FILE")
+	echo "Killing pid: $PID"
+	kill "$PID" > /dev/null 2>&1
+	if [ $? -ne 0 ] ; then
+	    kill_named
+	fi
+fi
+
+exit $?
