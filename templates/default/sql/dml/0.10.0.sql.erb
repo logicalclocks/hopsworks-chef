@@ -48,3 +48,7 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_connection_pool_size'
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_max_route_connections';
 REPLACE INTO `hopsworks`.`variables` VALUES ("serving_connection_pool_size", "<%= node['serving']['pool_size'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("serving_max_route_connections", "<%= node['serving']['max_route_connections'] %>");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_serving';
+REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_tf_serving", "<%= node['logstash']['beats']['serving_tf_port'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_sklearn_serving", "<%= node['logstash']['beats']['serving_sklearn_port'] %>");
