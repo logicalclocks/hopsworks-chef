@@ -26,8 +26,8 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='admin_email';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='localhost';
 
-REPLACE INTO variables VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
-REPLACE INTO variables VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
 DELETE FROM `hopsworks`.`schema_topics` WHERE `version`=2 AND `name`='inferenceschema';
 
