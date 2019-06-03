@@ -33,7 +33,7 @@ default['hopsworks']['https']['port']            = 8181
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
 default['hopsworks']['admin']['password']        = "adminpw"
-default['hopsworks']['admin']['email']           = "admin@hopsworks.com"
+default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
 default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
@@ -240,13 +240,13 @@ default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 
 #
-# TensorFlow Serving
+# Serving
 #
-default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
-default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
-default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
-default['tfserving']['pool_size']                      = "40"
-default['tfserving']['max_route_connections']          = "10"
+default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
+default['serving']['user']                           = node['install']['user'].empty? ? "serving" : node['install']['user']
+default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
+default['serving']['pool_size']                      = "40"
+default['serving']['max_route_connections']          = "10"
 
 #
 # PyPi

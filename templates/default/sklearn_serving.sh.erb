@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-# This script allows Hopsworks to start/kill/ping (check if alive) a TensorFlow Serving Process.
-# There will be 1 tf-serving process per ProjectUser.
+# This script allows Hopsworks to start/kill/ping (check if alive) a SkLearn Flask Serving Process.
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 # it changes user to 'serving' to run the command as user 'serving'.
 #
 
 help() {
     echo ""
-    echo "usage: $0 [start model_name hdfs_model_path port secretdir username enable_batching project_name] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
+    echo "usage: $0 [start script_name hdfs_script_path port secretdir username project_name python_path kstore_path truststore_path password_path serving_name] | [kill pid port secretdir] "
     echo ""
     exit 1
 }
@@ -22,7 +21,7 @@ HADOOP_HOME=<%= node['hops']['base_dir'] %>
 if [ "$1" == "kill" ] ; then
 
     if [ $# -ne 4 ]; then
-	help
+      help
     fi
 
     # Sanity checks for injection attacks
@@ -43,20 +42,14 @@ if [ "$1" == "kill" ] ; then
       exit 1
     fi
 
-    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4"
+    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/sklearn_serving-kill.sh $2 $3 $4"
 
     rm -rf "$4"
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 9 ]; then
+    if [ $# -ne 12 ]; then
       help
-    fi
-
-    command -v tensorflow_model_server
-    if [ $? -ne 0 ] ; then
-        echo "Could not find tensorflow_model_server command"
-        exit 1
     fi
 
     # Sanity checks for injection attacks
@@ -66,14 +59,7 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    # Sanity checks for injection attacks
-    re='^[0-9]+$'
-    if ! [[ $5 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-
-    SECRET_DIR=$6
+    SECRET_DIR=$5
     if [ -d "${SECRET_DIR}" ] ; then
       echo "Invalid secret directory. Directory already exists: $SECRET_DIR"
       exit 3
@@ -84,43 +70,31 @@ elif [ "$1" == "start" ] ; then
       echo "Error: could not create private_dir: $SECRET_DIR"
       exit 1
     fi
-    sudo mkdir "$SECRET_DIR/$2"
+
+    #copy flask_server to secret dir
+    sudo cp "${DOMAINS_DIR}/domain1/bin/sklearn_flask_server.py" "$SECRET_DIR"/
+    # copy truststore, keystore, and certificate password to secret dir
+    sudo cp "${9}" "$SECRET_DIR"/
+    sudo cp "${10}" "$SECRET_DIR"/
+    sudo cp "${11}" "$SECRET_DIR"/
+
 
     sudo chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$SECRET_DIR"
     sudo chmod -R 771 "$SECRET_DIR"
 
-    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$7 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
+    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$6 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
-      echo "Error downloading the model on the local Fs"
+      echo "Error downloading the python script on the local Fs"
       sudo rm -r "$SECRET_DIR"
       exit 1
     fi
 
-    # Launch the tensorflow_serving process as user 'serving'
-    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9"
+    # Launch the flask_server process as user 'serving'
+    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/sklearn_serving-launch.sh $2 $4 $5 $7 $8 $6 ${12}"
 
     if [ $? -ne 0 ] ; then
       echo "Error starting the serving server"
       sudo rm -r "$SECRET_DIR"
-      exit 1
-    fi
-
-elif [ "$1" == "update" ] ; then
-
-    if [ $# -ne 5 ]; then
-      help
-    fi
-    SECRET_DIR=$4
-
-    if [ ! -d "${SECRET_DIR}" ] ; then
-      echo "Invalid secret directory. Directory doesn't exists: $SECRET_DIR"
-      exit 3
-    fi
-
-    su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$5 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
-
-    if [ $? -ne 0 ] ; then
-      echo "Error downloading the model on the local Fs"
       exit 1
     fi
 
@@ -129,8 +103,19 @@ elif [ "$1" == "logs" ] ; then
     LOGFILE=$3
 
     cat "${LOGFILE}"
+
 elif [ "$1" == "alive" ] ; then
-    su "${SERVING_USER}" -c "pgrep -f -a tensorflow_model_server | grep -v pgrep | grep $2 | grep $3"
+    if [ $# -ne 3 ]; then
+        help
+    fi
+
+    # Sanity checks for injection attacks
+    re='^[0-9]+$'
+    if ! [[ $2 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+    su "${SERVING_USER}" -c "pgrep -f -a sklearn_flask_server | grep -v pgrep | grep $2 | grep $3"
 else
   help
 fi

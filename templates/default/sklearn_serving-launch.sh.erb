@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+WAIT_START=20
+SCRIPT_NAME=$1
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
+PORT=$2
+SECRET_DIR=$3
+PROJECT_NAME=$4
+PYTHONPATH=$5
+HDFS_USER=$6
+SERVING_NAME=$7
+LOGFILE=${SECRET_DIR}/${SCRIPT_NAME}.log
+PID_FILE=${SECRET_DIR}/sklearn_flask_server.pid
+
+help() {
+    echo ""
+    echo "usage: $0 SCRIPT_NAME PORT SECRET_DIR PROJECTNAME PYTHONPATH HDFS_USER SERVING_NAME"
+    echo ""
+    exit 1
+}
+
+function kill_named {
+    PID=$(ps aux | grep sklearn_flask_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
+    if [ "$PID" != "" ] ; then
+      kill -9 "$PID" > /dev/null 2>&1
+      res=$?
+    else
+      res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+
+if [ $# -ne 7 ]; then
+  help
+fi
+
+if [ ! -d "$SECRET_DIR" ] ; then
+    echo "Secret dir does not exist: $SECRET_DIR"
+    exit 2
+fi
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export HADOOP_HOME=$HADOOP_HOME
+export HDFS_USER=$HDFS_USER
+export HADOOP_PROXY_USER=$HDFS_USER
+export MATERIAL_DIR=$SECRET_DIR
+
+cd "$SECRET_DIR" || exit
+
+setsid "$PYTHONPATH" "$SECRET_DIR"/sklearn_flask_server.py --port="$PORT" --file="$SCRIPT_NAME" &> >(sed -u 's/.*/'"$PROJECT_NAME"','"$SERVING_NAME"' &/' &> "$LOGFILE") &
+
+echo $! > "$PID_FILE"
+
+exit $?

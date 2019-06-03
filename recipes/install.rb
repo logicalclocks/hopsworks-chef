@@ -35,9 +35,9 @@ group node['jupyter']['group'] do
   not_if "getent group #{node['jupyter']['group']}"
 end
 
-group node['tfserving']['group'] do
+group node['serving']['group'] do
   action :create
-  not_if "getent group #{node['tfserving']['group']}"
+  not_if "getent group #{node['serving']['group']}"
 end
 
 #
@@ -63,7 +63,7 @@ group node['jupyter']['group'] do
   append true
 end
 
-group node['tfserving']['group'] do
+group node['serving']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
@@ -96,12 +96,12 @@ user node['jupyter']['user'] do
   not_if "getent passwd #{node['jupyter']['user']}"
 end
 
-user node['tfserving']['user'] do
-  gid node['tfserving']['group']
+user node['serving']['user'] do
+  gid node['serving']['group']
   action :create
   shell "/bin/bash"
   manage_home true
-  not_if "getent passwd #{node['tfserving']['user']}"
+  not_if "getent passwd #{node['serving']['user']}"
 end
 
 group node['kagent']['certs_group'] do
@@ -112,7 +112,7 @@ end
 
 group node['hops']['group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['serving']['user']}"]
   append true
 end
 
@@ -571,7 +571,7 @@ end
 template "#{theDomain}/bin/tfserving.sh" do
   source "tfserving.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   action :create
 end
@@ -579,15 +579,39 @@ end
 template "#{theDomain}/bin/tfserving-kill.sh" do
   source "tfserving-kill.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   action :create
 end
 
-template "#{theDomain}/bin/tfserving-kill.sh" do
-  source "tfserving-kill.sh.erb"
+template "#{theDomain}/bin/sklearn_flask_server.py" do
+  source "sklearn_flask_server.py.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving-launch.sh" do
+  source "sklearn_serving-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving.sh" do
+  source "sklearn_serving.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving-kill.sh" do
+  source "sklearn_serving-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
   mode "550"
   action :create
 end
@@ -628,7 +652,7 @@ end
 template "#{theDomain}/bin/tfserving-launch.sh" do
   source "tfserving-launch.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   variables({
      :command => command
@@ -721,6 +745,7 @@ template "/etc/sudoers.d/glassfish" do
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",
+              :sklearn_serving =>  "#{theDomain}/bin/sklearn_serving.sh",
               :conda_export =>  "#{theDomain}/bin/condaexport.sh",
               :tensorboard =>  "#{theDomain}/bin/tensorboard.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",

@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS `oauth_login_state` (
   `nonce` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `state_UNIQUE` (`state`),
-  FOREIGN KEY `fk_oauth_login_state_client` (`client_id`) REFERENCES `oauth_client` (`client_id`) 
-    ON DELETE CASCADE 
+  FOREIGN KEY `fk_oauth_login_state_client` (`client_id`) REFERENCES `oauth_client` (`client_id`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -108,3 +108,8 @@ DROP TABLE IF EXISTS `hopsworks`.`job_input_files`;
 DROP TABLE IF EXISTS `hopsworks`.`job_output_files`;
 
 ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(255) NOT NULL;
+
+ALTER TABLE `hopsworks`.`tf_serving` RENAME TO `hopsworks`.`serving`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `serving_type` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `hopsworks`.`serving` CHANGE `model_name` `name` varchar(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`serving` CHANGE `model_path` `artifact_path` varchar(255) COLLATE latin1_general_cs NOT NULL;
