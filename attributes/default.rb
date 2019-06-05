@@ -69,6 +69,7 @@ default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{no
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/users/hopsworks-web-kajetan-thesis.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/users/hopsworks-ca-kajetan-thesis.war"
 default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/users/hopsworks-ear-kajetan-thesis.ear"
+default['hopsworks']['blacklist_users']             = "iot@hopsworks.ai" #comma-separated list of users that are not allowed to login
 
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
