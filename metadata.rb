@@ -2312,6 +2312,14 @@ attribute "hopsworks/jwt/issuer",
           :description => "JWT issuer identifier. (default hopsworks@logicalclocks.com)",
           :type => 'string'
 
+attribute "hopsworks/jwt/service_lifetime_ms",
+          :description => "Default lifetime in ms for service jwt expiration. (default 604800000)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/service_exp_leeway_sec",
+          :description => "Default expiration leeway in sec for service jwt",
+          :type => 'string'
+
 ### Feature Store
 attribute "hopsworks/featurestore_default_storage_format",
           :description => "Default storage format for the hive database of the feature stores (ORC/PARQUET)",
