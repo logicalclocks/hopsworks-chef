@@ -1838,13 +1838,13 @@ CREATE TABLE IF NOT EXISTS `maggy_driver` (
 
 DROP TABLE IF EXISTS `gateways`;    
 CREATE TABLE `gateways` (
-  `gateway_name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   `domain` VARCHAR(45) NOT NULL,
   `port` INT(11) NOT NULL,
   `project_id` INT(11) NOT NULL,
   `state` VARCHAR(128) NOT NULL,
   PRIMARY KEY (`domain`, `port`),
-  UNIQUE KEY `gateway_name` (`project_id`, `gateway_name`),
+  UNIQUE KEY `gateway_name` (`project_id`, `name`),
   FOREIGN KEY (`project_id`) 
 	REFERENCES `hopsworks`.`project` (`id`) 
     ON DELETE CASCADE ON UPDATE NO ACTION)
