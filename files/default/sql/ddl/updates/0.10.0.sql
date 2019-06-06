@@ -113,3 +113,5 @@ ALTER TABLE `hopsworks`.`tf_serving` RENAME TO `hopsworks`.`serving`;
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `serving_type` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `hopsworks`.`serving` CHANGE `model_name` `name` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`serving` CHANGE `model_path` `artifact_path` varchar(255) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `host_ip`;

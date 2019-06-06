@@ -54,3 +54,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("serving_max_route_connections", "<
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_serving';
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_tf_serving", "<%= node['logstash']['beats']['serving_tf_port'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_sklearn_serving", "<%= node['logstash']['beats']['serving_sklearn_port'] %>");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='recovery_path';
