@@ -145,7 +145,6 @@ default['hopsworks']['org_email']                      = ""
 default['hopsworks']['org_country_code']               = "SE"
 default['hopsworks']['org_city']                       = "Stockholm"
 
-default['hopsworks']['recovery_path']            = "hopsworks-api/api/auth/recover"
 default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verify"
 # Master encryption password
 default['hopsworks']['encryption_password']      = "adminpw"
