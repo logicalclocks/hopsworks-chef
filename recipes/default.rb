@@ -249,7 +249,7 @@ if current_version.eql?("")
     block do
       raise "You are trying to initialize the database, but the database is not empty. Either there is a failed migration, or you forgot to set the current_version attribute"
     end
-    only_if "/srv/hops/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e \"SHOW TABLES\" | grep project"
+    only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"SHOW TABLES\" | grep project"
   end
 
   # New installation -> template the current version schema file
