@@ -243,6 +243,15 @@ versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
 if current_version.eql?("")
+
+  # Make sure the database is actually empty. Otherwise raise an error
+  ruby_block "check_db_empty" do 
+    block do
+      raise "You are trying to initialize the database, but the database is not empty. Either there is a failed migration, or you forgot to set the current_version attribute"
+    end
+    only_if "/srv/hops/mysql-cluster/ndb/scripts/mysql-client.sh hopsworks -e \"SHOW TABLES\" | grep project"
+  end
+
   # New installation -> template the current version schema file
   cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
     source "sql/ddl/#{target_version}__initial_tables.sql"
