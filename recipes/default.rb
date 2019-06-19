@@ -263,7 +263,7 @@ else
   current_version_idx = versions.index(current_version).to_i
   versions_length = versions.length.to_i - 1
 
-  for i in current_version_idx..versions_length
+  for i in (current_version_idx + 1)..versions_length
     # Update, template all the dml files from the current version to the target version
     cookbook_file "#{theDomain}/flyway/sql/V#{versions[i]}__hopsworks.sql" do
       source "sql/ddl/updates/#{versions[i]}.sql"
