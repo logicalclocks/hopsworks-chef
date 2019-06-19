@@ -43,6 +43,8 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:${JAVA_HOME}
 export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
 export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
 export PYLIB=${ANACONDA_ENV}/lib
+export PATH=${HADOOP_HOME}/bin:$PATH
+export HADOOP_HDFS_HOME=${HADOOP_HOME}
 
 export HADOOP_VERSION=<%= node['hops']['version'] %>
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
