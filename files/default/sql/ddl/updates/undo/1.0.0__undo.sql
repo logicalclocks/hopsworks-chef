@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 DROP TABLE IF EXISTS `secrets`;
 
 ALTER TABLE `hopsworks`.`users` DROP COLUMN `validation_key_updated`;
