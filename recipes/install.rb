@@ -389,15 +389,13 @@ end
 template "#{theDomain}/docroot/404.html" do
   source "404.html.erb"
   owner node['glassfish']['user']
-  mode 0777
-  variables({
-    :org_name => node['hopsworks']['org_name']
-  })
+  group node['glassfish']['group']
+  mode "444"
   action :create
 end
 
-cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
-  source 'obama-smoked-us.gif'
+cookbook_file"#{theDomain}/docroot/hops_icon.png" do
+  source 'hops_icon.png'
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode '0755'
