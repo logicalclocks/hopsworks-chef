@@ -1448,94 +1448,6 @@ attribute "jupyter/ws_ping_interval",
           :description => "Ping frequency for the jupyter websocket",
           :type => 'string'
 
-#
-##
-## Kagent
-##
-##
-
-attribute "kagent/default/private_ips",
-          :description => "Set ip addresses",
-          :type => "array"
-
-
-attribute "kagent/user",
-          :description => "Username to run kagent as",
-          :type => 'string'
-
-attribute "kagent/dir",
-          :description => "Dir to install kagent to",
-          :type => 'string'
-
-attribute "kagent/dashboard/ip",
-          :description => " Ip address for Dashboard REST API",
-          :type => 'string'
-
-attribute "kagent/dashboard/port",
-          :description => " Port for Dashboard REST API",
-          :type => 'string'
-
-attribute "kagent/enabled",
-          :description => "Kagent enabled: default 'true'. Set to 'false' to disable it.",
-          :type => 'string'
-
-attribute "kagent/hostid",
-          :description => " One-time password used when registering the host",
-          :type => 'string'
-
-attribute "kagent/name",
-          :description => "Cookbook name",
-          :type => 'string'
-
-attribute "kagent/rest_api/user",
-          :description => "kagent REST API username",
-          :type => "string"
-
-attribute "kagent/rest_api/password",
-          :description => "kagent REST API  password",
-          :type => "string"
-
-attribute "kagent/dashboard/user",
-          :description => "kagent username to register with server",
-          :type => "string"
-
-attribute "kagent/hostname",
-          :description => "hostname to register with server",
-          :type => "string"
-
-attribute "kagent/dashboard/password",
-          :description => "kagent password to register with server",
-          :type => "string"
-
-attribute "kagent/dns",
-          :description => "Default 'false'. Set to 'true' to use fully qualified domain names for kagent hosts in Hopsworks.",
-          :type => 'string'
-
-attribute "ndb/mysql_port",
-          :description => "Port for the mysql server",
-          :type => "string"
-
-attribute "ndb/mysql_socket",
-          :description => "Socket for the mysql server",
-          :type => "string"
-
-attribute "systemd",
-          :description => "Use systemd startup scripts, default 'true'",
-          :type => "string"
-
-attribute "kagent/network/interface",
-          :description => "Define the network intefaces (eth0, enp0s3)",
-          :type => "string"
-
-attribute "ntp/install",
-          :description => "Install Network Time Protocol (default: false)",
-          :type => "string"
-
-attribute "services/enabled",
-          :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
-          :type => "string"
-
-
 ##
 ##
 ## NDB
@@ -1777,11 +1689,6 @@ attribute "ndb/TotalSendBufferMemory",
 attribute "ndb/OverloadLimit",
           :description => "Overload for Send/Recv TCP Buffers in MBs",
           :type => 'string'
-
-attribute "kagent/enabled",
-          :description =>  "Install kagent",
-          :type => 'string',
-          :required => "optional"
 
 attribute "ndb/NoOfFragmentLogParts",
           :description =>  "One per ldm thread. Valid values: 4, 8, 16. Should match the number of CPUs in ThreadConfig's ldm threads.",
@@ -2227,15 +2134,6 @@ attribute "oauth/account_status",
           :type => 'string'
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
-          :type => 'string'
-
-### Conda
-attribute "conda/mirror_list",
-          :description => "comma separated list of anaconda mirrors",
-          :type => "string"
-
-attribute "conda/use_defaults",
-          :description => "whether or not to add the defaults mirrors to the channels list (default yes)",
           :type => 'string'
 
 ### Kapacitor
