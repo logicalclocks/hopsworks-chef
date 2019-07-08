@@ -106,11 +106,11 @@ default['hopsworks']['master']['password']          = "adminpw"
 
 default['hopsworks']['cert']['user_cert_valid_days'] = "12"
 
-default['hopsworks']['smtp']                     = node['smtp']['host']
-default['hopsworks']['smtp_port']                = node['smtp']['port']
-default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
-default['hopsworks']['email']                    = node['smtp']['email']
-default['hopsworks']['email_password']           = node['smtp']['email_password']
+default['hopsworks']['smtp']                     = "smtp.gmail.com"
+default['hopsworks']['smtp_port']                = "587"
+default['hopsworks']['smtp_ssl_port']            = "465"
+default['hopsworks']['email']                    = "smtp@gmail.com"
+default['hopsworks']['email_password']           = "password"
 
 default['hopsworks']['alert_email_addrs']        = ""
 
@@ -237,6 +237,7 @@ default['jupyter']['group']                            = node['install']['user']
 default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
+default['jupyter']['origin_scheme']                    = "https"
 
 #
 # Serving
