@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS `api_key` (
   `user` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `key_UNIQUE` (`key` ASC),
-  UNIQUE INDEX `salt_UNIQUE` (`salt` ASC),
-  INDEX `fk_api_key_1_idx` (`user` ASC),
+  UNIQUE INDEX `user_key_UNIQUE` (`user`, `name`),
+  INDEX `fk_api_key_1_idx` (`user`),
   CONSTRAINT `fk_api_key_1`
     FOREIGN KEY (`user`)
     REFERENCES `users` (`uid`)
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `api_key_scope` (
   `api_key` INT(11) NOT NULL,
   `scope` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `index2` (`api_key` ASC, `scope` ASC),
+  UNIQUE INDEX `index2` (`api_key`, `scope`),
   CONSTRAINT `fk_api_key_scope_1`
     FOREIGN KEY (`api_key`)
     REFERENCES `api_key` (`id`)
