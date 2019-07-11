@@ -2,6 +2,5 @@ REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.14.0", "10.0", "7.6.0.64", 
 
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_origin_scheme", "<%= node['jupyter']['origin_scheme'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("gce", "<%= node['install']['gce'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("aws", "<%= node['install']['aws'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("azure", "<%= node['install']['azure'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("cloud", "<%= node['install']['cloud'] %>");
+
