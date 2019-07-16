@@ -39,8 +39,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_cleaner_interval",
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("admin_email", "<%= node['hopsworks']['admin']['email'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
-
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_port';
 
