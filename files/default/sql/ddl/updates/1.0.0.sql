@@ -10,3 +10,8 @@ CREATE TABLE IF NOT EXISTS `secrets` (
           ON DELETE CASCADE
           ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`users` ADD COLUMN `validation_key_updated` timestamp DEFAULT NULL;
+ALTER TABLE `hopsworks`.`users` ADD COLUMN `validation_key_type` VARCHAR(20) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`users` CHANGE `activated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
