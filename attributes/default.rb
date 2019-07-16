@@ -128,10 +128,7 @@ default['hopsworks']['file_preview_image_size']  = "10000000"
 default['hopsworks']['file_preview_txt_size']    = "100"
 default['hopsworks']['download_allowed']         = "true"
 
-default['hops']['user_envs']                     = "false"
-
 default['hopsworks']['systemd']                  = "true"
-
 
 default['hopsworks']['kafka_num_replicas']       = "1"
 default['hopsworks']['kafka_num_partitions']     = "1"

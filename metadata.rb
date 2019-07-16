@@ -944,10 +944,6 @@ attribute "hops/rm/scheduler_class",
           :description => "Java Classname for the Yarn scheduler (fifo, capacity, fair)",
           :type => 'string'
 
-attribute "hops/user_envs",
-          :description => "Update the PATH environment variable for the hdfs and yarn users to include hadoop/bin in the PATH ",
-          :type => 'string'
-
 attribute "hops/logging_level",
           :description => "Log levels are: TRACE, DEBUG, INFO, WARN",
           :type => 'string'
