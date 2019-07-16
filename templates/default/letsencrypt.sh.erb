@@ -6,7 +6,7 @@ set -e
 
 if [ $# -lt 2 ] ; then
   echo "usage: $0 [cert-password] [number] [fqdn]"
-  echo "e.g., $0 cert-password 0001 fqdn"
+  echo "e.g., $0 adminpw 0001 $HOSTNAME"
   exit 1
 fi
 
