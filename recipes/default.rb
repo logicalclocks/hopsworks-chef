@@ -979,44 +979,12 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
-  owner "root"
-  group "root"
-  mode "775"
-  action :create
-  recursive true
-end
-
 directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
   owner "root"
   group "root"
   mode "775"
   action :create
   recursive true
-end
-
-
-template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html" do
-  source "facets-jupyter.html.erb"
-  owner "root"
-  mode 0775
-  action :create
-end
-
-directory "#{theDomain}/docroot/nbextensions/facets-dist" do
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "775"
-  action :create
-  recursive true
-end
-
-template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
-  source "facets-jupyter.html.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0775
-  action :create
 end
 
 include_recipe "tensorflow::serving"
