@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script allows Hopsworks to start/kill a Jupyter Notebook Server.
+# This script allows Hopsworks to start/kill JupyterLab .
 # There will be 1 notebook-server per ProjectUser.
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 # it changes user to 'jupyter' to run the command as user 'jupyter'.
@@ -89,7 +89,7 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
+    pid=$(ps -ef | grep -E "jupyter-(lab|notebook)" | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
         su $JUPYTER_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
@@ -132,13 +132,13 @@ elif [ "$1" == "start" ] ; then
     chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
     chmod -R 770 "$2"
      
-    # Launch the jupyter notebook
+    # Launch JupyterLab
     su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
 
 # list 
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    ps -ef | grep -v 'grep' | grep -iE "jupyter-(lab|notebook)" | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 else
   help
 fi

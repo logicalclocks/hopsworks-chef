@@ -64,7 +64,7 @@ if [ -f "$PID_FILE" ] ; then
  PID=$(cat "$PID_FILE")
  kill -0 "$PID" > /dev/null 2>&1
  if [ $? -eq 0 ] ; then
-     echo "A jupyter notebook is already running here. Kill it first."
+     echo "JupyterLab is already running here. Kill it first."
      exit 1
  fi
 fi
@@ -74,8 +74,16 @@ mkdir -p nbextensions
 
 cd "$SECRET_DIR" || exit
 
+# Check if JupyterLab is installed otherwise start Notebook
+${ANACONDA_ENV}/bin/jupyter lab -h
+if [ $? -eq 0 ];
+then
+    flavour="lab"
+else
+    flavour="notebook"
+fi
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid ${ANACONDA_ENV}/bin/jupyter notebook --debug --no-browser --NotebookApp.port="$PORT" --NotebookApp.token="$TOKEN" </dev/zero &> "$LOGFILE"  &
+setsid ${ANACONDA_ENV}/bin/jupyter "$flavour" --debug --no-browser --NotebookApp.port="$PORT" --NotebookApp.token="$TOKEN" </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
 
 # Wait for jupyter to start
@@ -91,7 +99,7 @@ while [ $timeout -lt $WAIT_START ] ; do
 done
 echo ""
 
-# If the timeout was exceeded, kill jupyter notebook
+# If the timeout was exceeded, kill JupyterLab
 if [ "$timeout" -eq $WAIT_START ] ; then
  PID=$(cat "$PID_FILE")
  kill "$PID" > /dev/null 2>&1
