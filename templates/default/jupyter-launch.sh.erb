@@ -70,9 +70,7 @@ if [ -f "$PID_FILE" ] ; then
 fi
 
 cd "$JUPYTER_HOME" || exit
-# Install facets-dist by linking to it
 mkdir -p nbextensions
-ln -s /usr/local/share/jupyter/nbextensions/facets-dist nbextensions/facets-dist
 
 cd "$SECRET_DIR" || exit
 
