@@ -9,10 +9,11 @@ PORT=$5
 LOGFILE=${JUPYTER_HOME}/logs/$6
 SECRET_DIR=$7
 CERTS_DIR=$8
+TOKEN=${10}
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN"
     echo ""
     exit 1
 }
@@ -28,7 +29,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 9 ]; then
+if [ $# -ne 10 ]; then
   help
 fi
 
@@ -42,6 +43,8 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:${JAVA_HOME}
 export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
 export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
 export PYLIB=${ANACONDA_ENV}/lib
+export PATH=${HADOOP_HOME}/bin:$PATH
+export HADOOP_HDFS_HOME=${HADOOP_HOME}
 
 export HADOOP_VERSION=<%= node['hops']['version'] %>
 export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
@@ -67,26 +70,24 @@ if [ -f "$PID_FILE" ] ; then
 fi
 
 cd "$JUPYTER_HOME" || exit
-# Install facets-dist by linking to it
 mkdir -p nbextensions
-ln -s /usr/local/share/jupyter/nbextensions/facets-dist nbextensions/facets-dist
 
 cd "$SECRET_DIR" || exit
 
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid ${ANACONDA_ENV}/bin/jupyter notebook --debug --no-browser --NotebookApp.port="$PORT" </dev/zero &> "$LOGFILE"  &
+setsid ${ANACONDA_ENV}/bin/jupyter notebook --debug --no-browser --NotebookApp.port="$PORT" --NotebookApp.token="$TOKEN" </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
 
-# Check that the token is written to the logfile, return when we see it.
+# Wait for jupyter to start
 timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
-	sleep 1
-	grep 'token' "$LOGFILE"
-        if [ $? -eq 0 ] ; then 
+  sleep 1
+  grep 'The Jupyter Notebook is running at' "$LOGFILE"
+        if [ $? -eq 0 ] ; then
           break
         fi
-	echo -n "."
-	timeout=$((timeout + 1))
+  echo -n "."
+  timeout=$((timeout + 1))
 done
 echo ""
 

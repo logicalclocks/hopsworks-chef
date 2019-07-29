@@ -243,6 +243,15 @@ versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
 if current_version.eql?("")
+
+  # Make sure the database is actually empty. Otherwise raise an error
+  ruby_block "check_db_empty" do 
+    block do
+      raise "You are trying to initialize the database, but the database is not empty. Either there is a failed migration, or you forgot to set the current_version attribute"
+    end
+    only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"SHOW TABLES\" | grep project"
+  end
+
   # New installation -> template the current version schema file
   cookbook_file "#{theDomain}/flyway/sql/V#{target_version}__initial_tables.sql" do
     source "sql/ddl/#{target_version}__initial_tables.sql"
@@ -254,7 +263,7 @@ else
   current_version_idx = versions.index(current_version).to_i
   versions_length = versions.length.to_i - 1
 
-  for i in current_version_idx..versions_length
+  for i in (current_version_idx + 1)..versions_length
     # Update, template all the dml files from the current version to the target version
     cookbook_file "#{theDomain}/flyway/sql/V#{versions[i]}__hopsworks.sql" do
       source "sql/ddl/updates/#{versions[i]}.sql"
@@ -912,7 +921,7 @@ directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
 end
 
 directory node['hopsworks']['staging_dir'] + "/serving"  do
-  owner node['tfserving']['user']
+  owner node['serving']['user']
   group node['hopsworks']['group']
   mode "0730"
   action :create
@@ -939,13 +948,23 @@ kagent_keys "#{homedir}" do
   action :return_publickey
 end
 
-# Generate a service JWT token to be used internally in Hopsworks
-bash "generate_jwt" do
-  user "root"
-  environment (lazy {{'JWT' => get_service_jwt()}})
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh -e "REPLACE INTO hopsworks.variables(id, value) VALUE ('service_jwt', '$JWT');"
-  EOH
+# Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
+ruby_block "generate_service_jwt" do
+  block do
+    master_token, renew_tokens = get_service_jwt()
+    sql_command_template = "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value) VALUE ('%s', '%s');\""
+    master_token_command = sql_command_template % ['service_master_jwt', master_token]
+    execute_shell_command master_token_command
+
+    idx = 0
+    variable_key_template = "service_renew_token_%d"
+    renew_tokens.each do |token|
+      variable_key = variable_key_template % idx
+      renew_token_command = sql_command_template % [variable_key, token]
+      execute_shell_command renew_token_command
+      idx += 1
+    end
+  end
 end
 
 # Force variables reload
@@ -960,35 +979,12 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-directory "/usr/local/share/jupyter/nbextensions/facets-dist"  do
+directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
   owner "root"
   group "root"
   mode "775"
   action :create
   recursive true
-end
-
-template "/usr/local/share/jupyter/nbextensions/facets-dist/facets-jupyter.html" do
-  source "facets-jupyter.html.erb"
-  owner "root"
-  mode 0775
-  action :create
-end
-
-directory "#{theDomain}/docroot/nbextensions/facets-dist" do
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "775"
-  action :create
-  recursive true
-end
-
-template "#{theDomain}/docroot/nbextensions/facets-dist/facets-jupyter.html" do
-  source "facets-jupyter.html.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0775
-  action :create
 end
 
 include_recipe "tensorflow::serving"

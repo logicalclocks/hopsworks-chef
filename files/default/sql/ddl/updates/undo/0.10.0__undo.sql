@@ -30,7 +30,7 @@ ALTER TABLE `jupyter_settings` ADD COLUMN `umask` varchar(32) COLLATE latin1_gen
 ALTER TABLE `jupyter_settings` DROP COLUMN `base_dir`;
 ALTER TABLE `jupyter_settings` DROP COLUMN `json_config`;
 
-DROP TABLE IF EXISTS `airflow_material`;
+DROP TABLE IF EXISTS `materialized_jwt`;
 
 DROP TABLE IF EXISTS `oauth_client`;
 DROP TABLE IF EXISTS `oauth_login_state`;
@@ -44,3 +44,52 @@ ALTER TABLE `remote_user` RENAME TO `ldap_user`;
 
 ALTER TABLE `tensorboard` DROP COLUMN `secret`;
 
+CREATE TABLE `job_input_files` (
+  `execution_id` int(11) NOT NULL,
+  `path` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`execution_id`,`name`),
+  CONSTRAINT `FK_361_373` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `job_output_files` (
+  `execution_id` int(11) NOT NULL,
+  `path` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`execution_id`,`name`),
+  CONSTRAINT `FK_361_370` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `jobs_history` (
+  `job_id` int(11) NOT NULL,
+  `jar_file` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `execution_id` int(11) NOT NULL,
+  `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL,
+  `job_type` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `class_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `arguments` text COLLATE latin1_general_cs NOT NULL,
+  `input_blocks_in_hdfs` int(11) NOT NULL,
+  `am_memory` int(11) NOT NULL,
+  `am_Vcores` int(11) NOT NULL,
+  `execution_duration` bigint(20) DEFAULT NULL,
+  `queuing_time` bigint(20) DEFAULT NULL,
+  `user_email` varchar(150) COLLATE latin1_general_cs NOT NULL,
+  `project_name` varchar(100) COLLATE latin1_general_cs NOT NULL,
+  `job_name` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `state` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `final_status` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`execution_id`),
+  UNIQUE KEY `inode_idx` (`app_id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+DROP TABLE `hopsworks`.`maggy_driver`;
+
+ALTER TABLE `jwt_signing_key` MODIFY COLUMN `name` VARCHAR(45) NOT NULL;
+
+ALTER TABLE `hopsworks`.`serving` RENAME TO `hopsworks`.`tf_serving`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `serving_type`;
+ALTER TABLE `hopsworks`.`serving` CHANGE `name` `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`serving` CHANGE `artifact_path` `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `host_ip` varchar(255) COLLATE latin1_general_cs NOT NULL;

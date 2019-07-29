@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.10.0"
+version          "1.0.0"
 source_url       "https://github.com/hopshadoop/hopsworks-chef"
 
 
@@ -55,6 +55,10 @@ recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for dem
 attribute "hopsworks/default/private_ips",
           :description => "ip addrs",
           :type => 'array'
+
+attribute "hopsworks/admin/email",
+          :description => "Email address of the default admin user",
+          :type => 'string'
 
 attribute "hopsworks/email",
           :description => "Email account to send notifications from. ",
@@ -940,10 +944,6 @@ attribute "hops/rm/scheduler_class",
           :description => "Java Classname for the Yarn scheduler (fifo, capacity, fair)",
           :type => 'string'
 
-attribute "hops/user_envs",
-          :description => "Update the PATH environment variable for the hdfs and yarn users to include hadoop/bin in the PATH ",
-          :type => 'string'
-
 attribute "hops/logging_level",
           :description => "Log levels are: TRACE, DEBUG, INFO, WARN",
           :type => 'string'
@@ -1373,6 +1373,16 @@ attribute "kzookeeper/dir",
 ##
 ##
 
+attribute "hopsworks/hive2/scratch_dir_delay",
+          :description => "How much to wait before deleting the directory",
+          :type => "string"
+
+attribute "hopsworks/hive2/scratch_dir_cleaner_interval",
+          :description => "Interval between scratch dir cleaner runs",
+          :type => "string"
+
+
+
 attribute "hive2/metastore/private_ips",
           :description => "Set ip addresses",
           :type => "array"
@@ -1382,19 +1392,30 @@ attribute "hive2/server2/private_ips",
           :type => "array"
 
 
+##
+##
+## Serving
+##
+##
 
-##
-##
-## TFServing
-##
-##
-
-attribute "tfserving/pool_size",
-          :description => "size of the connection pool for serving inference requests",
+attribute "serving/base_dir",
+          :description => "base directory for temporary directories for serving servers",
           :type => 'string'
 
-attribute "tfserving/max_route_connections",
-          :description => "max number of connections to serve requests to a unique route",
+attribute "serving/user",
+          :description => "user to launch serving servers as",
+          :type => 'string'
+
+attribute "serving/group",
+          :description => "group to launch serving servers as",
+          :type => 'string'
+
+attribute "serving/pool_size",
+          :description => "size of the connection pool for serving inference requests to model serving servers",
+          :type => 'string'
+
+attribute "serving/max_route_connections",
+          :description => "max number of connections to serve requests to a unique route for model serving servers",
           :type => 'string'
 
 ##
@@ -1423,393 +1444,6 @@ attribute "jupyter/ws_ping_interval",
           :description => "Ping frequency for the jupyter websocket",
           :type => 'string'
 
-#
-##
-## Kagent
-##
-##
-
-attribute "kagent/default/private_ips",
-          :description => "Set ip addresses",
-          :type => "array"
-
-
-attribute "kagent/user",
-          :description => "Username to run kagent as",
-          :type => 'string'
-
-attribute "kagent/dir",
-          :description => "Dir to install kagent to",
-          :type => 'string'
-
-attribute "kagent/dashboard/ip",
-          :description => " Ip address for Dashboard REST API",
-          :type => 'string'
-
-attribute "kagent/dashboard/port",
-          :description => " Port for Dashboard REST API",
-          :type => 'string'
-
-attribute "kagent/enabled",
-          :description => "Kagent enabled: default 'true'. Set to 'false' to disable it.",
-          :type => 'string'
-
-attribute "kagent/hostid",
-          :description => " One-time password used when registering the host",
-          :type => 'string'
-
-attribute "kagent/name",
-          :description => "Cookbook name",
-          :type => 'string'
-
-attribute "kagent/rest_api/user",
-          :description => "kagent REST API username",
-          :type => "string"
-
-attribute "kagent/rest_api/password",
-          :description => "kagent REST API  password",
-          :type => "string"
-
-attribute "kagent/dashboard/user",
-          :description => "kagent username to register with server",
-          :type => "string"
-
-attribute "kagent/hostname",
-          :description => "hostname to register with server",
-          :type => "string"
-
-attribute "kagent/dashboard/password",
-          :description => "kagent password to register with server",
-          :type => "string"
-
-attribute "kagent/dns",
-          :description => "Default 'false'. Set to 'true' to use fully qualified domain names for kagent hosts in Hopsworks.",
-          :type => 'string'
-
-attribute "ndb/mysql_port",
-          :description => "Port for the mysql server",
-          :type => "string"
-
-attribute "ndb/mysql_socket",
-          :description => "Socket for the mysql server",
-          :type => "string"
-
-attribute "systemd",
-          :description => "Use systemd startup scripts, default 'true'",
-          :type => "string"
-
-attribute "kagent/network/interface",
-          :description => "Define the network intefaces (eth0, enp0s3)",
-          :type => "string"
-
-attribute "ntp/install",
-          :description => "Install Network Time Protocol (default: false)",
-          :type => "string"
-
-attribute "services/enabled",
-          :description => "Default 'false'. Set to 'true' to enable daemon services, so that they are started on a host restart.",
-          :type => "string"
-
-
-##
-##
-## NDB
-##
-##
-
-
-attribute "ndb/mgmd/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-attribute "ndb/ndbd/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-attribute "ndb/mysqld/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-attribute "ndb/memcached/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-attribute "ndb/url",
-          :description => "Download URL for MySQL Cluster binaries",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfExecutionThreads",
-          :description => "Number of execution threads for MySQL Cluster",
-          :type => 'string'
-
-attribute "ndb/DataMemory",
-          :description => "Data memory for each MySQL Cluster Data Node",
-          :type => 'string',
-          :required => "required"
-
-attribute "ndb/IndexMemory",
-          :description => "Index memory for each MySQL Cluster Data Node",
-          :type => 'string'
-
-attribute "memcached/mem_size",
-          :description => "Memcached data memory size",
-          :type => 'string'
-
-attribute "ndb/version",
-          :description =>  "MySQL Cluster Version",
-          :type => 'string'
-
-attribute "ndb/user",
-          :description => "User that runs ndb database",
-          :type => 'string'
-
-attribute "ndb/group",
-          :description => "Group that runs ndb database",
-          :type => 'string'
-
-attribute "ndb/BackupDataDir",
-          :description => "Directory to store mysql cluster backups in",
-          :type => 'string'
-
-attribute "ndb/remote_backup_host",
-          :description => "Hostname of the machine where the backups will be stored",
-          :type => 'string'
-
-attribute "ndb/remote_backup_user",
-          :description => "User on the remote backup machine. SSH access should be configured",
-          :type => 'string'
-
-attribute "ndb/remote_backup_dir",
-          :description => "Directory on the remote backup machine that the archives will be stored",
-          :type => 'string'
-
-attribute "ndb/local_backup_dir",
-          :description => "Directory on the local MGM machine where backups will temporarily be stored",
-          :type => 'string'
-
-attribute "mysql/user",
-          :description => "User that runs mysql server",
-          :required => "required",
-          :type => 'string'
-
-attribute "mysql/password",
-          :description => "Password for hop mysql user",
-          :required => "required",
-          :type => 'string'
-
-attribute "mysql/dir",
-          :description => "Directory in which to install MySQL Binaries",
-          :type => 'string'
-
-attribute "mysql/replication_enabled",
-          :description => "Enable replication for the mysql server",
-          :type => 'string'
-
-attribute "ndb/wait_startup",
-          :description => "Max amount of time a MySQL server should wait for the ndb nodes to be up",
-          :type => 'string'
-
-attribute "ndb/mgm_server/port",
-          :description => "Port used by Mgm servers in MySQL Cluster",
-          :type => 'string'
-
-attribute "ndb/NoOfReplicas",
-          :description => "Num of replicas of the MySQL Cluster Data Nodes",
-          :type => 'string'
-
-attribute "ndb/FragmentLogFileSize",
-          :description => "FragmentLogFileSize",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfAttributes",
-          :description => "MaxNoOfAttributes",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfConcurrentIndexOperations",
-          :description => "Increase for higher throughput at the cost of more memory",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfConcurrentScans",
-          :description => "Increase for higher throughput at the cost of more memory",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfConcurrentOperations",
-          :description => "Increase for higher throughput at the cost of more memory",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfTables",
-          :description => "MaxNoOfTables",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfOrderedIndexes",
-          :description => "MaxNoOfOrderedIndexes",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfUniqueHashIndexes",
-          :description => "MaxNoOfUniqueHashIndexes",
-          :type => 'string'
-
-attribute "ndb/MaxDMLOperationsPerTransaction",
-          :description => "MaxDMLOperationsPerTransaction",
-          :type => 'string'
-
-attribute "ndb/TransactionBufferMemory",
-          :description => "TransactionBufferMemory",
-          :type => 'string'
-
-attribute "ndb/MaxParallelScansPerFragment",
-          :description => "MaxParallelScansPerFragment",
-          :type => 'string'
-
-attribute "ndb/MaxDiskWriteSpeed",
-          :description => "MaxDiskWriteSpeed",
-          :type => 'string'
-
-attribute "ndb/MaxDiskWriteSpeedOtherNodeRestart",
-          :description => "MaxDiskWriteSpeedOtherNodeRestart",
-          :type => 'string'
-
-attribute "ndb/MaxDiskWriteSpeedOwnRestart",
-          :description => "MaxDiskWriteSpeedOwnRestart",
-          :type => 'string'
-
-attribute "ndb/MinDiskWriteSpeed",
-          :description => "MinDiskWriteSpeed",
-          :type => 'string'
-
-attribute "ndb/DiskSyncSize",
-          :description => "DiskSyncSize",
-          :type => 'string'
-
-attribute "ndb/RedoBuffer",
-          :description => "RedoBuffer",
-          :type => 'string'
-
-attribute "ndb/LongMessageBuffer",
-          :description => "LongMessageBuffer",
-          :type => 'string'
-
-attribute "ndb/TransactionInactiveTimeout",
-          :description => "TransactionInactiveTimeout",
-          :type => 'string'
-
-attribute "ndb/TransactionDeadlockDetectionTimeout",
-          :description => "TransactionDeadlockDetectionTimeout",
-          :type => 'string'
-
-attribute "ndb/LockPagesInMainMemory",
-          :description => "LockPagesInMainMemory",
-          :type => 'string'
-
-attribute "ndb/RealTimeScheduler",
-          :description => "RealTimeScheduler",
-          :type => 'string'
-
-attribute "ndb/SchedulerSpinTimer",
-          :description => "SchedulerSpinTimer",
-          :type => 'string'
-
-attribute "ndb/BuildIndexThreads",
-          :description => "BuildIndexThreads",
-          :type => 'string'
-
-attribute "ndb/CompressedLCP",
-          :description => "CompressedLCP",
-          :type => 'string'
-
-attribute "ndb/CompressedBackup",
-          :description => "CompressedBackup",
-          :type => 'string'
-
-attribute "ndb/BackupMaxWriteSize",
-          :description => "BackupMaxWriteSize",
-          :type => 'string'
-
-attribute "ndb/BackupLogBufferSize",
-          :description => "BackupLogBufferSize",
-          :type => 'string'
-
-attribute "ndb/BackupDataBufferSize",
-          :description => "BackupDataBufferSize",
-          :type => 'string'
-
-attribute "ndb/MaxAllocate",
-          :description => "MaxAllocate",
-          :type => 'string'
-
-attribute "ndb/DefaultHashMapSize",
-          :description => "DefaultHashMapSize",
-          :type => 'string'
-
-attribute "ndb/ODirect",
-          :description => "ODirect",
-          :type => 'string'
-
-attribute "ndb/TotalSendBufferMemory",
-          :description => "TotalSendBufferMemory in MBs",
-          :type => 'string'
-
-attribute "ndb/OverloadLimit",
-          :description => "Overload for Send/Recv TCP Buffers in MBs",
-          :type => 'string'
-
-attribute "kagent/enabled",
-          :description =>  "Install kagent",
-          :type => 'string',
-          :required => "optional"
-
-attribute "ndb/NoOfFragmentLogParts",
-          :description =>  "One per ldm thread. Valid values: 4, 8, 16. Should match the number of CPUs in ThreadConfig's ldm threads.",
-          :type => 'string'
-
-attribute "ndb/bind_cpus",
-          :description =>  "Isolate interrupts from cpus, turn off balance_irqs",
-          :type => 'string'
-
-attribute "ndb/TcpBind_INADDR_ANY",
-          :description =>  "Set to TRUE so that any IP addr can be used on any node. Default is FALSE.",
-          :type => 'string'
-
-attribute "ndb/aws_enhanced_networking",
-          :description =>  "Set to true if you want the ixgbevf module to be installed that is needed for AWS enhanced networking.",
-          :type => 'string'
-
-attribute "ndb/interrupts_isolated_to_single_cpu",
-          :description =>  "Set to true if you want to setup your linux kernal to handle interrupts on a single CPU.",
-          :type => 'string'
-
-attribute "ndb/ThreadConfig",
-          :description => "Decide which threads bind to which cores: Threadconfig=main={cpubind=0},ldm={count=8,cpubind=1,2,3,4,13,14,15,16},io={count=4,cpubind=5,6,17,18},rep={cpubind=7},recv={count=2,cpubind=8,19}k",
-          :type => 'string'
-
-attribute "ndb/dir",
-          :description =>  "Directory in which to install mysql-cluster",
-          :type => 'string'
-
-attribute "ndb/cron_backup",
-          :description =>  "Default is 'false'. To turn on, set to 'true'",
-          :type => 'string'
-
-attribute "ndb/backup_frequency",
-          :description =>  "Options are 'daily', 'weekly'. Default is 'daily'",
-          :type => 'string'
-
-attribute "ndb/backup_time",
-          :description =>  "Time in 24-hour clock of when to make the regular backup. Default: 03:00 (in the morning)",
-          :type => 'string'
-
-
-attribute "ndb/shared_folder",
-          :description =>  "Directory in which to download mysql-cluster",
-          :type => 'string'
-
-attribute "ndb/systemd",
-          :description =>  "Use systemd scripts (instead of system-v). Default is 'true'.",
-          :type => 'string'
-
-attribute "ndb/MaxNoOfConcurrentTransactions",
-          :description =>  "Maximum number of concurrent transactions (higher consumes more memory)",
-          :type => 'string'
 
 #
 # Dela
@@ -2030,34 +1664,6 @@ attribute "mysql/password",
           :type => 'string',
           :required => "required"
 
-
-#
-#
-# SMTP
-#
-#
-attribute "smtp/host",
-          :description => "Ip Address/hostname of SMTP server (default is smtp.gmail.com)",
-          :type => 'string'
-
-attribute "smtp/port",
-          :description => "Port of SMTP server (default is 587)",
-          :type => 'string'
-
-attribute "smtp/ssl_port",
-          :description => "SSL port of SMTP server (default is 465)",
-          :type => 'string'
-
-attribute "smtp/email",
-          :description => "Email account to send notifications from. ",
-          :required => "required",
-          :type => 'string'
-
-attribute "smtp/email_password",
-          :description => "Password for email account. ",
-          :required => "required",
-          :type => 'string'
-
 #
 # LDAP
 #
@@ -2173,21 +1779,21 @@ attribute "kerberos/spnego_principal",
 attribute "kerberos/spnego_keytab_file",
           :description => "Spnego principal keytab file path. '/etc/security/keytabs/service.keytab' (default)",
           :type => 'string'
-          
+
 attribute "kerberos/krb_conf_path",
           :description => "Kerberos conf path. '/etc/krb5.conf' (default)",
           :type => 'string'
 
 attribute "kerberos/spnego_server_conf",
           :description => "Spnego server extra conf. 'storeKey=true\nisInitiator=false' (default)",
-          :type => 'string' 
-          
+          :type => 'string'
+
 attribute "kerberos/krb_server_key_tab_path",
           :description => "Spnego server keyTab file location. '/etc/security/keytabs/service.keytab' (default)",
           :type => 'string'
 
 attribute "kerberos/krb_server_key_tab_name",
-          :description => "Spnego server keyTab file name. 'service.keytab' (default)", 
+          :description => "Spnego server keyTab file name. 'service.keytab' (default)",
           :type => 'string'
 
 # OAuth2
@@ -2195,22 +1801,13 @@ attribute "oauth/enabled",
           :description => "Enable OAuth. 'false' (default)",
           :type => 'string'
 attribute "oauth/redirect_uri",
-          :description => "OAuth redirect uri. 'hopsworks/callback' (default)", 
+          :description => "OAuth redirect uri. 'hopsworks/callback' (default)",
           :type => 'string'
 attribute "oauth/account_status",
           :description => "Hopsworks account status given for new OAuth user. '1' verified account (default)",
           :type => 'string'
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
-          :type => 'string'
-
-### Conda
-attribute "conda/mirror_list",
-          :description => "comma separated list of anaconda mirrors",
-          :type => "string"
-
-attribute "conda/use_defaults",
-          :description => "whether or not to add the defaults mirrors to the channels list (default yes)",
           :type => 'string'
 
 ### Kapacitor
@@ -2299,6 +1896,14 @@ attribute "hopsworks/jwt/issuer",
           :description => "JWT issuer identifier. (default hopsworks@logicalclocks.com)",
           :type => 'string'
 
+attribute "hopsworks/jwt/service_lifetime_ms",
+          :description => "Default lifetime in ms for service jwt expiration. (default 604800000)",
+          :type => 'string'
+
+attribute "hopsworks/jwt/service_exp_leeway_sec",
+          :description => "Default expiration leeway in sec for service jwt",
+          :type => 'string'
+
 ### Feature Store
 attribute "hopsworks/featurestore_default_storage_format",
           :description => "Default storage format for the hive database of the feature stores (ORC/PARQUET)",
@@ -2308,3 +1913,13 @@ attribute "hopsworks/featurestore_default_storage_format",
 attribute "glassfish/http/keep_alive_timeout",
           :description => "Glassfish http listeners Keep alive timeout seconds",
           :type => 'string'
+
+# kagent liveness monitor configuration
+attribute "hopsworks/kagent_liveness/enabled",
+          :description => "Enables kagent service monitoring and restart",
+          :type => 'string'
+
+attribute "hopsworks/kagent_liveness/threshold",
+          :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
+          :type => 'string'
+

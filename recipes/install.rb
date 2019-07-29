@@ -35,9 +35,9 @@ group node['jupyter']['group'] do
   not_if "getent group #{node['jupyter']['group']}"
 end
 
-group node['tfserving']['group'] do
+group node['serving']['group'] do
   action :create
-  not_if "getent group #{node['tfserving']['group']}"
+  not_if "getent group #{node['serving']['group']}"
 end
 
 group node['rstudio']['group'] do
@@ -69,7 +69,7 @@ group node['jupyter']['group'] do
   append true
 end
 
-group node['tfserving']['group'] do
+group node['serving']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
@@ -112,12 +112,12 @@ user node['rstudio']['user'] do
   not_if "getent passwd #{node['rstudio']['user']}"
 end
 
-user node['tfserving']['user'] do
-  gid node['tfserving']['group']
+user node['serving']['user'] do
+  gid node['serving']['group']
   action :create
   shell "/bin/bash"
   manage_home true
-  not_if "getent passwd #{node['tfserving']['user']}"
+  not_if "getent passwd #{node['serving']['user']}"
 end
 
 group node['kagent']['certs_group'] do
@@ -128,7 +128,7 @@ end
 
 group node['hops']['group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['jupyter']['user']}"]
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['serving']['user']}"]
   append true
 end
 
@@ -414,15 +414,13 @@ end
 template "#{theDomain}/docroot/404.html" do
   source "404.html.erb"
   owner node['glassfish']['user']
-  mode 0777
-  variables({
-    :org_name => node['hopsworks']['org_name']
-  })
+  group node['glassfish']['group']
+  mode "444"
   action :create
 end
 
-cookbook_file"#{theDomain}/docroot/obama-smoked-us.gif" do
-  source 'obama-smoked-us.gif'
+cookbook_file"#{theDomain}/docroot/hops_icon.png" do
+  source 'hops_icon.png'
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode '0755'
@@ -653,7 +651,7 @@ end
 template "#{theDomain}/bin/tfserving.sh" do
   source "tfserving.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   action :create
 end
@@ -661,15 +659,39 @@ end
 template "#{theDomain}/bin/tfserving-kill.sh" do
   source "tfserving-kill.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   action :create
 end
 
-template "#{theDomain}/bin/tfserving-kill.sh" do
-  source "tfserving-kill.sh.erb"
+template "#{theDomain}/bin/sklearn_flask_server.py" do
+  source "sklearn_flask_server.py.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving-launch.sh" do
+  source "sklearn_serving-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving.sh" do
+  source "sklearn_serving.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
+  mode "550"
+  action :create
+end
+
+template "#{theDomain}/bin/sklearn_serving-kill.sh" do
+  source "sklearn_serving-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['serving']['group']
   mode "550"
   action :create
 end
@@ -698,15 +720,6 @@ template "#{theDomain}/bin/anaconda-rsync.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/kagent-restart.sh" do
-  source "kagent-restart.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "500"
-  action :create
-end
-
-
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -719,7 +732,7 @@ end
 template "#{theDomain}/bin/tfserving-launch.sh" do
   source "tfserving-launch.sh.erb"
   owner node['glassfish']['user']
-  group node['tfserving']['group']
+  group node['serving']['group']
   mode "550"
   variables({
      :command => command
@@ -817,6 +830,7 @@ template "/etc/sudoers.d/glassfish" do
               :rstudio_cleanup =>  "#{theDomain}/bin/rstudio-project-cleanup.sh",
               :rstudio_kernel =>  "#{theDomain}/bin/rstudio-install-kernel.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",
+              :sklearn_serving =>  "#{theDomain}/bin/sklearn_serving.sh",
               :conda_export =>  "#{theDomain}/bin/condaexport.sh",
               :tensorboard =>  "#{theDomain}/bin/tensorboard.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",

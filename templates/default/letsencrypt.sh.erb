@@ -4,11 +4,9 @@
 
 set -e
 
-if [ $# -ne 3 ] ; then
-  echo "usage: $0 cert-password number fqdn"
-  echo "e.g., $0 cert-password 0001 fqdn"
-  echo "..."
-  echo "e.g., $0 cert-password 0010 fqdn"
+if [ $# -lt 2 ] ; then
+  echo "usage: $0 [cert-password] [number] [fqdn]"
+  echo "e.g., $0 adminpw 0001 $HOSTNAME"
   exit 1
 fi
 
@@ -17,10 +15,28 @@ sudo service glassfish-domain1 stop
 #Create Script, Make it executable
 
 #<%= node['fqdn'] %>
-DOMAIN=$3
+if [ $# -gt 2 ] ; then
+  DOMAIN=$3
+else
+  DOMAIN=$(host -TtA $(hostname -s) | grep "has address" | awk '{print $1}') 
+  if [[ "${DOMAIN}" == "" ]] ; then 
+    DOMAIN=$(hostname -s) 
+  fi
+fi
 
-NEW_DOMAIN=${DOMAIN}-$2
-KEYSTOREPW=$1
+PASSWD=adminpw
+
+NUM=0001
+
+if [ $# -gt 0 ] ; then
+  PASSWD=$1
+fi    
+if [ $# -gt 1 ] ; then
+   NUM=$2
+fi
+NEW_DOMAIN=${DOMAIN}-$NUM
+
+KEYSTOREPW=$PASSWD
 
 BASE=/etc/letsencrypt/live 
 LIVE=${BASE}/$DOMAIN

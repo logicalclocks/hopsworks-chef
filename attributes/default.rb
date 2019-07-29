@@ -33,6 +33,7 @@ default['hopsworks']['https']['port']            = 8181
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
 default['hopsworks']['admin']['password']        = "adminpw"
+default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
 default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
@@ -105,11 +106,11 @@ default['hopsworks']['master']['password']          = "adminpw"
 
 default['hopsworks']['cert']['user_cert_valid_days'] = "12"
 
-default['hopsworks']['smtp']                     = node['smtp']['host']
-default['hopsworks']['smtp_port']                = node['smtp']['port']
-default['hopsworks']['smtp_ssl_port']            = node['smtp']['ssl_port']
-default['hopsworks']['email']                    = node['smtp']['email']
-default['hopsworks']['email_password']           = node['smtp']['email_password']
+default['hopsworks']['smtp']                     = "smtp.gmail.com"
+default['hopsworks']['smtp_port']                = "587"
+default['hopsworks']['smtp_ssl_port']            = "465"
+default['hopsworks']['email']                    = "smtp@gmail.com"
+default['hopsworks']['email_password']           = "password"
 
 default['hopsworks']['alert_email_addrs']        = ""
 
@@ -127,10 +128,7 @@ default['hopsworks']['file_preview_image_size']  = "10000000"
 default['hopsworks']['file_preview_txt_size']    = "100"
 default['hopsworks']['download_allowed']         = "true"
 
-default['hops']['user_envs']                     = "false"
-
 default['hopsworks']['systemd']                  = "true"
-
 
 default['hopsworks']['kafka_num_replicas']       = "1"
 default['hopsworks']['kafka_num_partitions']     = "1"
@@ -144,7 +142,6 @@ default['hopsworks']['org_email']                      = ""
 default['hopsworks']['org_country_code']               = "SE"
 default['hopsworks']['org_city']                       = "Stockholm"
 
-default['hopsworks']['recovery_path']            = "hopsworks-api/api/auth/recover"
 default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verify"
 # Master encryption password
 default['hopsworks']['encryption_password']      = "adminpw"
@@ -237,6 +234,7 @@ default['jupyter']['group']                            = node['install']['user']
 default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
+default['jupyter']['origin_scheme']                    = "https"
 
 
 #
@@ -256,19 +254,23 @@ default['rstudio']['centos_packages']                  = %w{ R }
 
 
 #
-# TensorFlow Serving
+# Serving
 #
-default['tfserving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
-default['tfserving']['user']                           = node['install']['user'].empty? ? "tfserving" : node['install']['user']
-default['tfserving']['group']                          = node['install']['user'].empty? ? "tfserving" : node['install']['user']
-default['tfserving']['pool_size']                      = "40"
-default['tfserving']['max_route_connections']          = "10"
+default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
+default['serving']['user']                           = node['install']['user'].empty? ? "serving" : node['install']['user']
+default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
+default['serving']['pool_size']                      = "40"
+default['serving']['max_route_connections']          = "10"
 
 #
 # PyPi
 #
 default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
 
+# Hive
+
+default['hopsworks']['hive2']['scratch_dir_delay']                = "7d"
+default['hopsworks']['hive2']['scratch_dir_cleaner_interval']     = "24h"
 
 #
 # Database upgrades
@@ -387,3 +389,12 @@ default['scala']['download_url']              = "#{node['download_url']}/scala-#
 
 # Number of seconds to keep an inactive connection alive
 default['glassfish']['http']['keep_alive_timeout']   = "30"
+
+#
+# kagent liveness monitor configuration
+#
+default['hopsworks']['kagent_liveness']['enabled']         = "false"
+default['hopsworks']['kagent_liveness']['threshold']       = "10s"
+default['hopsworks']['kagent_liveness']['restart_script']  = "#{node['kagent']['base_dir']}/bin/restart-service.sh"
+default['hopsworks']['kagent_liveness']['start_script']    = "#{node['kagent']['base_dir']}/bin/start-service.sh"
+default['hopsworks']['kagent_liveness']['stop_script']     = "#{node['kagent']['base_dir']}/bin/stop-service.sh"
