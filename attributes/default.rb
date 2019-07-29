@@ -35,7 +35,7 @@ default['hopsworks']['admin']['user']            = "adminuser"
 default['hopsworks']['admin']['password']        = "adminpw"
 default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
-default['glassfish']['version']                  = '4.1.2.174'  # '5.182'
+default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
