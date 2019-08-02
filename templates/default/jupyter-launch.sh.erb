@@ -2,27 +2,34 @@
 
 WAIT_START=20
 JUPYTER_HOME=$1
-export HADOOP_HOME=$2
-export JAVA_HOME=$3
-export ANACONDA_ENV=$4
+HADOOP_HOME=$2
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+PROJECT_USER_NAME=$3
+ANACONDA_ENV=$4
 PORT=$5
 LOGFILE=${JUPYTER_HOME}/logs/$6
 SECRET_DIR=$7
 CERTS_DIR=$8
 TOKEN=${10}
 JUPYTER_MODE=${11}
+IMAGE=${12}
+CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
+PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
+SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
+FLINK_CONF_DIR=<%= node['flink']['conf_dir'] %>
+NOT_FOUND=127
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME PROJECT_USER_NAME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE IMAGE_NAME"
     echo ""
     exit 1
 }
 
 function kill_named {
-    PID=$(ps aux | grep -i jupyter | grep "${JUPYTER_HOME}" | grep "$PORT" | grep -v grep | awk '{print $2}')
-    if [ "$PID" != "" ] ; then
-	kill -9 "$PID" > /dev/null 2>&1
+    CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+	docker rm -f "$CID" > /dev/null 2>&1
         res=$?
     else
 	res=$NOT_FOUND
@@ -30,69 +37,53 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 11 ]; then
+if [ $# -ne 12 ]; then
   help
 fi
 
-export JUPYTER_PATH=$JUPYTER_HOME
-export JUPYTER_DATA_DIR=$JUPYTER_HOME
-export PDIR=$SECRET_DIR
-export JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf
-export JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run
-export CLASSPATH=$("${HADOOP_HOME}"/bin/hadoop classpath --glob)
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:${JAVA_HOME}/jre/lib/amd64/server
-export SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf
-export PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python
-export PYLIB=${ANACONDA_ENV}/lib
-export PATH=${HADOOP_HOME}/bin:$PATH
-export HADOOP_HDFS_HOME=${HADOOP_HOME}
-
-export HADOOP_VERSION=<%= node['hops']['version'] %>
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export HADOOP_CLIENT_OPTS="-Dfs.permissions.umask-mode=0002"
-## The name of the environment variable must be the same
-## as in HopsSSLSocketFactory in Hops project
-export MATERIAL_DIRECTORY=$CERTS_DIR
-export HADOOP_USER_NAME=$9 
-
-PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
-
-# Try to make python code reproducible by setting this random seed
-# https://www.youtube.com/watch?time_continue=1&v=Ys8ofBeR2kA
-export PYTHONHASHSEED=0
-
-if [ -f "$PID_FILE" ] ; then
- PID=$(cat "$PID_FILE")
- kill -0 "$PID" > /dev/null 2>&1
- if [ $? -eq 0 ] ; then
-     echo "JupyterLab is already running here. Kill it first."
-     exit 1
- fi
-fi
-
+#check if the folders exist
 cd "$JUPYTER_HOME" || exit
-mkdir -p nbextensions
-
 cd "$SECRET_DIR" || exit
 
-if [[ "$JUPYTER_MODE" == "JUPYTER_CLASSIC" ]];
-then
-    flavour="notebook"
-elif [[ "$JUPYTER_MODE" == "JUPYTER_LAB" ]];
-then
-    # Check if JupyterLab is installed otherwise start Notebook
-    ${ANACONDA_ENV}/bin/jupyter lab -h
-    if [ $? -eq 0 ];
-    then
-	flavour="lab"
-    else
-	flavour="notebook"
-    fi
+kill_named
+
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
 fi
 
-# setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
-setsid ${ANACONDA_ENV}/bin/jupyter "$flavour" --debug --no-browser --NotebookApp.port="$PORT" --NotebookApp.token="$TOKEN" </dev/zero &> "$LOGFILE"  &
-echo $! > "$PID_FILE"
+docker run -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "JUPYTER_PATH=$JUPYTER_HOME" \
+       -e "JUPYTER_DATA_DIR=$JUPYTER_HOME" \
+       -e "PDIR=$SECRET_DIR" \
+       -e "JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf" \
+       -e "JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run" \
+       -e "SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf" \
+       -e "PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python" \
+       -e "PYLIB=${ANACONDA_ENV}/lib" \
+       -e "PATH=${HADOOP_HOME}/bin:$PATH" \
+       -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
+       -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
+       -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
+       -e "HADOOP_USER_NAME=$9" \
+       -e "HADOOP_HOME=${HADOOP_HOME}" \
+       -e "ANACONDA_ENV=$4" \
+       -e "PYTHONHASHSEED=0" \
+       -v $JUPYTER_HOME:$JUPYTER_HOME:rw\
+       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -v ${SPARK_CONF_DIR}:${SPARK_CONF_DIR}:ro \
+       -v ${FLINK_CONF_DIR}:${FLINK_CONF_DIR}:ro \
+       -u="yarnapp" \
+       -w="$SECRET_DIR" \
+       $IMAGE \
+       jupyter-launcher.sh $PORT $LOGFILE $TOKEN $JUPYTER_MODE &
+
+
+
+
 
 # Wait for jupyter to start
 timeout=0
@@ -109,11 +100,7 @@ echo ""
 
 # If the timeout was exceeded, kill JupyterLab
 if [ "$timeout" -eq $WAIT_START ] ; then
- PID=$(cat "$PID_FILE")
- kill "$PID" > /dev/null 2>&1
- if [ $? -ne 0 ] ; then
-     kill_named
- fi
+ kill_named
 fi
 
 

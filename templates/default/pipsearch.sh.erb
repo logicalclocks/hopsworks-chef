@@ -10,4 +10,4 @@ if [ $# -ne 2  ]; then
  exit 2
 fi
 
-<%= node['conda']['base_dir'] %>/envs/"${ENV}"/bin/pip search "${LIBRARY}"
+<%= node['conda']['base_dir'] %>/envs/hops-system/bin/pip search "${LIBRARY}"

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+
+help() {
+    echo ""
+    echo "usage: $0 [create docker_file tag] | [list image]"
+    echo ""
+    exit 1
+}
+
+if [ "$1" == "create" ] ; then
+
+    # Sanity checks for injection attacks
+    if [ ! -f "$2" ] ; then
+	echo "Invalid docker file: $2" >&2
+	help
+    fi
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    if ! [[ $3 =~ $re ]] ; then
+	echo "error: Not an image name $3" >&2
+	help
+    fi
+    
+    DOCKER_BUILDKIT=1 docker build -f $2 --tag $3 ./
+
+    docker push $3
+
+elif [ "$1" == "delete" ] ; then
+    # Sanity checks for injection attacks
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    if ! [[ $2 =~ $re ]] ; then
+	echo "error: Not an image name $3" >&2
+	help
+    fi
+
+    docker rmi $2
+    
+elif [ "$1" == "list" ] ; then
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    if ! [[ $2 =~ $re ]] ; then
+	echo "error: Not an image name $2" >&2
+	help
+    fi
+    
+    docker run $2 conda list -n theenv
+
+elif [ "$1" == "export" ] ; then
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    if ! [[ $2 =~ $re ]] ; then
+	echo "error: Not an image name $2" >&2
+	help
+    fi
+    
+    docker run $2 conda env export -n theenv
+    
+else
+    help
+fi
+
+exit $?

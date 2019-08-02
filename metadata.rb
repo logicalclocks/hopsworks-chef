@@ -397,14 +397,6 @@ attribute "serving/max_route_connections",
 ##
 ##
 
-attribute "jupyter/user",
-          :description => "Jupyter username to run notebook servers as",
-          :type => 'string'
-
-attribute "jupyter/group",
-          :description => "Jupyter group to run notebook servers as",
-          :type => 'string'
-
 attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
           :type => 'string'

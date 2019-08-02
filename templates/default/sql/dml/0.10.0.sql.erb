@@ -31,8 +31,8 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_restart_scr
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_user", "<%= node['jupyter']['user'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_group", "<%= node['jupyter']['group'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_user", "<%= node['hops']['yarnapp']['user'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_group", "<%= node['hops']['group'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_scratchdir_delay", "<%= node['hopsworks']['hive2']['scratch_dir_delay'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_scratchdir_cleaner_interval", "<%= node['hopsworks']['hive2']['scratch_dir_cleaner_interval'] %>");
