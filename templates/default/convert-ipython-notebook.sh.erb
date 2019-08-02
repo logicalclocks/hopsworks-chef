@@ -6,91 +6,70 @@
 
 help() {
     echo ""
-    echo "usage: $0 path hdfs_username jupyter_path output_path conversion_dir conversion_type"
+    echo "usage: $0 path hdfs_username jupyter_path output_path conversion_dir conversion_type docker_image cert_dir"
     echo ""
     exit 1
 }
 
-if [ "$#" -ne 6 ] ; then
+NOT_FOUND=127
+
+function kill_named {
+    CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+	docker rm -f "$CID" > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+if [ "$#" -ne 7 ] ; then
     help
 fi
 
-staging_dir=<%= node['hopsworks']['staging_dir'] %>
-cd $staging_dir
-if [ $? -ne 0 ] ; then
-    echo "The staging directory does not exist. Cannot continue. Missing dir: <%= node['hopsworks']['staging_dir'] %>"
-    exit 2
-fi
+NOTEBOOK_PATH=$1
+HDFS_USER=$2
+CONDA_ENV=$3
+OUTPUT_PATH=$4
+CONVERSION_TYPE=$6
+IMAGE=$7
+CERT_DIR=$8
 
-conversion_dir="$staging_dir"/ipython_conversions/"$5"
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+
+conversion_dir=$5
 function finish {
     rm -rf "$conversion_dir"
 }
 trap finish EXIT
 
-mkdir -p "$conversion_dir"
+chown yarnapp "$conversion_dir"
 
 if [ $? -ne 0 ] ; then
-    echo "Could not create directory in the staging directory for converting iPython notebook. Problem dir: <%= node['hopsworks']['staging_dir'] %>/ipython_conversions as user $USER"
+    echo "Could not chown directory in the staging directory for converting iPython notebook. Problem dir: $staging_dir as user yarnapp"
     exit 3
 fi    
 
 cd "$conversion_dir"
 
-filename=$(basename "$1")
-dirname=$(dirname "$1")
-
-base=$(echo "$filename" | cut -f 1 -d '.')
-
-# Stage the jupyter notebook before converting locally and uploading back to hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyToLocal "$1" tmp.ipynb
-if [ $? -ne 0 ] ; then
-    echo "Problem staging from hdfs ipython notebook: $1"
-    exit 4
-fi
-
-if [ ! -f "$3"/bin/jupyter ]; then
-    echo "Is Python enabled? No jupyter binary found on path $3/bin/jupyter"
-    exit 5
-fi
-
-# If it is a PySpark or a Python job
-if [ "$6" = "PY" ] || [ "$6" = "PY_JOB" ]; then
-
-  "$3"/bin/jupyter nbconvert --to python tmp.ipynb
-  if [ $? -ne 0 ] ; then
-      echo "Problem converting ipython notebook to python program: $1"
-      exit 6
-  fi
-
-  # If it is a PySpark job, add pyspark context
-  if [ "$6" = "PY" ]; then
-      printf '%s\n%s\n%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "from pyspark.sql import SQLContext" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "sqlContext=SQLContext(sc)" "$(cat tmp.py)" > tmp.py
-  fi
-
-  # Over-write any old version on hdfs
-  <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f tmp.py "$4"
-  if [ $? -ne 0 ] ; then
-      echo "Problem copying converted ipython program back to hdfs: $4"
-      exit 7
-  fi
-
-  # Current user should have hdfs superuser privileges
-  <%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "$2" "$4"
-  if [ $? -ne 0 ] ; then
-      echo "Problem changing ownership of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
-      exit 8
-  fi
-
-else
-
-  "$3"/bin/jupyter nbconvert --to html tmp.ipynb
-  if [ $? -ne 0 ] ; then
-      echo "Problem converting ipython notebook to html: $1"
-      exit 6
-  fi
-
-  cat ./tmp.html | grep -v "<title>tmp</title>"
-fi
+CONTAINER_NAME=$2__nbconverter
 
 
+kill_named
+
+docker run --name $CONTAINER_NAME\
+       --network=host \
+       --init \
+       -e "HADOOP_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_USER_NAME=$2"\
+       -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
+       -e "MATERIAL_DIRECTORY=${conversion_dir}"\
+       -v $conversion_dir:$conversion_dir:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -u="yarnapp" \
+       -w="$conversion_dir" \
+       $IMAGE \
+       notebook-converter.sh $NOTEBOOK_PATH $CONDA_ENV $OUTPUT_PATH $CONVERSION_TYPE

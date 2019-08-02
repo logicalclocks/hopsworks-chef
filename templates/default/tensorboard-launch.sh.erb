@@ -6,18 +6,32 @@ TENSORBOARD_DIR=$3
 PORT=$4
 ANACONDA_ENVIRONMENT_PATH=$5
 HADOOP_HOME=$6
-HADOOP_VERSION=$7
-JAVA_HOME=$8
-TF_LD_LIBRARY_PATH=$9
+TF_LD_LIBRARY_PATH=$7
+IMAGE=$8
+CONTAINER_NAME=${HDFS_USER}__tensorboard
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 help() {
     echo ""
-    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH HADOOP_HOME HADOOP_VERSION JAVA_HOME TF_LD_LIBRARY_PATH"
+    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH HADOOP_HOME TF_LD_LIBRARY_PATH IMAGE"
     echo ""
     exit 1
 }
 
-if [ $# -ne 9 ]; then
+
+function kill_named {
+    CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+	docker rm -f "$CID" > /dev/null 2>&1
+        res=$?
+    else
+	res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+
+if [ $# -ne 8 ]; then
   help
 fi
 
@@ -28,20 +42,30 @@ fi
 
 cd "$TENSORBOARD_DIR"
 
+kill_named
+
 LOGFILE=${TENSORBOARD_DIR}/${PORT}.log
 PID_FILE=${TENSORBOARD_DIR}/${PORT}.pid
 
-export MATERIAL_DIRECTORY=$TENSORBOARD_DIR/certs
-export TMPDIR=$TENSORBOARD_DIR
-export HADOOP_USER_NAME=$HDFS_USER
-export LD_LIBRARY_PATH=${JAVA_HOME}/jre/lib/amd64/server:${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native:${TF_LD_LIBRARY_PATH}
-export LC_ALL=C
-export CUDA_VISIBLE_DEVICES=''
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
+fi
 
-CLASSPATH=$("${HADOOP_HOME}"/bin/hadoop classpath --glob)
-export CLASSPATH="${CLASSPATH}"
-
-setsid "${ANACONDA_ENVIRONMENT_PATH}"/bin/tensorboard --port="$PORT" --logdir="$HDFS_LOGDIR" --host=0.0.0.0 </dev/zero &> "$LOGFILE"  &
-echo $! > "$PID_FILE"
+docker run -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "MATERIAL_DIRECTORY=$TENSORBOARD_DIR/certs"\
+       -e "TMPDIR=$TENSORBOARD_DIR"\
+       -e "HADOOP_USER_NAME=$HDFS_USER"\
+       -e "LC_ALL=C"\
+       -e "HADOOP_HOME=$HADOOP_HOME" \
+       -e "CUDA_VISIBLE_DEVICES=''"\
+       -e "TF_LD_LIBRARY_PATH=$TF_LD_LIBRARY_PATH" \
+       -v $TENSORBOARD_DIR:$TENSORBOARD_DIR:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -u="yarnapp" \
+       -w="$ANACONDA_ENVIRONMENT_PATH"\
+       $IMAGE \
+       tensorboard-launcher.sh $PORT $HDFS_LOGDIR $LOGFILE
 
 exit $?

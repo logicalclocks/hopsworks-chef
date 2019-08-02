@@ -2,25 +2,29 @@
 
 help() {
     echo ""
-    echo "usage: $0 PID PORT SECRET_DIR"
+    echo "usage: $0 CID MODEL_NAME PROJECT_NAME SECRET_DIR"
     echo ""
     exit 1
 }
 
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 5 ]; then
   help
 fi
 
-PID=$1
-PORT=$2
-SECRET_DIR=$3
-PID_FILE="${SECRET_DIR}/${PORT}.pid"
+CID=$1
+MODEL_NAME=$2
+PROJECT_NAME=$3
+SECRET_DIR=$4
+CID_FILE="${SECRET_DIR}/tfserving.pid"
+$CONTAINER_NAME=tf_model_server_${MODEL_NAME}_${PROJECT_NAME}
+
+NOT_FOUND=127
 
 function kill_named {
-    PID=$(ps aux | grep tensorflow_model_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
-    if [ "$PID" != "" ] ; then
-      kill -9 "$PID" > /dev/null 2>&1
+    CID=$(docker container list -a | grep -i "$CONTAINER_NAME" | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+      docker rm -f "$CID" > /dev/null 2>&1
       res=$?
     else
       res=$NOT_FOUND
@@ -28,13 +32,13 @@ function kill_named {
     return "$res"
 }
 
-echo "Killing input pid: $PID"
-kill "$PID" > /dev/null 2>&1
+echo "Killing input cid: $CID"
+docker rm -f "$CID" > /dev/null 2>&1
 if [ $? -ne 0 ] ; then
-    if [ -f "$PID_FILE" ] ; then
-	PID=$(cat "$PID_FILE")
-	echo "Killing pid: $PID"
-	kill "$PID" > /dev/null 2>&1
+    if [ -f "$CID_FILE" ] ; then
+	CID=$(cat "$PID_FILE")
+	echo "Killing cid: $CID"
+	docker rm -f "$CID" > /dev/null 2>&1
 	if [ $? -ne 0 ] ; then
 	    kill_named
 	fi

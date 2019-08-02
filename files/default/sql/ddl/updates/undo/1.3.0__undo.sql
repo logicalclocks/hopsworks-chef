@@ -1,6 +1,4 @@
 ALTER TABLE `hopsworks`.`shared_topics` DROP COLUMN `accepted`;
-
-
 ALTER TABLE `hopsworks`.`external_training_dataset` DROP COLUMN `path`;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `hdfs_user_id` int(11) NOT NULL;
@@ -18,3 +16,12 @@ ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `seed`;
 DROP TABLE IF EXISTS `training_dataset_split`;
 
 ALTER TABLE `hopsworks`.`variables` DROP COLUMN `visibility`;
+ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `base_env`;
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `host_id` int(11) NOT NULL;
+ALTER TABLE `hopsworks`.`conda_commands` ADD KEY (`host_id`);
+ALTER TABLE `hopsworks`.`conda_commands` ADD CONSTRAINT `FK_481_519` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION ;
+ALTER TABLE `hopsworks`.`conda_commands` CHANGE `docker_image` `proj` varchar(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`jupyter_project` CHANGE `cid` `pid` bigint(20) NOT NULL;
+ALTER TABLE `hopsworks`.`tensorboard` CHANGE `cid` `pid` bigint(20) NOT NULL;
+ALTER TABLE `hopsworks`.`tensorboard` CHANGE `cid` `local_pid` bigint(20) NOT NULL;
+
