@@ -298,13 +298,13 @@ CREATE TABLE `feature_store_job` (
   `training_dataset_id` int(11) DEFAULT NULL,
   `feature_group_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)
+  CONSTRAINT `fs_job_job_fk` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
-  FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`)
+  CONSTRAINT `fs_job_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`)
+  CONSTRAINT `fs_job_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

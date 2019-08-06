@@ -1889,7 +1889,7 @@ CREATE TABLE `feature_store_job` (
   `training_dataset_id` int(11) DEFAULT NULL,
   `feature_group_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)
+  CONSTRAINT `fs_job_job_fk` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fs_job_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`)
