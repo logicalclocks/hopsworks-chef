@@ -137,3 +137,20 @@ DROP TABLE IF EXISTS `hopsworks`.`external_training_dataset`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_jdbc_connector`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_s3_connector`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_hopsfs_connector`;
+
+CREATE TABLE IF NOT EXISTS `meta_data_schemaless` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `inode_id` bigint(20) NOT NULL,
+  `inode_parent_id` bigint(20) NOT NULL,
+  `inode_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `inode_partition_id` bigint(20) NOT NULL,
+  `data` varchar(12000) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`,`inode_id`,`inode_parent_id`),
+  UNIQUE KEY `inode_parent_id` (`inode_parent_id`,`inode_name`,`inode_partition_id`),
+  CONSTRAINT `FK_149_427` FOREIGN KEY (`inode_parent_id`,`inode_name`,`inode_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`meta_log` ADD COLUMN `meta_type`;
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_id` `meta_pk1` int(11);
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_field_id` `meta_pk2` bigint(20);
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_tuple_id` `meta_pk3` bigint(20);
