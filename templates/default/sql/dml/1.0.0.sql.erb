@@ -4,3 +4,22 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_origin_scheme", "<%= node[
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("cloud", "<%= node['install']['cloud'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
+
+/*
+Insert default JDBC connectors to feature store for existing projects with the feature store service
+*/
+INSERT INTO `hopsworks`.`feature_store_jdbc_connector` (feature_store_id, connection_string, arguments, description, name)
+SELECT DISTINCT `feature_store`.`id`, CONCAT('jdbc:hive2://<%= @hivessl_hostname %>', CONCAT(`project`.`projectname`, '_featurestore;
+auth=noSasl;ssl=true;twoWay=true;')), 'sslTrustStore,trustStorePassword,sslKeyStore,keyStorePassword', 'JDBC connection to Hopsworks Project Feature Store Hive Database', CONCAT(`project`.`projectname`, '_featurestore')
+FROM `hopsworks`.`feature_store`, `hopsworks`.`project`
+WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_connector` WHERE
+`feature_store_jdbc_connector`.`feature_store_id` = `feature_store`.`id`)
+AND `feature_store`.`project_id`=`project`.`id`;
+
+
+INSERT INTO `hopsworks`.`feature_store_jdbc_connector` (feature_store_id, connection_string, arguments, description, name)
+SELECT DISTINCT `feature_store`.`id`, CONCAT('jdbc:hive2://<%= @hivessl_hostname %>', CONCAT(`project`.`projectname`, ';auth=noSasl;ssl=true;twoWay=true;')), 'sslTrustStore,trustStorePassword,sslKeyStore,keyStorePassword', 'JDBC connection to Hopsworks Project Hive Warehouse', `project`.`projectname`
+FROM `hopsworks`.`feature_store`, `hopsworks`.`project`
+WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_connector` WHERE
+`feature_store_jdbc_connector`.`feature_store_id` = `feature_store`.`id`)
+AND `feature_store`.`project_id`=`project`.`id`;
