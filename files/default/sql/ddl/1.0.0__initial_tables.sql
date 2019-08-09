@@ -83,36 +83,6 @@ CREATE TABLE `address` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `alerts`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `alerts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `current_value` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
-  `failure_max` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
-  `failure_min` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
-  `warning_max` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
-  `warning_min` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
-  `agent_time` bigint(20) DEFAULT NULL,
-  `alert_time` datetime DEFAULT NULL,
-  `data_source` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  `host_id` int(11) DEFAULT NULL,
-  `message` varchar(1024) COLLATE latin1_general_cs NOT NULL,
-  `plugin` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  `plugin_instance` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  `provider` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-  `severity` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-  `type` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  `type_instance` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `host_id` (`host_id`),
-  CONSTRAINT `FK_481_487` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=408 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `anaconda_repo`
 --
 
@@ -179,26 +149,6 @@ CREATE TABLE `cluster_cert` (
   KEY `agent_id` (`agent_id`),
   CONSTRAINT `FK_257_552` FOREIGN KEY (`agent_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `commands`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `commands` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cluster` varchar(48) COLLATE latin1_general_cs NOT NULL,
-  `command` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `end_time` datetime DEFAULT NULL,
-  `host_id` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `role` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `service` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `start_time` datetime DEFAULT NULL,
-  `status` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,15 +437,9 @@ CREATE TABLE `hosts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hostname` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `cores` int(11) DEFAULT NULL,
-  `disk_capacity` bigint(20) DEFAULT NULL,
-  `disk_used` bigint(20) DEFAULT NULL,
   `host_ip` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `last_heartbeat` bigint(20) DEFAULT NULL,
-  `load1` double DEFAULT NULL,
-  `load15` double DEFAULT NULL,
-  `load5` double DEFAULT NULL,
   `memory_capacity` bigint(20) DEFAULT NULL,
-  `memory_used` bigint(20) DEFAULT NULL,
   `private_ip` varchar(15) COLLATE latin1_general_cs DEFAULT NULL,
   `public_ip` varchar(15) COLLATE latin1_general_cs DEFAULT NULL,
   `agent_password` varchar(25) COLLATE latin1_general_cs DEFAULT NULL,
