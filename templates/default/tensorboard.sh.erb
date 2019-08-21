@@ -55,25 +55,17 @@ elif [ "$1" == "start" ] ; then
         exit 2
     fi
 
-    sudo netstat -tulpn | grep :"$5"
+    netstat -tulpn | grep :"$5"
     if [ $? -eq 0 ] ; then
         echo "Port is allocated already"
         exit 1
     fi
 
-    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$4"
-    sudo chmod 770 "$4"
+    chown ${ANACONDA_USER}:${HOPSWORKS_GROUP} "$4"
+    chmod 770 "$4"
 
-    sudo chown $ANACONDA_USER:$CERTS_GROUP "$4"/certs
-    sudo chmod 750 "$4"/certs
-
-    touch "$5".pid
-    sudo chmod 660 "$5".pid
-    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$5".pid
-
-    touch "$5".log
-    sudo chmod 660 "$5".log
-    sudo chown $ANACONDA_USER:$HOPSWORKS_GROUP "$5".log
+    chown ${ANACONDA_USER}:${CERTS_GROUP} "$4"/certs
+    chmod 750 "$4"/certs
 
     su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9"
 
@@ -82,7 +74,7 @@ elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
     	help
     fi
-    sudo ps -ef | grep -v 'tensorboard.sh' | grep -i tensorboard | grep "$2"
+    ps -ef | grep -v 'tensorboard.sh' | grep -i tensorboard | grep "$2"
 
 elif [ "$1" == "cleanup" ] ; then
 
