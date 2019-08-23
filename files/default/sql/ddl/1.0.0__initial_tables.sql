@@ -706,25 +706,6 @@ CREATE TABLE `meta_data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `meta_data_schemaless`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `meta_data_schemaless` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `inode_id` bigint(20) NOT NULL,
-  `inode_parent_id` bigint(20) NOT NULL,
-  `inode_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `inode_partition_id` bigint(20) NOT NULL,
-  `data` varchar(12000) COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`id`,`inode_id`,`inode_parent_id`),
-  UNIQUE KEY `inode_parent_id` (`inode_parent_id`,`inode_name`,`inode_partition_id`),
-  CONSTRAINT `FK_149_427` FOREIGN KEY (`inode_parent_id`,`inode_name`,`inode_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `meta_field_predefined_values`
 --
 
@@ -806,10 +787,9 @@ CREATE TABLE `meta_inode_basic_metadata` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `meta_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `meta_pk1` int(11) NOT NULL,
-  `meta_pk2` bigint(20) NOT NULL,
-  `meta_pk3` bigint(20) NOT NULL,
-  `meta_type` tinyint(1) NOT NULL,
+  `meta_id` int(11) NOT NULL,
+  `meta_field_id` int(11) NOT NULL,
+  `meta_tuple_id` int(11) NOT NULL,
   `meta_op_type` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

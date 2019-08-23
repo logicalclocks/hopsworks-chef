@@ -326,3 +326,9 @@ DEALLOCATE PREPARE stmt1;
 -- drop jobs columns from feature group and training datasets
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `job_id`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `job_id`;
+
+DROP TABLE IF EXISTS `hopsworks`.`meta_data_schemaless`;
+ALTER TABLE `hopsworks`.`meta_log` DROP COLUMN `meta_type`;
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk1` `meta_id` int(11);
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk2` `meta_field_id` int(11);
+ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk3` `meta_tuple_id` int(11);
