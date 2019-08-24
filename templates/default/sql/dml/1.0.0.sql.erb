@@ -40,3 +40,4 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("hops_verification_version", "<%= n
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("aws_instance_role", "<%= node['install']['aws']['instance_role'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("requests_verify", "<%= node['hopsworks']['requests_verify'] %>");
