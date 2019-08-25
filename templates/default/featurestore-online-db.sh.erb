@@ -6,7 +6,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [add|rm] databasename db_username"
+    echo "usage: $0 [add|rm] databasename db_username [db_password db_password_encrypted]"
     echo ""
     exit 1
 }
@@ -42,18 +42,27 @@ fi
    
 if [ "$1" == "add" ] ; then
 
-  # generate random password
-  PWD=$(random-string)
+  if [ $# -lt 3 ]; then
+    help
+  fi
 
+  # generate random password
+  # DB_PWD=$(random-string)
+  DB_PWD=$4
+  DB_PWD_ENCRYPTED=$5
+  
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
   if [ $RES -eq 0 ]; then
-     $MYSQL_CMD "CREATE USER \"$DB_USERNAME\"@'%' IDENTIFIED BY \"$PWD\""
+     $MYSQL_CMD "CREATE USER \"$DB_USERNAME\"@'%' IDENTIFIED BY \"$DB_PWD\""
      RES=$?     
      if [ $RES -eq 0 ]; then
 	$MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USERNAME\"@'%'"
-        RES=$?     	
-        echo "password: $PWD"
+        RES=$?
+        if [ $RES -eq 0 ]; then
+          $MYSQL_CMD "UPDATE `hopsworks`.`feature_store` SET `hopsworks`.`feature_store`.`online_db_password` = \"$DB_PWD_ENCRYPTED\" WHERE `hopsworks`.`feature_store`.`project_id` = (SELECT `hopsworks`.`project`.`id` FROM `hopsworks`.`project` WHERE `hopsworks`.`project`.`projectname`=\"$DB_NAME\")"
+          RES=$?
+        fi
      fi
   fi
   exit $RES

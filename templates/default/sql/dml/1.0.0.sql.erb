@@ -23,3 +23,8 @@ FROM `hopsworks`.`feature_store`, `hopsworks`.`project`
 WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_connector` WHERE
 `feature_store_jdbc_connector`.`feature_store_id` = `feature_store`.`id`)
 AND `feature_store`.`project_id`=`project`.`id`;
+
+
+ALTER TABLE `hopsworks`.`feature_store` ADD COLUMN `online_db_password` varchar(64) COLLATE latin1_general_cs DEFAULT NULL;
+
+
