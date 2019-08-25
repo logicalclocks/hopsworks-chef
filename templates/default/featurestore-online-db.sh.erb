@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+#
+# This script is used to create/remove a MySQL Cluster database for each online featurestore
+#
+
+help() {
+    echo ""
+    echo "usage: $0 [add|rm] databasename db_username"
+    echo ""
+    exit 1
+}
+
+random-string()
+{
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-16} | head -n 1
+}
+
+
+MYSQL_CMD="sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -e"
+
+
+if [ $# -lt 3 ]; then
+    help
+fi
+
+# Check mysql database name is valid syntactically
+# https://stackoverflow.com/questions/9537771/mysql-database-name-restrictions
+DB_NAME=$2
+if [ $DB_NAME =~ "^[^\\/?%*:|\"<>.]{1,64}$" ]
+   echo "Invalid database name. The string length for the database name must be >2 and <=64. It may also contai an invalid character."
+   exit 5
+fi
+
+DB_USERNAME=$3
+if [ $DB_USERNAME =~ "^[^\\/?%*:|\"<>.]{1,64}$" ]
+ echo "Invalid database username. The string length for the username must be >2 and <=64. It may also contain an invalid character."
+ exit 5
+fi
+
+   
+if [ "$1" == "add" ] ; then
+
+  # generate random password
+  PWD=random-string
+
+  $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
+  RES=$?
+  if [ $RES -eq 0 ]
+     $MYSQL_CMD "CREATE USER \"$DB_USERNAME\"@'%' IDENTIFIED BY \"$PWD\""
+     RES=$?     
+     if [ $RES -eq 0 ]
+	$MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USERNAME\"@'%'"
+        RES=$?     	
+        echo "password: $PWD"
+     fi
+  fi
+  exit $RES
+  
+elif [ "$1" == "rm" ] ; then
+
+  $MYSQL_CMD "DROP DATABASE IF EXISTS $DB_NAME"
+  if [ $? -ne 0 ]
+     echo "Problem when trying to drop the database $DB_NAME"
+  fi
+  $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USERNAME\"@'%'"
+  if [ $? -ne 0 ]
+     echo "Problem when trying to drop the user $DB_USERNAME"
+  fi
+else
+ help
+fi 
