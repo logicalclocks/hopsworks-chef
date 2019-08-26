@@ -20,7 +20,7 @@ fi
 MYSQL_CMD="sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -e"
 ROLE=
 OWNER=0
-RES=
+RES=0
 
 # Check mysql database name is valid syntactically
 # https://stackoverflow.com/questions/9537771/mysql-database-name-restrictions
@@ -113,16 +113,20 @@ elif [ "$1" == "rm" ] ; then
     #  SELECT user FROM mysql.user where user like "$DB_NAME_%";
     #  then loop through all returned users
     #    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'" SELECT user FROM mysql.user where user like "$DB_NAME_%";
-    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'"
-    RES=$?  
-    if [ $RES -ne 0 ]; then
-       echo "Problem when trying to drop the user $DB_USER"
-    fi
+    list_users=$(sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -N -e "SELECT GROUP_CONCAT(User) FROM mysql.user WHERE USER LIKE \"%${DB_NAME}\"" | tail -2 | tail -1 | sed "s/,/ /g")
+    for i in $list_users
+    do
+      $MYSQL_CMD "DROP USER IF EXISTS \"${i}\"@'%'"	
+      if [ $? -ne 0 ]; then
+        echo "Problem when trying to drop the user \"${i}\"@'%'"
+	RES=2  
+      fi
+    done      
   else
     $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'"
-    RES=$?  
-    if [ $RES -ne 0 ]; then
-       echo "Problem when trying to drop the user $DB_USER"
+    if [ $? -ne 0 ]; then
+      echo "Problem when trying to drop the user $DB_USER"
+      RES=2  	
     fi
   fi
   
