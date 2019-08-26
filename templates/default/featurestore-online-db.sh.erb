@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 add databasename db_username db_passwords_file [dataowner|datascientist] | rm databasename [db_username] | change databasename db_username dataowner|datascientist"
+    echo "usage: $0 add databasename db_username dataowner|datascientist db_passwords_file | rm databasename db_username | change databasename db_username dataowner|datascientist"
     echo ""
     exit 1
 }
@@ -46,7 +46,7 @@ role() {
       echo "Data scientist role enabled"
   else
       echo "Invalid role passed: $ROLE"
-      exit 5
+      exit 4
   fi
 }
 
@@ -62,6 +62,11 @@ grant() {
  fi
 }
 
+if [ $# -gt 3 ]; then
+  ROLE=$4
+  role
+fi
+
 #
 # Add a user to a project (create database if it doesn't exist)
 # 
@@ -71,18 +76,15 @@ if [ "$1" == "add" ] ; then
     help
   fi
 
-  DB_PWD=$(head -1 $4)
+  DB_PWD=$(head -1 $5)
   if [ $RES -eq 0 ]; then
       echo "Problem getting credentials from file passed by Hopsworks: $4"
-      exit 4
+      exit 5
   fi
   if [ "$DB_PWD" =~ ";" ]; then
    echo "Invalid database password character ';'"
-   exit 4
+   exit 5
   fi
-
-  ROLE=$5
-  role
   
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
@@ -131,8 +133,6 @@ elif [ "$1" == "update" ] ; then
   if [ $# -lt 4 ]; then
     help
   fi
-  ROLE=$4
-  role
   $MYSQL_CMD "REVOKE ALL PRIVILEGES ON ${DB_NAME}.* FROM \"$DB_USER\"@'%'"
   RES=$?     
   if [ $RES -ne 0 ]; then
