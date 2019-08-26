@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 add databasename db_username dataowner|datascientist db_passwords_file | rm databasename db_username | change databasename db_username dataowner|datascientist"
+    echo "usage: $0 add databasename db_username DATA_OWNER|DATA_SCIENTIST db_passwords_file | rm databasename db_username | change databasename db_username DATA_OWNER|DATA_SCIENTIST"
     echo ""
     exit 1
 }
@@ -39,10 +39,10 @@ fi
 
 
 role() {
-  if [ "$ROLE" == "dataowner" ] ; then
+  if [ "$ROLE" == "DATA_OWNER" ] ; then
       OWNER=1
       echo "Data owner role enabled"      
-  elif [ "$ROLE" == "datascientist" ] ; then
+  elif [ "$ROLE" == "DATA_SCIENTIST" ] ; then
       echo "Data scientist role enabled"
   else
       echo "Invalid role passed: $ROLE"
