@@ -6,7 +6,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [add|rm] databasename db_username [db_password db_password_encrypted]"
+    echo "usage: $0 [add databasename do_password do_password_encrypted ds_password ds_password_encrypted] | [rm databasename]"
     echo ""
     exit 1
 }
@@ -33,36 +33,62 @@ if [ "$DB_NAME" =~ ";" ]; then
    exit 5
 fi
 
-DB_USERNAME=$3
-if [ "$DB_USERNAME" =~ ";" ]; then
- echo "Invalid database username. The string length for the username must be >2 and <=64. It may also contain an invalid character."
- exit 5
-fi
-
    
 if [ "$1" == "add" ] ; then
 
-  if [ $# -lt 3 ]; then
+  if [ $# -lt 6 ]; then
     help
   fi
 
+  DO_USERNAME="do_${DB_NAME}"
+  DS_USERNAME="do_${DB_NAME}"
+  
   # generate random password
-  # DB_PWD=$(random-string)
-  DB_PWD=$4
-  DB_PWD_ENCRYPTED=$5
+  # DO_PWD=$(random-string)
+  DO_PWD=$3
+  if [ "$DO_PWD" =~ ";" ]; then
+   echo "Invalid database password character ';'"
+   exit 5
+  fi
+  DO_PWD_ENCRYPTED=$4
+  if [ "$DO_PWD_ENCRYPTED" =~ ";" ]; then
+   echo "Invalid database password character ';'"
+   exit 5
+  fi
+
+  DS_PWD=$5
+  if [ "$DS_PWD" =~ ";" ]; then
+   echo "Invalid database password character ';'"
+   exit 5
+  fi
+  DS_PWD_ENCRYPTED=$6
+  if [ "$DS_PWD_ENCRYPTED" =~ ";" ]; then
+   echo "Invalid database password character ';'"
+   exit 5
+  fi
+
   
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
   if [ $RES -eq 0 ]; then
-     $MYSQL_CMD "CREATE USER \"$DB_USERNAME\"@'%' IDENTIFIED BY \"$DB_PWD\""
+     $MYSQL_CMD "CREATE USER \"$DO_USERNAME\"@'%' IDENTIFIED BY \"$DO_PWD\""
      RES=$?     
      if [ $RES -eq 0 ]; then
-	$MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USERNAME\"@'%'"
+       $MYSQL_CMD "CREATE USER \"$DS_USERNAME\"@'%' IDENTIFIED BY \"$DS_PWD\""
+       RES=$?     
+       if [ $RES -eq 0 ]; then
+	$MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DO_USERNAME\"@'%'"
         RES=$?
         if [ $RES -eq 0 ]; then
-          $MYSQL_CMD "UPDATE `hopsworks`.`feature_store` SET `hopsworks`.`feature_store`.`online_db_password` = \"$DB_PWD_ENCRYPTED\" WHERE `hopsworks`.`feature_store`.`project_id` = (SELECT `hopsworks`.`project`.`id` FROM `hopsworks`.`project` WHERE `hopsworks`.`project`.`projectname`=\"$DB_NAME\")"
+          $MYSQL_CMD "GRANT SELECT PRIVILEGES ON ${DB_NAME}.* TO \"$DS_USERNAME\"@'%'"
           RES=$?
-        fi
+          if [ $RES -eq 0 ]; then
+            $MYSQL_CMD "UPDATE `hopsworks`.`feature_store` SET `hopsworks`.`feature_store`.`do_online_db_password` = \"$DO_PWD_ENCRYPTED\" WHERE `hopsworks`.`feature_store`.`project_id` = (SELECT `hopsworks`.`project`.`id` FROM `hopsworks`.`project` WHERE `hopsworks`.`project`.`projectname`=\"$DB_NAME\")"
+            RES=$?
+              if [ $RES -eq 0 ]; then
+                $MYSQL_CMD "UPDATE `hopsworks`.`feature_store` SET `hopsworks`.`feature_store`.`ds_online_db_password` = \"$DS_PWD_ENCRYPTED\" WHERE `hopsworks`.`feature_store`.`project_id` = (SELECT `hopsworks`.`project`.`id` FROM `hopsworks`.`project` WHERE `hopsworks`.`project`.`projectname`=\"$DB_NAME\")"
+                RES=$?
+          fi
      fi
   fi
   exit $RES
@@ -73,9 +99,13 @@ elif [ "$1" == "rm" ] ; then
   if [ $? -ne 0 ]; then
      echo "Problem when trying to drop the database $DB_NAME"
   fi
-  $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USERNAME\"@'%'"
+  $MYSQL_CMD "DROP USER IF EXISTS \"$DO_USERNAME\"@'%'"
   if [ $? -ne 0 ]; then
-     echo "Problem when trying to drop the user $DB_USERNAME"
+     echo "Problem when trying to drop the user $DO_USERNAME"
+  fi
+  $MYSQL_CMD "DROP USER IF EXISTS \"$DS_USERNAME\"@'%'"
+  if [ $? -ne 0 ]; then
+     echo "Problem when trying to drop the user $DS_USERNAME"
   fi
 else
  help

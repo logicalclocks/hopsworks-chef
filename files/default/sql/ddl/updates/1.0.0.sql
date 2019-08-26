@@ -333,4 +333,5 @@ ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk1` `meta_id` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk2` `meta_field_id` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk3` `meta_tuple_id` int(11);
 
-ALTER TABLE `hopsworks`.`feature_store` ADD COLUMN `online_db_password` varchar(64) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_store` ADD COLUMN `do_online_db_password` varchar(64) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_store` ADD COLUMN `ds_online_db_password` varchar(64) COLLATE latin1_general_cs DEFAULT NULL;
