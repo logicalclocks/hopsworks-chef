@@ -65,27 +65,27 @@ elif [ "$1" == "start" ] ; then
       exit 3
     fi
 
-    sudo mkdir "$SECRET_DIR"
+    mkdir "$SECRET_DIR"
     if [ $? -ne 0 ] ; then
       echo "Error: could not create private_dir: $SECRET_DIR"
       exit 1
     fi
 
     #copy flask_server to secret dir
-    sudo cp "${DOMAINS_DIR}/domain1/bin/sklearn_flask_server.py" "$SECRET_DIR"/
+    cp "${DOMAINS_DIR}/domain1/bin/sklearn_flask_server.py" "$SECRET_DIR"/
     # copy truststore, keystore, and certificate password to secret dir
-    sudo cp "${9}" "$SECRET_DIR"/
-    sudo cp "${10}" "$SECRET_DIR"/
-    sudo cp "${11}" "$SECRET_DIR"/
+    cp "${9}" "$SECRET_DIR"/
+    cp "${10}" "$SECRET_DIR"/
+    cp "${11}" "$SECRET_DIR"/
 
 
-    sudo chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$SECRET_DIR"
-    sudo chmod -R 771 "$SECRET_DIR"
+    chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$SECRET_DIR"
+    chmod -R 771 "$SECRET_DIR"
 
     su "${HOPSWORKS_USER}" -c "HADOOP_PROXY_USER=$6 ${HADOOP_HOME}/bin/hdfs dfs -copyToLocal $3 $SECRET_DIR/$2"
     if [ $? -ne 0 ] ; then
       echo "Error downloading the python script on the local Fs"
-      sudo rm -r "$SECRET_DIR"
+      rm -r "$SECRET_DIR"
       exit 1
     fi
 
@@ -94,7 +94,7 @@ elif [ "$1" == "start" ] ; then
 
     if [ $? -ne 0 ] ; then
       echo "Error starting the serving server"
-      sudo rm -r "$SECRET_DIR"
+      rm -r "$SECRET_DIR"
       exit 1
     fi
 

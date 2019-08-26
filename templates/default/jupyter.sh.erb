@@ -54,7 +54,7 @@ if [ "$1" == "kill" ] ; then
     if [ "$2" != "" ] ; then
 	# Try and make sure some silly directory is not deleted, that this
 	if [[ $2 = *"hops/jupyter/Projects"* ]]; then
-            sudo rm -rf "${2}"/../*
+            rm -rf "${2}"/../*
 	fi
     fi
     
@@ -89,7 +89,7 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(sudo ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
+    pid=$(ps -ef | grep jupyter-notebook | grep "port=$6" | awk '{print $2}')
 
     if [ "$pid" != "" ] ; then
         su $JUPYTER_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
@@ -111,26 +111,26 @@ elif [ "$1" == "start" ] ; then
 #	exit 4
 #    fi
     
-    sudo mkdir -p "$8"
+    mkdir -p "$8"
     if [ $? -ne 0 ] ; then
 	echo "Error: could not create private_dir: $8"
 	exit 1
     fi
-    sudo chmod 770 "$8"
-    sudo chown "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
+    chmod 770 "$8"
+    chown "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$8"
 #    sudo chgrp "${JUPYTER_GROUP}" "${8}/token.jwt"
     
     # These files below were created by hopsworks. Change ownership now to Jupyter (if needed)
     #    sudo chown -R ${JUPYTER_USER}:${JUPYTER_GROUP} $2
     # Make the group of the files, the jupyter group so that they can write to the files
-    sudo chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$2/"..
+    chown -R "${HOPSWORKS_USER}":"${JUPYTER_GROUP}" "$2/"..
     if [ $? -ne 0 ] ; then
 	echo "Error: could not change ownership of config_dir for Jupyter: $2"
 	exit 1
     fi
-    sudo chmod 0730 "$2/"..
-    sudo chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
-    sudo chmod -R 770 "$2"
+    chmod 0730 "$2/"..
+    chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
+    chmod -R 770 "$2"
      
     # Launch the jupyter notebook
     su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
@@ -139,7 +139,7 @@ elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
 	help
     fi
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
+    ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
     if [ $? -ne 0 ] ; then
 	echo "Error checking PID: $2"
 	echo "Are you trying to ping a non jupyter-notebook process?"
@@ -150,7 +150,7 @@ elif [ "$1" == "ping" ] ; then
 # list 
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    sudo ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    ps -ef | grep -v 'grep' | grep -i jupyter-notebook | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
 else
   help
 fi
