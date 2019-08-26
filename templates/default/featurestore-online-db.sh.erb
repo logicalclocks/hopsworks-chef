@@ -1,86 +1,151 @@
 #!/usr/bin/env bash
 
 #
-# This script is used to create/remove a MySQL Cluster database for each online featurestore
+# This script is used to create/remove a MySQL Cluster database for each online featurestore and to manage project-user's access to that database.
+# Data owners in a project get ALL PRIVILEGES, data scientists get only SELECT privileges.
+# Script operations: add, rm, update (change role of project-user)
 #
 
 help() {
     echo ""
-    echo "usage: $0 add databasename db_passwords_file | rm databasename"
+    echo "usage: $0 add databasename db_username db_passwords_file [dataowner|datascientist] | rm databasename [db_username] | change databasename db_username dataowner|datascientist"
     echo ""
     exit 1
 }
 
-MYSQL_CMD="sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -e"
-
-
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
     help
 fi
+
+MYSQL_CMD="sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -e"
+ROLE=
+OWNER=0
+RES=
 
 # Check mysql database name is valid syntactically
 # https://stackoverflow.com/questions/9537771/mysql-database-name-restrictions
-DB_NAME=$2
 # if [ "$DB_NAME" =~ "^[^\\/?%*:|\"<>.]{1,64}$" ]; then
+DB_NAME=$2
 if [ "$DB_NAME" =~ ";" ]; then
-   echo "Invalid database name. The string length for the database name must be >2 and <=64. It may also contai an invalid character."
-   exit 5
+   echo "Invalid database name. Note: the string length for the database name must be >2 and <=64 and it must contain valid characters."
+   exit 2
 fi
 
-   
+DB_USER=$3
+if [ "$DB_USER" =~ ";" ]; then
+   echo "Invalid database username."
+   exit 3
+fi
+
+
+role() {
+  if [ "$ROLE" == "dataowner" ] ; then
+      OWNER=1
+      echo "Data owner role enabled"      
+  elif [ "$ROLE" == "datascientist" ] ; then
+      echo "Data scientist role enabled"
+  else
+      echo "Invalid role passed: $ROLE"
+      exit 5
+  fi
+}
+
+grant() {
+ if [ $OWNER -eq 0 ] ; then
+   $MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USER\"@'%'"
+ else
+   $MYSQL_CMD "GRANT SELECT PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USER\"@'%'"	   
+ fi
+ RES=$?
+ if [ $RES -ne 0 ]; then
+   echo "Problem granting privileges to $DB_USER on $DB_NAME with role: $OWNER"
+ fi
+}
+
+#
+# Add a user to a project (create database if it doesn't exist)
+# 
 if [ "$1" == "add" ] ; then
 
-  if [ $# -lt 3 ]; then
+  if [ $# -lt 5 ]; then
     help
   fi
 
-  DO_USERNAME="do_${DB_NAME}"
-  DS_USERNAME="do_${DB_NAME}"
+  DB_PWD=$(head -1 $4)
+  if [ $RES -eq 0 ]; then
+      echo "Problem getting credentials from file passed by Hopsworks: $4"
+      exit 4
+  fi
+  if [ "$DB_PWD" =~ ";" ]; then
+   echo "Invalid database password character ';'"
+   exit 4
+  fi
+
+  ROLE=$5
+  role
   
-  DO_PWD=$(head -1 $3)
-  if [ "$DO_PWD" =~ ";" ]; then
-   echo "Invalid database password character ';'"
-   exit 5
-  fi
-
-  DS_PWD=$(tail -1 $3)
-  if [ "$DS_PWD" =~ ";" ]; then
-   echo "Invalid database password character ';'"
-   exit 5
-  fi
-
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
   if [ $RES -eq 0 ]; then
-     $MYSQL_CMD "CREATE USER \"$DO_USERNAME\"@'%' IDENTIFIED BY \"$DO_PWD\""
+     $MYSQL_CMD "CREATE USER \"$DB_USER\"@'%' IDENTIFIED BY \"$DB_PWD\""
      RES=$?     
      if [ $RES -eq 0 ]; then
-       $MYSQL_CMD "CREATE USER \"$DS_USERNAME\"@'%' IDENTIFIED BY \"$DS_PWD\""
-       RES=$?     
-       if [ $RES -eq 0 ]; then
-	$MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DO_USERNAME\"@'%'"
-        RES=$?
-        if [ $RES -eq 0 ]; then
-          $MYSQL_CMD "GRANT SELECT PRIVILEGES ON ${DB_NAME}.* TO \"$DS_USERNAME\"@'%'"
-          RES=$?
+       grant
+     else
+       echo "Problem creating user in mysql: $DB_USER with password $DB_PWD"
      fi
   fi
   exit $RES
-  
+
+#
+# Remove a user from a project, or remove 'all' users from a project and drop the database
+# 
 elif [ "$1" == "rm" ] ; then
 
-  $MYSQL_CMD "DROP DATABASE IF EXISTS $DB_NAME"
-  if [ $? -ne 0 ]; then
-     echo "Problem when trying to drop the database $DB_NAME"
+  if [ "$DB_USER" == "all" ] ; then
+
+    $MYSQL_CMD "DROP DATABASE IF EXISTS $DB_NAME"
+    if [ $? -ne 0 ]; then
+       echo "Problem when trying to drop the database $DB_NAME"
+    fi
+    #  SELECT user FROM mysql.user where user like "$DB_NAME_%";
+    #  then loop through all returned users
+    #    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'" SELECT user FROM mysql.user where user like "$DB_NAME_%";
+    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'"
+    RES=$?  
+    if [ $RES -ne 0 ]; then
+       echo "Problem when trying to drop the user $DB_USER"
+    fi
+  else
+    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'"
+    RES=$?  
+    if [ $RES -ne 0 ]; then
+       echo "Problem when trying to drop the user $DB_USER"
+    fi
   fi
-  $MYSQL_CMD "DROP USER IF EXISTS \"$DO_USERNAME\"@'%'"
-  if [ $? -ne 0 ]; then
-     echo "Problem when trying to drop the user $DO_USERNAME"
+  
+#
+# Change the role of a user in a project
+# 
+elif [ "$1" == "update" ] ; then
+  if [ $# -lt 4 ]; then
+    help
   fi
-  $MYSQL_CMD "DROP USER IF EXISTS \"$DS_USERNAME\"@'%'"
-  if [ $? -ne 0 ]; then
-     echo "Problem when trying to drop the user $DS_USERNAME"
+  ROLE=$4
+  role
+  $MYSQL_CMD "REVOKE ALL PRIVILEGES ON ${DB_NAME}.* FROM \"$DB_USER\"@'%'"
+  RES=$?     
+  if [ $RES -ne 0 ]; then
+    echo "Problem revoking privileges for ${DB_USER} on ${DB_NAME}"
   fi
+  grant
+  
+#
+# invalid command
+#
 else
+
  help
 fi 
+
+exit $RES
