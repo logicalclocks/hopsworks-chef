@@ -26,26 +26,23 @@ RES=0
 # https://stackoverflow.com/questions/9537771/mysql-database-name-restrictions
 # if [ "$DB_NAME" =~ "^[^\\/?%*:|\"<>.]{1,64}$" ]; then
 DB_NAME=$2
-if [ "$DB_NAME" =~ ";" ]; then
-   echo "Invalid database name. Note: the string length for the database name must be >2 and <=64 and it must contain valid characters."
-   exit 2
-fi
+#if [ "$DB_NAME" =~ ";" ]; then
+#   echo "Invalid database name. Note: the string length for the database name must be >2 and <=64 and it must contain valid characters."
+#   exit 2
+#fi
 
 DB_USER=$3
-if [ "$DB_USER" =~ ";" ]; then
-   echo "Invalid database username."
-   exit 3
-fi
 
 
 role() {
+  echo "Role passed was: $ROLE"
   if [ "$ROLE" == "DATA_OWNER" ] ; then
       OWNER=1
       echo "Data owner role enabled"      
   elif [ "$ROLE" == "DATA_SCIENTIST" ] ; then
       echo "Data scientist role enabled"
   else
-      echo "Invalid role passed: $ROLE"
+      echo "Invalid role passeed: $ROLE"
       exit 4
   fi
 }
@@ -76,15 +73,24 @@ if [ "$1" == "add" ] ; then
     help
   fi
 
+  test -f $5
+  if [ $? -ne 0 ] ; then
+    echo "Invalid password file passed: $5"
+    exit 5
+  fi
+  
   DB_PWD=$(head -1 $5)
-  if [ $RES -eq 0 ]; then
-      echo "Problem getting credentials from file passed by Hopsworks: $4"
+  RES=$?
+  echo "Removing passwords file
+  rm -f $5
+  if [ $RES -ne 0 ]; then
+      echo "Problem getting credentials from file passed by Hopsworks: $5"
       exit 5
   fi
-  if [ "$DB_PWD" =~ ";" ]; then
-   echo "Invalid database password character ';'"
-   exit 5
-  fi
+  # if [ "$DB_PWD" =~ ";" ]; then
+  #  echo "Invalid database password character ';'"
+  #  exit 5
+  # fi
   
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
@@ -151,5 +157,7 @@ else
 
  help
 fi 
+
+echo "Script finised with res: $RES"
 
 exit $RES
