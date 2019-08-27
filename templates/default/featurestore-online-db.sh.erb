@@ -48,10 +48,10 @@ role() {
 }
 
 grant() {
- if [ $OWNER -eq 0 ] ; then
+ if [ $OWNER -eq 1 ] ; then
    $MYSQL_CMD "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USER\"@'%'"
  else
-   $MYSQL_CMD "GRANT SELECT PRIVILEGES ON ${DB_NAME}.* TO \"$DB_USER\"@'%'"	   
+   $MYSQL_CMD "GRANT SELECT ON ${DB_NAME}.* TO \"$DB_USER\"@'%'"	   
  fi
  RES=$?
  if [ $RES -ne 0 ]; then
@@ -95,7 +95,7 @@ if [ "$1" == "add" ] ; then
   $MYSQL_CMD "CREATE DATABASE IF NOT EXISTS $DB_NAME"
   RES=$?
   if [ $RES -eq 0 ]; then
-     $MYSQL_CMD "CREATE USER \"$DB_USER\"@'%' IDENTIFIED BY \"$DB_PWD\""
+     $MYSQL_CMD "CREATE USER IF NOT EXISTS \"$DB_USER\"@'%' IDENTIFIED BY \"$DB_PWD\""
      RES=$?     
      if [ $RES -eq 0 ]; then
        grant
