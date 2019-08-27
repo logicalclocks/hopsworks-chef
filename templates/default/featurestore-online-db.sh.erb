@@ -119,7 +119,7 @@ elif [ "$1" == "rm" ] ; then
     #  SELECT user FROM mysql.user where user like "$DB_NAME_%";
     #  then loop through all returned users
     #    $MYSQL_CMD "DROP USER IF EXISTS \"$DB_USER\"@'%'" SELECT user FROM mysql.user where user like "$DB_NAME_%";
-    list_users=$(sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -N -e "SELECT GROUP_CONCAT(User) FROM mysql.user WHERE USER LIKE \"%${DB_NAME}\"" | tail -2 | tail -1 | sed "s/,/ /g")
+    list_users=$(sudo <%= node['ndb']['dir'] %>/mysql-cluster/ndb/scripts/mysql-client.sh -N -e "SELECT GROUP_CONCAT(User) FROM mysql.user WHERE USER LIKE \"${DB_NAME}_%\"" | tail -2 | tail -1 | sed "s/,/ /g")
     for i in $list_users
     do
       $MYSQL_CMD "DROP USER IF EXISTS \"${i}\"@'%'"	
