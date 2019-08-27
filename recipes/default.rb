@@ -1076,3 +1076,30 @@ if node['rstudio']['enabled'].eql? "true"
     EOF
   end
 end
+
+
+if node['mysql']['tls'].eql? "true"
+  node.override['mysql']['tls_enabled'] = "true"
+
+  service_name=mysqld
+  my_ip = my_private_ip()
+  found_id=find_service_id("mysqld", node['mysql']['id'])
+  mysql_ip = node['mysql']['localhost'] == "true" ? "localhost" : my_ip
+  template "#{node['ndb']['root_dir']}/my.cnf" do
+    source "ndb/my-ndb.cnf.erb"
+    owner node['ndb']['user']
+    group node['ndb']['group']
+    mode "0640"
+    action :create
+    variables({
+                :mysql_id => found_id,
+                :my_ip => mysql_ip
+              })
+    if node['services']['enabled'] == "true"
+      notifies :restart, resources(:service => service_name), :immediately
+    end
+  end
+
+
+  
+end  
