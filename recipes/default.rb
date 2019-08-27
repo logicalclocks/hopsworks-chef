@@ -1079,11 +1079,37 @@ end
 
 
 if node['mysql']['tls'].eql? "true"
-  node.override['mysql']['tls_enabled'] = "true"
+  group node['kagent']['certs_group'] do
+    action :modify
+    members ["#{node['ndb']['user']}"]
+    append true
+  end
 
-  service_name=mysqld
+  service = "mysqld"
+  found_id = -1
   my_ip = my_private_ip()
-  found_id=find_service_id("mysqld", node['mysql']['id'])
+  id = node['mysql']['id']
+
+  if node.attribute?(:ndb) && node['ndb'].attribute?(service) && node['ndb'][service].attribute?(:ips_ids) && !node['ndb'][service]['ips_ids'].empty?
+    for srv in node['ndb'][service]['ips_ids']
+      theNode = srv.split(":")
+      if my_ip.eql? theNode[0]
+        found_id = theNode[1]
+        break
+      end
+    end
+  else
+    for api in node['ndb'][service]['private_ips']
+      if my_ip.eql? api
+        Chef::Log.info "Found matching IP address in the list of #{service} nodes: #{api} . ID= #{id}"
+        found_id = id
+      end
+      id += 1
+    end
+  end
+
+  node.override['mysql']['tls_enabled'] = "true"  
+
   mysql_ip = node['mysql']['localhost'] == "true" ? "localhost" : my_ip
   template "#{node['ndb']['root_dir']}/my.cnf" do
     source "ndb/my-ndb.cnf.erb"
@@ -1096,10 +1122,8 @@ if node['mysql']['tls'].eql? "true"
                 :my_ip => mysql_ip
               })
     if node['services']['enabled'] == "true"
-      notifies :restart, resources(:service => service_name), :immediately
+      notifies :restart, resources(:service => service), :immediately
     end
   end
-
-
   
 end  
