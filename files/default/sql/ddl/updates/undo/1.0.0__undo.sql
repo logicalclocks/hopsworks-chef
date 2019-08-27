@@ -155,4 +155,3 @@ ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_id` `meta_pk1` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_field_id` `meta_pk2` bigint(20);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_tuple_id` `meta_pk3` bigint(20);
 
-ALTER TABLE `hopsworks`.`feature_store` DROP COLUMN `online_db_password`;
