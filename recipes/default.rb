@@ -1085,13 +1085,13 @@ if node['mysql']['tls'].eql? "true"
     append true
   end
 
-  service = "mysqld"
+  service_name = "mysqld"
   found_id = -1
   my_ip = my_private_ip()
   id = node['mysql']['id']
 
-  if node.attribute?(:ndb) && node['ndb'].attribute?(service) && node['ndb'][service].attribute?(:ips_ids) && !node['ndb'][service]['ips_ids'].empty?
-    for srv in node['ndb'][service]['ips_ids']
+  if node.attribute?(:ndb) && node['ndb'].attribute?(service_name) && node['ndb'][service_name].attribute?(:ips_ids) && !node['ndb'][service_name]['ips_ids'].empty?
+    for srv in node['ndb'][service_name]['ips_ids']
       theNode = srv.split(":")
       if my_ip.eql? theNode[0]
         found_id = theNode[1]
@@ -1099,9 +1099,9 @@ if node['mysql']['tls'].eql? "true"
       end
     end
   else
-    for api in node['ndb'][service]['private_ips']
+    for api in node['ndb'][service_name]['private_ips']
       if my_ip.eql? api
-        Chef::Log.info "Found matching IP address in the list of #{service} nodes: #{api} . ID= #{id}"
+        Chef::Log.info "Found matching IP address in the list of #{service_name} nodes: #{api} . ID= #{id}"
         found_id = id
       end
       id += 1
@@ -1110,6 +1110,12 @@ if node['mysql']['tls'].eql? "true"
 
   node.override['mysql']['tls_enabled'] = "true"  
 
+  service "#{service_name}" do
+    provider Chef::Provider::Service::Systemd
+    supports :restart => true, :stop => true, :start => true, :status => true
+    action :nothing
+  end
+  
   mysql_ip = node['mysql']['localhost'] == "true" ? "localhost" : my_ip
   template "#{node['ndb']['root_dir']}/my.cnf" do
     source "ndb/my-ndb.cnf.erb"
@@ -1121,9 +1127,7 @@ if node['mysql']['tls'].eql? "true"
                 :mysql_id => found_id,
                 :my_ip => mysql_ip
               })
-    if node['services']['enabled'] == "true"
-      notifies :restart, resources(:service => service), :immediately
-    end
+    notifies :restart, resources(:service => service), :immediately
   end
   
 end  
