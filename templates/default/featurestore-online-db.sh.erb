@@ -81,7 +81,7 @@ if [ "$1" == "add" ] ; then
   
   DB_PWD=$(head -1 $5)
   RES=$?
-  echo "Removing passwords file
+  echo "Removing passwords file"
   rm -f $5
   if [ $RES -ne 0 ]; then
       echo "Problem getting credentials from file passed by Hopsworks: $5"
@@ -154,10 +154,9 @@ elif [ "$1" == "update" ] ; then
 # invalid command
 #
 else
-
  help
 fi 
 
-echo "Script finised with res: $RES"
+echo "Script finished with res: $RES"
 
 exit $RES
