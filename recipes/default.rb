@@ -1128,7 +1128,7 @@ if node['mysql']['tls'].eql? "true"
                 :mysql_id => found_id,
                 :my_ip => mysql_ip
               })
-    notifies :restart, resources(:service => service), :immediately
+    notifies :restart, resources(:service => service_name), :immediately
   end
   
 end  
