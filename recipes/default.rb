@@ -1118,7 +1118,8 @@ if node['mysql']['tls'].eql? "true"
   
   mysql_ip = node['mysql']['localhost'] == "true" ? "localhost" : my_ip
   template "#{node['ndb']['root_dir']}/my.cnf" do
-    source "ndb/my-ndb.cnf.erb"
+    cookbook "ndb"
+    source "my-ndb.cnf.erb"
     owner node['ndb']['user']
     group node['ndb']['group']
     mode "0640"
