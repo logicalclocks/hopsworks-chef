@@ -230,6 +230,10 @@ attribute "hopsworks/ear_url",
           :description => "Url for the hopsworks ear file",
           :type => 'string'
 
+attribute "hopsworks/logsize",
+          :description => "Size of Glassfish log file for Hopsworks",
+          :type => 'string'
+
 attribute "hopsworks/ca_url",
           :description => "Url for the hopsworks certificate authority war file",
           :type => 'string'

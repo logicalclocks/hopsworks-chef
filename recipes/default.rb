@@ -534,7 +534,9 @@ glassfish_conf = {
   'configs.config.server-config.monitoring-service.module-monitoring-levels.jersey' => 'HIGH',
   'configs.config.server-config.monitoring-service.module-monitoring-levels.transaction-service' => 'HIGH',
   'configs.config.server-config.monitoring-service.module-monitoring-levels.jpa' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH'
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
+  'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
+  'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout']
 }
 
 glassfish_conf.each do |property, value|
@@ -576,21 +578,24 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 end
 
-# Http listeners configuration
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
+logging_conf = {
+  'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
+  'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
+  # These are just some random number, we are not enabling this logger. However if they are not set
+  # the main logger doesn't work either. 
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,  
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => 0,
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => 3
+}
 
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
+logging_conf.each do |property, value|
+  glassfish_asadmin "set-log-attributes #{property}=#{value}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
    admin_port admin_port
    secure false
+  end
 end
 
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
