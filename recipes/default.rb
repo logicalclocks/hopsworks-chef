@@ -838,8 +838,8 @@ template "#{domains_dir}/#{domain_name}/bin/list_environment.sh" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/bin/condalist.sh" do
-  source "condalist.sh.erb"
+template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
+  source "condarc.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0750
@@ -931,6 +931,13 @@ directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   owner node['conda']['user']
   group node['hopsworks']['group']
   mode "0770"
+  action :create
+end
+
+directory node['hopsworks']['conda_cache'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0700"
   action :create
 end
 
