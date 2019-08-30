@@ -332,3 +332,5 @@ ALTER TABLE `hopsworks`.`meta_log` DROP COLUMN `meta_type`;
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk1` `meta_id` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk2` `meta_field_id` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_pk3` `meta_tuple_id` int(11);
+
+ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `status`;
