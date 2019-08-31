@@ -1158,13 +1158,11 @@ CREATE TABLE `python_dep` (
   `dependency` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `version` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `repo_id` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
   `preinstalled` tinyint(1) DEFAULT '0',
   `install_type` int(11) NOT NULL,
   `machine_type` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`,`machine_type`),
-  KEY `status` (`status`),
   KEY `repo_id` (`repo_id`),
   CONSTRAINT `FK_501_510` FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
