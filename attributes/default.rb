@@ -361,6 +361,7 @@ default['hopsworks']['expat_dir']                    = "#{node['install']['dir']
 # Feature Store
 #
 default['hopsworks']['featurestore_default_storage_format']   = "ORC"
+default['hopsworks']['featurestore_online']                   = "false"
 
 default['scala']['version']                   = "2.11.8"
 default['scala']['download_url']              = "#{node['download_url']}/scala-#{node['scala']['version']}.rpm"
