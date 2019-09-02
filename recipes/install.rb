@@ -713,8 +713,6 @@ template "#{theDomain}/bin/ca-keystore.sh" do
 end
 
 # If online featurestore is not enabled, empty file
-if node['hopsworks']['featurestore_online'] == "true" 
-
 template "#{theDomain}/bin/featurestore-online-db.sh" do
 if node['hopsworks']['featurestore_online'] == "true" 
   source "featurestore-online-db.sh.erb"
