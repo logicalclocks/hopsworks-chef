@@ -713,7 +713,12 @@ template "#{theDomain}/bin/ca-keystore.sh" do
 end
 
 # If online featurestore is not enabled, empty file
-onlinefs = node['hopsworks']['featurestore_online'] == "true" ? "featurestore-online-db.sh.erb" : "featurestore-online-db-empty.sh.erb"
+if node['hopsworks']['featurstore_online'].eql? "true"
+  onlinefs = "featurestore-online-db.sh.erb"
+else
+  onlinefs = "featurestore-online-db-empty.sh.erb"
+end
+
 template "#{theDomain}/bin/featurestore-online-db.sh" do
   source onlinefs
   owner node['glassfish']['user']
@@ -790,7 +795,6 @@ when "ubuntu"
   end
 
 end
-
 
 
 #
@@ -940,5 +944,3 @@ template "#{theDomain}/bin/airflowOps.sh" do
   mode 0710
   action :create
 end
-
-
