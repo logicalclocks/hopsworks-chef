@@ -713,12 +713,9 @@ template "#{theDomain}/bin/ca-keystore.sh" do
 end
 
 # If online featurestore is not enabled, empty file
+onlinefs = node['hopsworks']['featurestore_online'] == "true" ? "featurestore-online-db.sh.erb" : "featurestore-online-db-empty.sh.erb"
 template "#{theDomain}/bin/featurestore-online-db.sh" do
-if node['hopsworks']['featurestore_online'] == "true" 
-  source "featurestore-online-db.sh.erb"
-else
-  source "featurestore-online-db-empty.sh.erb"  
-end  
+  source onlinefs
   owner node['glassfish']['user']
   group node['ndb']['group']
   mode 0550
