@@ -673,10 +673,18 @@ end
 
 node.override['glassfish']['asadmin']['timeout'] = 400
 
+if node['install']['enterprise']['install'].casecmp? "true"
+  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+  node.override['hopsworks']['war_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
+  node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
+end
+
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['ear_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']
   version node['hopsworks']['version']
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -691,11 +699,12 @@ glassfish_deployable "hopsworks-ear" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
-
 glassfish_deployable "hopsworks" do
   component_name "hopsworks-web:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['war_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']  
   version node['hopsworks']['version']
   context_root "/hopsworks"
   domain_name domain_name
@@ -711,11 +720,12 @@ glassfish_deployable "hopsworks" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
 
-
 glassfish_deployable "hopsworks-ca" do
   component_name "hopsworks-ca:#{node['hopsworks']['version']}"
   target "server"
   url node['hopsworks']['ca_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']  
   version node['hopsworks']['version']
   context_root "/hopsworks-ca"
   domain_name domain_name
