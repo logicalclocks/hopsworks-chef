@@ -418,7 +418,6 @@ CREATE TABLE `host_services` (
   `group_name` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `status` int(11) NOT NULL,
   `uptime` bigint(20) DEFAULT NULL,
-  `webport` int(11) DEFAULT NULL,
   `startTime` bigint(20) DEFAULT NULL,
   `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),

@@ -358,5 +358,5 @@ ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `load5`;
 ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `load15`;
 ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `memory_used`;
 
-ALTER TABLE `hopsworks`.`host_services` DROP COLUMN `web_port`;
+ALTER TABLE `hopsworks`.`host_services` DROP COLUMN `webport`;
 ALTER TABLE `hopsworks`.`host_services` DROP COLUMN `cluster`;
