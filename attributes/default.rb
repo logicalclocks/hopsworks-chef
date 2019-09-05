@@ -378,6 +378,3 @@ default['glassfish']['http']['keep_alive_timeout']   = "30"
 #
 default['hopsworks']['kagent_liveness']['enabled']         = "false"
 default['hopsworks']['kagent_liveness']['threshold']       = "10s"
-default['hopsworks']['kagent_liveness']['restart_script']  = "#{node['kagent']['base_dir']}/bin/restart-service.sh"
-default['hopsworks']['kagent_liveness']['start_script']    = "#{node['kagent']['base_dir']}/bin/start-service.sh"
-default['hopsworks']['kagent_liveness']['stop_script']     = "#{node['kagent']['base_dir']}/bin/stop-service.sh"

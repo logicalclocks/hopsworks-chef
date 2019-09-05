@@ -25,3 +25,7 @@ WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_c
 AND `feature_store`.`project_id`=`project`.`id`;
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsutil_version';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`="service_restart_script";
+DELETE FROM `hopsworks`.`variables` WHERE `id`="service_start_script";
+DELETE FROM `hopsworks`.`variables` WHERE `id`="service_stop_script";
