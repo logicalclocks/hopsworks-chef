@@ -4,3 +4,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`="jupyter_origin_scheme";
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='cloud';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='localhost';
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsutil_version", "0.10.0.0);
