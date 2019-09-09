@@ -25,3 +25,8 @@ WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_c
 AND `feature_store`.`project_id`=`project`.`id`;
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsutil_version';
+
+/*
+Kagent certs dir is requried in Hopsworks to set as environment variables when starting jupyter or jobs
+*/
+REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_certs_dir", "<%= node['kagent']['certs_dir'] %>");
