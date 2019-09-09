@@ -5,6 +5,8 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_origin_scheme", "<%= node[
 REPLACE INTO `hopsworks`.`variables` VALUES ("cloud", "<%= node['install']['cloud'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
 
+REPLACE INTO `hopsworks`.`variables` VALUES ("featurestore_online_enabled", "<%= node['hopsworks']['featurestore_online'] %>");
+
 /*
 Insert default JDBC connectors to feature store for existing projects with the feature store service
 */
@@ -23,7 +25,5 @@ FROM `hopsworks`.`feature_store`, `hopsworks`.`project`
 WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_connector` WHERE
 `feature_store_jdbc_connector`.`feature_store_id` = `feature_store`.`id`)
 AND `feature_store`.`project_id`=`project`.`id`;
-
-
 
 

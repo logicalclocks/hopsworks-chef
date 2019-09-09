@@ -741,11 +741,7 @@ template "#{theDomain}/bin/ca-keystore.sh" do
 end
 
 # If online featurestore is not enabled, empty file
-if node['hopsworks']['featurstore_online'].eql? "true"
-  onlinefs = "featurestore-online-db.sh.erb"
-else
-  onlinefs = "featurestore-online-db-empty.sh.erb"
-end
+onlinefs = "featurestore-online-db.sh.erb"
 
 template "#{theDomain}/bin/featurestore-online-db.sh" do
   source onlinefs
