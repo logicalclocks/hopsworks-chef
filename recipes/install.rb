@@ -338,7 +338,7 @@ node.override = {
               }
             },
             'resources' => {
-              'jdbc/hopsworks' => {
+              'jdbc/featurestore' => {
                 'description' => 'Resource for Hopsworks Pool',
               }
             }
