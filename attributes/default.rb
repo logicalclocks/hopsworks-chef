@@ -381,3 +381,12 @@ default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 default['hopsworks']['kagent_liveness']['restart_script']  = "#{node['kagent']['base_dir']}/bin/restart-service.sh"
 default['hopsworks']['kagent_liveness']['start_script']    = "#{node['kagent']['base_dir']}/bin/start-service.sh"
 default['hopsworks']['kagent_liveness']['stop_script']     = "#{node['kagent']['base_dir']}/bin/stop-service.sh"
+
+
+#
+# Online FeatureStore JDBC Connection Details
+#
+
+default['featurestore']['jdbc_url']                        = "localhost"
+default['featurestore']['user']                            = node['mysql']['user']
+default['featurestore']['password']                        = node['mysql']['password']

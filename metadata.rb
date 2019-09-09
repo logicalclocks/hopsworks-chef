@@ -1915,3 +1915,17 @@ attribute "hopsworks/kagent_liveness/threshold",
           :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
           :type => 'string'
 
+
+# Online featurestore jdbc connection details
+attribute "featurestore/jdbc_url",
+          :description => "Url for JDBC Connection to the the Online FeatureStore",
+          :type => 'string'
+
+attribute "featurestore/user",
+          :description => "User for the JDBC Connection to the the Online FeatureStore",
+          :type => 'string'
+
+attribute "featurestore/password",
+          :description => "Password for the JDBC Connection to the the Online FeatureStore",
+          :type => 'string'
+
