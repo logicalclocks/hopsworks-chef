@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script allows Hopsworks to start/kill/ping (check if alive) a Jupyter Notebook Server.
+# This script allows Hopsworks to start/kill a Jupyter Notebook Server.
 # There will be 1 notebook-server per ProjectUser.
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 # it changes user to 'jupyter' to run the command as user 'jupyter'.
@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir hadoop_username token] | [kill jupyter_home pid port] | [ping pid] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir hadoop_username token] | [kill jupyter_home pid port] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -134,18 +134,6 @@ elif [ "$1" == "start" ] ; then
      
     # Launch the jupyter notebook
     su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
-
-elif [ "$1" == "ping" ] ; then
-    if [ $# -ne 2 ]; then
-	help
-    fi
-    ps -ef | grep -v 'grep' | grep -i jupyter-notebook | grep "$2"
-    if [ $? -ne 0 ] ; then
-	echo "Error checking PID: $2"
-	echo "Are you trying to ping a non jupyter-notebook process?"
-	exit 12
-    fi
-    kill -0 "$2"
 
 # list 
 elif [ "$1" == "list" ] ; then

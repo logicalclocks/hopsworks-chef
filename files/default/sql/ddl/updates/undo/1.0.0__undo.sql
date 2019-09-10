@@ -155,3 +155,9 @@ ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_id` `meta_pk1` int(11);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_field_id` `meta_pk2` bigint(20);
 ALTER TABLE `hopsworks`.`meta_log` CHANGE `meta_tuple_id` `meta_pk3` bigint(20);
 
+ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `status` int(11) NOT NULL DEFAULT 1;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_backend`;
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_config_id`;
+DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
+

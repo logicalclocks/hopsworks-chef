@@ -46,6 +46,7 @@ default['hopsworks']['domain_name']              = "domain1"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
+default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
 
 default['hopsworks']['jupyter_dir']              = node['hopsworks']['dir'] + "/jupyter"
 

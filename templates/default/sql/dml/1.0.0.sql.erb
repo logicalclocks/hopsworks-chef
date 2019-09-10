@@ -26,4 +26,5 @@ WHERE NOT EXISTS (SELECT feature_store_id FROM `hopsworks`.`feature_store_jdbc_c
 `feature_store_jdbc_connector`.`feature_store_id` = `feature_store`.`id`)
 AND `feature_store`.`project_id`=`project`.`id`;
 
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsutil_version';
 

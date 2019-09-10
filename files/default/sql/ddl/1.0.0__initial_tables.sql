@@ -585,6 +585,8 @@ CREATE TABLE `jupyter_settings` (
   `shutdown_level` int(11) NOT NULL DEFAULT '6',
   `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT '/Jupyter/',
   `json_config` text COLLATE latin1_general_cs NOT NULL,
+  `git_backend` TINYINT(1) DEFAULT 0,
+  `git_config_id` INT(11) NULL,
   PRIMARY KEY (`project_id`,`team_member`),
   KEY `team_member` (`team_member`),
   KEY `secret_idx` (`secret`),
@@ -1158,13 +1160,11 @@ CREATE TABLE `python_dep` (
   `dependency` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `version` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `repo_id` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
   `preinstalled` tinyint(1) DEFAULT '0',
   `install_type` int(11) NOT NULL,
   `machine_type` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`,`machine_type`),
-  KEY `status` (`status`),
   KEY `repo_id` (`repo_id`),
   CONSTRAINT `FK_501_510` FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1878,4 +1878,15 @@ CREATE TABLE `feature_store_job` (
   CONSTRAINT `fs_job_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
+       `id` INT NOT NULL AUTO_INCREMENT,
+       `remote_git_url` VARCHAR(255) NOT NULL,
+       `api_key_name` VARCHAR(125) NOT NULL,
+       `base_branch` VARCHAR(125),
+       `head_branch` VARCHAR(125),
+       `startup_auto_pull` TINYINT(1) DEFAULT 1,
+       `shutdown_auto_push` TINYINT(1) DEFAULT 1,
+       PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
