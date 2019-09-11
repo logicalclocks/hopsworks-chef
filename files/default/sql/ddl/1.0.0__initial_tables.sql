@@ -411,7 +411,6 @@ CREATE TABLE `hopssite_cluster_certs` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cluster` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `host_id` int(11) NOT NULL,
   `pid` int(11) DEFAULT NULL,
   `service` varchar(48) COLLATE latin1_general_cs NOT NULL,
