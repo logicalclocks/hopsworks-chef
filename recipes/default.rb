@@ -965,6 +965,14 @@ kagent_keys "#{homedir}" do
   action :return_publickey
 end
 
+if node['kagent']['enabled'].casecmp? "true"
+  kagent_config "glassfish-domain1" do
+    service "glassfish_#{node['hopsworks']['domain_name']}"
+    log_file "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs/server.log"
+    restart_agent false
+  end
+end
+
 # Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
 ruby_block "generate_service_jwt" do
   block do
