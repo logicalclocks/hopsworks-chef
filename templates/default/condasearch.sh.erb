@@ -6,9 +6,10 @@ if [ $# -ne 2  ]; then
  echo "incorrect usage"
  exit 2
 fi
-CHANNEL=
-if [ "$1" != "defaults" ] ; then
-   CHANNEL="-c $1 --override-channels"
+CHANNEL="${1//[^a-zA-Z0-9\.\-\_:\/\&~?]/}"
+if [ "$CHANNEL" != "defaults" ] ; then
+   CHANNEL="-c $CHANNEL --override-channels"
 fi
-<%= node['conda']['base_dir'] %>/bin/conda search $CHANNEL "${2}"  | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"
+LIB="${2//[^a-zA-Z0-9\.\-\_]/}"
+<%= node['conda']['base_dir'] %>/bin/conda search $CHANNEL "${LIB}"  | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"
 exit ${PIPESTATUS[0]}
