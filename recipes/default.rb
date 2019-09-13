@@ -598,6 +598,19 @@ logging_conf.each do |property, value|
   end
 end
 
+loglevels_conf = {
+  'fish.payara.nucleus.notification.log.LogNotifierService' => 'SEVERE'
+}
+
+loglevels_conf.each do |property, value|
+  glassfish_asadmin "set-log-levels #{property}=#{value}"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
   ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
