@@ -347,3 +347,20 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `shutdown_auto_push` TINYINT(1) DEFAULT 1,
        PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `online_feature_group` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `db_name`                           VARCHAR(5000)   NOT NULL,
+  `table_name`                        VARCHAR(5000)    NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_feature_group` INT(11) NULL;
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD CONSTRAINT `online_fg_fk`
+                                                FOREIGN KEY (`online_feature_group`) REFERENCES
+                                               `hopsworks`.`online_feature_group`(`id`)
+                                               ON DELETE NO ACTION
+                                               ON UPDATE NO ACTION;

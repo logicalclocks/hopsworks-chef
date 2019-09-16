@@ -1820,9 +1820,13 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
   `offline_feature_group`          BIGINT(20)      NOT NULL,
+  `online_feature_group`           INT(11)         NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
     ON DELETE CASCADE
+    ON UPDATE NO ACTION
+  CONSTRAINT `online_fg_fk` FOREIGN KEY (`online_feature_group`) REFERENCES `hopsworks`.`online_feature_group` (`id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION
 )
   ENGINE = ndbcluster
@@ -1890,3 +1894,14 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `shutdown_auto_push` TINYINT(1) DEFAULT 1,
        PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+CREATE TABLE IF NOT EXISTS `online_feature_group` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `db_name`                           VARCHAR(5000)   NOT NULL,
+  `table_name`                        VARCHAR(5000)    NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
