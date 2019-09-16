@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-LIBRARY="$1"
-ENV="$2"
+LIBRARY="${1//[^a-zA-Z0-9\.\-\_]/}"
+ENV="${2//[^a-zA-Z0-9\.\-\_]/}"
 
 # pip search $1
 
