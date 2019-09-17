@@ -161,3 +161,7 @@ ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_backend`;
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_config_id`;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
 
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP FOREIGN KEY `online_fg_fk`;
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_feature_group`;
+DROP TABLE IF EXISTS `hopsworks`.`online_feature_group`;

@@ -362,5 +362,5 @@ ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_feature_group`
 ALTER TABLE `hopsworks`.`cached_feature_group` ADD CONSTRAINT `online_fg_fk`
                                                 FOREIGN KEY (`online_feature_group`) REFERENCES
                                                `hopsworks`.`online_feature_group`(`id`)
-                                               ON DELETE NO ACTION
+                                               ON DELETE SET NULL
                                                ON UPDATE NO ACTION;
