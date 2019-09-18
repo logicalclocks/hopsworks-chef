@@ -487,6 +487,14 @@ props =  {
    classname "io.hops.crealm.CustomAuthRealm"
  end
 
+# Enable JMX metrics
+glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amx true --logfrequency 15 --logfrequencyunit SECONDS" do 
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+end
 
 glassfish_conf = {
   'server-config.security-service.default-realm' => 'cauthRealm',
@@ -513,7 +521,22 @@ glassfish_conf = {
   'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
   # Allow following symlinks from docroot
-  'server-config.http-service.virtual-server.server.property.allowLinking' => true 
+  'server-config.http-service.virtual-server.server.property.allowLinking' => true,
+  # Configure metrics and JMX
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.jvm' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.connector-service' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.connector-connection-pool' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.jdbc-connection-pool' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-services-container' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.thread-pool' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.http-service' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.security' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.jersey' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.transaction-service' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.jpa' => 'HIGH',
+  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
+  'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
+  'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout']
 }
 
 glassfish_conf.each do |property, value|
@@ -525,7 +548,6 @@ glassfish_conf.each do |property, value|
    secure false
   end
 end
-
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
    domain_name domain_name
@@ -556,21 +578,38 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 end
 
-# Http listeners configuration
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
+logging_conf = {
+  'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
+  'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
+  # These are just some random number, we are not enabling this logger. However if they are not set
+  # the main logger doesn't work either. 
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,  
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => 0,
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => 3
+}
+
+logging_conf.each do |property, value|
+  glassfish_asadmin "set-log-attributes #{property}=#{value}" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
    admin_port admin_port
    secure false
+  end
 end
 
-glassfish_asadmin "set server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds=#{node['glassfish']['http']['keep_alive_timeout']}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
+loglevels_conf = {
+  'fish.payara.nucleus.notification.log.LogNotifierService' => 'SEVERE'
+}
+
+loglevels_conf.each do |property, value|
+  glassfish_asadmin "set-log-levels #{property}=#{value}" do 
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+  end
 end
 
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
@@ -887,33 +926,21 @@ homedir = "/home/#{node['hopsworks']['user']}"
 # Disable glassfish service, if node['services']['enabled'] is not set to true
 #
 if node['services']['enabled'] != "true"
-
-  case node['platform']
-  when "ubuntu"
-    if node['platform_version'].to_f <= 14.04
-      node.override['hopsworks']['systemd'] = "false"
-    end
+  service "glassfish-domain1" do
+    provider Chef::Provider::Service::Systemd
+    supports :restart => true, :stop => true, :start => true, :status => true
+    action :disable
   end
-
-  if node['hopsworks']['systemd'] == "true"
-
-    service "glassfish-domain1" do
-      provider Chef::Provider::Service::Systemd
-      supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable
-    end
-
-  else #sysv
-
-    service "glassfish-domain1" do
-      provider Chef::Provider::Service::Init::Debian
-      supports :restart => true, :stop => true, :start => true, :status => true
-      action :disable
-    end
-  end
-
 end
 
+#  Template metrics.xml to expose metrics
+cookbook_file "#{theDomain}/config/metrics.xml"  do
+  source 'metrics.xml'
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "700"
+  action :create
+end
 
 directory node['hopsworks']['staging_dir']  do
   owner node['hopsworks']['user']
