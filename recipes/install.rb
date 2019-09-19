@@ -741,17 +741,6 @@ template "#{theDomain}/bin/ca-keystore.sh" do
   })
 end
 
-# If online featurestore is not enabled, empty file
-onlinefs = "featurestore-online-db.sh.erb"
-
-template "#{theDomain}/bin/featurestore-online-db.sh" do
-  source onlinefs
-  owner node['glassfish']['user']
-  group node['ndb']['group']
-  mode 0550
-  action :create
-end
-
 template "#{theDomain}/bin/start-llap.sh" do
   source "start-llap.sh.erb"
   owner node['glassfish']['user']
@@ -790,7 +779,6 @@ template "/etc/sudoers.d/glassfish" do
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
               :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
-              :featurestore_online_db => "#{theDomain}/bin/featurestore-online-db.sh",              
               :hive_user => node['hive2']['user'],
               :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
               :start_llap => "#{theDomain}/bin/start-llap.sh"
