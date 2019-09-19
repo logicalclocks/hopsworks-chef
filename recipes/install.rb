@@ -236,6 +236,7 @@ node.override = {
   },
   'glassfish' => {
     'version' => node['glassfish']['version'],
+    'domains_dir' => node['hopsworks']['domains_dir'],
     'domains' => {
       domain_name => {
         'config' => {
@@ -846,15 +847,6 @@ directory node["jupyter"]["base_dir"]  do
   mode "770"
   action :create
 end
-
-bash "python_openssl" do
-  user "root"
-  code <<-EOF
-    pip install pyopenssl
-    # --upgrade
-  EOF
-end
-
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]

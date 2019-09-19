@@ -165,3 +165,58 @@ DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP FOREIGN KEY `online_fg_fk`;
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_feature_group`;
 DROP TABLE IF EXISTS `hopsworks`.`online_feature_group`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `alerts` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `current_value` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
+  `failure_max` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
+  `failure_min` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
+  `warning_max` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
+  `warning_min` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
+  `agent_time` bigint(20) DEFAULT NULL,
+  `alert_time` datetime DEFAULT NULL,
+  `data_source` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `host_id` int(11) DEFAULT NULL,
+  `message` varchar(1024) COLLATE latin1_general_cs NOT NULL,
+  `plugin` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `plugin_instance` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `provider` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+  `severity` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+  `type` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  `type_instance` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `host_id` (`host_id`),
+  CONSTRAINT `FK_481_487` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=408 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `disk_capacity` bigint(20) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `disk_used` bigint(20) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `load1` double DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `load5` double DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `load15` double DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `memory_used` bigint(20) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`host_services` ADD COLUMN `cluster`  varchar(48) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`host_services` ADD COLUMN `webport`  int(11) DEFAULT NULL;
+
+--
+-- Table structure for table `commands`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `commands` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cluster` varchar(48) COLLATE latin1_general_cs NOT NULL,
+  `command` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `host_id` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `role` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `service` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `start_time` datetime DEFAULT NULL,
+  `status` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;

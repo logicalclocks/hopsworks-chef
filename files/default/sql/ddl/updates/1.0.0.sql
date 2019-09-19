@@ -348,6 +348,19 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+DROP TABLE `hopsworks`.`alerts`;
+DROP TABLE `hopsworks`.`commands`;
+
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `disk_capacity`;
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `disk_used`;
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `load1`;
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `load5`;
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `load15`;
+ALTER TABLE `hopsworks`.`hosts` DROP COLUMN `memory_used`;
+
+ALTER TABLE `hopsworks`.`host_services` DROP COLUMN `webport`;
+ALTER TABLE `hopsworks`.`host_services` DROP COLUMN `cluster`;
+
 CREATE TABLE IF NOT EXISTS `online_feature_group` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
   `db_name`                           VARCHAR(5000)   NOT NULL,
