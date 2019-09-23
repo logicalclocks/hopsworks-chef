@@ -12,3 +12,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['
 REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['kagent']['base_dir'] %>/bin/stop-service.sh");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='localhost';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'hops_verification_version';
