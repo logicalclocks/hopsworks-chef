@@ -578,6 +578,31 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 end
 
+# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+# connection pool for the online featurestore 
+if node['featurestore']['jdbc_url'].eql? "localhost"
+  featurestore_jdbc_url="jdbc:mysql://#{mysql_host}:#{node['ndb']['mysql_port']}/"
+end  
+
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url} featureStorePool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featurestore'"
+end
+
+glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/featurestore'"
+end
+
+
 logging_conf = {
   'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
   'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
@@ -1128,59 +1153,3 @@ if node['rstudio']['enabled'].eql? "true"
     EOF
   end
 end
-
-
-if node['mysql']['tls'].eql? "true"
-  group node['kagent']['certs_group'] do
-    action :modify
-    members ["#{node['ndb']['user']}"]
-    append true
-  end
-
-  service_name = "mysqld"
-  found_id = -1
-  my_ip = my_private_ip()
-  id = node['mysql']['id']
-
-  if node.attribute?(:ndb) && node['ndb'].attribute?(service_name) && node['ndb'][service_name].attribute?(:ips_ids) && !node['ndb'][service_name]['ips_ids'].empty?
-    for srv in node['ndb'][service_name]['ips_ids']
-      theNode = srv.split(":")
-      if my_ip.eql? theNode[0]
-        found_id = theNode[1]
-        break
-      end
-    end
-  else
-    for api in node['ndb'][service_name]['private_ips']
-      if my_ip.eql? api
-        Chef::Log.info "Found matching IP address in the list of #{service_name} nodes: #{api} . ID= #{id}"
-        found_id = id
-      end
-      id += 1
-    end
-  end
-
-  node.override['mysql']['tls_enabled'] = "true"  
-
-  service "#{service_name}" do
-    provider Chef::Provider::Service::Systemd
-    supports :restart => true, :stop => true, :start => true, :status => true
-    action :nothing
-  end
-  
-  mysql_ip = node['mysql']['localhost'] == "true" ? "localhost" : my_ip
-  template "#{node['ndb']['root_dir']}/my.cnf" do
-    cookbook "ndb"
-    source "my-ndb.cnf.erb"
-    owner node['ndb']['user']
-    group node['ndb']['group']
-    mode "0640"
-    action :create
-    variables({
-                :mysql_id => found_id,
-                :my_ip => mysql_ip
-              })
-    notifies :restart, resources(:service => service_name), :immediately
-  end
-  
-end  

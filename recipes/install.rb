@@ -14,7 +14,7 @@ featurestore_user=node['featurestore']['user']
 featurestore_password=node['featurestore']['password']
 
 if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://#{my_ip}:3306/"
+  featurestore_jdbc_url="jdbc:mysql://#{my_ip}:#{node['ndb']['mysql_port']}/"
 end  
 
 
