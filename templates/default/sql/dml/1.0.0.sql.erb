@@ -6,6 +6,7 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("cloud", "<%= node['install']['clou
 REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("featurestore_online_enabled", "<%= node['hopsworks']['featurestore_online'] %>");
+
 REPLACE INTO `hopsworks`.`variables` VALUES ("featurestore_jdbc_url", "<%= @featurestore_jdbc_url %>");
 /*
 Insert default JDBC connectors to feature store for existing projects with the feature store service

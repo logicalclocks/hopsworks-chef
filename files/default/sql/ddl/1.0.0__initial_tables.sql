@@ -1698,7 +1698,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
   `connection_string`       VARCHAR(5000)    NOT NULL,
   `arguments`               VARCHAR(2000)    NULL,
   `description`             VARCHAR(1000)    NULL,
-  `name`                    VARCHAR(1000)    NOT NULL UNIQUE,
+  `name`                    VARCHAR(1000)    NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `jdbc_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
@@ -1715,7 +1715,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `secret_key`              VARCHAR(1000)   NULL,
   `bucket`                  VARCHAR(5000)   NOT NULL,
   `description`             VARCHAR(1000)   NULL,
-  `name`                    VARCHAR(1000)   NOT NULL UNIQUE,
+  `name`                    VARCHAR(1000)   NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `s3_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
@@ -1730,7 +1730,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_hopsfs_connector` (
   `feature_store_id`        INT(11)         NOT NULL,
   `hopsfs_dataset`          INT(11)         NOT NULL,
   `description`             VARCHAR(1000)   NULL,
-  `name`                    VARCHAR(1000)   NOT NULL UNIQUE,
+  `name`                    VARCHAR(1000)   NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `hopsfs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
@@ -1826,7 +1826,7 @@ CREATE TABLE `feature_store_job` (
   `feature_group_id` INT(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fs_job_job_fk` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`)
-    ON DELETE SET NULL
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fs_job_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`)
     ON DELETE CASCADE

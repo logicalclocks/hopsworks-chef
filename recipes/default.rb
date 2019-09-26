@@ -233,6 +233,19 @@ if node['hopsworks']['nonconda_hosts'].empty? == false
   nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
 end
 
+mysql_host = private_recipe_ip("ndb","mysqld")
+
+featurestore_jdbc_url = node['featurestore']['jdbc_url']
+featurestore_jdbc_url_escaped = featurestore_jdbc_url.gsub(':', '\\\\:')
+# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+# connection pool for the online featurestore
+if node['featurestore']['jdbc_url'].eql? "localhost"
+  featurestore_jdbc_url="jdbc:mysql://#{mysql_host}:#{node['ndb']['mysql_port']}/"
+  featurestore_jdbc_url_escaped="\"jdbc\\:mysql\\://#{mysql_host}\\:#{node['ndb']['mysql_port']}/\""
+end
+
+
+
 # Hive metastore should be created before the hopsworks tables are created
 # Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
 include_recipe "hive2::db"
@@ -381,7 +394,6 @@ end
 username = node['hopsworks']['admin']['user']
 password = node['hopsworks']['admin']['password']
 admin_port = node['hopsworks']['admin']['port']
-mysql_host = private_recipe_ip("ndb","mysqld")
 
 jndiDB = "jdbc/hopsworks"
 
@@ -579,19 +591,13 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --descrip
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
 end
 
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for the online featurestore 
-if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://#{mysql_host}:#{node['ndb']['mysql_port']}/"
-end  
-
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url} featureStorePool" do
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped} featureStorePool" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featurestore'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featureStorePool'"
 end
 
 glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
