@@ -28,16 +28,19 @@ end
 group node['hopsworks']['group'] do
   action :create
   not_if "getent group #{node['hopsworks']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['jupyter']['group'] do
   action :create
   not_if "getent group #{node['jupyter']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['serving']['group'] do
   action :create
   not_if "getent group #{node['serving']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 #
@@ -46,6 +49,7 @@ end
 group node['hops']['hdfs']['user'] do
   action :create
   not_if "getent group #{node['hops']['hdfs']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['hopsworks']['user'] do
@@ -55,29 +59,35 @@ user node['hopsworks']['user'] do
   shell "/bin/bash"
   manage_home true
   not_if "getent passwd #{node['hopsworks']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['jupyter']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['serving']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
+
 group node['jupyter']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['conda']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 # Add to the hdfs superuser group
@@ -85,6 +95,7 @@ group node['hops']['hdfs']['user'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['jupyter']['user'] do
@@ -94,6 +105,7 @@ user node['jupyter']['user'] do
   shell "/bin/bash"
   manage_home true
   not_if "getent passwd #{node['jupyter']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['serving']['user'] do
@@ -102,18 +114,21 @@ user node['serving']['user'] do
   shell "/bin/bash"
   manage_home true
   not_if "getent passwd #{node['serving']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['kagent']['certs_group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 group node['hops']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['serving']['user']}"]
   append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 #update permissions of base_dir to 770
@@ -799,6 +814,7 @@ user node["jupyter"]["user"] do
   shell "/bin/bash"
   manage_home true
   not_if "getent passwd #{node["jupyter"]["user"]}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 #update permissions of base_dir to 770
