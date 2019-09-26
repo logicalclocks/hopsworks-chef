@@ -323,7 +323,8 @@ for version in versions do
          :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
          :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
          :nonconda_hosts_list => nonconda_hosts_list,
-         :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
+         :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
+         :featurestore_jdbc_url => featurestore_jdbc_url
     })
     action :create
   end
