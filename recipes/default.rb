@@ -24,9 +24,9 @@ hopsworks_db = "hopsworks"
 realmname = "kthfsrealm"
 
 begin
-  elastic_ip = private_recipe_ip("elastic","default")
+  elastic_ips = node['elastic']['default']['private_ips'].join(",")
 rescue
-  elastic_ip = ""
+  elastic_ips = ""
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
 end
 
@@ -313,7 +313,7 @@ for version in versions do
          :logstash_port => logstash_port,
          :spark_history_server_ip => spark_history_server_ip,
          :hopsworks_ip => hopsworks_ip,
-         :elastic_ip => elastic_ip,
+         :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
          :hdfs_ui_ip => public_recipe_ip("hops","nn"),
          :hdfs_ui_port => hdfs_ui_port,
