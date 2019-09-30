@@ -15,7 +15,7 @@ fi
 HDFS_USERNAME=$1
 
 function kill_named {
-    PID=$(ps aux | grep -i jupyter-notebook | grep "${HDFS_USERNAME}" | grep -v grep | awk '{print $2}')
+    PID=$(ps aux | grep -i jupyter-lab | grep "${HDFS_USERNAME}" | grep -v grep | awk '{print $2}')
     if [ "$PID" != "" ] ; then
 	kill -9 "$PID" > /dev/null 2>&1
         res=$?
