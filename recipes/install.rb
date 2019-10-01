@@ -10,6 +10,18 @@ mysql_user=node['mysql']['user']
 mysql_password=node['mysql']['password']
 password_file = "#{theDomain}_admin_passwd"
 
+featurestore_user=node['featurestore']['user']
+featurestore_password=node['featurestore']['password']
+
+mysql_host = private_recipe_ip("ndb","mysqld")
+featurestore_jdbc_url = node['featurestore']['jdbc_url']
+# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+# connection pool for the online featurestore
+if node['featurestore']['jdbc_url'].eql? "localhost"
+  featurestore_jdbc_url="jdbc:mysql://#{mysql_host}:#{node['ndb']['mysql_port']}/"
+end
+
+
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
@@ -327,6 +339,26 @@ node.override = {
             },
             'resources' => {
               'jdbc/hopsworks' => {
+                'description' => 'Resource for Hopsworks Pool',
+              }
+            }
+          },
+          'featureStorePool' => {
+            'config' => {
+              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'restype' => 'javax.sql.DataSource',
+              'isconnectvalidatereq' => 'true',
+              'validationmethod' => 'auto-commit',
+              'ping' => 'true',
+              'description' => 'FeatureStore Connection Pool',
+              'properties' => {
+                'Url' => featurestore_jdbc_url,
+                'User' => featurestore_user,
+                'Password' => featurestore_password
+              }
+            },
+            'resources' => {
+              'jdbc/featurestore' => {
                 'description' => 'Resource for Hopsworks Pool',
               }
             }
@@ -796,7 +828,6 @@ when "ubuntu"
 end
 
 
-
 #
 # Jupyter Configuration
 #
@@ -928,3 +959,4 @@ template "#{theDomain}/bin/conda-command-ssh.sh" do
   mode 0750
   action :create
 end
+

@@ -254,6 +254,10 @@ attribute "hopsworks/featurestore_default_quota_mbs",
           :description => "Default amount in MB of available storage for the featurestore service per project",
           :type => 'string'
 
+attribute "hopsworks/featurestore_online",
+          :description => "Enable the creation of NDB databases for the online featurestore. Default 'false'",
+          :type => 'string'
+
 attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
@@ -1913,5 +1917,19 @@ attribute "hopsworks/kagent_liveness/enabled",
 
 attribute "hopsworks/kagent_liveness/threshold",
           :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
+          :type => 'string'
+
+
+# Online featurestore jdbc connection details
+attribute "featurestore/jdbc_url",
+          :description => "Url for JDBC Connection to the the Online FeatureStore",
+          :type => 'string'
+
+attribute "featurestore/user",
+          :description => "User for the JDBC Connection to the the Online FeatureStore",
+          :type => 'string'
+
+attribute "featurestore/password",
+          :description => "Password for the JDBC Connection to the the Online FeatureStore",
           :type => 'string'
 

@@ -161,6 +161,11 @@ ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_backend`;
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `git_config_id`;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
 
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP FOREIGN KEY `online_fg_fk`;
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_feature_group`;
+DROP TABLE IF EXISTS `hopsworks`.`online_feature_group`;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `alerts` (
@@ -215,4 +220,3 @@ CREATE TABLE `commands` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
