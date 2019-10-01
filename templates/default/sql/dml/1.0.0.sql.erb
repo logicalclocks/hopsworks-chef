@@ -38,3 +38,5 @@ DELETE FROM `hopsworks`.`variables` where id="kapacitor";
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("hops_verification_version", "<%= node['hadoop_spark']['hops_verification']['version'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("aws_instance_role", "<%= node['install']['aws']['instance_role'] %>");
