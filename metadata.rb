@@ -1919,7 +1919,6 @@ attribute "hopsworks/kagent_liveness/threshold",
           :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
           :type => 'string'
 
-
 # Online featurestore jdbc connection details
 attribute "featurestore/jdbc_url",
           :description => "Url for JDBC Connection to the the Online FeatureStore",
@@ -1930,6 +1929,10 @@ attribute "featurestore/user",
           :type => 'string'
 
 attribute "featurestore/password",
-          :description => "Password for the JDBC Connection to the the Online FeatureStore",
+          :description => "Password for the JDBC Connection to the the Online FeatureStore"
+
+# hops-util-py
+attribute "hopsworks/requests_verify",
+          :description => "Whether to verify http(s) requests in hops-util-py",
           :type => 'string'
 

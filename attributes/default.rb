@@ -389,3 +389,6 @@ default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 default['featurestore']['jdbc_url']                        = "localhost"
 default['featurestore']['user']                            = node['mysql']['user']
 default['featurestore']['password']                        = node['mysql']['password']
+
+# hops-util-py
+default['hopsworks']['requests_verify'] = "true"
