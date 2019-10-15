@@ -310,20 +310,12 @@ attribute "install/user",
           :description => "User to install the services as",
           :type => "string"
 
-attribute "install/upgrade",
-          :description => "Set to 'true' if updating the cluster. Default 'false'",
-          :type => "string"
-
 attribute "install/ssl",
           :description => "Is SSL turned on for all services?",
           :type => "string"
 
 attribute "install/cleanup_downloads",
           :description => "Remove any zipped binaries that were downloaded and used to install services",
-          :type => "string"
-
-attribute "install/upgrade",
-          :description => "User to upgrade the software",
           :type => "string"
 
 attribute "install/addhost",
