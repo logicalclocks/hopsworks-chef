@@ -350,7 +350,7 @@ for version in versions do
   end
 end
 
-if !current_version.eql?("") && current_version < "0.6.0"
+if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
  cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
   source "sql/flyway_schema_history_0.6.0.sql"
   owner node['glassfish']['user']
