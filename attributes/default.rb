@@ -39,8 +39,7 @@ default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
-default['glassfish']['install_dir']              = node['hopsworks']['dir']
-default['glassfish']['base_dir']                 = node['glassfish']['install_dir'] + "/glassfish"
+default['glassfish']['base_dir']                 = node['hopsworks']['dir'] + "/glassfish"
 default['hopsworks']['domains_dir']              = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/domains" : node['install']['dir'] + "/domains"
 default['hopsworks']['domain_name']              = "domain1"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']

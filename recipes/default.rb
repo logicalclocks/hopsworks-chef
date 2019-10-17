@@ -12,13 +12,6 @@ if node['hopsworks']['dela']['enabled'] == "true"
   end
 end
 
-# If the install.rb recipe was in a different run, the location of the install dir may
-# not be correct. install_dir is updated by install.rb, but not persisted, so we need to
-# reset it
-if node['glassfish']['install_dir'].include?("versions") == false
-  node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
-end
-
 public_ip=my_public_ip()
 hopsworks_db = "hopsworks"
 realmname = "kthfsrealm"
