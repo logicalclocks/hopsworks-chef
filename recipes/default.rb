@@ -2,6 +2,10 @@ include_recipe "java"
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
+# This is set correctly in hopsworks::install by the chef-glassfish recipe. As each recipe has it's own 
+# instance of chef we need to re-set it here.
+# If you set it in the attributes it will break glassfish installation.
+node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 theDomain="#{domains_dir}/#{domain_name}"
 
 if node['hopsworks']['dela']['enabled'] == "true"
