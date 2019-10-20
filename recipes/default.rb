@@ -2,6 +2,10 @@ include_recipe "java"
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
+# This is set correctly in hopsworks::install by the chef-glassfish recipe. As each recipe has it's own 
+# instance of chef we need to re-set it here.
+# If you set it in the attributes it will break glassfish installation.
+node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 theDomain="#{domains_dir}/#{domain_name}"
 
 if node['hopsworks']['dela']['enabled'] == "true"
@@ -10,13 +14,6 @@ if node['hopsworks']['dela']['enabled'] == "true"
       action :sign_hopssite
     end
   end
-end
-
-# If the install.rb recipe was in a different run, the location of the install dir may
-# not be correct. install_dir is updated by install.rb, but not persisted, so we need to
-# reset it
-if node['glassfish']['install_dir'].include?("versions") == false
-  node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
 
 public_ip=my_public_ip()
@@ -350,7 +347,7 @@ for version in versions do
   end
 end
 
-if !current_version.eql?("") && current_version < "0.6.0"
+if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
  cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
   source "sql/flyway_schema_history_0.6.0.sql"
   owner node['glassfish']['user']
