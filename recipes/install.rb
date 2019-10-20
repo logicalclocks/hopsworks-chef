@@ -414,9 +414,23 @@ node.override = {
 include_recipe 'glassfish::default'
 package 'openssl'
 
-if ::File.directory?( "#{theDomain}/lib" ) == false
+if !::File.directory?("#{theDomain}/lib")
   include_recipe 'glassfish::attribute_driven_domain'
-end
+else
+  # For older installations (Hopsworks <= 1.0.0) the paths referring to glassfish contain the glassfish version 
+  # this is problematic during upgrades. We replace them here with sed. 
+  ["glassfish-4.1.2.174", "glassfish-4.1.2.181"].each do |version|
+    bash "remove_glassfish_versions" do 
+      user "root"
+      group "root"
+      code <<-EOL
+        sed -i 's/#{version}/current/g' /lib/systemd/system/glassfish-#{domain_name}.service
+        sed -i 's/#{version}/current/g' #{theDomain}/config/domain.xml
+        sed -i 's/#{version}/current/g' #{theDomain}/bin/domain1_asadmin
+      EOL
+    end
+  end
+end 
 
 cauth = File.basename(node['hopsworks']['cauth_url'])
 
@@ -426,12 +440,6 @@ remote_file "#{theDomain}/lib/#{cauth}"  do
   source node['hopsworks']['cauth_url']
   mode 0755
   action :create_if_missing
-end
-
-
-# If the install.rb recipe failed and is re-run, install_dir needs to reset it
-if node['glassfish']['install_dir'].include?("versions") == false
-  node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 end
 
 template "#{theDomain}/docroot/404.html" do
