@@ -1486,6 +1486,28 @@ CREATE TABLE `feature_store_feature` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+
+--
+-- Table structure for table `training_dataset_feature`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `training_dataset_feature` (
+  `training_dataset_id` int(11) NULL,
+  `feature_group_id` int(11) NULL,
+  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+  `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`training_dataset_id`, `feature_group_id`),
+  KEY `feature_group_fk` (`feature_group_id`),
+  CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 --
 -- Table structure for table `user_certs`
 --
