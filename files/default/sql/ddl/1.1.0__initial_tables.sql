@@ -1516,12 +1516,12 @@ CREATE TABLE `training_dataset_feature` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_group_hudi_commits` (
-  `feature_group_id` int(11) NOT NULL,
+  `feature_group_id` int(11) NOT NULL, -- from hudidataset name -> lookup feature_group
   `commit_id` int(11) NOT NULL,
-  `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,  
-  `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL,  
+  `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,  -- server-side
+--  `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL,  
   `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `num_rows` int(11) DEFAULT '0',
+  `num_rows` int(11) DEFAULT '0', -- count on the DF
   PRIMARY KEY (`feature_group_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
   KEY `commit_date_idx` (`commit_date`),  
