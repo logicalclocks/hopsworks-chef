@@ -1500,13 +1500,14 @@ CREATE TABLE `training_dataset_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset_id` int(11) NULL,
   `feature_group_id` int(11) NULL,
-  `commit_id` int(11) NOT NULL DEFAULT '0',  
+--  `commit_id` int(11) NULL,  
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`training_dataset_id`, `feature_group_id`),
   KEY `feature_group_fk` (`feature_group_id`),
+--  CONSTRAINT  `fk_fg_commit` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION, (`feature_group_id`, `hudi_feature_group_commit`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
