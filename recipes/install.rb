@@ -458,6 +458,16 @@ cookbook_file"#{theDomain}/docroot/hops_icon.png" do
   action :create_if_missing
 end
 
+remote_directory "#{theDomain}/templates" do
+  source 'hopsworks_templates'
+  owner node["glassfish"]["user"]
+  group node["glassfish"]["group"]
+  mode 0750
+  files_owner node["glassfish"]["user"]
+  files_group node["glassfish"]["group"]
+  files_mode 0550
+end
+
 if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
     owner "root"

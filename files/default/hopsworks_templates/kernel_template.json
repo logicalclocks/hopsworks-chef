@@ -1,0 +1,22 @@
+{
+  "display_name": "python-${kernel.hdfsUser}",
+  "language": "python",
+  "argv": [
+    "${kernel.anacondaHome}/bin/python",
+    "-m",
+    "ipykernel_launcher",
+    "-f",
+    "{connection_file}"
+  ],
+  "env": {
+    "HADOOP_HOME": "${kernel.hadoopHome}",
+    "HADOOP_HDFS_HOME": "${kernel.hadoopHome}",
+    "HADOOP_CONF_DIR": "${kernel.hadoopHome}/etc/hadoop",
+    "PDIR": "${kernel.secretDirectory}",
+    "HADOOP_USER_NAME": "${kernel.hdfsUser}",
+    "LIBHDFS_OPTS": "-Xmx96m",
+    "HADOOP_VERSION": "${kernel.hadoopVersion}",
+    "PROJECT_NAME": "${kernel.project.name}",
+    "HIVE_ENDPOINT": "${kernel.hiveEndpoints}"
+  }
+}
