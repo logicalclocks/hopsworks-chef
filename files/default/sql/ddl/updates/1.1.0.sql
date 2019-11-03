@@ -6,10 +6,8 @@ ALTER TABLE `hopsworks`.`dataset`
 DROP COLUMN `shared`,
 DROP COLUMN `status`,
 DROP COLUMN `editable`,
-DROP COLUMN `inode_id`,
-DROP INDEX `uq_dataset` ,
+DROP INDEX `uq_dataset`,
 ADD UNIQUE INDEX `uq_dataset` (`inode_pid`, `inode_name`, `partition_id`),
-DROP INDEX `inode_id` ;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`dataset_shared_with` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
