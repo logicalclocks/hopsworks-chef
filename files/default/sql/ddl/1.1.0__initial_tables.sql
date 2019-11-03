@@ -1515,7 +1515,7 @@ CREATE TABLE `training_dataset_feature` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feature_group_hudi_commit` (
+CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudidataset name -> lookup feature_group
   `commit_id` int(11) NOT NULL,
   `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL, 
