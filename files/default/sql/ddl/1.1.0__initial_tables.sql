@@ -1500,6 +1500,7 @@ CREATE TABLE `training_dataset_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset_id` int(11) NULL,
   `feature_group_id` int(11) NULL,
+  `commit_id` int(11) NOT NULL DEFAULT '0',  
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
