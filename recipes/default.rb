@@ -859,15 +859,12 @@ template "/bin/hopsworks-2fa" do
 
 hopsworks_certs "generate-certs" do
   action :generate
-  notifies :create, 'link[crl-symlink]', :immediately
 end
 
-# Create soft link from intermediateCA CRL to DOMAIN1/docroot
-link "crl-symlink" do
-  to "#{node['certs']['dir']}/intermediate/crl/intermediate.crl.pem"
+# Since Hopsworks v1.1 we don't need the symlink
+link "delete-crl-symlink" do
   target_file "#{domains_dir}/#{domain_name}/docroot/intermediate.crl.pem"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
+  action :delete
 end
 
 template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
