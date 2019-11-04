@@ -1530,7 +1530,7 @@ CREATE TABLE `training_dataset_feature` (
   PRIMARY KEY (`id`),
   UNIQUE KEY (`training_dataset_id`, `feature_group_id`),
   KEY `feature_group_fk` (`feature_group_id`),
-  CONSTRAINT  `fk_fg_commit` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION, (`feature_group_id`, `hudi_feature_group_commit`) ON DELETE CASCADE ON UPDATE NO ACTION,  
+  CONSTRAINT  `fk_fg_commit` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
