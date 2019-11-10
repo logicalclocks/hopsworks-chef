@@ -357,9 +357,10 @@ CREATE TABLE `featurestore_statistic` (
   `statistic_type` int(11) NOT NULL DEFAULT '0',
   `value` varchar(13300) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `feature_group_id` (`feature_group_id`),
+  KEY `feature_group_idx` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),
   CONSTRAINT `FK_693_956` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_hudi` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `FK_812_957` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1468,6 +1469,7 @@ CREATE TABLE `training_dataset` (
 
 --
 -- Table structure for table `feature_store_feature`
+-- This table is for Features defined in On-Demand Feature Groups
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1500,17 +1502,31 @@ CREATE TABLE `feature_store_feature` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
-  `commit_id` int(11) NOT NULL,
+  `commit_id` int(11) NOT NULL DEFAULT '0',
   `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL, 
   `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `hopsfs_hudi_parquet_commit` INT(11) NULL,
   `num_rows` int(11) DEFAULT '0', -- count on the DF
   PRIMARY KEY (`feature_group_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
   KEY `hdfs_user_idx` (`hdfs_user`),  
-  KEY `commit_date_idx` (`commit_date`),  
+  KEY `commit_date_idx` (`commit_date`),
+  CONSTRAINT `hopsfs_hudi_parquet_commit_fk` FOREIGN KEY (`hopsfs_hudi_parquet_commit_id`) REFERENCES `hopsfs_hudi_parquet_commit` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
+-- CREATE TABLE `feature_group_commit_statistic` (
+--   `statistic_id` int(11) NOT NULL,
+--   `feature_group_id` int(11) NOT NULL,
+--   `commit_id` int(11) NOT NULL,
+--   PRIMARY KEY (`statistic_id`,`feature_group_id`,`commit_id`),
+--   KEY (`feature_group_id`,`commit_id`),  
+--   CONSTRAINT `FK_commit` FOREIGN KEY (`feature_group_id`,`commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`,`commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+--   CONSTRAINT `FK_commit_statistic` FOREIGN KEY (`statistic_id`) REFERENCES `featurestore_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+-- ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 
 
 --
@@ -1854,6 +1870,27 @@ CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
+
+
+CREATE TABLE IF NOT EXISTS `hopsfs_hudi_parquet_commit` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  `hopsfs_connector_id`               INT(11)         NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_td_connector_fk` FOREIGN KEY (`hopsfs_connector_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
+
+
 
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
