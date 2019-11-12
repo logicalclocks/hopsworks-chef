@@ -75,3 +75,4 @@ DROP TABLE IF EXISTS `subjects`;
 DROP TABLE IF EXISTS `schemas`;
 
 
+ALTER TABLE `hopsworks`.`executions` DROP COLUMN `args`;
