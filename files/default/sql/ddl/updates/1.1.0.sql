@@ -69,3 +69,7 @@ ALTER TABLE `hopsworks`.`dataset`
     DROP COLUMN `editable`,
     DROP INDEX `uq_dataset`,
     ADD UNIQUE INDEX `uq_dataset` (`inode_pid`, `inode_name`, `partition_id`);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`users` SET `tours_state`=0;
+SET SQL_SAFE_UPDATES = 1;
