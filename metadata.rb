@@ -1928,3 +1928,14 @@ attribute "hopsworks/requests_verify",
           :description => "Whether to verify http(s) requests in hops-util-py",
           :type => 'string'
 
+attribute "hopsworks/provenance/type",
+          :description => "MIN provenance - community edition. FULL provenance - enterprise",
+          :type => 'string'
+
+attribute "hopsworks/provenance/archive/batch_size",
+          :description => "Provenance cleaning size per round. Number of cleaned indices(per project)",
+          :type => 'string'
+
+attribute "hopsworks/provenance/archive/delay",
+          :description => "Provenance cleaning delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
+          :type => 'string'
