@@ -242,7 +242,7 @@ if node['featurestore']['jdbc_url'].eql? "localhost"
 end
 
 # hops-util-py only works for localhost installations if you disable TLS hostname validations
-if node['install']['localhost'].eql? "localhost"
+if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
 end  
 
