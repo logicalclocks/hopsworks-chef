@@ -10,10 +10,11 @@ LOGFILE=${JUPYTER_HOME}/logs/$6
 SECRET_DIR=$7
 CERTS_DIR=$8
 TOKEN=${10}
+JUPYTER_MODE=${11}
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE"
     echo ""
     exit 1
 }
@@ -29,7 +30,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 10 ]; then
+if [ $# -ne 11 ]; then
   help
 fi
 
@@ -74,14 +75,21 @@ mkdir -p nbextensions
 
 cd "$SECRET_DIR" || exit
 
-# Check if JupyterLab is installed otherwise start Notebook
-${ANACONDA_ENV}/bin/jupyter lab -h
-if [ $? -eq 0 ];
+if [[ "$JUPYTER_MODE" == "JUPYTER_CLASSIC" ]];
 then
-    flavour="lab"
-else
     flavour="notebook"
+elif [[ "$JUPYTER_MODE" == "JUPYTER_LAB" ]];
+then
+    # Check if JupyterLab is installed otherwise start Notebook
+    ${ANACONDA_ENV}/bin/jupyter lab -h
+    if [ $? -eq 0 ];
+    then
+	flavour="lab"
+    else
+	flavour="notebook"
+    fi
 fi
+
 # setsid works, and 'nohup' doesnt work as nohup processes cant write their stderr/stdout to the logfile 
 setsid ${ANACONDA_ENV}/bin/jupyter "$flavour" --debug --no-browser --NotebookApp.port="$PORT" --NotebookApp.token="$TOKEN" </dev/zero &> "$LOGFILE"  &
 echo $! > "$PID_FILE"
