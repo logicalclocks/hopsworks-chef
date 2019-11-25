@@ -1,0 +1,9 @@
+REPLACE INTO variables VALUES ("elastic_opendistro_security_enabled", "<%= node['elastic']['opendistro_security']['enabled'] %>");
+REPLACE INTO variables VALUES ("elastic_https_enabled", "<%= node['elastic']['opendistro_security']['https']['enabled'] %>");
+REPLACE INTO variables VALUES ("elastic_admin_user", "<%= node['elastic']['opendistro_security']['admin']['username'] %>");
+REPLACE INTO variables VALUES ("elastic_admin_password", "<%= node['elastic']['opendistro_security']['admin']['password'] %>");
+REPLACE INTO variables VALUES ("kibana_https_enabled", "<%= node['kibana']['opendistro_security']['https']['enabled'] %>");
+REPLACE INTO variables VALUES ("elastic_jwt_enabled", "<%= node['elastic']['opendistro_security']['jwt']['enabled'] %>");
+REPLACE INTO variables VALUES ("elastic_jwt_url_parameter", "<%= node['elastic']['opendistro_security']['jwt']['url_parameter'] %>");
+REPLACE INTO variables VALUES ("elastic_jwt_exp_ms", "<%= node['elastic']['opendistro_security']['jwt']['exp_ms'] %>");
+REPLACE INTO variables VALUES ("kibana_multi_tenancy_enabled", "<%= node['elastic']['opendistro_security']['kibana']['multitenancy']['enabled'] %>");
