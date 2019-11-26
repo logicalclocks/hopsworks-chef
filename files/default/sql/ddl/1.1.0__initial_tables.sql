@@ -327,6 +327,13 @@ CREATE TABLE `feature_group` (
   `feature_group_type` INT(11) NOT NULL DEFAULT '0',
   `on_demand_feature_group_id` INT(11) NULL,
   `cached_feature_group_id` INT(11) NULL,
+  `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `feat_hist_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `cluster_analysis_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `num_clusters` int(11) NOT NULL DEFAULT '5',
+  `num_bins` INT(11) NOT NULL DEFAULT '20',
+  `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
   PRIMARY KEY (`id`),
   KEY `feature_store_id` (`feature_store_id`),
   KEY `hdfs_user_id` (`hdfs_user_id`),
@@ -339,6 +346,22 @@ CREATE TABLE `feature_group` (
   CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statistic_columns`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistic_columns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) DEFAULT NULL,
+  `name` varchar(500) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
