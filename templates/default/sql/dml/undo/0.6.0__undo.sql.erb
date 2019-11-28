@@ -20,8 +20,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['h
 
 DELETE FROM `hopsworks`.`users` WHERE `username`='srvmanager';
 
-DELETE FROM `hopsworks`.`schema_topics` WHERE `name` = 'inferenceschema' AND `version` = 1;
-
 DELETE FROM `hopsworks`.`variables` WHERE `id`='py4j_archive';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='jwt_signature_algorithm';

@@ -1113,6 +1113,51 @@ CREATE TABLE `project_team` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- table structure for table `schemas`
+--
+
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+CREATE TABLE `schemas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`, `project_id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+--
+-- table structure for table `subjects`
+--
+
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+CREATE TABLE `subjects` (
+  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `version` int(11) NOT NULL,
+  `schema_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subject`, `version`, `project_id`),
+  KEY `project_id_idx` (`project_id`),
+  KEY `created_on_idx` (`created_on`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`, `project_id`) REFERENCES `schemas` (`id`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `subjects_compatibility`
+--
+CREATE TABLE `subjects_compatibility` (
+  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`subject`, `project_id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+
+--
 -- Table structure for table `project_topics`
 --
 
@@ -1121,16 +1166,16 @@ CREATE TABLE `project_team` (
 CREATE TABLE `project_topics` (
   `topic_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
-  `schema_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `schema_version` int(11) NOT NULL,
+  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `subject_version` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `topic_project` (`topic_name`,`project_id`),
-  KEY `schema_name_idx` (`schema_name`),
+  KEY `subject_idx` (`subject`),
   KEY `project_idx` (`project_id`),
-  KEY `schema_idx` (`schema_name`,`schema_version`),
+  KEY `subject_pk_idx` (`subject`,`subject_version`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `schema_idx` FOREIGN KEY (`schema_name`,`schema_version`) REFERENCES `schema_topics` (`name`,`version`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `subject__constaint_idx` FOREIGN KEY (`subject`,`subject_version`, `project_id`) REFERENCES `subjects` (`subject`,`version`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1293,20 +1338,7 @@ CREATE TABLE `rstudio_settings` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `schema_topics`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `schema_topics` (
-  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `version` int(11) NOT NULL,
-  `contents` varchar(10000) COLLATE latin1_general_cs NOT NULL,
-  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`name`,`version`),
-  KEY `created_on_idx` (`created_on`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

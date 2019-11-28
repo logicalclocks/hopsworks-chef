@@ -93,3 +93,141 @@ CREATE TABLE `statistic_columns` (
   KEY `feature_group_id` (`feature_group_id`),
   CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopsworks`.`subjects_compatibility` (
+  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`subject`, `project_id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopsworks`.`schemas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT, 
+  `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`, `project_id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- add project compatibility for all projects
+INSERT INTO `subjects_compatibility` (`subject`, compatibility, project_id)
+	SELECT
+		'projectcompatibility' AS `subject`,
+		'BACKWARD' AS compatibility,
+		p.id AS project_id
+	FROM
+		`project` p;
+
+-- add inferenceschema compatibility for all projects
+INSERT INTO `subjects_compatibility` (`subject`, compatibility, project_id)
+	SELECT
+		'inferenceschema' AS `subject`,
+		'NONE' AS compatibility,
+		p.id AS project_id
+	FROM
+		`project` p;
+
+-- add inference schemas to schemas table
+REPLACE INTO `schemas`(`schema`, `project_id`)
+	SELECT
+		'{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }  ],  "name": "inferencelog",  "type": "record" }' AS `schema`,
+		p.id AS `project_id`
+	FROM
+		`project` p;
+
+REPLACE INTO `schemas`(`schema`, `project_id`)
+	SELECT
+		'{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }, { "name": "servingType", "type": "string" } ],  "name": "inferencelog",  "type": "record" }' AS `schema`,
+		p.id AS `project_id`
+	FROM
+		`project` p;
+
+-- create table "subjects"
+CREATE TABLE `subjects` (
+    `subject` VARCHAR(255) COLLATE LATIN1_GENERAL_CS NOT NULL,
+    `version` INT(11) NOT NULL,
+    `schema_id` INT(11) NOT NULL,
+    `project_id` INT(11) NOT NULL,
+    `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`subject` , `version` , `project_id`),
+    KEY `project_id_idx` (`project_id`),
+    KEY `created_on_idx` (`created_on`),
+    CONSTRAINT `project_idx` FOREIGN KEY (`project_id`)
+        REFERENCES `project` (`id`)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id` , `project_id`)
+        REFERENCES `schemas` (`id` , `project_id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) 
+        REFERENCES `hopsworks`.`project` (`id`) 
+        ON DELETE CASCADE ON UPDATE NO ACTION
+)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
+
+-- add inference schemas to all the projects
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT
+		'inferenceschema' AS `subject`,
+		1 AS version,
+		s.id AS `schema_id`,
+		s.project_id AS project_id,
+		CURRENT_TIMESTAMP AS created_on
+	FROM
+		`schemas` s
+	WHERE
+		s.schema = '{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }  ],  "name": "inferencelog",  "type": "record" }';
+
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT
+		'inferenceschema' AS `subject`,
+		2 AS version,
+		s.id AS `schema_id`,
+		s.project_id AS project_id,
+		CURRENT_TIMESTAMP AS created_on
+	FROM
+		`schemas` s
+	WHERE
+		s.schema = '{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }, { "name": "servingType", "type": "string" } ],  "name": "inferencelog",  "type": "record" }';
+
+-- find all schemas used by all topics and populate schemas table with them
+REPLACE INTO `schemas` (`schema`, `project_id`)
+	SELECT
+		s.contents AS `schema`, p.project_id AS `project_id`
+	FROM
+		project_topics p
+			JOIN
+		schema_topics s ON p.schema_name = s.name
+			AND p.schema_version
+	GROUP BY s.contents , p.project_id;
+
+-- populate subjects table with all schemas
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT
+		st.`name` AS `subject`,
+		st.version AS `version`,
+		s.id AS `schema_id`,
+		s.project_id AS `project_id`,
+		st.created_on AS `created_on`
+	FROM
+		`schema_topics` st
+			JOIN
+		`schemas` s ON st.contents = s.`schema`
+			RIGHT JOIN
+		`project_topics` p ON p.schema_name = st.name
+			AND p.schema_version = st.version;
+
+-- drop schema_topics
+DROP TABLE IF EXISTS `schema_topics`;
+
+-- alter project_topics columns
+ALTER TABLE `hopsworks`.`project_topics`
+	DROP FOREIGN KEY `schema_idx`,
+	CHANGE COLUMN `schema_name` `subject` VARCHAR(255) CHARACTER SET 'latin1' COLLATE 'latin1_general_cs' NOT NULL ,
+	CHANGE COLUMN `schema_version` `subject_version` INT(11) NOT NULL ,
+	DROP INDEX `schema_idx` ,
+	ADD INDEX `subject_idx_idx` (`subject` ASC, `subject_version` ASC, `project_id` ASC),
+	ADD CONSTRAINT `subject_idx`
+		FOREIGN KEY (`subject` , `subject_version` , `project_id`)
+		REFERENCES `hopsworks`.`subjects` (`subject` , `version` , `project_id`)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
