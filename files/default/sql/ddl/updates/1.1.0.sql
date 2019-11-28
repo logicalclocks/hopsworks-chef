@@ -158,10 +158,7 @@ CREATE TABLE `subjects` (
         ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id` , `project_id`)
         REFERENCES `schemas` (`id` , `project_id`)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) 
-        REFERENCES `hopsworks`.`project` (`id`) 
-        ON DELETE CASCADE ON UPDATE NO ACTION
+        ON DELETE NO ACTION ON UPDATE NO ACTION
 )  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
 
 -- add inference schemas to all the projects
@@ -215,6 +212,10 @@ REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
 			RIGHT JOIN
 		`project_topics` p ON p.schema_name = st.name
 			AND p.schema_version = st.version;
+
+-- drop related foreign key
+ALTER TABLE `hopsworks`.`project_topics`
+  DROP FOREIGN KEY `schema_idx`;
 
 -- drop schema_topics
 DROP TABLE IF EXISTS `schema_topics`;

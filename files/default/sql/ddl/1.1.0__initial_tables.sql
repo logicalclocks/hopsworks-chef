@@ -1175,7 +1175,7 @@ CREATE TABLE `project_topics` (
   KEY `project_idx` (`project_id`),
   KEY `subject_pk_idx` (`subject`,`subject_version`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `subject__constaint_idx` FOREIGN KEY (`subject`,`subject_version`, `project_id`) REFERENCES `subjects` (`subject`,`version`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `subject__constraint_idx` FOREIGN KEY (`subject`,`subject_version`, `project_id`) REFERENCES `subjects` (`subject`,`version`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

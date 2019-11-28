@@ -51,13 +51,15 @@ REPLACE INTO `schema_topics` (`name`, `version`, `contents`, `created_on`)
 			AND A.project_id = B.project_id
 	GROUP BY `name` , `version` , `contents` , `created_on`;
     
+ALTER TABLE `hopsworks`.`project_topics` DROP FOREIGN KEY `subject_idx`;
+
 DROP TABLE IF EXISTS `subjects`;
 
 DROP TABLE IF EXISTS `schemas`;
 
-ALTER TABLE `hopsworks`.`project_topics` DROP KEY `subject_name_idx`;
-ALTER TABLE `hopsworks`.`project_topics` DROP KEY `subject_idx`;
-ALTER TABLE `hopsworks`.`project_topics` DROP CONSTRAINT `subject_idx`;
+ALTER TABLE `hopsworks`.`project_topics` DROP KEY `subject__constraint_idx`;
+ALTER TABLE `hopsworks`.`project_topics` DROP KEY `subject_pk_idx`;
+
 ALTER TABLE `hopsworks`.`project_topics` CHANGE COLUMN `subject` `schema_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`project_topics` CHANGE COLUMN `subject_version` `schema_version` INT(11) NOT NULL;
 ALTER TABLE `hopsworks`.`project_topics` ADD KEY `schema_name_idx` (`schema_name`);
