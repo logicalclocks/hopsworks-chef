@@ -359,7 +359,7 @@ CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
   `commit_id` int(11) NOT NULL DEFAULT '0',
   `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hopsfs_hudi_parquet_commit` INT(11) NOT NULL,
+  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
   `num_rows` int(11) DEFAULT '0', 
   PRIMARY KEY (`feature_group_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
@@ -1544,7 +1544,7 @@ CREATE TABLE `training_dataset_commit` (
   `training_dataset_id` int(11) NOT NULL, 
   `commit_id` int(11) NOT NULL DEFAULT '0',
   `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hopsfs_hudi_parquet_commit` INT(11) NOT NULL,
+  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
   `num_rows` int(11) DEFAULT '0', 
   PRIMARY KEY (`training_dataset_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
