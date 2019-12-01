@@ -196,16 +196,13 @@ CREATE TABLE `dataset` (
   `partition_id` bigint(20) NOT NULL,
   `projectId` int(11) NOT NULL,
   `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
-  `editable` tinyint(1) NOT NULL DEFAULT '1',
-  `status` tinyint(1) NOT NULL DEFAULT '1',
   `searchable` tinyint(1) NOT NULL DEFAULT '0',
   `public_ds` tinyint(1) NOT NULL DEFAULT '0',
   `public_ds_id` varchar(1000) COLLATE latin1_general_cs DEFAULT '0',
-  `shared` tinyint(1) NOT NULL DEFAULT '0',
   `dstype` int(11) NOT NULL DEFAULT '0',
   `feature_store_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_dataset` (`inode_pid`,`projectId`,`inode_name`),
+  UNIQUE KEY `uq_dataset` (`inode_pid`,`inode_name`,`partition_id`),
   KEY `inode_id` (`inode_id`),
   KEY `projectId_name` (`projectId`,`inode_name`),
   KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
@@ -214,6 +211,27 @@ CREATE TABLE `dataset` (
   CONSTRAINT `featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `FK_284_434` FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=747 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `dataset_shared_with`
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dataset_shared_with` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dataset` int(11) NOT NULL,
+  `project` int(11) NOT NULL,
+  `accepted` tinyint(1) NOT NULL DEFAULT '0',
+  `shared_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index2` (`dataset`,`project`),
+  KEY `fk_dataset_shared_with_2_idx` (`project`),
+  CONSTRAINT `fk_dataset_shared_with_1` FOREIGN KEY (`dataset`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_dataset_shared_with_2` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -309,6 +327,13 @@ CREATE TABLE `feature_group` (
   `feature_group_type` INT(11) NOT NULL DEFAULT '0',
   `on_demand_feature_group_id` INT(11) NULL,
   `cached_feature_group_id` INT(11) NULL,
+  `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `feat_hist_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `cluster_analysis_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+  `num_clusters` int(11) NOT NULL DEFAULT '5',
+  `num_bins` INT(11) NOT NULL DEFAULT '20',
+  `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
   PRIMARY KEY (`id`),
   KEY `feature_store_id` (`feature_store_id`),
   KEY `hdfs_user_id` (`hdfs_user_id`),
@@ -321,6 +346,22 @@ CREATE TABLE `feature_group` (
   CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statistic_columns`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistic_columns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) DEFAULT NULL,
+  `name` varchar(500) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -527,9 +568,11 @@ CREATE TABLE `jupyter_settings` (
   `advanced` tinyint(1) DEFAULT '0',
   `shutdown_level` int(11) NOT NULL DEFAULT '6',
   `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT '/Jupyter/',
-  `json_config` varchar (12500) COLLATE latin1_general_cs NOT NULL,
+  `job_config` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
+  `docker_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   `git_backend` TINYINT(1) DEFAULT 0,
   `git_config_id` INT(11) NULL,
+  `python_kernel` TINYINT(1) DEFAULT 1,
   PRIMARY KEY (`project_id`,`team_member`),
   KEY `team_member` (`team_member`),
   KEY `secret_idx` (`secret`),

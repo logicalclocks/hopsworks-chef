@@ -241,6 +241,10 @@ if node['featurestore']['jdbc_url'].eql? "localhost"
   featurestore_jdbc_url_escaped="\"jdbc\\:mysql\\://#{mysql_host}\\:#{node['ndb']['mysql_port']}/\""
 end
 
+# hops-util-py only works for localhost installations if you disable TLS hostname validations
+if node['install']['localhost'].eql? "true"
+  node.override['hopsworks']['requests_verify'] = "false"
+end  
 
 
 # Hive metastore should be created before the hopsworks tables are created
