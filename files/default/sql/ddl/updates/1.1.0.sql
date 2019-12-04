@@ -212,29 +212,31 @@ REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
 
 -- find all schemas used by all topics and populate schemas table with them
 REPLACE INTO `schemas` (`schema`, `project_id`)
-	SELECT
-		s.contents AS `schema`, p.project_id AS `project_id`
-	FROM
-		project_topics p
-			JOIN
-		schema_topics s ON p.schema_name = s.name
-	GROUP BY s.contents , p.project_id;
+  SELECT
+      s.contents AS `schema`, p.project_id AS `project_id`
+  FROM
+      project_topics p
+          JOIN
+      schema_topics s ON p.schema_name = s.name
+          AND p.schema_version = s.version
+  GROUP BY `schema` , `project_id`;
 
 -- populate subjects table with all schemas
 REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
-	SELECT
+	SELECT 
 		st.`name` AS `subject`,
 		st.version AS `version`,
 		s.id AS `schema_id`,
-		s.project_id AS `project_id`,
+		p.project_id AS `project_id`,
 		st.created_on AS `created_on`
 	FROM
-		`schema_topics` st
+		`project_topics` p
+			JOIN
+		`schema_topics` st ON p.schema_name = st.name
+			AND p.schema_version = st.version
 			JOIN
 		`schemas` s ON st.contents = s.`schema`
-			RIGHT JOIN
-		`project_topics` p ON p.schema_name = st.name
-			AND p.schema_version = st.version;
+			AND p.project_id = s.project_id;
 
 -- drop related foreign key
 ALTER TABLE `hopsworks`.`project_topics`
@@ -245,10 +247,8 @@ DROP TABLE IF EXISTS `schema_topics`;
 
 -- alter project_topics columns
 ALTER TABLE `hopsworks`.`project_topics`
-	DROP FOREIGN KEY `schema_idx`,
 	CHANGE COLUMN `schema_name` `subject` VARCHAR(255) CHARACTER SET 'latin1' COLLATE 'latin1_general_cs' NOT NULL ,
 	CHANGE COLUMN `schema_version` `subject_version` INT(11) NOT NULL ,
-	DROP INDEX `schema_idx` ,
 	ADD INDEX `subject_idx_idx` (`subject` ASC, `subject_version` ASC, `project_id` ASC),
 	ADD CONSTRAINT `subject_idx`
 		FOREIGN KEY (`subject` , `subject_version` , `project_id`)
