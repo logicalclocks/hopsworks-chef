@@ -130,18 +130,30 @@ INSERT INTO `subjects_compatibility` (`subject`, compatibility, project_id)
 
 -- add inference schemas to schemas table
 REPLACE INTO `schemas`(`schema`, `project_id`)
-	SELECT
-		'{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }  ],  "name": "inferencelog",  "type": "record" }' AS `schema`,
-		p.id AS `project_id`
+	SELECT 
+		(SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 1),
+		p.id AS project_id
 	FROM
-		`project` p;
+		`project` p
 
 REPLACE INTO `schemas`(`schema`, `project_id`)
-	SELECT
-		'{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }, { "name": "servingType", "type": "string" } ],  "name": "inferencelog",  "type": "record" }' AS `schema`,
-		p.id AS `project_id`
+	SELECT 
+		(SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 2),
+		p.id AS project_id
 	FROM
-		`project` p;
+		`project` p
 
 -- create table "subjects"
 CREATE TABLE `subjects` (
@@ -163,7 +175,7 @@ CREATE TABLE `subjects` (
 
 -- add inference schemas to all the projects
 REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
-	SELECT
+	SELECT 
 		'inferenceschema' AS `subject`,
 		1 AS version,
 		s.id AS `schema_id`,
@@ -172,10 +184,16 @@ REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
 	FROM
 		`schemas` s
 	WHERE
-		s.schema = '{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }  ],  "name": "inferencelog",  "type": "record" }';
+		s.schema = (SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 1)
 
 REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
-	SELECT
+	SELECT 
 		'inferenceschema' AS `subject`,
 		2 AS version,
 		s.id AS `schema_id`,
@@ -184,7 +202,13 @@ REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
 	FROM
 		`schemas` s
 	WHERE
-		s.schema = '{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }, { "name": "servingType", "type": "string" } ],  "name": "inferencelog",  "type": "record" }';
+		s.schema = (SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 2)
 
 -- find all schemas used by all topics and populate schemas table with them
 REPLACE INTO `schemas` (`schema`, `project_id`)
@@ -194,7 +218,6 @@ REPLACE INTO `schemas` (`schema`, `project_id`)
 		project_topics p
 			JOIN
 		schema_topics s ON p.schema_name = s.name
-			AND p.schema_version
 	GROUP BY s.contents , p.project_id;
 
 -- populate subjects table with all schemas
