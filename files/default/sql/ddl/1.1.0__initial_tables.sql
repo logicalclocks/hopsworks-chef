@@ -1122,7 +1122,7 @@ CREATE TABLE `schemas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`, `project_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 --
@@ -1141,7 +1141,7 @@ CREATE TABLE `subjects` (
   KEY `project_id_idx` (`project_id`),
   KEY `created_on_idx` (`created_on`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`, `project_id`) REFERENCES `schemas` (`id`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`) REFERENCES `schemas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
