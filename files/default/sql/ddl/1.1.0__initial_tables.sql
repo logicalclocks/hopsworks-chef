@@ -334,6 +334,8 @@ CREATE TABLE `feature_group` (
   `num_clusters` int(11) NOT NULL DEFAULT '5',
   `num_bins` INT(11) NOT NULL DEFAULT '20',
   `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
+  `precombine_column` VARCHAR(255) NOT NULL, -- hudi option
+  `partition_path` VARCHAR(255) NOT NULL, -- hudi option    
   PRIMARY KEY (`id`),
   KEY `feature_store_id` (`feature_store_id`),
   KEY `hdfs_user_id` (`hdfs_user_id`),
