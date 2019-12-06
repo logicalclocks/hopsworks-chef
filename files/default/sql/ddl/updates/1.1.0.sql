@@ -106,7 +106,7 @@ CREATE TABLE `hopsworks`.`schemas` (
   `id` int(11) NOT NULL AUTO_INCREMENT, 
   `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`, `project_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -168,8 +168,8 @@ CREATE TABLE `subjects` (
     CONSTRAINT `project_idx` FOREIGN KEY (`project_id`)
         REFERENCES `project` (`id`)
         ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id` , `project_id`)
-        REFERENCES `schemas` (`id` , `project_id`)
+    CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`)
+        REFERENCES `schemas` (`id`)
         ON DELETE NO ACTION ON UPDATE NO ACTION
 )  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
 
@@ -249,8 +249,8 @@ DROP TABLE IF EXISTS `schema_topics`;
 ALTER TABLE `hopsworks`.`project_topics`
 	CHANGE COLUMN `schema_name` `subject` VARCHAR(255) CHARACTER SET 'latin1' COLLATE 'latin1_general_cs' NOT NULL ,
 	CHANGE COLUMN `schema_version` `subject_version` INT(11) NOT NULL ,
-	ADD INDEX `subject_idx_idx` (`subject` ASC, `subject_version` ASC, `project_id` ASC),
-	ADD CONSTRAINT `subject_idx`
+	ADD INDEX `subject_pk_idx` (`subject` ASC, `subject_version` ASC, `project_id` ASC),
+	ADD CONSTRAINT `subject__constraint_idx`
 		FOREIGN KEY (`subject` , `subject_version` , `project_id`)
 		REFERENCES `hopsworks`.`subjects` (`subject` , `version` , `project_id`)
 		ON DELETE NO ACTION
