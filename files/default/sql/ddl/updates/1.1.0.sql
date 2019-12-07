@@ -93,3 +93,7 @@ CREATE TABLE `statistic_columns` (
   KEY `feature_group_id` (`feature_group_id`),
   CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `zfs_key` VARCHAR(255) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `zfs_key_rotated` VARCHAR(255) COLLATE latin1_general_cs DEFAULT NULL;
