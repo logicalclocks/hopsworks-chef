@@ -1156,7 +1156,7 @@ CREATE TABLE `subjects_compatibility` (
   `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`)
+  CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1170,16 +1170,12 @@ CREATE TABLE `subjects_compatibility` (
 CREATE TABLE `project_topics` (
   `topic_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
-  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `subject_version` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `topic_project` (`topic_name`,`project_id`),
-  KEY `subject_idx` (`subject`),
-  KEY `project_idx` (`project_id`),
-  KEY `subject_pk_idx` (`subject`,`subject_version`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `subject__constraint_idx` FOREIGN KEY (`subject`,`subject_version`, `project_id`) REFERENCES `subjects` (`subject`,`version`, `project_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `subject_idx` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
