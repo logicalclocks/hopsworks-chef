@@ -1132,16 +1132,18 @@ CREATE TABLE `schemas` (
 /*!40101 set @saved_cs_client     = @@character_set_client */;
 /*!40101 set character_set_client = utf8 */;
 CREATE TABLE `subjects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `version` int(11) NOT NULL,
   `schema_id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`subject`, `version`, `project_id`),
+  PRIMARY KEY (`id`),
   KEY `project_id_idx` (`project_id`),
   KEY `created_on_idx` (`created_on`),
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`) REFERENCES `schemas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`) REFERENCES `schemas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `subjects__constraint_key` UNIQUE (`subject`, `version`, `project_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1149,10 +1151,12 @@ CREATE TABLE `subjects` (
 -- Table structure for table `subjects_compatibility`
 --
 CREATE TABLE `subjects_compatibility` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
   `project_id` int(11) NOT NULL,
-  PRIMARY KEY (`subject`, `project_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`)
   CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
