@@ -175,7 +175,7 @@ CREATE TABLE `subjects` (
         REFERENCES `schemas` (`id`)
         ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT `subjects__constraint_key` UNIQUE (`subject`, `version`, `project_id`)
-)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 
 
 -- add inference schemas to all the projects
 REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
