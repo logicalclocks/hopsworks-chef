@@ -27,8 +27,6 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='admin_email';
 REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
-DELETE FROM `hopsworks`.`schema_topics` WHERE `version`=2 AND `name`='inferenceschema';
-
 DELETE FROM `hopsworks`.`variables` WHERE `id`='serving_connection_pool_size';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='serving_max_route_connections';
 

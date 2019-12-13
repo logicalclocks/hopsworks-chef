@@ -93,3 +93,185 @@ CREATE TABLE `statistic_columns` (
   KEY `feature_group_id` (`feature_group_id`),
   CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopsworks`.`subjects_compatibility` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopsworks`.`schemas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT, 
+  `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `project_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- add project compatibility for all projects
+INSERT INTO `subjects_compatibility` (`subject`, compatibility, project_id)
+	SELECT
+		'projectcompatibility' AS `subject`,
+		'BACKWARD' AS compatibility,
+		p.id AS project_id
+	FROM
+		`project` p;
+
+-- add inferenceschema compatibility for all projects
+INSERT INTO `subjects_compatibility` (`subject`, compatibility, project_id)
+	SELECT
+		'inferenceschema' AS `subject`,
+		'NONE' AS compatibility,
+		p.id AS project_id
+	FROM
+		`project` p;
+
+-- add inference schemas to schemas table
+REPLACE INTO `schemas`(`schema`, `project_id`)
+	SELECT 
+		(SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 1),
+		p.id AS project_id
+	FROM
+		`project` p;
+
+REPLACE INTO `schemas`(`schema`, `project_id`)
+	SELECT 
+		(SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 2),
+		p.id AS project_id
+	FROM
+		`project` p;
+
+-- create table "subjects"
+CREATE TABLE `subjects` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `subject` VARCHAR(255) COLLATE LATIN1_GENERAL_CS NOT NULL,
+    `version` INT(11) NOT NULL,
+    `schema_id` INT(11) NOT NULL,
+    `project_id` INT(11) NOT NULL,
+    `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `project_id_idx` (`project_id`),
+    KEY `created_on_idx` (`created_on`),
+    CONSTRAINT `project_idx` FOREIGN KEY (`project_id`)
+        REFERENCES `project` (`id`)
+        ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`)
+        REFERENCES `schemas` (`id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `subjects__constraint_key` UNIQUE (`subject`, `version`, `project_id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs; 
+
+-- add inference schemas to all the projects
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT 
+		'inferenceschema' AS `subject`,
+		1 AS version,
+		s.id AS `schema_id`,
+		s.project_id AS project_id,
+		CURRENT_TIMESTAMP AS created_on
+	FROM
+		`schemas` s
+	WHERE
+		s.schema = (SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 1);
+
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT 
+		'inferenceschema' AS `subject`,
+		2 AS version,
+		s.id AS `schema_id`,
+		s.project_id AS project_id,
+		CURRENT_TIMESTAMP AS created_on
+	FROM
+		`schemas` s
+	WHERE
+		s.schema = (SELECT 
+				s.contents AS `schema`
+			FROM
+				`schema_topics` s
+			WHERE
+				s.name = 'inferenceschema'
+					AND s.version = 2);
+
+-- find all schemas used by all topics and populate schemas table with them
+REPLACE INTO `schemas` (`schema`, `project_id`)
+  SELECT
+      s.contents AS `schema`, p.project_id AS `project_id`
+  FROM
+      project_topics p
+          JOIN
+      schema_topics s ON p.schema_name = s.name
+          AND p.schema_version = s.version
+  GROUP BY `schema` , `project_id`;
+
+-- populate subjects table with all schemas
+REPLACE INTO `subjects` (`subject`, version, schema_id, project_id, created_on)
+	SELECT 
+		st.`name` AS `subject`,
+		st.version AS `version`,
+		s.id AS `schema_id`,
+		p.project_id AS `project_id`,
+		st.created_on AS `created_on`
+	FROM
+		`project_topics` p
+			JOIN
+		`schema_topics` st ON p.schema_name = st.name
+			AND p.schema_version = st.version
+			JOIN
+		`schemas` s ON st.contents = s.`schema`
+			AND p.project_id = s.project_id;
+
+-- drop related foreign key
+ALTER TABLE `hopsworks`.`project_topics`
+  DROP FOREIGN KEY `schema_idx`,
+  DROP KEY `schema_name_idx`,
+  DROP KEY `schema_idx`;
+
+-- drop schema_topics
+DROP TABLE IF EXISTS `schema_topics`;
+
+-- add subject_id column
+ALTER TABLE `hopsworks`.`project_topics`
+  ADD COLUMN `subject_id` int(11) NOT NULL;
+
+-- fill subject_id based on the subject name and version
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`project_topics` pt
+        JOIN
+    `hopsworks`.`subjects` s ON pt.`schema_name` = s.`subject`
+        AND pt.`schema_version` = s.`version`
+        AND pt.`project_id` = s.`project_id`
+SET
+    pt.`subject_id` = s.`id`;
+SET SQL_SAFE_UPDATES = 1;
+
+-- alter project_topics columns
+ALTER TABLE `hopsworks`.`project_topics`
+	DROP COLUMN `schema_name`,
+  DROP COLUMN `schema_version`,
+	ADD CONSTRAINT `subject_idx`
+		FOREIGN KEY (`subject_id`)
+		REFERENCES `hopsworks`.`subjects` (`id`)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
