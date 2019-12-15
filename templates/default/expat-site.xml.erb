@@ -3,6 +3,7 @@
 
     <expat>
         <dir><%= node['hopsworks']['expat_dir'] %></dir>
+        <dry_run>false</dry_run>
     </expat>
 
     <database>
@@ -12,10 +13,33 @@
         <password><%= node['mysql']['password'] %></password>
     </database>
 
+    <services>
+           <kibana-url><%= @kibana_url %></kibana-url>
+    </services>
+
+    <kube>
+        <user></user>
+        <masterUrl></masterUrl>
+        <caPath></caPath>
+        <tstorePath></tstorePath>
+        <tstorePwd></tstorePwd>
+        <kstorePath></kstorePath>
+        <kstorePwd></kstorePwd>
+        <certFile></certFile>
+        <keyFile></keyFile>
+        <keyPwd></keyPwd>
+    </kube>
+
+    <hopsworks>
+      <url><%= @hopsworks_url %></url>
+      <serviceJwt><%= @hopsworks_service_jwt %></serviceJwt>
+    </hopsworks>
+
     <x509>
         <masterPwdFile><%= node['certs']['dir'] %>/encryption_master_password</masterPwdFile>
         <intermediateCA><%= node['certs']['dir'] %>/intermediate</intermediateCA>
-        <userCertsScript>createusercerts.sh</userCertsScript>
+        <validityDays>3650</validityDays>
+        <caPassword>password</caPassword>
     </x509>
 
     <conda>
@@ -23,6 +47,14 @@
         <user><%= node['conda']['user'] %></user>
     </conda>
 
+    <ldap>
+        <url></url>
+        <authentication></authentication>
+        <principal></principal>
+        <credentials></credentials>
+        <base-dn></base-dn>
+    </ldap>
+    
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
         io.hops.hopsworks.expat.migrations.x509.GenerateUserCertificates
@@ -34,4 +66,16 @@
         io.hops.hopsworks.expat.migrations.conda.JupyterInConda
     </version-07>
 
+    <version-010>
+        io.hops.hopsworks.expat.migrations.conda.CreateKagentLogsIndeces
+        io.hops.hopsworks.expat.migrations.jobs.RenameResources
+    </version-010>
+
+    <version-10>
+        io.hops.hopsworks.expat.migrations.elk.BeamKibana
+    </version-10>
+
+    <version-11>
+        io.hops.hopsworks.expat.migrations.elk.MultiTenantKibana
+    </version-11>
 </expat>
