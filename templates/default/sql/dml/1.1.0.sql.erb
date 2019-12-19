@@ -7,3 +7,6 @@ REPLACE INTO variables VALUES ("elastic_jwt_enabled", "<%= node['elastic']['open
 REPLACE INTO variables VALUES ("elastic_jwt_url_parameter", "<%= node['elastic']['opendistro_security']['jwt']['url_parameter'] %>");
 REPLACE INTO variables VALUES ("elastic_jwt_exp_ms", "<%= node['elastic']['opendistro_security']['jwt']['exp_ms'] %>");
 REPLACE INTO variables VALUES ("kibana_multi_tenancy_enabled", "<%= node['elastic']['opendistro_security']['kibana']['multitenancy']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_type", "<%= node['hopsworks']['provenance']['type'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_archive_size", "<%= node['hopsworks']['provenance']['archive']['batch_size'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_archive_delay", "<%= node['hopsworks']['provenance']['archive']['delay'] %>");
