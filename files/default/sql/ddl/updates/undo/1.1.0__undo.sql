@@ -74,5 +74,8 @@ DROP TABLE IF EXISTS `subjects`;
 
 DROP TABLE IF EXISTS `schemas`;
 
-
 ALTER TABLE `hopsworks`.`executions` DROP COLUMN `args`;
+
+ALTER TABLE `hopsworks`.`tensorboard` CHANGE `ml_id` `elastic_id` varchar(100) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`conda_commands` DROP FOREIGN KEY `user_fk`;
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `user_id`;
