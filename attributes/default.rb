@@ -392,3 +392,13 @@ default['featurestore']['password']                        = node['mysql']['pass
 
 # hops-util-py
 default['hopsworks']['requests_verify'] = "true"
+
+#
+# Provenance
+#
+# Provenance type can be set to MIN/FULL
+default['hopsworks']['provenance']['type']                            = "MIN"
+#define how big each archive round is - how many indices get cleaned
+default['hopsworks']['provenance']['archive']['batch_size']   = "10"
+#define how long to keep deleted items before archiving them - default 24h
+default['hopsworks']['provenance']['archive']['delay']        = "86400"

@@ -279,3 +279,6 @@ ALTER TABLE `hopsworks`.`project_topics`
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION;
 
+
+ALTER TABLE `hopsworks`.`executions` ADD COLUMN `args` VARCHAR(10000) NOT NULL DEFAULT '' AFTER `hdfs_user`;
+

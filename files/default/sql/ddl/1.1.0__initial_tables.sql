@@ -294,6 +294,7 @@ CREATE TABLE `executions` (
   `stdout_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
   `stderr_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
   `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+  `args` varchar(10000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
   `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL,
   `job_id` int(11) NOT NULL,
   `finalStatus` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT 'UNDEFINED',
