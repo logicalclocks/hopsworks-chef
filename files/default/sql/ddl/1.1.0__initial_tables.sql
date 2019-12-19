@@ -174,11 +174,13 @@ CREATE TABLE `conda_commands` (
   `machine_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `environment_yml` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
+  `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `host_id` (`host_id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `FK_481_519` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1457,7 +1459,7 @@ CREATE TABLE `tensorboard` (
   `user_id` int(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `endpoint` varchar(100) COLLATE latin1_general_cs NOT NULL,
-  `elastic_id` varchar(100) COLLATE latin1_general_cs NOT NULL,
+  `ml_id` varchar(100) COLLATE latin1_general_cs NOT NULL,
   `pid` bigint(20) NOT NULL,
   `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` varchar(10000) COLLATE latin1_general_cs NOT NULL,

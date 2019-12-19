@@ -6,7 +6,6 @@
 <%= @user %> ALL=NOPASSWD: <%= @ca_keystore %>
 <%= @user %> ALL=NOPASSWD: <%= @tfserving %>
 <%= @user %> ALL=NOPASSWD: <%= @sklearn_serving %>
-<%= @user %> ALL=NOPASSWD: <%= @conda_export %>
 <%= @user %> ALL=NOPASSWD: <%= @tensorboard %>
 <%= @user %> ALL=NOPASSWD: <%= @anaconda_prepare %>
 <%= @user %> ALL=(<%= @hive_user %>) NOPASSWD: <%= @start_llap %>
