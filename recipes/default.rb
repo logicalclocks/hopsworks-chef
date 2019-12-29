@@ -1,3 +1,4 @@
+
 include_recipe "java"
 
 domain_name= node['hopsworks']['domain_name']
@@ -16,7 +17,7 @@ if node['hopsworks']['dela']['enabled'] == "true"
   end
 end
 
-if node['zfs']['pools'].empty? == "false"
+if not node['zfs']['pools'].eql?("")
   node.override['hopsworks']['zfs_key_rotation_enabled'] = "true"
 end  
 
