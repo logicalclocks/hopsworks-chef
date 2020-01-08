@@ -295,6 +295,10 @@ else
   end
 end
 
+unless node['install']['cloud'].strip.empty?
+  node.override['hopsworks']['reserved_project_names'] = "#{node['hopsworks']['reserved_project_names']},cloud"
+end
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
