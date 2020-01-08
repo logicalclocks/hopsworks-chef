@@ -262,6 +262,10 @@ attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
 
+attribute "hopsworks/reserved_project_names",
+          :description => "Comma-separated list of Project names a user user is not allowed to use",
+          :type => 'string'
+
 attribute "hopsworks/encryption_password",
           :description => "Default master encryption password for storing secrets.",
           :type => 'string'

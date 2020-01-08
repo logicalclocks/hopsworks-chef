@@ -10,3 +10,4 @@ REPLACE INTO variables VALUES ("kibana_multi_tenancy_enabled", "<%= node['elasti
 REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_type", "<%= node['hopsworks']['provenance']['type'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_archive_size", "<%= node['hopsworks']['provenance']['archive']['batch_size'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("provenance_archive_delay", "<%= node['hopsworks']['provenance']['archive']['delay'] %>");
+REPLACE INTO variables VALUES ("reserved_project_names", "<%= node['hopsworks']['reserved_project_names'] %>");
