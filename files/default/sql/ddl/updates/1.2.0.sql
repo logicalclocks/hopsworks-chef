@@ -32,3 +32,6 @@ UPDATE `hopsworks`.`training_dataset` `t`
 JOIN `hopsworks`.`hopsfs_training_dataset` `h`
 ON `t`.`hopsfs_training_dataset_id` = `h`.`id`
 SET `t`.`name` = REVERSE(SUBSTR(REVERSE(`h`.`inode_name`), 1+LOCATE('_', REVERSE(`h`.`inode_name`))));
+
+ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `service` `name` varchar(48) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`host_services` ADD UNIQUE KEY `service_UNIQUE` (`host_id`, `name`);
