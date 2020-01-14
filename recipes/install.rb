@@ -636,7 +636,7 @@ kagent_sudoers "start-llap" do
   user          node['glassfish']['user']
   script_name   "start-llap.sh"
   template      "start-llap.sh.erb"
-  run_as        node["hive2"]['User']
+  run_as        node["hive2"]['user']
 end
 
 command=""
