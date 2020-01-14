@@ -1810,6 +1810,13 @@ attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
           :type => 'string'
 
+attribute "hopsworks/disable_password_login",
+          :description => "Disable password login. 'false' (default)",
+          :type => 'string'
+attribute "hopsworks/disable_registration",
+          :description => "Disable registration. 'false' (default)",
+          :type => 'string'
+
 ### Kapacitor
 
 attribute "kapacitor/notify/email",

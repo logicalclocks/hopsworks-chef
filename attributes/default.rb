@@ -333,6 +333,9 @@ default['oauth']['redirect_uri']                     = "hopsworks/callback"
 default['oauth']['account_status']                   = 1
 default['oauth']['group_mapping']                    = ""
 
+default['hopsworks']['disable_password_login']       = "false"
+default['hopsworks']['disable_registration']         = "false"
+
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
 default['dtrx']['download_url']                      = "#{node['download_url']}/#{node['dtrx']['version']}"
 
