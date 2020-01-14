@@ -875,14 +875,6 @@ link "delete-crl-symlink" do
   action :delete
 end
 
-template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
-  source "tensorboard.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
 template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
   source "tensorboard-launch.sh.erb"
   owner node['glassfish']['user']
