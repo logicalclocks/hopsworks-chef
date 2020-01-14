@@ -632,13 +632,6 @@ kagent_sudoers "ca-keystore" do
   run_as        "ALL"
 end
 
-kagent_sudoers "anaconda-prepare" do 
-  user          node['glassfish']['user']
-  script_name   "anaconda-prepare.sh"
-  template      "anaconda-prepare.sh.erb"
-  run_as        "ALL"
-end
-
 kagent_sudoers "start-llap" do 
   user          node['glassfish']['user']
   script_name   "start-llap.sh"
