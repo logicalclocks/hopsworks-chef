@@ -12,11 +12,8 @@ help() {
     exit 1
 }
 
-ANACONDA_USER=<%= node['conda']['user'] %>
-HOPSWORKS_GROUP=<%= node['hopsworks']['group'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
-CERTS_GROUP=<%= node['kagent']['certs_group'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -61,13 +58,7 @@ elif [ "$1" == "start" ] ; then
         exit 1
     fi
 
-    chown ${ANACONDA_USER}:${HOPSWORKS_GROUP} "$4"
-    chmod 770 "$4"
-
-    chown ${ANACONDA_USER}:${CERTS_GROUP} "$4"/certs
-    chmod 750 "$4"/certs
-
-    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9"
+    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9
 
 elif [ "$1" == "ping" ] ; then
 
@@ -82,7 +73,7 @@ elif [ "$1" == "cleanup" ] ; then
     	help
     fi
 
-    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-cleanup.sh $2"
+    ${DOMAINS_DIR}/domain1/bin/tensorboard-cleanup.sh $2
 else
   help
 fi

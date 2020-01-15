@@ -498,8 +498,6 @@ ulimit_domain node['hopsworks']['user'] do
 end
 
 
-
-
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
@@ -580,35 +578,31 @@ kagent_sudoers "ndb_backup" do
   user          node['glassfish']['user']
   script_name   "ndb_backup.sh"
   template      "ndb_backup.sh.erb"
-  run_as        "ALL"
+  run_as        node['ndb']['user']
 end
 
 kagent_sudoers "jupyter" do 
   user          node['glassfish']['user']
   script_name   "jupyter.sh"
   template      "jupyter.sh.erb"
-  run_as        "ALL"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
 kagent_sudoers "tfserving" do 
   user          node['glassfish']['user']
   script_name   "tfserving.sh"
   template      "tfserving.sh.erb"
-  run_as        "ALL"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
 kagent_sudoers "sklearn_serving" do 
   user          node['glassfish']['user']
   script_name   "sklearn_serving.sh"
   template      "sklearn_serving.sh.erb"
-  run_as        "ALL"
-end
-
-kagent_sudoers "tensorboard" do 
-  user          node['glassfish']['user']
-  script_name   "tensorboard.sh"
-  template      "tensorboard.sh.erb"
-  run_as        "ALL"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
 kagent_sudoers "jupyter-project-cleanup" do 
@@ -616,6 +610,7 @@ kagent_sudoers "jupyter-project-cleanup" do
   script_name   "jupyter-project-cleanup.sh"
   template      "jupyter-project-cleanup.sh.erb"
   run_as        "ALL"
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
 kagent_sudoers "global-ca-sign-csr" do 
@@ -630,6 +625,7 @@ kagent_sudoers "ca-keystore" do
   script_name   "ca-keystore.sh"
   template      "ca-keystore.sh.erb"
   run_as        "ALL"
+  only_if       { node['hopsworks']['dela']['enabled'].casecmp("true") == 0 }
 end
 
 kagent_sudoers "start-llap" do 
@@ -671,10 +667,10 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-
 ["convert-ipython-notebook.sh", "jupyter-kill.sh", "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_flask_server.py",
   "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
-  "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh"].each do |script|
+  "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh", "tensorboard.sh", "tensorboard-launch.sh", 
+  "tensorboard-cleanup.sh", "condasearch.sh", "pipsearch.sh", "list_environment.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']

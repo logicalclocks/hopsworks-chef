@@ -875,46 +875,6 @@ link "delete-crl-symlink" do
   action :delete
 end
 
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
-  source "tensorboard-launch.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-cleanup.sh" do
-  source "tensorboard-cleanup.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
-  source "condasearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/pipsearch.sh" do
-  source "pipsearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/list_environment.sh" do
-  source "list_environment.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
   owner node['glassfish']['user']

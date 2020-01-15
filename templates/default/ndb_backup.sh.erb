@@ -25,11 +25,9 @@ if [ $# -gt 2 ]; then
 fi
 
 if [ "$1" = "backup" ] ; then
-    su <%= node['ndb']['user'] %> -c "<%= node['ndb']['scripts_dir'] %>/backup-start.sh"
-elif [ "$1" = "restore" ] ; then
-    su <%= node['ndb']['user'] %> -c "<%= node['ndb']['scripts_dir'] %>/backup-restore.sh $2"
+    <%= node['ndb']['scripts_dir'] %>/backup-start.sh
 elif [ "$1" = "remove" ] ; then
-    su <%= node['ndb']['user'] %> -c "<%= node['ndb']['scripts_dir'] %>/backup-remove.sh $2"
+    <%= node['ndb']['scripts_dir'] %>/backup-remove.sh $2
 else
     help
 fi
