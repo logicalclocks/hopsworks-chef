@@ -7,7 +7,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopVersion certsDir javaHome ldLibraryPath] | [kill pid] | [ping pid] [cleanup tbDir]"
+    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopVersion certsDir javaHome ldLibraryPath] | [kill pid] | [cleanup tbDir]"
     echo ""
     exit 1
 }
@@ -18,7 +18,7 @@ HADOOP_HOME=<%= node['hops']['base_dir'] %>
 if [ "$1" == "kill" ] ; then
 
     if [ $# -ne 2 ]; then
-	help
+	    help
     fi
     
     # Sanity checks for injection attacks
@@ -59,13 +59,6 @@ elif [ "$1" == "start" ] ; then
     fi
 
     ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9
-
-elif [ "$1" == "ping" ] ; then
-
-    if [ $# -ne 2 ]; then
-    	help
-    fi
-    ps -ef | grep -v 'tensorboard.sh' | grep -i tensorboard | grep "$2"
 
 elif [ "$1" == "cleanup" ] ; then
 
