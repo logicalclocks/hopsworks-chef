@@ -576,6 +576,7 @@ end
 
 kagent_sudoers "ndb_backup" do 
   user          node['glassfish']['user']
+  group         node['ndb']['group']
   script_name   "ndb_backup.sh"
   template      "ndb_backup.sh.erb"
   run_as        node['ndb']['user']
@@ -583,6 +584,7 @@ end
 
 kagent_sudoers "jupyter" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "jupyter.sh"
   template      "jupyter.sh.erb"
   run_as        "ALL" # run this as root - inside we change to different users 
@@ -591,6 +593,7 @@ end
 
 kagent_sudoers "tfserving" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "tfserving.sh"
   template      "tfserving.sh.erb"
   run_as        "ALL" # run this as root - inside we change to different users 
@@ -599,6 +602,7 @@ end
 
 kagent_sudoers "sklearn_serving" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "sklearn_serving.sh"
   template      "sklearn_serving.sh.erb"
   run_as        "ALL" # run this as root - inside we change to different users 
@@ -607,6 +611,7 @@ end
 
 kagent_sudoers "jupyter-project-cleanup" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "jupyter-project-cleanup.sh"
   template      "jupyter-project-cleanup.sh.erb"
   run_as        "ALL"
@@ -615,6 +620,7 @@ end
 
 kagent_sudoers "global-ca-sign-csr" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "global-ca-sign-csr.sh"
   template      "global-ca-sign-csr.sh.erb"
   run_as        "ALL"
@@ -622,6 +628,7 @@ end
 
 kagent_sudoers "ca-keystore" do 
   user          node['glassfish']['user']
+  group         "root"
   script_name   "ca-keystore.sh"
   template      "ca-keystore.sh.erb"
   run_as        "ALL"
@@ -630,6 +637,7 @@ end
 
 kagent_sudoers "start-llap" do 
   user          node['glassfish']['user']
+  group         node['hive2']['group']
   script_name   "start-llap.sh"
   template      "start-llap.sh.erb"
   run_as        node["hive2"]['user']
