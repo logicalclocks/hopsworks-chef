@@ -675,8 +675,7 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-["convert-ipython-notebook.sh", "jupyter-kill.sh", "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_flask_server.py",
-  "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
+["convert-ipython-notebook.sh", "anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
   "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh", "tensorboard.sh", "tensorboard-launch.sh", 
   "tensorboard-cleanup.sh", "condasearch.sh", "pipsearch.sh", "list_environment.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
@@ -684,6 +683,26 @@ end
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode "500"
+    action :create
+  end
+end
+
+["jupyter-kill.sh", "jupyter-launch.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['jupyter']['group']
+    mode "750"
+    action :create
+  end
+end
+
+["tfserving-kill.sh", "sklearn_flask_server.py", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['serving']['group']
+    mode "750"
     action :create
   end
 end
