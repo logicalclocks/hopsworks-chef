@@ -405,3 +405,6 @@ default['hopsworks']['provenance']['type']                            = "MIN"
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
+
+# clients
+default['hopsworks']['client_path']           = "COMMUNITY"
