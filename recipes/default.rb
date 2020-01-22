@@ -579,24 +579,28 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for Airflow
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{mysql_host}\\:3306/\" airflowPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool'"
-end
+airflow_exists = false
+if exists_local("hops_airflow", "default")
+  airflow_exists = true
+  # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+  # connection pool for Airflow
+  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{mysql_host}\\:3306/\" airflowPool" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool'"
+  end
 
-glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+  glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+  end
 end
 
 glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped} featureStorePool" do
@@ -971,12 +975,15 @@ if node['services']['enabled'] != "true"
 end
 
 #  Template metrics.xml to expose metrics
-cookbook_file "#{theDomain}/config/metrics.xml"  do
-  source 'metrics.xml'
+template "#{theDomain}/config/metrics.xml"  do
+  source 'metrics.xml.erb'
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "700"
   action :create
+  variables({
+    :airflow_exists => airflow_exists
+  })
 end
 
 directory node['hopsworks']['staging_dir']  do
