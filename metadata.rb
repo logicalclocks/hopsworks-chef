@@ -1906,6 +1906,11 @@ attribute "glassfish/http/keep_alive_timeout",
           :description => "Glassfish http listeners Keep alive timeout seconds",
           :type => 'string'
 
+# Glassfish Timer Configuration
+attribute "glassfish/reschedule_failed_timer",
+        :description => "Whether failed timers should be rescheduled to prevent them being expunged (default true)",
+        :type => 'string'
+
 # kagent liveness monitor configuration
 attribute "hopsworks/kagent_liveness/enabled",
           :description => "Enables kagent service monitoring and restart",

@@ -63,6 +63,8 @@ default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_
 default['hopsworks']['http_logs']['enabled']     = "true"
 default['hopsworks']['env_var_file']             = "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_environment_variables"
 
+default['glassfish']['reschedule_failed_timer']     = "true"
+
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
 default['hopsworks']['cauth_version']            = "otp-auth-0.4.0.jar"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
