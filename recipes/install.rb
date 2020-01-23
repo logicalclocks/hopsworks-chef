@@ -410,6 +410,9 @@ node.override = {
   }
 }
 
+unless exists_local("hops_airflow", "default")
+  node.override["glassfish"]["domains"][domain_name]["jdbc_connection_pools"].delete("airflowPool")
+end
 
 include_recipe 'glassfish::default'
 package 'openssl'
