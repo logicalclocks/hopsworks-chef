@@ -1,3 +1,5 @@
 REPLACE INTO `hopsworks`.`variables` VALUES ("sudoers_dir", "<%= node['install']['sudoers']['scripts_dir'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("mysql_user", "<%= node['ndb']['user'] %>");
 REPLACE INTO variables VALUES ("client_path", "<%= node['hopsworks']['client_path'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("disable_password_login", "<%= node['hopsworks']['disable_password_login'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("disable_registration", "<%= node['hopsworks']['disable_registration'] %>");
