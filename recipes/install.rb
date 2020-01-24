@@ -474,6 +474,7 @@ end
 directory node['hopsworks']['audit_log_dir'] do
   owner node['glassfish']['user']
   group node['glassfish']['group']
+  recursive true
   mode '0700'
   action :create
 end
