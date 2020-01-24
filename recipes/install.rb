@@ -5,6 +5,7 @@ require 'digest'
 my_ip = my_private_ip()
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
+audit_log_dir = node['hopsworks']['audit_log_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 mysql_user=node['mysql']['user']
 mysql_password=node['mysql']['password']
@@ -469,6 +470,13 @@ remote_directory "#{theDomain}/templates" do
   files_owner node["glassfish"]["user"]
   files_group node["glassfish"]["group"]
   files_mode 0550
+end
+
+directory "#{audit_log_dir}" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
 end
 
 if systemd == true

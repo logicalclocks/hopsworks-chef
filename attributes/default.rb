@@ -345,6 +345,11 @@ default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
 
+default['hopsworks']['audit_log_dir']                = "#{node['glassfish']['domains_dir']}/logs/audit"
+default['hopsworks']['audit_log_size_limit']         = "256000000"
+default['hopsworks']['audit_log_count']              = "10"
+default['hopsworks']['audit_log_file_type']          = "Text"
+
 #
 # JWT
 #

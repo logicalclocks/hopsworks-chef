@@ -1963,5 +1963,5 @@ attribute "hopsworks/audit_log_count",
           :description => "Audit file count. '10' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_file_type",
-          :description => "Audit log file type. 'text' (default)",
+          :description => "Audit log file type. 'Text' (default)",
           :type => 'string'
