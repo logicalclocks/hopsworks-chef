@@ -1,2 +1,3 @@
 REPLACE INTO `hopsworks`.`variables` VALUES ("sudoers_dir", "<%= node['install']['sudoers']['scripts_dir'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("mysql_user", "<%= node['ndb']['user'] %>");
+REPLACE INTO variables VALUES ("client_path", "<%= node['hopsworks']['client_path'] %>");
