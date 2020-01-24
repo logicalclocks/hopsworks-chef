@@ -36,6 +36,7 @@ end
 
 mysql_ip = private_recipe_ip("ndb", "mysqld")
 kibana_url = get_kibana_url()
+elastic_url = get_elastic_url()
 hopsworks_url = "https://#{private_recipe_ip("hopsworks", "default")}:#{node['hopsworks']['https']['port']}"
 serviceJwt, _ = get_service_jwt()
 template "#{node['hopsworks']['expat_dir']}/etc/expat-site.xml" do
@@ -46,7 +47,8 @@ template "#{node['hopsworks']['expat_dir']}/etc/expat-site.xml" do
     :mysql_ip => mysql_ip,
     :kibana_url => kibana_url,
     :hopsworks_url => hopsworks_url,
-    :hopsworks_service_jwt => serviceJwt
+    :hopsworks_service_jwt => serviceJwt,
+    :elastic_url => elastic_url
   })
   action :create
 end

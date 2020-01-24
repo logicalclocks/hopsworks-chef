@@ -15,6 +15,7 @@
 
     <services>
            <kibana-url><%= @kibana_url %></kibana-url>
+           <elastic-url><%= @elastic_url %></elastic-url>
     </services>
 
     <kube>
@@ -54,6 +55,11 @@
         <credentials></credentials>
         <base-dn></base-dn>
     </ldap>
+
+    <elastic>
+        <user><%= node['elastic']['opendistro_security']['admin']['username'] %></user>
+        <pass><%= node['elastic']['opendistro_security']['admin']['password'] %></pass>
+    </elastic>
     
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
@@ -77,5 +83,7 @@
 
     <version-11>
         io.hops.hopsworks.expat.migrations.elk.MultiTenantKibana
+        io.hops.hopsworks.expat.migrations.jobs.UpdateJobArgsConfiguration
+        io.hops.hopsworks.expat.migrations.projects.provenance.UpdateProvenance
     </version-11>
 </expat>
