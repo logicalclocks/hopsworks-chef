@@ -1949,7 +1949,11 @@ attribute "hopsworks/provenance/archive/batch_size",
           :type => 'string'
 
 attribute "hopsworks/provenance/archive/delay",
-          :description => "Provenance cleaning delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
+          :description => "Provenance archive delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
+          :type => 'string'
+
+attribute "hopsworks/provenance/cleaner/period",
+          :description => "Provenance cleaning delay. Define in seconds the period between two provenance cleaner timeouts - default 1h",
           :type => 'string'
 
 # Audit log
