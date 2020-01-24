@@ -261,6 +261,32 @@ target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
 versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
+# download client archive and set its path to be added to the variables table
+if node['install']['enterprise']['install'].casecmp? "true"
+  file_name = "clients.tar.gz"
+  client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
+
+  directory client_dir do
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "775"
+    action :create
+    recursive true
+  end
+
+  node.override['hopsworks']['client_path']="#{client_dir}/#{file_name}"
+  source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
+  remote_file "#{node['hopsworks']['client_path']}" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source source
+    headers get_ee_basic_auth_header()
+    sensitive true
+    mode 0555
+    action :create_if_missing
+  end
+end
+
 if current_version.eql?("")
 
   # Make sure the database is actually empty. Otherwise raise an error
@@ -584,24 +610,28 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for Airflow
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{mysql_host}\\:3306/\" airflowPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool'"
-end
+airflow_exists = false
+if exists_local("hops_airflow", "default")
+  airflow_exists = true
+  # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+  # connection pool for Airflow
+  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://#{mysql_host}\\:3306/\" airflowPool" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool'"
+  end
 
-glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+  glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+  end
 end
 
 glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped} featureStorePool" do
@@ -758,7 +788,7 @@ end
 node.override['glassfish']['asadmin']['timeout'] = 400
 
 if node['install']['enterprise']['install'].casecmp? "true"
-  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") == 0 ? "-kube" : ""}.ear"
   node.override['hopsworks']['war_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
   node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
 end
@@ -881,54 +911,6 @@ link "delete-crl-symlink" do
   action :delete
 end
 
-template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
-  source "tensorboard.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
-  source "tensorboard-launch.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-cleanup.sh" do
-  source "tensorboard-cleanup.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
-  source "condasearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/pipsearch.sh" do
-  source "pipsearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/list_environment.sh" do
-  source "list_environment.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
   owner node['glassfish']['user']
@@ -976,12 +958,15 @@ if node['services']['enabled'] != "true"
 end
 
 #  Template metrics.xml to expose metrics
-cookbook_file "#{theDomain}/config/metrics.xml"  do
-  source 'metrics.xml'
+template "#{theDomain}/config/metrics.xml"  do
+  source 'metrics.xml.erb'
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "700"
   action :create
+  variables({
+    :airflow_exists => airflow_exists
+  })
 end
 
 directory node['hopsworks']['staging_dir']  do
@@ -1170,3 +1155,4 @@ if node['rstudio']['enabled'].eql? "true"
     EOF
   end
 end
+

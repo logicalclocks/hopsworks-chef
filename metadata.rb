@@ -318,10 +318,6 @@ attribute "install/ssl",
           :description => "Is SSL turned on for all services?",
           :type => "string"
 
-attribute "install/cleanup_downloads",
-          :description => "Remove any zipped binaries that were downloaded and used to install services",
-          :type => "string"
-
 attribute "install/addhost",
           :description => "Indicates that this host will be added to an existing Hops cluster.",
           :type => "string"
@@ -1814,6 +1810,13 @@ attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
           :type => 'string'
 
+attribute "hopsworks/disable_password_login",
+          :description => "Disable password login. 'false' (default)",
+          :type => 'string'
+attribute "hopsworks/disable_registration",
+          :description => "Disable registration. 'false' (default)",
+          :type => 'string'
+
 ### Kapacitor
 
 attribute "kapacitor/notify/email",
@@ -1946,7 +1949,25 @@ attribute "hopsworks/provenance/archive/batch_size",
           :type => 'string'
 
 attribute "hopsworks/provenance/archive/delay",
-          :description => "Provenance cleaning delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
+          :description => "Provenance archive delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
+          :type => 'string'
+
+attribute "hopsworks/provenance/cleaner/period",
+          :description => "Provenance cleaning delay. Define in seconds the period between two provenance cleaner timeouts - default 1h",
+          :type => 'string'
+
+# Audit log
+attribute "hopsworks/audit_log_dir",
+          :description => "Audit log dir. '/srv/hops/domains/domain1/logs/audit' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_size_limit",
+          :description => "Audit log size per file. '256000000' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_count",
+          :description => "Audit file count. '10' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_file_type",
+          :description => "Audit log file type. 'Text' (default)",
           :type => 'string'
 
 attribute "hopsworks/zfs_key_rotation_enabled",

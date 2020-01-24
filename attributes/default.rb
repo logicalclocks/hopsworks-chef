@@ -71,7 +71,7 @@ default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{no
 
 default['hopsworks']['war_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
 default['hopsworks']['ca_url']                   = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
-default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+default['hopsworks']['ear_url']                  = "#{node['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") ? "-kube" : ""}.ear"
 
 default['hopsworks']['logsize']                  = "200000000"
 
@@ -333,6 +333,9 @@ default['oauth']['redirect_uri']                     = "hopsworks/callback"
 default['oauth']['account_status']                   = 1
 default['oauth']['group_mapping']                    = ""
 
+default['hopsworks']['disable_password_login']       = "false"
+default['hopsworks']['disable_registration']         = "false"
+
 default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
 default['dtrx']['download_url']                      = "#{node['download_url']}/#{node['dtrx']['version']}"
 
@@ -341,6 +344,11 @@ default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.
 default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
+
+default['hopsworks']['audit_log_dir']                = "#{node['glassfish']['domains_dir']}/logs/audit"
+default['hopsworks']['audit_log_size_limit']         = "256000000"
+default['hopsworks']['audit_log_count']              = "10"
+default['hopsworks']['audit_log_file_type']          = "Text"
 
 #
 # JWT
@@ -405,6 +413,12 @@ default['hopsworks']['provenance']['type']                    = "MIN"
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
+
+#define in seconds the period between two provenance cleaner timeouts - default 1h
+default['hopsworks']['provenance']['cleaner']['period']        = "3600"
+
+# clients
+default['hopsworks']['client_path']           = "COMMUNITY"
 
 #
 # ZFS Encryption-at-rest
