@@ -501,8 +501,6 @@ ulimit_domain node['hopsworks']['user'] do
 end
 
 
-
-
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
@@ -579,124 +577,73 @@ template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   action :create
 end
 
-template "#{theDomain}/bin/ndb_backup.sh" do
-  source "ndb_backup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "754"
-  action :create
+kagent_sudoers "ndb_backup" do 
+  user          node['glassfish']['user']
+  group         node['ndb']['group']
+  script_name   "ndb_backup.sh"
+  template      "ndb_backup.sh.erb"
+  run_as        node['ndb']['user']
 end
 
-template "#{theDomain}/bin/convert-ipython-notebook.sh" do
-  source "convert-ipython-notebook.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
+kagent_sudoers "jupyter" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "jupyter.sh"
+  template      "jupyter.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-template "#{theDomain}/bin/jupyter.sh" do
-  source "jupyter.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
+kagent_sudoers "tfserving" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "tfserving.sh"
+  template      "tfserving.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-template "#{theDomain}/bin/jupyter-project-cleanup.sh" do
-  source "jupyter-project-cleanup.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
+kagent_sudoers "sklearn_serving" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "sklearn_serving.sh"
+  template      "sklearn_serving.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users 
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-template "#{theDomain}/bin/jupyter-kill.sh" do
-  source "jupyter-kill.sh.erb"
-  owner node['glassfish']['user']
-  group node['jupyter']['group']
-  mode "550"
-  action :create
+kagent_sudoers "jupyter-project-cleanup" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "jupyter-project-cleanup.sh"
+  template      "jupyter-project-cleanup.sh.erb"
+  run_as        "ALL"
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-template "#{theDomain}/bin/jupyter-stop.sh" do
-  source "jupyter-stop.sh.erb"
-  owner node['glassfish']['user']
-  group node['jupyter']['group']
-  mode "550"
-  action :create
+kagent_sudoers "global-ca-sign-csr" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "global-ca-sign-csr.sh"
+  template      "global-ca-sign-csr.sh.erb"
+  run_as        "ALL"
 end
 
-template "#{theDomain}/bin/jupyter-launch.sh" do
-  source "jupyter-launch.sh.erb"
-  owner node['glassfish']['user']
-  group node['jupyter']['group']
-  mode "550"
-  action :create
+kagent_sudoers "ca-keystore" do 
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "ca-keystore.sh"
+  template      "ca-keystore.sh.erb"
+  run_as        "ALL"
+  only_if       { node['hopsworks']['dela']['enabled'].casecmp("true") == 0 }
 end
 
-template "#{theDomain}/bin/tfserving.sh" do
-  source "tfserving.sh.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/tfserving-kill.sh" do
-  source "tfserving-kill.sh.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/sklearn_flask_server.py" do
-  source "sklearn_flask_server.py.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/sklearn_serving-launch.sh" do
-  source "sklearn_serving-launch.sh.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/sklearn_serving.sh" do
-  source "sklearn_serving.sh.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/sklearn_serving-kill.sh" do
-  source "sklearn_serving-kill.sh.erb"
-  owner node['glassfish']['user']
-  group node['serving']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/anaconda-prepare.sh" do
-  source "anaconda-prepare.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/anaconda-rsync.sh" do
-  source "anaconda-rsync.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
+kagent_sudoers "start-llap" do 
+  user          node['glassfish']['user']
+  group         node['hive2']['group']
+  script_name   "start-llap.sh"
+  template      "start-llap.sh.erb"
+  run_as        node["hive2"]['user']
 end
 
 command=""
@@ -707,7 +654,6 @@ case node['platform']
    command='/opt/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server'
 end
 
-
 template "#{theDomain}/bin/tfserving-launch.sh" do
   source "tfserving-launch.sh.erb"
   owner node['glassfish']['user']
@@ -716,22 +662,6 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   variables({
      :command => command
   })
-  action :create
-end
-
-template "#{theDomain}/bin/zip-hdfs-files.sh" do
-  source "zip-hdfs-files.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
-template "#{theDomain}/bin/zip-background.sh" do
-  source "zip-background.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
   action :create
 end
 
@@ -748,37 +678,36 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/unzip-background.sh" do
-  source "unzip-background.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
+["convert-ipython-notebook.sh", "anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
+  "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh", "tensorboard.sh", "tensorboard-launch.sh", 
+  "tensorboard-cleanup.sh", "condasearch.sh", "pipsearch.sh", "list_environment.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "500"
+    action :create
+  end
 end
 
-template "#{theDomain}/bin/global-ca-sign-csr.sh" do
-  source "global-ca-sign-csr.sh.erb"
-  owner node['glassfish']['user']
-  mode 0550
-  action :create
+["jupyter-kill.sh", "jupyter-launch.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['jupyter']['group']
+    mode "750"
+    action :create
+  end
 end
 
-template "#{theDomain}/bin/ca-keystore.sh" do
-  source "ca-keystore.sh.erb"
-  owner node['glassfish']['user']
-  mode 0550
-  action :create
-  variables({
-         :directory => node["hopssite"]["keystore_dir"],
-  })
-end
-
-template "#{theDomain}/bin/start-llap.sh" do
-  source "start-llap.sh.erb"
-  owner node['glassfish']['user']
-  group node['hive2']['group']
-  mode 0550
-  action :create
+["tfserving-kill.sh", "sklearn_flask_server.py", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['serving']['group']
+    mode "750"
+    action :create
+  end
 end
 
 template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
@@ -793,56 +722,6 @@ template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
               :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_logs"
             })
 end
-
-template "/etc/sudoers.d/glassfish" do
-  source "glassfish_sudoers.erb"
-  owner "root"
-  group "root"
-  mode "0440"
-  variables({
-              :user => node['glassfish']['user'],
-              :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
-              :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :tfserving =>  "#{theDomain}/bin/tfserving.sh",
-              :sklearn_serving =>  "#{theDomain}/bin/sklearn_serving.sh",
-              :tensorboard =>  "#{theDomain}/bin/tensorboard.sh",
-              :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
-              :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
-              :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
-              :ca_keystore => "#{theDomain}/bin/ca-keystore.sh",
-              :hive_user => node['hive2']['user'],
-              :anaconda_prepare => "#{theDomain}/bin/anaconda-prepare.sh",
-              :start_llap => "#{theDomain}/bin/start-llap.sh"
-            })
-  action :create
-end
-
-# Replace sysv with our version. It increases the max number of open files limit (ulimit -n)
-case node['platform']
-when "ubuntu"
-  file "/etc/init.d/glassfish-#{domain_name}" do
-    owner "root"
-    action :delete
-  end
-
-  template "/etc/init.d/glassfish-#{domain_name}" do
-    source "glassfish.erb"
-    owner "root"
-    mode 0744
-    action :create
-    variables({
-                :domain_name =>  domain_name,
-                :password_file => password_file
-              })
-
-  end
-
-end
-
-
-#
-# Jupyter Configuration
-#
 
 
 # Hopsworks user should own the directory so that hopsworks code
@@ -953,22 +832,6 @@ end
 directory "#{theDomain}/flyway/dml/undo" do
   owner node['glassfish']['user']
   mode "770"
-  action :create
-end
-
-template "#{theDomain}/bin/anaconda-command-ssh.sh" do
-  source "anaconda-command-ssh.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{theDomain}/bin/conda-command-ssh.sh" do
-  source "conda-command-ssh.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
   action :create
 end
 

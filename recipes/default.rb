@@ -757,7 +757,7 @@ end
 node.override['glassfish']['asadmin']['timeout'] = 400
 
 if node['install']['enterprise']['install'].casecmp? "true"
-  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear.ear"
+  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") == 0 ? "-kube" : ""}.ear"
   node.override['hopsworks']['war_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
   node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
 end
@@ -878,54 +878,6 @@ end
 link "delete-crl-symlink" do
   target_file "#{domains_dir}/#{domain_name}/docroot/intermediate.crl.pem"
   action :delete
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
-  source "tensorboard.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
-  source "tensorboard-launch.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/tensorboard-cleanup.sh" do
-  source "tensorboard-cleanup.sh.erb"
-  owner node['glassfish']['user']
-  group node['conda']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
-  source "condasearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/pipsearch.sh" do
-  source "pipsearch.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
-end
-
-template "#{domains_dir}/#{domain_name}/bin/list_environment.sh" do
-  source "list_environment.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0750
-  action :create
 end
 
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do

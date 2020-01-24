@@ -318,10 +318,6 @@ attribute "install/ssl",
           :description => "Is SSL turned on for all services?",
           :type => "string"
 
-attribute "install/cleanup_downloads",
-          :description => "Remove any zipped binaries that were downloaded and used to install services",
-          :type => "string"
-
 attribute "install/addhost",
           :description => "Indicates that this host will be added to an existing Hops cluster.",
           :type => "string"
