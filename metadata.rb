@@ -1951,3 +1951,17 @@ attribute "hopsworks/provenance/archive/batch_size",
 attribute "hopsworks/provenance/archive/delay",
           :description => "Provenance cleaning delay. How long to delay cleanup of document after delete (currently only fo FULL provenance)",
           :type => 'string'
+
+# Audit log
+attribute "hopsworks/audit_log_dir",
+          :description => "Audit log dir. '/srv/hops/domains/domain1/logs/audit' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_size_limit",
+          :description => "Audit log size per file. '256000000' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_count",
+          :description => "Audit file count. '10' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_file_type",
+          :description => "Audit log file type. 'Text' (default)",
+          :type => 'string'

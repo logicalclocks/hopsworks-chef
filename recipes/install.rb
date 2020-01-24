@@ -471,6 +471,13 @@ remote_directory "#{theDomain}/templates" do
   files_mode 0550
 end
 
+directory node['hopsworks']['audit_log_dir'] do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
+end
+
 if systemd == true
   directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
     owner "root"
