@@ -908,6 +908,7 @@ end
 
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
+  cookbook "conda"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0750
