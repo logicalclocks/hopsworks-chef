@@ -1391,6 +1391,7 @@ CREATE TABLE `shared_topics` (
   `topic_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
+  `accepted` tinyiny(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`project_id`,`topic_name`),
   KEY `topic_idx` (`topic_name`,`owner_id`),
   CONSTRAINT `topic_idx` FOREIGN KEY (`topic_name`,`owner_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
