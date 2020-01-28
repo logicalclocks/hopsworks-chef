@@ -60,6 +60,12 @@
         <user><%= node['elastic']['opendistro_security']['admin']['username'] %></user>
         <pass><%= node['elastic']['opendistro_security']['admin']['password'] %></pass>
     </elastic>
+
+    <hops>
+        <client>
+            <user><%= node['hops']['hdfs']['user'] %></user>
+        </client>
+    </hops>
     
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
