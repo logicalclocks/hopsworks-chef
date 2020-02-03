@@ -5,7 +5,7 @@ license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.3.0"
-source_url       "https://github.com/hopshadoop/hopsworks-chef"
+source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
 %w{ ubuntu debian centos rhel }.each do |os|
@@ -326,6 +326,17 @@ attribute "hopsworks/monitor_max_status_poll_try",
           :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
           :type => 'string'
 
+attribute "hopsworks/db",
+          :description => "Default hopsworks database",
+          :type => 'string'
+
+attribute "mysql/user/kafka",
+          :description => "DB user for the Kafka service",
+          :type => 'string'
+
+attribute "mysql/password/kafka",
+          :description => "Password of the DB user for the Kafka service",
+          :type => 'string'
 
 ##
 ##
