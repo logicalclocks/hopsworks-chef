@@ -63,6 +63,58 @@ FROM hopsworks.dataset
               ON hopsworks.dataset.inode_pid = projectinfo.inode_id
                   AND hopsworks.dataset.projectId != projectinfo.project_id;
 
+
+-- Get all the hive db and feature store datasets that are shared and insert them into dataset_shared_with
+-- The query gets the dataset id of the parent dataset and the projectIDs for each of the project the parent dataset
+-- has been shared with
+INSERT INTO hopsworks.dataset_shared_with (dataset, project, accepted)
+SELECT datasetinfo2.id, datasetinfo1.projectid, datasetinfo1.accepted
+FROM (
+         SELECT dataset1.inode_name, dataset1.projectid, dataset1.shared as accepted
+         FROM hopsworks.dataset as dataset1
+              -- find get /apps/hive/warehouse inode id
+         WHERE hopsworks.dataset1.inode_pid = (SELECT id
+                                               FROM hops.hdfs_inodes
+                                               WHERE name = 'warehouse' AND parent_id =
+                                                     (SELECT id
+                                                      FROM hops.hdfs_inodes
+                                                      WHERE name = 'hive'
+                                                        AND parent_id = (select id FROM hops.hdfs_inodes WHERE name = 'apps' AND
+                                                            parent_id = 1)))
+           -- for older, non hive datasets, we do not used the shared flag as it is not a safe indicator of a shared dataset
+           AND shared = 1) as datasetinfo1
+         JOIN (
+            SELECT dataset1.id, dataset1.inode_name, dataset1.projectid, dataset1.shared as accepted
+            FROM hopsworks.dataset as dataset1
+                 -- find get /apps/hive/warehouse inode id
+            WHERE hopsworks.dataset1.inode_pid = (SELECT id
+                                                  FROM hops.hdfs_inodes
+                                                  WHERE name = 'warehouse'
+                                                    AND parent_id =
+                                                        (SELECT id
+                                                         FROM hops.hdfs_inodes
+                                                         WHERE name = 'hive'
+                                                           AND parent_id =
+                                                               (SELECT id FROM hops.hdfs_inodes WHERE name = 'apps' AND parent_id = 1)))
+              -- for older, non hive datasets, we do not used the shared flag as it is not a safe indicator of a shared dataset
+      AND shared = 0) as datasetinfo2
+              ON datasetinfo1.inode_name = datasetinfo2.inode_name;
+
+-- Delete shared hive and feature_store datasets
+DELETE
+FROM hopsworks.dataset
+WHERE shared = 1
+  AND hopsworks.dataset.inode_pid = (SELECT id
+                                     FROM hops.hdfs_inodes
+                                     WHERE name = 'warehouse'
+                                       AND parent_id =
+                                           (SELECT id
+                                            FROM hops.hdfs_inodes
+                                            WHERE name = 'hive' AND parent_id =
+                                              (SELECT id FROM hops.hdfs_inodes WHERE name = 'apps' AND parent_id = 1)));
+
+
+
 ALTER TABLE `hopsworks`.`dataset`
     DROP COLUMN `shared`,
     DROP COLUMN `status`,
