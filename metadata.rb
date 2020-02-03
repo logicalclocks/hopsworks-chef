@@ -1957,8 +1957,14 @@ attribute "hopsworks/provenance/cleaner/period",
           :type => 'string'
 
 # Audit log
+attribute "hopsworks/audit_log_dump_enabled",
+          :description => "Audit log dump to hdfs enabled. 'false' (default)",
+          :type => 'string'
 attribute "hopsworks/audit_log_dir",
           :description => "Audit log dir. '/srv/hops/domains/domain1/logs/audit' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_file_format",
+          :description => "Audit log file format. 'server_audit_log%g.log' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_size_limit",
           :description => "Audit log size per file. '256000000' (default)",
