@@ -1,3 +1,11 @@
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.15.0", "10.0", "7.6.0.64", "2.3");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_base_storage_policy", "<%= node['hopsworks']['hdfs']['storage_policy']['base'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hdfs_log_storage_policy", "<%= node['hopsworks']['hdfs']['storage_policy']['log'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("service_discovery_domain", "<%= node['consul']['domain'] %>");
+DELETE FROM `hopsworks`.`variables` WHERE `id`='livy_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='zk_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='rm_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='rm_port';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='spark_history_server_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ext_hostname';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ssl_hostname';
