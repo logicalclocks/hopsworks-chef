@@ -63,6 +63,58 @@ FROM hopsworks.dataset
               ON hopsworks.dataset.inode_pid = projectinfo.inode_id
                   AND hopsworks.dataset.projectId != projectinfo.project_id;
 
+
+-- Get all the hive db and feature store datasets that are shared and insert them into dataset_shared_with
+-- The query gets the dataset id of the parent dataset and the projectIDs for each of the project the parent dataset
+-- has been shared with
+INSERT INTO hopsworks.dataset_shared_with (dataset, project, accepted)
+SELECT datasetinfo2.id, datasetinfo1.projectid, datasetinfo1.accepted
+FROM (
+         SELECT dataset1.inode_name, dataset1.projectid, dataset1.shared as accepted
+         FROM hopsworks.dataset as dataset1
+              -- find get /apps/hive/warehouse inode id
+         WHERE hopsworks.dataset1.inode_pid = (SELECT id
+                                               FROM hops.hdfs_inodes
+                                               WHERE name = 'warehouse' AND parent_id =
+                                                     (SELECT id
+                                                      FROM hops.hdfs_inodes
+                                                      WHERE name = 'hive'
+                                                        AND parent_id = (select id FROM hops.hdfs_inodes WHERE name = 'apps' AND
+                                                            parent_id = 1)))
+           -- for older, non hive datasets, we do not used the shared flag as it is not a safe indicator of a shared dataset
+           AND shared = 1) as datasetinfo1
+         JOIN (
+            SELECT dataset1.id, dataset1.inode_name, dataset1.projectid, dataset1.shared as accepted
+            FROM hopsworks.dataset as dataset1
+                 -- find get /apps/hive/warehouse inode id
+            WHERE hopsworks.dataset1.inode_pid = (SELECT id
+                                                  FROM hops.hdfs_inodes
+                                                  WHERE name = 'warehouse'
+                                                    AND parent_id =
+                                                        (SELECT id
+                                                         FROM hops.hdfs_inodes
+                                                         WHERE name = 'hive'
+                                                           AND parent_id =
+                                                               (SELECT id FROM hops.hdfs_inodes WHERE name = 'apps' AND parent_id = 1)))
+              -- for older, non hive datasets, we do not used the shared flag as it is not a safe indicator of a shared dataset
+      AND shared = 0) as datasetinfo2
+              ON datasetinfo1.inode_name = datasetinfo2.inode_name;
+
+-- Delete shared hive and feature_store datasets
+DELETE
+FROM hopsworks.dataset
+WHERE shared = 1
+  AND hopsworks.dataset.inode_pid = (SELECT id
+                                     FROM hops.hdfs_inodes
+                                     WHERE name = 'warehouse'
+                                       AND parent_id =
+                                           (SELECT id
+                                            FROM hops.hdfs_inodes
+                                            WHERE name = 'hive' AND parent_id =
+                                              (SELECT id FROM hops.hdfs_inodes WHERE name = 'apps' AND parent_id = 1)));
+
+
+
 ALTER TABLE `hopsworks`.`dataset`
     DROP COLUMN `shared`,
     DROP COLUMN `status`,
@@ -281,6 +333,10 @@ ALTER TABLE `hopsworks`.`project_topics`
 ALTER TABLE `hopsworks`.`executions` ADD COLUMN `args` VARCHAR(10000) NOT NULL DEFAULT '' AFTER `hdfs_user`;
 
 ALTER TABLE `hopsworks`.`tensorboard` CHANGE `elastic_id` `ml_id` varchar(100) COLLATE latin1_general_cs NOT NULL;
+
+-- Truncate conda commands due to NON_NULL user_id which breaks FK
+TRUNCATE TABLE `hopsworks`.`conda_commands`;
+
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN  `user_id` int(11) NOT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` ADD FOREIGN KEY `user_fk` (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
