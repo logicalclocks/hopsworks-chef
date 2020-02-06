@@ -912,6 +912,9 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0750
+  variables({
+    :pkgs_dirs => node['hopsworks']['conda_cache'] 
+  })
   action :create
 end
 
