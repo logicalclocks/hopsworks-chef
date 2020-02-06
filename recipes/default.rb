@@ -101,7 +101,7 @@ begin
   kafka_ip = private_recipe_ip("kkafka","default")
 rescue
   kafka_ip = node['hostname']
-  Chef::Log.warn "could not find th kafka server ip!"
+  Chef::Log.warn "could not find the kafka server ip!"
 end
 
 begin
@@ -150,14 +150,13 @@ end
 
 
 
-db="hopsworks"
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
   user "root"
   code <<-EOF
       set -e
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
     EOF
 end
 
@@ -417,6 +416,27 @@ for version in versions do
   end
 end
 
+# Check if Kafka is to be installed and create user with grants
+begin
+  valid_recipe("kkafka", "default")
+  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
+
+  # Create kafka user and grant privileges. We do this here because we need this command to be executed at a host with
+  # a MySQL server
+  bash 'create_and_grant_kafka' do
+    user "root"
+    code <<-EOF
+      set -e
+      #{exec} -e \"CREATE USER IF NOT EXISTS #{node['hopsworks']['mysql']['user']['kafka']} IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']['kafka']}\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.topic_acls TO \'#{node['hopsworks']['mysql']['user']['kafka']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project TO \'#{node['hopsworks']['mysql']['user']['kafka']}\'@\'%\'\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.users TO \'#{node['hopsworks']['mysql']['user']['kafka']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_team TO \'#{node['hopsworks']['mysql']['user']['kafka']}\'@\'%\';\"
+    EOF
+  end
+rescue
+  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
+end
 
 ###############################################################################
 # config glassfish
