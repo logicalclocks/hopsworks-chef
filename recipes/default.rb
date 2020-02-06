@@ -797,6 +797,19 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
   end
 end
 
+if node['hopsworks']['audit_log_dump_enabled'].eql? "true"
+  # Setup cron job for HDFS dumper
+  cron 'dump_audit_logs_to_hdfs' do
+    command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh"
+    user node['glassfish']['user']
+    minute '0'
+    hour '21'
+    day '*'
+    month '*'
+    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh") end
+  end
+end
+
 hopsworks_mail "gmail" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
