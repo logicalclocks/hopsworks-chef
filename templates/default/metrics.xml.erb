@@ -355,6 +355,7 @@
          <description>No description available for getNumConnTimedOut</description>
          <type>gauge</type>
       </metadata>
+      <% if @airflow_exists -%>
       <metadata>
          <name>resources_airflowPool_numconncreated_count</name>
          <mbean>amx:pp=/mon/server-mon[server],type=jdbc-connection-pool-mon,name=resources/airflowPool/numconncreated#count</mbean>
@@ -439,6 +440,7 @@
          <description>No description available for getNumConnTimedOut</description>
          <type>gauge</type>
       </metadata>
+      <% end %>
       <metadata>
          <name>resources_ejbTimerPool_numconncreated_count</name>
          <mbean>amx:pp=/mon/server-mon[server],type=jdbc-connection-pool-mon,name=resources/ejbTimerPool/numconncreated#count</mbean>

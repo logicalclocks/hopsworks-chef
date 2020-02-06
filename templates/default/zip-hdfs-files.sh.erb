@@ -59,13 +59,15 @@ cd "$workdir"
 zip -r "$file".zip "$file"
 check_error
 
+# replace any spaces in the directory name with '%20'
+escapedFileName=${file// /%20}
+
 echo "UPLOADING" > "$fsmFile"
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "$file".zip "$dir"
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "${escapedFileName}.zip" "${dir}"
 check_error
 
 echo "CHOWNING" > "$fsmFile"
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "${IMPERSONATED_USERNAME}" "$dir"/"$file".zip
+<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "${IMPERSONATED_USERNAME}" "${dir}/${file}.zip"
 check_error
 
 echo "SUCCESS" > "$fsmFile"
-

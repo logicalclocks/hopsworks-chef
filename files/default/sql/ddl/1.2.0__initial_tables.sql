@@ -322,6 +322,7 @@ CREATE TABLE `executions` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(63) NOT NULL,
   `feature_store_id` int(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -337,9 +338,8 @@ CREATE TABLE `feature_group` (
   `num_clusters` int(11) NOT NULL DEFAULT '5',
   `num_bins` INT(11) NOT NULL DEFAULT '20',
   `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
-  `precombine_column` VARCHAR(255) NOT NULL, -- hudi option
-  `partition_path` VARCHAR(255) NOT NULL, -- hudi option    
   PRIMARY KEY (`id`),
+  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
   KEY `hdfs_user_id` (`hdfs_user_id`),
   KEY `creator` (`creator`),
@@ -352,28 +352,6 @@ CREATE TABLE `feature_group` (
   CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `feature_group_hudi_commits`
--- Danger if there are too many commits that the FK on delete cascade will not work.
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feature_group_commit` (
-  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
-  `commit_id` int(11) NOT NULL DEFAULT '0',
-  `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
-  `num_rows` int(11) DEFAULT '0', 
-  PRIMARY KEY (`feature_group_id`, `commit_id`),
-  KEY `commit_id_idx` (`commit_id`),
-  KEY `commit_date_idx` (`commit_date`),
-  CONSTRAINT `hopsfs_hudi_parquet_commit_fk` FOREIGN KEY (`hopsfs_hudi_parquet_commit_id`) REFERENCES `hopsfs_hudi_parquet_commit` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
-  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `statistic_columns`
@@ -425,10 +403,9 @@ CREATE TABLE `featurestore_statistic` (
   `statistic_type` int(11) NOT NULL DEFAULT '0',
   `value` varchar(13300) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `feature_group_idx` (`feature_group_id`),
+  KEY `feature_group_id` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),
   CONSTRAINT `FK_693_956` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_hudi` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `FK_812_957` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1543,6 +1520,7 @@ CREATE TABLE `topic_acls` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `training_dataset` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(63) NOT NULL,
   `feature_store_id` int(11) NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1553,9 +1531,8 @@ CREATE TABLE `training_dataset` (
   `hopsfs_training_dataset_id` INT(11) NULL,
   `external_training_dataset_id` INT(11) NULL,
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
-  `target_variable` varchar(1000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `target_variable_idx` (`target_variable`),      
+  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
   KEY `hdfs_user_id` (`hdfs_user_id`),
   KEY `creator` (`creator`),
@@ -1569,32 +1546,8 @@ CREATE TABLE `training_dataset` (
 ) ENGINE=ndbcluster AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-
---
--- Table structure for table `training_dataset_hudi_commits`
--- Danger if there are too many commits that the FK on delete cascade will not work.
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `training_dataset_commit` (
-  `training_dataset_id` int(11) NOT NULL, 
-  `commit_id` int(11) NOT NULL DEFAULT '0',
-  `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
-  `num_rows` int(11) DEFAULT '0', 
-  PRIMARY KEY (`training_dataset_id`, `commit_id`),
-  KEY `commit_id_idx` (`commit_id`),
-  KEY `commit_date_idx` (`commit_date`),
-  CONSTRAINT `hopsfs_hudi_parquet_commit_fk` FOREIGN KEY (`hopsfs_hudi_parquet_commit_id`) REFERENCES `hopsfs_hudi_parquet_commit` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
-  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
 --
 -- Table structure for table `feature_store_feature`
--- This table is for Features defined in On-Demand Feature Groups
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1614,46 +1567,6 @@ CREATE TABLE `feature_store_feature` (
   CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-
-
-
--- CREATE TABLE `feature_group_commit_statistic` (
---   `statistic_id` int(11) NOT NULL,
---   `feature_group_id` int(11) NOT NULL,
---   `commit_id` int(11) NOT NULL,
---   PRIMARY KEY (`statistic_id`,`feature_group_id`,`commit_id`),
---   KEY (`feature_group_id`,`commit_id`),  
---   CONSTRAINT `FK_commit` FOREIGN KEY (`feature_group_id`,`commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`,`commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
---   CONSTRAINT `FK_commit_statistic` FOREIGN KEY (`statistic_id`) REFERENCES `featurestore_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
--- ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-
---
--- Table structure for table `training_dataset_feature`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `training_dataset_feature` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `training_dataset_id` int(11) NULL,
-  `feature_group_id` int(11) NULL,
-  `commit_id` int(11) NULL,  
-  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
-  `primary_column` tinyint(1) NOT NULL DEFAULT '0',
-  `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY (`training_dataset_id`, `feature_group_id`),
-  KEY `feature_group_fk` (`feature_group_id`),
-  CONSTRAINT  `fk_fg_commit` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
-  CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
 
 --
 -- Table structure for table `user_certs`
@@ -1918,7 +1831,6 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `query`                   VARCHAR(11000)  NOT NULL,
   `jdbc_connector_id`       INT(11)         NOT NULL,
   `description`             VARCHAR(1000)   NULL,
-  `name`                    VARCHAR(1000)   NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `on_demand_fg_jdbc_fk` FOREIGN KEY (`jdbc_connector_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`)
     ON DELETE CASCADE
@@ -1973,31 +1885,9 @@ CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-
-CREATE TABLE IF NOT EXISTS `hopsfs_hudi_parquet_commit` (
-  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-  `inode_pid`                         BIGINT(20)      NOT NULL,
-  `inode_name`                        VARCHAR(255)    NOT NULL,
-  `partition_id`                      BIGINT(20)      NOT NULL,
-  `hopsfs_connector_id`               INT(11)         NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `hopsfs_td_connector_fk` FOREIGN KEY (`hopsfs_connector_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = ndbcluster
-  DEFAULT CHARSET = latin1
-  COLLATE = latin1_general_cs;
-
-
-
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
   `s3_connector_id`                   INT(11)         NOT NULL,
-  `name`                              VARCHAR(256)    NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `external_td_s3_connector_fk` FOREIGN KEY (`s3_connector_id`) REFERENCES `hopsworks`
   .`feature_store_s3_connector` (`id`)

@@ -35,12 +35,20 @@ remote_file "#{node['hopsworks']['expat_dir']}/lib/mysql-connector-java.jar" do
 end
 
 mysql_ip = private_recipe_ip("ndb", "mysqld")
+kibana_url = get_kibana_url()
+elastic_url = any_elastic_url()
+hopsworks_url = "https://#{private_recipe_ip("hopsworks", "default")}:#{node['hopsworks']['https']['port']}"
+serviceJwt, _ = get_service_jwt()
 template "#{node['hopsworks']['expat_dir']}/etc/expat-site.xml" do
   source "expat-site.xml.erb"
   owner 'root'
   mode '0750'
   variables ({
-    mysql_ip: mysql_ip
+    :mysql_ip => mysql_ip,
+    :kibana_url => kibana_url,
+    :hopsworks_url => hopsworks_url,
+    :hopsworks_service_jwt => serviceJwt,
+    :elastic_url => elastic_url
   })
   action :create
 end

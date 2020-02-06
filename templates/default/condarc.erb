@@ -1,7 +1,0 @@
-# Glassfish needs to have its own .condarc to cache repodata information
-# The cache dir needs to be writable by the glassfish user. 
-
-pkgs_dirs: [<%= node['hopsworks']['conda_cache'] %>]
-
-# Cache repodata information for faster envs creation/libs install
-local_repodata_ttl: 43200
