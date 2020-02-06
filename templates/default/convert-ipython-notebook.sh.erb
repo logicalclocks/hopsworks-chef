@@ -6,12 +6,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 path hdfs_username jupyter_path output_path conversion_dir"
+    echo "usage: $0 path hdfs_username jupyter_path output_path conversion_dir conversion_type"
     echo ""
     exit 1
 }
 
-if [ "$#" -ne 5 ] ; then
+if [ "$#" -ne 6 ] ; then
     help
 fi
 
@@ -22,20 +22,20 @@ if [ $? -ne 0 ] ; then
     exit 2
 fi
 
-conversion_dir=$staging_dir/ipython_conversions/$5
+conversion_dir="$staging_dir"/ipython_conversions/"$5"
 function finish {
-    rm -rf $conversion_dir
+    rm -rf "$conversion_dir"
 }
 trap finish EXIT
 
-mkdir -p $conversion_dir
+mkdir -p "$conversion_dir"
 
 if [ $? -ne 0 ] ; then
     echo "Could not create directory in the staging directory for converting iPython notebook. Problem dir: <%= node['hopsworks']['staging_dir'] %>/ipython_conversions as user $USER"
     exit 3
 fi    
 
-cd $conversion_dir
+cd "$conversion_dir"
 
 filename=$(basename "$1")
 dirname=$(dirname "$1")
@@ -54,26 +54,39 @@ if [ ! -f "$3"/bin/jupyter ]; then
     exit 5
 fi
 
-"$3"/bin/jupyter nbconvert --to python tmp.ipynb
-if [ $? -ne 0 ] ; then
-    echo "Problem converting ipython notebook to python program: $1"
-    exit 6
+if [ "$6" = "PY" ]; then
+
+  "$3"/bin/jupyter nbconvert --to python tmp.ipynb
+  if [ $? -ne 0 ] ; then
+      echo "Problem converting ipython notebook to python program: $1"
+      exit 6
+  fi
+
+  printf '%s\n%s\n%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "from pyspark.sql import SQLContext" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "sqlContext=SQLContext(sc)" "$(cat tmp.py)" > tmp.py
+
+  # Over-write any old version on hdfs
+  <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f tmp.py "$4"
+  if [ $? -ne 0 ] ; then
+      echo "Problem copying converted ipython program back to hdfs: $4"
+      exit 7
+  fi
+
+  # Current user should have hdfs superuser privileges
+  <%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "$2" "$4"
+  if [ $? -ne 0 ] ; then
+      echo "Problem changing ownership of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
+      exit 8
+  fi
+
+else
+
+  "$3"/bin/jupyter nbconvert --to html tmp.ipynb
+  if [ $? -ne 0 ] ; then
+      echo "Problem converting ipython notebook to html: $1"
+      exit 6
+  fi
+
+  cat ./tmp.html | grep -v "<title>tmp</title>"
 fi
-
-printf '%s\n%s\n%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "from pyspark.sql import SQLContext" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "sqlContext=SQLContext(sc)" "$(cat tmp.py)" > tmp.py
-
-# Over-write any old version on hdfs
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f tmp.py "$4"
-if [ $? -ne 0 ] ; then
-    echo "Problem copying converted ipython program back to hdfs: $4"
-    exit 7
-fi    
-
-# Current user should have hdfs superuser privileges
-<%= node['hops']['base_dir'] %>/bin/hdfs dfs -chown "$2" "$4"
-if [ $? -ne 0 ] ; then
-    echo "Problem changing ownership of converted ipython program in hdfs: $dirname/${base}.py chown to user $2"
-    exit 8
-fi    
 
 

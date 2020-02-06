@@ -42,8 +42,6 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("admin_email", "<%= node['hopsworks
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_port';
 
-REPLACE INTO `hopsworks`.`schema_topics`(`name`, `version`, `contents`) VALUES ('inferenceschema', 2, '{"fields": [{"name": "modelId", "type": "int"}, { "name": "modelName", "type": "string" }, {  "name": "modelVersion",  "type": "int" }, {  "name": "requestTimestamp",  "type": "long" }, {  "name": "responseHttpCode",  "type": "int" }, {  "name": "inferenceRequest",  "type": "string" }, {  "name": "inferenceResponse",  "type": "string" }, { "name": "servingType", "type": "string" } ],  "name": "inferencelog",  "type": "record" }');
-
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_connection_pool_size';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_max_route_connections';
 REPLACE INTO `hopsworks`.`variables` VALUES ("serving_connection_pool_size", "<%= node['serving']['pool_size'] %>");

@@ -13,8 +13,8 @@
     "HADOOP_HDFS_HOME": "${kernel.hadoopHome}",
     "HADOOP_CONF_DIR": "${kernel.hadoopHome}/etc/hadoop",
     "PDIR": "${kernel.secretDirectory}",
+    "LIBHDFS_OPTS": "${kernel.libHdfsOpts}",
     "HADOOP_USER_NAME": "${kernel.hdfsUser}",
-    "LIBHDFS_OPTS": "-Xmx96m",
     "HADOOP_VERSION": "${kernel.hadoopVersion}",
     "PROJECT_NAME": "${kernel.project.name}",
     "HIVE_ENDPOINT": "${kernel.hiveEndpoints}"

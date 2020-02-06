@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-cd <%= node['hopsworks']['domains_dir'] %>/domain1/docroot
-rm -f anaconda.tgz
-sudo tar zcf anaconda.tgz <%= node['conda']['home'] %>
-sudo chown <%= node['hopsworks']['user'] %> anaconda.tgz
-sudo chmod 775 anaconda.tgz
