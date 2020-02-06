@@ -366,7 +366,7 @@ CREATE TABLE `feature_group` (
 CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
   `commit_id` int(11) NOT NULL DEFAULT '0',
-  `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
   `num_rows` int(11) DEFAULT '0', 
   PRIMARY KEY (`feature_group_id`, `commit_id`),
