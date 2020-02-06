@@ -5,6 +5,7 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("disable_password_login", "<%= node
 REPLACE INTO `hopsworks`.`variables` VALUES ("disable_registration", "<%= node['hopsworks']['disable_registration'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_dir", "<%= node['hopsworks']['audit_log_dir'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_format", "<%= node['hopsworks']['audit_log_file_format'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_size_limit", "<%= node['hopsworks']['audit_log_size_limit'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_count", "<%= node['hopsworks']['audit_log_count'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_type", "<%= node['hopsworks']['audit_log_file_type'] %>");

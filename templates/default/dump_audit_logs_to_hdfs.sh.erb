@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+LOGS_DIR=<%= @weblogs_dir %>
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
+HDFS_WEBLOGS_DIR=<%= @remote_weblogs_dir %>
+
+CHECKPOINT=$LOGS_DIR/.checkpoint
+FILES_TO_DUMP=$LOGS_DIR/.files_to_dump
+REMOTE_FILE_PERMISSIONS=0750
+# This will match only files in the format of server_audit_log0.log
+REGEX=".*server_audit_log.*.log"
+
+function printer {
+    echo "<Web logs dumper> $1"
+}
+
+LCK=$(find "$LOGS_DIR" -type f -name "*.log.lck"  | awk -F/ '{ print $NF }' | awk '{gsub(".lck","*"); print}')
+
+if [ -e $CHECKPOINT ]
+then
+    printer "Dumping log files since $(cat $CHECKPOINT)"
+    find "$LOGS_DIR" -type f -not -name "$LCK" -regextype posix-extended -regex "$REGEX" -readable -newer "$CHECKPOINT"  > "$FILES_TO_DUMP"
+    cp $CHECKPOINT $CHECKPOINT.bak
+else
+    printer "Checkpoint does not exist, dumping all"
+    find "$LOGS_DIR" -type f -not -name "$LCK" -regextype posix-extended -regex "$REGEX" -readable > "$FILES_TO_DUMP"
+fi
+
+date > "$CHECKPOINT"
+
+function failed_exit {
+    rm -f "$FILES_TO_DUMP"
+    mv "${CHECKPOINT}.bak" "$CHECKPOINT"
+    printer "$1"
+    exit "$2"
+}
+
+while IFS='' read -r log_file || [[ -n "$log_file" ]];
+do
+    # Create directory in HDFS
+    filename=$(basename "$log_file")
+    date=$(stat -c %y "$log_file" | awk -F ' ' \{'print $1'\} | awk -F '-' \{'print $3'\})
+    year=$(stat -c %y "$log_file" | awk -F ' ' \{'print $1'\} | awk -F '-' \{'print $1'\})
+    month=$(stat -c %y "$log_file" | awk -F ' ' \{'print $1'\} | awk -F '-' \{'print $2'\})
+    REMOTE_DIR="${HDFS_WEBLOGS_DIR}/${year}/${month}/${date}"
+
+    # Create the dir in hdfs if it does not exist
+    "$HADOOP_HOME"/bin/hdfs dfs -test -d "$REMOTE_DIR"
+    if [ $? -ne 0 ]
+    then
+        printer "Creating remote directory $REMOTE_DIR"
+        "$HADOOP_HOME"/bin/hdfs dfs -mkdir -p "$REMOTE_DIR"
+    fi
+    
+    full_remote_file=$REMOTE_DIR/$filename
+    printer "Copying file $log_file"
+    # Check if the file already exists. It should not but just in case. 
+    # If it does add a suffix to the new file
+    "$HADOOP_HOME"/bin/hdfs dfs -test -e "$full_remote_file"
+    if [ $? -eq 0 ]
+    then
+        printer "File $log_file already exist, create new"
+        suffix=$("$HADOOP_HOME"/bin/hdfs dfs -ls "$full_remote_file*" | wc -l)
+        full_remote_file="$REMOTE_DIR/${filename}(${suffix})"
+    fi
+    
+    "$HADOOP_HOME"/bin/hdfs dfs -copyFromLocal "$log_file" "$full_remote_file"
+    if [ $? -ne 0 ]
+    then
+        failed_exit "Error while copying $log_file. Exiting..." 2
+    fi
+
+    # Change permissions to 0750
+    "$HADOOP_HOME"/bin/hdfs dfs -chmod "$REMOTE_FILE_PERMISSIONS" "$full_remote_file"
+done < $FILES_TO_DUMP
+
+printer "Backup finished successfully. Deleting temporary files."
+rm -f "$FILES_TO_DUMP"
+rm -f "${CHECKPOINT}".bak
