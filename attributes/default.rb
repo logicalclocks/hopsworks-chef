@@ -351,7 +351,9 @@ default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
 
+default['hopsworks']['audit_log_dump_enabled']       = "false"
 default['hopsworks']['audit_log_dir']                = "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs/audit"
+default['hopsworks']['audit_log_file_format']        = "server_audit_log%g.log"
 default['hopsworks']['audit_log_size_limit']         = "256000000"
 default['hopsworks']['audit_log_count']              = "10"
 default['hopsworks']['audit_log_file_type']          = "Text"
