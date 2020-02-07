@@ -330,7 +330,7 @@ default['ldap']['attr_binary_val']                   = "entryUUID"
 default['ldap']['security_auth']                     = "none"
 default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
-default['ldap']['referral']                          = "follow"
+default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
 
 # OAuth2
