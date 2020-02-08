@@ -10,7 +10,3 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_size_limit", "<%= node['
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_count", "<%= node['hopsworks']['audit_log_count'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_type", "<%= node['hopsworks']['audit_log_file_type'] %>");
 REPLACE INTO variables VALUES ("provenance_cleaner_period", "<%= node['hopsworks']['provenance']['cleaner']['period'] %>");
-
-REPLACE INTO `hopsworks`.`variables` VALUES ("zpools", "<%= node['zfs']['pools'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("zfs_key_rotation_interval", "<%= node['hopsworks']['zfs_key_rotation_interval'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("zfs_key_rotation_enabled", "<%= node['hopsworks']['zfs_key_rotation_enabled'] %>");

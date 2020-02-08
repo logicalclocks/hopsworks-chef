@@ -146,7 +146,6 @@ CREATE TABLE `statistic_columns` (
   CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-
 CREATE TABLE `hopsworks`.`subjects_compatibility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
@@ -339,4 +338,3 @@ TRUNCATE TABLE `hopsworks`.`conda_commands`;
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN  `user_id` int(11) NOT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` ADD FOREIGN KEY `user_fk` (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
-

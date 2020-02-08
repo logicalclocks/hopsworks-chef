@@ -1,4 +1,3 @@
-
 include_recipe "java"
 
 domain_name= node['hopsworks']['domain_name']

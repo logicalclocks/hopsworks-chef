@@ -32,6 +32,3 @@ UPDATE `hopsworks`.`training_dataset` `t`
 JOIN `hopsworks`.`hopsfs_training_dataset` `h`
 ON `t`.`hopsfs_training_dataset_id` = `h`.`id`
 SET `t`.`name` = REVERSE(SUBSTR(REVERSE(`h`.`inode_name`), 1+LOCATE('_', REVERSE(`h`.`inode_name`))));
-
-ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `zfs_key` VARCHAR(255) COLLATE latin1_general_cs DEFAULT NULL;
-ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `zfs_key_rotated` VARCHAR(255) COLLATE latin1_general_cs DEFAULT NULL;
