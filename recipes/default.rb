@@ -709,14 +709,14 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
   ldap_provider_url=ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
   ldap_attr_binary=node['ldap']['attr_binary_val']
   ldap_sec_auth=node['ldap']['security_auth']
-  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
+  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":java.naming.security.authentication=#{ldap_sec_auth}"
   ldap_sec_principal=node['ldap']['security_principal']
   ldap_sec_principal=ldap_sec_principal.gsub('=', '\\\\\=')
-  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":SECURITY_PRINCIPAL=#{ldap_sec_principal}"
+  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":java.naming.security.principal=#{ldap_sec_principal}"
   ldap_sec_credentials=node['ldap']['security_credentials']
-  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":SECURITY_CREDENTIALS=#{ldap_sec_credentials}"
+  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":java.naming.security.credentials=#{ldap_sec_credentials}"
   ldap_ref=node['ldap']['referral']
-  ldap_referral=ldap_ref.to_s.empty? ? "" : ":REFERRAL=#{ldap_ref}"
+  ldap_referral=ldap_ref.to_s.empty? ? "" : ":java.naming.referral=#{ldap_ref}"
   ldap_props=node['ldap']['additional_props']
   ldap_properties=ldap_props.to_s.empty? ? "" : ":#{ldap_props}"
 
