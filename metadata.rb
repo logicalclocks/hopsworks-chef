@@ -330,11 +330,11 @@ attribute "hopsworks/db",
           :description => "Default hopsworks database",
           :type => 'string'
 
-attribute "mysql/user/kafka",
+attribute "kafka/mysql/user",
           :description => "DB user for the Kafka service",
           :type => 'string'
 
-attribute "mysql/password/kafka",
+attribute "kafka/mysql/password",
           :description => "Password of the DB user for the Kafka service",
           :type => 'string'
 
