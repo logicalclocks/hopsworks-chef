@@ -191,17 +191,33 @@ hosts = ""
 
 for h in node['kagent']['default']['private_ips']
 
-  # Try and resolve hostname first using /etc/hosts, then use DNS
-  begin
-    hname = hostf.getname(h)
-  rescue
+  if node['install']['localhost'].eql? "true"
+    # Try and resolve hostname first using /etc/hosts, then use DNS
     begin
-      hname = dns.getname(h)
+      hname = hostf.getname(h)
     rescue
-      raise "Cannot resolve the hostname for IP address: #{h}"
+      begin
+        hname = dns.getname(h)
+      rescue
+        raise "Cannot resolve the hostname for IP address: #{h}"
+      end
+    end
+  else
+    # Try and resolve hostname first using DNS, then /etc/hosts
+    begin
+      hname = node['fqdn']
+    rescue
+      begin
+        hname = dns.getname(h)
+      rescue
+        begin
+          hname = hostf.getname(h)
+        rescue
+          raise "Cannot resolve the hostname for IP address: #{h}"
+        end
+      end
     end
   end
-
   hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
 if h.length > 0
