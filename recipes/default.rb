@@ -203,20 +203,7 @@ for h in node['kagent']['default']['private_ips']
       end
     end
   else
-    # Try and resolve hostname first using DNS, then /etc/hosts
-    begin
-      hname = node['fqdn']
-    rescue
-      begin
-        hname = dns.getname(h)
-      rescue
-        begin
-          hname = hostf.getname(h)
-        rescue
-          raise "Cannot resolve the hostname for IP address: #{h}"
-        end
-      end
-    end
+    hname = resolve_hostname(h)
   end
   hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
