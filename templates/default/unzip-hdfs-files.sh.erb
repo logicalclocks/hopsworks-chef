@@ -30,6 +30,10 @@ function check_error {
     fi
 }
 
+uriencode() {
+  jq -nr --arg v "$1" '$v|@uri';
+}
+
 prefix='hdfs://'
 normalizedPath=${hdfsFile#${prefix}}
 check_error
@@ -99,8 +103,8 @@ case "$file" in
     ;;
 esac
 
-# replace any spaces in the directory name with '%20'
-escapedFiledir=${filedir// /%20}
+# url encode filename
+escapedFiledir=$(uriencode "${filedir}")
 
 echo "UPLOADING" > "$fsmFile"
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "$escapedFiledir" "$dir"
