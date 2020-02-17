@@ -37,10 +37,6 @@ default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
 default['hopsworks']['db']                       = "hopsworks"
 
-# Usernames and passwords of non-superusers in MySQL
-default['kkafka']['mysql']['user']               = "kafka"
-default['kkafka']['mysql']['password']           = "kafka"
-
 default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
