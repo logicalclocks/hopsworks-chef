@@ -190,21 +190,7 @@ dns = Resolv::DNS.new
 hosts = ""
 
 for h in node['kagent']['default']['private_ips']
-
-  if node['install']['localhost'].eql? "true"
-    # Try and resolve hostname first using /etc/hosts, then use DNS
-    begin
-      hname = hostf.getname(h)
-    rescue
-      begin
-        hname = dns.getname(h)
-      rescue
-        raise "Cannot resolve the hostname for IP address: #{h}"
-      end
-    end
-  else
-    hname = resolve_hostname(h)
-  end
+  hname = resolve_hostname(h)
   hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
 if h.length > 0
