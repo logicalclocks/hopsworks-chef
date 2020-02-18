@@ -31,7 +31,7 @@ function check_error {
 }
 
 uriencode() {
-  jq -nr --arg v "$1" '$v|@uri';
+  python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" "$1"
 }
 
 prefix='hdfs://'
