@@ -63,7 +63,7 @@ cd "$workdir"
 zip -r "$file".zip "$file"
 check_error
 
-# url encode filename
+# uri encode filename
 escapedFileName=$(uriencode "${file}")
 
 echo "UPLOADING" > "$fsmFile"

@@ -103,7 +103,7 @@ case "$file" in
     ;;
 esac
 
-# url encode filename
+# uri encode filename
 escapedFiledir=$(uriencode "${filedir}")
 
 echo "UPLOADING" > "$fsmFile"
