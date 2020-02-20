@@ -951,6 +951,22 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   action :create
 end
 
+directory "#{::Dir.home(node['hopsworks']['user'])}/.pip" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
+end
+
+template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
+  source "pip.conf.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
 case node['platform_family']
  when 'debian'
    package "scala"
