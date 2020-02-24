@@ -810,6 +810,27 @@ if node['install']['enterprise']['install'].casecmp? "true"
   node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
 end
 
+glassfish_deployable "hopsworks-ca" do
+  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+  target "server"
+  url node['hopsworks']['ca_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']  
+  version node['hopsworks']['version']
+  context_root "/hopsworks-ca"
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  action :deploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+end
+
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
@@ -849,27 +870,6 @@ glassfish_deployable "hopsworks" do
   keep_state true
   enabled true
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
-end
-
-glassfish_deployable "hopsworks-ca" do
-  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
-  target "server"
-  url node['hopsworks']['ca_url']
-  auth_username node['install']['enterprise']['username']
-  auth_password node['install']['enterprise']['password']  
-  version node['hopsworks']['version']
-  context_root "/hopsworks-ca"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  action :deploy
-  async_replication false
-  retries 1
-  keep_state true
-  enabled true
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 
