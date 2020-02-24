@@ -184,26 +184,12 @@ template timerTablePath do
 end
 
 require 'resolv'
-hostf = Resolv::Hosts.new
-dns = Resolv::DNS.new
-
 hosts = ""
-
 for h in node['kagent']['default']['private_ips']
-
-  # Try and resolve hostname first using /etc/hosts, then use DNS
-  begin
-    hname = hostf.getname(h)
-  rescue
-    begin
-      hname = dns.getname(h)
-    rescue
-      raise "Cannot resolve the hostname for IP address: #{h}"
-    end
-  end
-
+  hname = resolve_hostname(h)
   hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
+
 if h.length > 0
   hosts = hosts.chop!
 end
