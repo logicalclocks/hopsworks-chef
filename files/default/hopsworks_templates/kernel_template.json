@@ -1,6 +1,7 @@
 {
-  "display_name": "python-${kernel.hdfsUser}",
+  "display_name": "Python",
   "language": "python",
+  "pygments_lexer": "ipython3",
   "argv": [
     "${kernel.anacondaHome}/bin/python",
     "-m",
