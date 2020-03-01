@@ -1978,3 +1978,12 @@ attribute "hopsworks/audit_log_count",
 attribute "hopsworks/audit_log_file_type",
           :description => "Audit log file type. 'Text' (default)",
           :type => 'string'
+
+# Hopsworks HDFS storage policies
+# accepted hopsworks storage policy files: CLOUD, DB, HOT
+attribute "hopsworks/hdfs/storage_policy/base",
+          :description => "Set the DIR_ROOT (/Projects) storage policy. Default is DB. Accepted values: CLOUD/DB/HOT",
+          :type => 'string'
+attribute "hopsworks/hdfs/storage_policy/log",
+          :description => "Set the project LOG_DIR storage policy. Default is HOT. Accepted values: CLOUD/DB/HOT",
+          :type => 'string'
