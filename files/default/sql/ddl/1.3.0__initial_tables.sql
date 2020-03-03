@@ -1158,7 +1158,7 @@ CREATE TABLE `subjects` (
 CREATE TABLE `subjects_compatibility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
+  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD',
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`),
@@ -1534,7 +1534,6 @@ CREATE TABLE `training_dataset` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
-  KEY `hdfs_user_id` (`hdfs_user_id`),
   KEY `creator` (`creator`),
   KEY `hopsfs_training_dataset_fk` (`hopsfs_training_dataset_id`),
   KEY `external_training_dataset_fk` (`external_training_dataset_id`),
