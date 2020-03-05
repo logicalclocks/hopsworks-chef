@@ -13,3 +13,5 @@ EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
 
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `hdfs_user_id`; 
+
+ALTER TABLE `hopsworks`.`feature_store_feature` MODIFY COLUMN `description` VARCHAR(10000) COLLATE latin1_general_cs;

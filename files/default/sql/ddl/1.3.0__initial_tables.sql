@@ -1556,7 +1556,7 @@ CREATE TABLE `feature_store_feature` (
   `on_demand_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
-  `description` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   KEY `training_dataset_id` (`training_dataset_id`),
