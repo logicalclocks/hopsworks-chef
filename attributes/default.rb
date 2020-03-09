@@ -412,13 +412,20 @@ default['hopsworks']['requests_verify'] = "true"
 # Provenance
 #
 # Provenance type can be set to MIN/FULL
-default['hopsworks']['provenance']['type']                            = "MIN"
+default['hopsworks']['provenance']['type']                    = "MIN"
 #define how big each archive round is - how many indices get cleaned
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
 #define in seconds the period between two provenance cleaner timeouts - default 1h
-default['hopsworks']['provenance']['cleaner']['period']        = "3600"
+default['hopsworks']['provenance']['cleaner']['period']       = "3600"
 
 # clients
 default['hopsworks']['client_path']           = "COMMUNITY"
+
+# hdfs storage policy
+# accepted hopsworks storage policy files: CLOUD, DB, HOT
+# Set the DIR_ROOT (/Projects) to have DB storage policy
+default['hopsworks']['hdfs']['storage_policy']['base']        = "DB" 
+# To not fill the SSDs with Logs files that nobody access frequently we set the StoragePolicy for the LOGS dir to be default HOT
+default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
