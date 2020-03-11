@@ -30,6 +30,10 @@ function check_error {
     fi
 }
 
+uriencode() {
+  python -c "import sys, urllib as ul; print ul.quote(sys.argv[1])" "$1"
+}
+
 prefix='hdfs://'
 normalizedPath=${hdfsFile#${prefix}}
 check_error
@@ -59,8 +63,8 @@ cd "$workdir"
 zip -r "$file".zip "$file"
 check_error
 
-# replace any spaces in the directory name with '%20'
-escapedFileName=${file// /%20}
+# uri encode filename
+escapedFileName=$(uriencode "${file}")
 
 echo "UPLOADING" > "$fsmFile"
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal "${escapedFileName}.zip" "${dir}"
