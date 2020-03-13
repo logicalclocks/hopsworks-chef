@@ -1925,3 +1925,11 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `shutdown_auto_push` TINYINT(1) DEFAULT 1,
        PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_store_tag` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `type` varchar(45) NOT NULL DEFAULT 'STRING',
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
