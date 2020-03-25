@@ -23,3 +23,6 @@ CREATE TABLE IF NOT EXISTS `feature_store_tag` (
       PRIMARY KEY (`id`),
       UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `service` `name` varchar(48) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`host_services` ADD UNIQUE KEY `service_UNIQUE` (`host_id`, `name`);

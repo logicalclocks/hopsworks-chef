@@ -459,7 +459,7 @@ CREATE TABLE `host_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `host_id` int(11) NOT NULL,
   `pid` int(11) DEFAULT NULL,
-  `service` varchar(48) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `group_name` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `status` int(11) NOT NULL,
   `uptime` bigint(20) DEFAULT NULL,
@@ -467,6 +467,7 @@ CREATE TABLE `host_services` (
   `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `host_id` (`host_id`),
+  UNIQUE KEY `service_UNIQUE` (`host_id`, `name`),
   CONSTRAINT `FK_481_491` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=42 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
