@@ -28,6 +28,7 @@ default['hopsworks']['user']                     = node['install']['user'].empty
 default['glassfish']['user']                     = node['hopsworks']['user']
 default['hopsworks']['group']                    = node['install']['user'].empty? ? "glassfish" : node['install']['user']
 default['glassfish']['group']                    = node['hopsworks']['group']
+default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
 
 default['hopsworks']['https']['port']            = 8181
 

@@ -136,6 +136,10 @@ attribute "hopsworks/group",
           :description => "Hopsworks/glassfish group to run service as",
           :type => 'string'
 
+attribute "glassfish/user-home",
+          :description => "Home directory of glassfish user",
+          :type => 'string'
+
 attribute "hopsworks/domains_dir",
           :description => "Installation directory for the glassfish domains",
           :type => 'string'
