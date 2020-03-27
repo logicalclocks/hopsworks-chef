@@ -35,31 +35,10 @@ rescue
 end
 
 begin
-  spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
-rescue
-  spark_history_server_ip = node['hostname']
-  Chef::Log.warn "could not find the spark history server ip for HopsWorks!"
-end
-
-begin
   jhs_ip = private_recipe_ip("hops","jhs")
 rescue
   jhs_ip = node['hostname']
   Chef::Log.warn "could not find the MR job history server ip!"
-end
-
-begin
-  rm_ip = private_recipe_ip("hops","rm")
-rescue
-  rm_ip = node['hostname']
-  Chef::Log.warn "could not find the Resource Manager ip!"
-end
-
-begin
-  rm_port = node['hops']['rm']['http_port']
-rescue
-  rm_port = 8088
-  Chef::Log.warn "could not find the Resource Manager Port!"
 end
 
 begin
@@ -77,24 +56,10 @@ rescue
 end
 
 begin
-  livy_ip = private_recipe_ip("livy","default")
-rescue
-  livy_ip = node['hostname']
-  Chef::Log.warn "could not find livy server ip!"
-end
-
-begin
   epipe_ip = private_recipe_ip("epipe","default")
 rescue
   epipe_ip = node['hostname']
   Chef::Log.warn "could not find th epipe server ip!"
-end
-
-begin
-  zk_ip = private_recipe_ip("kzookeeper","default")
-rescue
-  zk_ip = node['hostname']
-  Chef::Log.warn "could not find th zk server ip!"
 end
 
 begin
@@ -132,13 +97,6 @@ rescue
   grafana_ip = node['hostname']
   influxdb_ip = node['hostname']
   Chef::Log.warn "could not find the hopsmonitor server ip!"
-end
-
-begin
-  hiveserver_ip = private_recipe_ip("hive2","default")
-rescue
-  hiveserver_ip = node['hostname']
-  Chef::Log.warn "could not find the Hive server ip!"
 end
 
 begin
@@ -324,13 +282,9 @@ for version in versions do
          :conda_repo => condaRepo,
          :hosts => hosts,
          :epipe_ip => epipe_ip,
-         :livy_ip => livy_ip,
          :jhs_ip => jhs_ip,
-         :rm_ip => rm_ip,
-         :rm_port => rm_port,
          :logstash_ip => logstash_ip,
          :logstash_port => logstash_port,
-         :spark_history_server_ip => spark_history_server_ip,
          :hopsworks_ip => hopsworks_ip,
          :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
@@ -342,7 +296,6 @@ for version in versions do
          :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
          :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
          :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
-         :zk_ip => zk_ip,
          :java_home => node['java']['java_home'],
          :drelephant_ip => drelephant_ip,
          :kafka_ip => kafka_ip,
@@ -352,8 +305,6 @@ for version in versions do
          :influxdb_ip => influxdb_ip,
          :public_ip => public_ip,
          :dela_ip => dela_ip,
-         :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
-         :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
          :nonconda_hosts_list => nonconda_hosts_list,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :featurestore_jdbc_url => featurestore_jdbc_url
@@ -1086,6 +1037,13 @@ end
 # Force variables reload
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
+end
+
+# Register Glassfish with Consul
+consul_service "Registering Glassfish with Consul" do
+  service_definition "consul/glassfish-consul.hcl.erb"
+  reload_consul false
+  action :register
 end
 
 template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
