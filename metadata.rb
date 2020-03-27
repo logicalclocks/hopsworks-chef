@@ -34,6 +34,7 @@ depends 'hopslog'
 depends 'hopsmonitor'
 depends 'hive2'
 depends 'hops_airflow'
+depends 'consul'
 
 recipe  "hopsworks::install", "Installs Glassfish"
 

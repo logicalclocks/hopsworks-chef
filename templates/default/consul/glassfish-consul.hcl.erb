@@ -1,0 +1,19 @@
+services = [
+    {
+        id = "hopsworks/web"
+        name = "glassfish"
+        tags = [
+            "http",
+            "hopsworks"
+        ]
+        port = <%= node['hopsworks']['https']['port'] %>
+    },
+    {
+        id = "hopsworks/admin"
+        name = "glassfish"
+        tags = [
+            "admin"
+        ]
+        port = <%= node['hopsworks']['admin']['port'] %>
+    }
+]
