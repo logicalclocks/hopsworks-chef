@@ -26,7 +26,7 @@ cookbook 'consul', github: "logicalclocks/consul-chef", branch: "master"
 
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
-cookbook 'java'
+cookbook 'java', '~> 7.0.0'
 
 cookbook 'graphite', '~> 1.0.4'
 cookbook 'simple-logstash', '~> 0.2.4'
