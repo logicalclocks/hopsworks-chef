@@ -24,11 +24,3 @@ cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "1.2"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "1.2"
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "1.2"
-cookbook 'java'
-
-cookbook 'graphite', '~> 1.0.4'
-cookbook 'simple-logstash', '~> 0.2.4'
-cookbook 'compat_resource', '~> 12.19.0'
-cookbook 'authbind', '~> 0.1.10'
-cookbook 'ntp', '~> 2.0.0'
-cookbook 'sysctl', '~> 1.0.3'
