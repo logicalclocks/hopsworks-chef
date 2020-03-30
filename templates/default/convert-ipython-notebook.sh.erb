@@ -54,7 +54,8 @@ if [ ! -f "$3"/bin/jupyter ]; then
     exit 5
 fi
 
-if [ "$6" = "PY" ]; then
+# If it is a PySpark or a Python job
+if [ "$6" = "PY" ] || [ "$6" = "PY_JOB" ]; then
 
   "$3"/bin/jupyter nbconvert --to python tmp.ipynb
   if [ $? -ne 0 ] ; then
@@ -62,7 +63,10 @@ if [ "$6" = "PY" ]; then
       exit 6
   fi
 
-  printf '%s\n%s\n%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "from pyspark.sql import SQLContext" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "sqlContext=SQLContext(sc)" "$(cat tmp.py)" > tmp.py
+  # If it is a PySpark job, add pyspark context
+  if [ "$6" = "PY" ]; then
+      printf '%s\n%s\n%s\n%s\n%s\n%s\n' "from pyspark.sql import SparkSession" "from pyspark.sql import SQLContext" "spark=SparkSession.builder.enableHiveSupport().getOrCreate()" "sc=spark.sparkContext" "sqlContext=SQLContext(sc)" "$(cat tmp.py)" > tmp.py
+  fi
 
   # Over-write any old version on hdfs
   <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f tmp.py "$4"
