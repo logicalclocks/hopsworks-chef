@@ -12,29 +12,14 @@ source_url       "https://github.com/logicalclocks/hopsworks-chef"
   supports os
 end
 
-depends 'glassfish'
-depends 'ndb'
-depends 'kagent'
-depends 'hops'
-depends 'elastic'
-depends 'hadoop_spark'
-depends 'flink'
-depends 'compat_resource'
-depends 'ulimit2'
-depends 'authbind'
-depends 'epipe'
-depends 'livy'
-depends 'kkafka'
-depends 'kzookeeper'
-depends 'drelephant'
-depends 'dela'
-depends 'java'
-depends 'tensorflow'
-depends 'hopslog'
-depends 'hopsmonitor'
-depends 'hive2'
-depends 'hops_airflow'
-depends 'consul'
+depends 'java', '~> 7.0.0'
+depends 'graphite', '~> 1.0.4'
+depends 'simple-logstash', '~> 0.2.4'
+depends 'compat_resource', '~> 12.19.0'
+depends 'authbind', '~> 0.1.10'
+depends 'ntp', '~> 2.0.0'
+depends 'sysctl', '~> 1.0.3'
+depends 'ulimit2', '~> 0.2.0'
 
 recipe  "hopsworks::install", "Installs Glassfish"
 
