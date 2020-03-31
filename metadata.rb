@@ -586,11 +586,6 @@ attribute "influxdb/admin/port",
           :description => "Admin port for influxdb",
           :type => "string"
 
-attribute "graphite/port",
-          :description => "Port for influxdb graphite connector",
-          :type => "string"
-
-
 
 #
 # Grafana
