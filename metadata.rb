@@ -13,7 +13,6 @@ source_url       "https://github.com/logicalclocks/hopsworks-chef"
 end
 
 depends 'java', '~> 7.0.0'
-depends 'graphite', '~> 1.0.4'
 depends 'simple-logstash', '~> 0.2.4'
 depends 'compat_resource', '~> 12.19.0'
 depends 'authbind', '~> 0.1.10'
@@ -529,35 +528,6 @@ attribute "epipe/dir",
 attribute "epipe/pid_file",
           :description => "Change the location for the pid_file.",
           :type => "string"
-
-
-##
-##
-## drelephant
-##
-##
-
-attribute "drelephant/default/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-
-attribute "drelephant/dir",
-          :description => "Default base installation directory for the Dr Elephant server (default: /srv)",
-          :type => 'string'
-
-attribute "drelephant/user",
-          :description => "Username that runs the Dr Elephant server",
-          :type => 'string'
-
-attribute "drelephant/group",
-          :description => "Groupname that runs the Dr Elephant server",
-          :type => 'string'
-
-
-attribute "drelephant/port",
-          :description => "Port for running the Dr Elephant server",
-          :type => 'string'
 
 
 ##

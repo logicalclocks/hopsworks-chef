@@ -70,13 +70,6 @@ rescue
 end
 
 begin
-  drelephant_ip = private_recipe_ip("drelephant","default")
-rescue
-  drelephant_ip = node['hostname']
-  Chef::Log.warn "could not find the dr elephant server ip!"
-end
-
-begin
   dela_ip = private_recipe_ip("dela","default")
 rescue
   dela_ip = node['hostname']
@@ -297,7 +290,6 @@ for version in versions do
          :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
          :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
          :java_home => node['java']['java_home'],
-         :drelephant_ip => drelephant_ip,
          :kafka_ip => kafka_ip,
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
