@@ -1573,28 +1573,7 @@ CREATE TABLE `training_dataset` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `training_dataset_hudi_commits`
--- Danger if there are too many commits that the FK on delete cascade will not work.
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `training_dataset_commit` (
-  `training_dataset_id` int(11) NOT NULL, 
-  `commit_id` int(11) NOT NULL DEFAULT '0',
-  `commit_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
-  `num_rows` int(11) DEFAULT '0', 
-  PRIMARY KEY (`training_dataset_id`, `commit_id`),
-  KEY `commit_id_idx` (`commit_id`),
-  KEY `commit_date_idx` (`commit_date`),
-  CONSTRAINT `hopsfs_hudi_parquet_commit_fk` FOREIGN KEY (`hopsfs_hudi_parquet_commit_id`) REFERENCES `hopsfs_hudi_parquet_commit` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
-  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- This table is for Features defined in On-Demand Feature Groups
+-- This table is for Features defined in On-Demand Feature Groups and for training datasets.
 -- Table structure for table `feature_store_feature`
 --
 
@@ -1634,10 +1613,11 @@ CREATE TABLE `feature_group_commit_statistic` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `training_dataset_feature` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT, -- this is the order_id for each feature in a training_dataset
   `training_dataset_id` int(11) NULL,
   `feature_group_id` int(11) NULL,
-  `commit_id` int(11) NULL,  
+  `commit_id` int(11) NULL,
+  `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
