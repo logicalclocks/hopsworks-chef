@@ -35,31 +35,10 @@ rescue
 end
 
 begin
-  spark_history_server_ip = private_recipe_ip("hadoop_spark","historyserver")
-rescue
-  spark_history_server_ip = node['hostname']
-  Chef::Log.warn "could not find the spark history server ip for HopsWorks!"
-end
-
-begin
   jhs_ip = private_recipe_ip("hops","jhs")
 rescue
   jhs_ip = node['hostname']
   Chef::Log.warn "could not find the MR job history server ip!"
-end
-
-begin
-  rm_ip = private_recipe_ip("hops","rm")
-rescue
-  rm_ip = node['hostname']
-  Chef::Log.warn "could not find the Resource Manager ip!"
-end
-
-begin
-  rm_port = node['hops']['rm']['http_port']
-rescue
-  rm_port = 8088
-  Chef::Log.warn "could not find the Resource Manager Port!"
 end
 
 begin
@@ -77,13 +56,6 @@ rescue
 end
 
 begin
-  livy_ip = private_recipe_ip("livy","default")
-rescue
-  livy_ip = node['hostname']
-  Chef::Log.warn "could not find livy server ip!"
-end
-
-begin
   epipe_ip = private_recipe_ip("epipe","default")
 rescue
   epipe_ip = node['hostname']
@@ -91,17 +63,10 @@ rescue
 end
 
 begin
-  zk_ip = private_recipe_ip("kzookeeper","default")
-rescue
-  zk_ip = node['hostname']
-  Chef::Log.warn "could not find th zk server ip!"
-end
-
-begin
   kafka_ip = private_recipe_ip("kkafka","default")
 rescue
   kafka_ip = node['hostname']
-  Chef::Log.warn "could not find th kafka server ip!"
+  Chef::Log.warn "could not find the kafka server ip!"
 end
 
 begin
@@ -135,13 +100,6 @@ rescue
 end
 
 begin
-  hiveserver_ip = private_recipe_ip("hive2","default")
-rescue
-  hiveserver_ip = node['hostname']
-  Chef::Log.warn "could not find the Hive server ip!"
-end
-
-begin
   python_kernel = "#{node['jupyter']['python']}".downcase
 rescue
   python_kernel = "true"
@@ -150,14 +108,13 @@ end
 
 
 
-db="hopsworks"
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
   user "root"
   code <<-EOF
       set -e
-      #{exec} -e \"CREATE DATABASE IF NOT EXISTS hopsworks CHARACTER SET latin1\"
+      #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
     EOF
 end
 
@@ -191,18 +148,7 @@ dns = Resolv::DNS.new
 hosts = ""
 
 for h in node['kagent']['default']['private_ips']
-
-  # Try and resolve hostname first using /etc/hosts, then use DNS
-  begin
-    hname = hostf.getname(h)
-  rescue
-    begin
-      hname = dns.getname(h)
-    rescue
-      raise "Cannot resolve the hostname for IP address: #{h}"
-    end
-  end
-
+  hname = resolve_hostname(h)
   hosts += "('" + hname.to_s + "','" + h + "')" + ","
 end
 if h.length > 0
@@ -336,13 +282,9 @@ for version in versions do
          :conda_repo => condaRepo,
          :hosts => hosts,
          :epipe_ip => epipe_ip,
-         :livy_ip => livy_ip,
          :jhs_ip => jhs_ip,
-         :rm_ip => rm_ip,
-         :rm_port => rm_port,
          :logstash_ip => logstash_ip,
          :logstash_port => logstash_port,
-         :spark_history_server_ip => spark_history_server_ip,
          :hopsworks_ip => hopsworks_ip,
          :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
@@ -354,7 +296,6 @@ for version in versions do
          :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
          :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
          :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
-         :zk_ip => zk_ip,
          :java_home => node['java']['java_home'],
          :drelephant_ip => drelephant_ip,
          :kafka_ip => kafka_ip,
@@ -364,8 +305,6 @@ for version in versions do
          :influxdb_ip => influxdb_ip,
          :public_ip => public_ip,
          :dela_ip => dela_ip,
-         :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
-         :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
          :nonconda_hosts_list => nonconda_hosts_list,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :featurestore_jdbc_url => featurestore_jdbc_url
@@ -417,6 +356,27 @@ for version in versions do
   end
 end
 
+# Check if Kafka is to be installed and create user with grants
+begin
+  valid_recipe("kkafka", "default")
+  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
+
+  # Create kafka user and grant privileges. We do this here because we need this command to be executed at a host with
+  # a MySQL server
+  bash 'create_and_grant_kafka' do
+    user "root"
+    code <<-EOF
+      set -e
+      #{exec} -e \"CREATE USER IF NOT EXISTS #{node['kkafka']['mysql']['user']} IDENTIFIED BY \'#{node['kkafka']['mysql']['password']}\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.topic_acls TO \'#{node['kkafka']['mysql']['user']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project TO \'#{node['kkafka']['mysql']['user']}\'@\'%\'\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.users TO \'#{node['kkafka']['mysql']['user']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_team TO \'#{node['kkafka']['mysql']['user']}\'@\'%\';\"
+    EOF
+  end
+rescue
+  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
+end
 
 ###############################################################################
 # config glassfish
@@ -689,14 +649,14 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
   ldap_provider_url=ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
   ldap_attr_binary=node['ldap']['attr_binary_val']
   ldap_sec_auth=node['ldap']['security_auth']
-  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":SECURITY_AUTHENTICATION=#{ldap_sec_auth}"
+  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":java.naming.security.authentication=#{ldap_sec_auth}"
   ldap_sec_principal=node['ldap']['security_principal']
   ldap_sec_principal=ldap_sec_principal.gsub('=', '\\\\\=')
-  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":SECURITY_PRINCIPAL=#{ldap_sec_principal}"
+  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":java.naming.security.principal=#{ldap_sec_principal}"
   ldap_sec_credentials=node['ldap']['security_credentials']
-  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":SECURITY_CREDENTIALS=#{ldap_sec_credentials}"
+  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":java.naming.security.credentials=#{ldap_sec_credentials}"
   ldap_ref=node['ldap']['referral']
-  ldap_referral=ldap_ref.to_s.empty? ? "" : ":REFERRAL=#{ldap_ref}"
+  ldap_referral=ldap_ref.to_s.empty? ? "" : ":java.naming.referral=#{ldap_ref}"
   ldap_props=node['ldap']['additional_props']
   ldap_properties=ldap_props.to_s.empty? ? "" : ":#{ldap_props}"
 
@@ -772,6 +732,19 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
   end
 end
 
+if node['hopsworks']['audit_log_dump_enabled'].eql? "true"
+  # Setup cron job for HDFS dumper
+  cron 'dump_audit_logs_to_hdfs' do
+    command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh"
+    user node['glassfish']['user']
+    minute '0'
+    hour '21'
+    day '*'
+    month '*'
+    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh") end
+  end
+end
+
 hopsworks_mail "gmail" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -783,7 +756,7 @@ end
 node.override['glassfish']['asadmin']['timeout'] = 400
 
 if node['install']['enterprise']['install'].casecmp? "true"
-  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") == 0 ? "-kube" : ""}.ear"
+  node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp("true") == 0 ? "-kube" : ""}.ear"
   node.override['hopsworks']['war_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
   node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
 end
@@ -908,6 +881,25 @@ end
 
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  variables({
+    :pkgs_dirs => node['hopsworks']['conda_cache'] 
+  })
+  action :create
+end
+
+directory "#{::Dir.home(node['hopsworks']['user'])}/.pip" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
+end
+
+template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
+  source "pip.conf.erb"
   cookbook "conda"
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -1045,6 +1037,13 @@ end
 # Force variables reload
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
+end
+
+# Register Glassfish with Consul
+consul_service "Registering Glassfish with Consul" do
+  service_definition "consul/glassfish-consul.hcl.erb"
+  reload_consul false
+  action :register
 end
 
 template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do

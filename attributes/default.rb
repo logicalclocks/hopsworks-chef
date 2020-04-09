@@ -35,6 +35,8 @@ default['hopsworks']['admin']['user']            = "adminuser"
 default['hopsworks']['admin']['password']        = "adminpw"
 default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
+default['hopsworks']['db']                       = "hopsworks"
+
 default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
@@ -324,7 +326,7 @@ default['ldap']['attr_binary_val']                   = "entryUUID"
 default['ldap']['security_auth']                     = "none"
 default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
-default['ldap']['referral']                          = "follow"
+default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
 
 # OAuth2
@@ -345,7 +347,9 @@ default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
 
+default['hopsworks']['audit_log_dump_enabled']       = "false"
 default['hopsworks']['audit_log_dir']                = "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs/audit"
+default['hopsworks']['audit_log_file_format']        = "server_audit_log%g.log"
 default['hopsworks']['audit_log_size_limit']         = "256000000"
 default['hopsworks']['audit_log_count']              = "10"
 default['hopsworks']['audit_log_file_type']          = "Text"
@@ -408,13 +412,20 @@ default['hopsworks']['requests_verify'] = "true"
 # Provenance
 #
 # Provenance type can be set to MIN/FULL
-default['hopsworks']['provenance']['type']                            = "MIN"
+default['hopsworks']['provenance']['type']                    = "MIN"
 #define how big each archive round is - how many indices get cleaned
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
 #define in seconds the period between two provenance cleaner timeouts - default 1h
-default['hopsworks']['provenance']['cleaner']['period']        = "3600"
+default['hopsworks']['provenance']['cleaner']['period']       = "3600"
 
 # clients
 default['hopsworks']['client_path']           = "COMMUNITY"
+
+# hdfs storage policy
+# accepted hopsworks storage policy files: CLOUD, DB, HOT
+# Set the DIR_ROOT (/Projects) to have DB storage policy
+default['hopsworks']['hdfs']['storage_policy']['base']        = "DB" 
+# To not fill the SSDs with Logs files that nobody access frequently we set the StoragePolicy for the LOGS dir to be default HOT
+default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"

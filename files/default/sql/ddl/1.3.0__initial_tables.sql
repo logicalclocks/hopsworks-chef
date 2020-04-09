@@ -484,7 +484,7 @@ CREATE TABLE `host_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `host_id` int(11) NOT NULL,
   `pid` int(11) DEFAULT NULL,
-  `service` varchar(48) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `group_name` varchar(48) COLLATE latin1_general_cs NOT NULL,
   `status` int(11) NOT NULL,
   `uptime` bigint(20) DEFAULT NULL,
@@ -492,6 +492,7 @@ CREATE TABLE `host_services` (
   `stopTime` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `host_id` (`host_id`),
+  UNIQUE KEY `service_UNIQUE` (`host_id`, `name`),
   CONSTRAINT `FK_481_491` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=42 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1183,7 +1184,7 @@ CREATE TABLE `subjects` (
 CREATE TABLE `subjects_compatibility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD', 
+  `compatibility` ENUM('BACKWARD', 'BACKWARD_TRANSITIVE', 'FORWARD', 'FORWARD_TRANSITIVE', 'FULL', 'FULL_TRANSITIVE', 'NONE') NOT NULL DEFAULT 'BACKWARD',
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`),
@@ -1416,6 +1417,7 @@ CREATE TABLE `shared_topics` (
   `topic_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
+  `accepted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`project_id`,`topic_name`),
   KEY `topic_idx` (`topic_name`,`owner_id`),
   CONSTRAINT `topic_idx` FOREIGN KEY (`topic_name`,`owner_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -1547,7 +1549,6 @@ CREATE TABLE `training_dataset` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(63) NOT NULL,
   `feature_store_id` int(11) NOT NULL,
-  `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `creator` int(11) NOT NULL,
   `version` int(11) NOT NULL,
@@ -1560,13 +1561,11 @@ CREATE TABLE `training_dataset` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
-  KEY `hdfs_user_id` (`hdfs_user_id`),
   KEY `creator` (`creator`),
   KEY `hopsfs_training_dataset_fk` (`hopsfs_training_dataset_id`),
   KEY `external_training_dataset_fk` (`external_training_dataset_id`),
   KEY `target_variable_idx` (`target_variable`),  
   CONSTRAINT `FK_1012_877` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_191_876` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_656_817` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `hopsfs_training_dataset_fk` FOREIGN KEY (`hopsfs_training_dataset_id`) REFERENCES `hopsfs_training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `external_training_dataset_fk` FOREIGN KEY (`external_training_dataset_id`) REFERENCES `external_training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -1607,7 +1606,7 @@ CREATE TABLE `feature_store_feature` (
   `on_demand_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
-  `description` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   KEY `training_dataset_id` (`training_dataset_id`),
@@ -1989,6 +1988,7 @@ CREATE TABLE IF NOT EXISTS `hopsfs_hudi_parquet_commit` (
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
   `s3_connector_id`                   INT(11)         NOT NULL,
+  `path`                              VARCHAR(10000),
   PRIMARY KEY (`id`),
   CONSTRAINT `external_td_s3_connector_fk` FOREIGN KEY (`s3_connector_id`) REFERENCES `hopsworks`
   .`feature_store_s3_connector` (`id`)
@@ -2026,4 +2026,12 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `startup_auto_pull` TINYINT(1) DEFAULT 1,
        `shutdown_auto_push` TINYINT(1) DEFAULT 1,
        PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_store_tag` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `type` varchar(45) NOT NULL DEFAULT 'STRING',
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

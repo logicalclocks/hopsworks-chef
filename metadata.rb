@@ -5,35 +5,42 @@ license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.3.0"
-source_url       "https://github.com/hopshadoop/hopsworks-chef"
+source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
 %w{ ubuntu debian centos rhel }.each do |os|
   supports os
 end
 
-depends 'glassfish'
-depends 'ndb'
+depends 'java', '~> 7.0.0'
+depends 'simple-logstash', '~> 0.2.4'
+depends 'compat_resource', '~> 12.19.0'
+depends 'authbind', '~> 0.1.10'
+depends 'ntp', '~> 2.0.0'
+depends 'sysctl', '~> 1.0.3'
+depends 'ulimit2', '~> 0.2.0'
+depends 'conda'
 depends 'kagent'
 depends 'hops'
-depends 'elastic'
+depends 'ndb'
 depends 'hadoop_spark'
 depends 'flink'
-depends 'compat_resource'
-depends 'ulimit2'
-depends 'authbind'
-depends 'epipe'
 depends 'livy'
-depends 'kkafka'
-depends 'kzookeeper'
 depends 'drelephant'
-depends 'dela'
-depends 'java'
+depends 'epipe'
 depends 'tensorflow'
+depends 'dela'
+depends 'kzookeeper'
+depends 'kkafka'
+depends 'elastic'
 depends 'hopslog'
 depends 'hopsmonitor'
-depends 'hive2'
 depends 'hops_airflow'
+depends 'hive2'
+depends 'consul'
+depends 'ulimit'
+depends 'glassfish'
+
 
 recipe  "hopsworks::install", "Installs Glassfish"
 
@@ -326,6 +333,9 @@ attribute "hopsworks/monitor_max_status_poll_try",
           :description => "Default number of time the job monitor fail at polling the job status before to consider the job as failed",
           :type => 'string'
 
+attribute "hopsworks/db",
+          :description => "Default hopsworks database",
+          :type => 'string'
 
 ##
 ##
@@ -605,11 +615,6 @@ attribute "influxdb/port",
 attribute "influxdb/admin/port",
           :description => "Admin port for influxdb",
           :type => "string"
-
-attribute "graphite/port",
-          :description => "Port for influxdb graphite connector",
-          :type => "string"
-
 
 
 #
@@ -1753,7 +1758,7 @@ attribute "ldap/security_credentials",
           :type => 'string'
 
 attribute "ldap/referral",
-          :description => "LDAP used to redirect a client's request to another server . 'follow' (default) possible values ('ignore', 'follow', 'throw')",
+          :description => "LDAP used to redirect a client's request to another server . 'ignore' (default) possible values ('ignore', 'follow', 'throw')",
           :type => 'string'
 
 attribute "ldap/additional_props",
@@ -1957,8 +1962,14 @@ attribute "hopsworks/provenance/cleaner/period",
           :type => 'string'
 
 # Audit log
+attribute "hopsworks/audit_log_dump_enabled",
+          :description => "Audit log dump to hdfs enabled. 'false' (default)",
+          :type => 'string'
 attribute "hopsworks/audit_log_dir",
           :description => "Audit log dir. '/srv/hops/domains/domain1/logs/audit' (default)",
+          :type => 'string'
+attribute "hopsworks/audit_log_file_format",
+          :description => "Audit log file format. 'server_audit_log%g.log' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_size_limit",
           :description => "Audit log size per file. '256000000' (default)",
@@ -1968,4 +1979,13 @@ attribute "hopsworks/audit_log_count",
           :type => 'string'
 attribute "hopsworks/audit_log_file_type",
           :description => "Audit log file type. 'Text' (default)",
+          :type => 'string'
+
+# Hopsworks HDFS storage policies
+# accepted hopsworks storage policy files: CLOUD, DB, HOT
+attribute "hopsworks/hdfs/storage_policy/base",
+          :description => "Set the DIR_ROOT (/Projects) storage policy. Default is DB. Accepted values: CLOUD/DB/HOT",
+          :type => 'string'
+attribute "hopsworks/hdfs/storage_policy/log",
+          :description => "Set the project LOG_DIR storage policy. Default is HOT. Accepted values: CLOUD/DB/HOT",
           :type => 'string'
