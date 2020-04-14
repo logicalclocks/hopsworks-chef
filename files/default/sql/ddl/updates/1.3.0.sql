@@ -26,3 +26,5 @@ CREATE TABLE IF NOT EXISTS `feature_store_tag` (
 
 ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `service` `name` varchar(48) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`host_services` ADD UNIQUE KEY `service_UNIQUE` (`host_id`, `name`);
+
+DELETE FROM `hopsworks`.`jobs` WHERE type="BEAM_FLINK";
