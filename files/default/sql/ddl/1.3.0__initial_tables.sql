@@ -1577,7 +1577,7 @@ CREATE TABLE `feature_store_feature` (
 CREATE TABLE IF NOT EXISTS `training_dataset_split` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset_id` int(11) NOT NULL,
-  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
   `percentage` float NOT NULL,
   PRIMARY KEY (`id`),
   KEY `training_dataset_id` (`training_dataset_id`),
