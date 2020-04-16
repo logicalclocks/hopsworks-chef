@@ -1532,6 +1532,7 @@ CREATE TABLE `training_dataset` (
   `hopsfs_training_dataset_id` INT(11) NULL,
   `external_training_dataset_id` INT(11) NULL,
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
+  `seed` INT(11) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -1564,6 +1565,23 @@ CREATE TABLE `feature_store_feature` (
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
   CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `training_dataset_split`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `training_dataset_split` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset_id` int(11) NOT NULL,
+  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `percentage` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

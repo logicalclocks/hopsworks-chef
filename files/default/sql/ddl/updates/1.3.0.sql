@@ -27,4 +27,18 @@ CREATE TABLE IF NOT EXISTS `feature_store_tag` (
 ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `service` `name` varchar(48) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`host_services` ADD UNIQUE KEY `service_UNIQUE` (`host_id`, `name`);
 
+<<<<<<< HEAD
 DELETE FROM `hopsworks`.`jobs` WHERE type="BEAM_FLINK";
+=======
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `seed` BIGINT NULL;
+
+CREATE TABLE IF NOT EXISTS `training_dataset_split` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset_id` int(11) NOT NULL,
+  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `percentage` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+>>>>>>> f4f1895... split changes
