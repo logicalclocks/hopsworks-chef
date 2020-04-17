@@ -9,3 +9,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='rm_port';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='spark_history_server_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ext_hostname';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ssl_hostname';
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_enterprise", "<%= node['install']['enterprise']['install']%>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("kubernetes_installed", "<%= node['install']['kubernetes'] %>");
