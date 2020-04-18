@@ -1620,6 +1620,7 @@ CREATE TABLE `training_dataset_feature` (
   `created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+--  `target_column` tinyint(1) NOT NULL DEFAULT '0',  
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY (`training_dataset_id`, `feature_group_id`),
