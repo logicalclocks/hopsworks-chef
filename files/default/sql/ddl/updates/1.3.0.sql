@@ -29,7 +29,7 @@ ALTER TABLE `hopsworks`.`host_services` ADD UNIQUE KEY `service_UNIQUE` (`host_i
 
 DELETE FROM `hopsworks`.`jobs` WHERE type="BEAM_FLINK";
 
-ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `seed` BIGINT NULL;
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `seed` BIGINT(11) NULL;
 
 CREATE TABLE IF NOT EXISTS `training_dataset_split` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

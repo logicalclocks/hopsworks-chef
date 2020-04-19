@@ -1532,7 +1532,7 @@ CREATE TABLE `training_dataset` (
   `hopsfs_training_dataset_id` INT(11) NULL,
   `external_training_dataset_id` INT(11) NULL,
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
-  `seed` INT(11) NULL,
+  `seed` BIGINT(11) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
