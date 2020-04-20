@@ -42,20 +42,6 @@ rescue
 end
 
 begin
-  logstash_ip = private_recipe_ip("hopslog","default")
-rescue
-  logstash_ip = node['hostname']
-  Chef::Log.warn "could not find the Logstash ip!"
-end
-
-begin
-  logstash_port = node['logstash']['http']['port']
-rescue
-  logstash_port = 3456
-  Chef::Log.warn "could not find the Logstash Port!"
-end
-
-begin
   epipe_ip = private_recipe_ip("epipe","default")
 rescue
   epipe_ip = node['hostname']
@@ -87,7 +73,7 @@ begin
   kibana_ip = private_recipe_ip("hopslog","default")
 rescue
   kibana_ip = node['hostname']
-  Chef::Log.warn "could not find the logstash server ip!"
+  Chef::Log.warn "could not find the kibana server ip!"
 end
 
 begin
@@ -283,8 +269,6 @@ for version in versions do
          :hosts => hosts,
          :epipe_ip => epipe_ip,
          :jhs_ip => jhs_ip,
-         :logstash_ip => logstash_ip,
-         :logstash_port => logstash_port,
          :hopsworks_ip => hopsworks_ip,
          :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
@@ -1150,4 +1134,3 @@ if node['rstudio']['enabled'].eql? "true"
     EOF
   end
 end
-
