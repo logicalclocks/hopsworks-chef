@@ -115,6 +115,12 @@ bash 'create_hopsworks_db' do
   code <<-EOF
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
+      #{exec} -e \"CREATE USER IF NOT EXISTS #{node['hopsworks']['mysql']['user']} IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']}\';\"
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
+      #{exec} -e \"GRANT SELECT ON metastore.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
+      # Grant option for creating the online feature store 
+      #{exec} -e \"GRANT GRANT OPTION ON *.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
     EOF
 end
 
@@ -543,7 +549,11 @@ glassfish_conf = {
   'configs.config.server-config.monitoring-service.module-monitoring-levels.jpa' => 'HIGH',
   'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
   'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
-  'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout']
+  'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
+  'resources.jdbc-connection-pool.hopsworksPool.property.User' => node['hopsworks']['mysql']['user']
+  'resources.jdbc-connection-pool.hopsworksPool.property.Password' => node['hopsworks']['mysql']['password']
+  'resources.jdbc-connection-pool.ejbTimerPool.property.User' => node['hopsworks']['mysql']['user']
+  'resources.jdbc-connection-pool.ejbTimerPool.property.Password' => node['hopsworks']['mysql']['password']
 }
 
 glassfish_conf.each do |property, value|
