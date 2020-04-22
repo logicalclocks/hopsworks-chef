@@ -550,9 +550,9 @@ glassfish_conf = {
   'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
   'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
-  'resources.jdbc-connection-pool.hopsworksPool.property.User' => node['hopsworks']['mysql']['user']
-  'resources.jdbc-connection-pool.hopsworksPool.property.Password' => node['hopsworks']['mysql']['password']
-  'resources.jdbc-connection-pool.ejbTimerPool.property.User' => node['hopsworks']['mysql']['user']
+  'resources.jdbc-connection-pool.hopsworksPool.property.User' => node['hopsworks']['mysql']['user'],
+  'resources.jdbc-connection-pool.hopsworksPool.property.Password' => node['hopsworks']['mysql']['password'],
+  'resources.jdbc-connection-pool.ejbTimerPool.property.User' => node['hopsworks']['mysql']['user'],
   'resources.jdbc-connection-pool.ejbTimerPool.property.Password' => node['hopsworks']['mysql']['password']
 }
 
