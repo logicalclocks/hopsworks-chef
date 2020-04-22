@@ -6,8 +6,6 @@ my_ip = my_private_ip()
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
-mysql_user=node['mysql']['user']
-mysql_password=node['mysql']['password']
 password_file = "#{theDomain}_admin_passwd"
 
 featurestore_user=node['featurestore']['user']
@@ -333,8 +331,8 @@ node.override = {
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
                 'Url' => "jdbc:mysql://#{my_ip}:3306/",
-                'User' => mysql_user,
-                'Password' => mysql_password
+                'User' => node['hopsworks']['mysql']['user'],
+                'Password' => node['hopsworks']['mysql']['password']
               }
             },
             'resources' => {
@@ -388,14 +386,13 @@ node.override = {
               'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
-
               'validationmethod' => 'auto-commit',
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
                 'Url' => "jdbc:mysql://#{my_ip}:3306/glassfish_timers",
-                'User' => mysql_user,
-                'Password' => mysql_password
+                'User' => node['hopsworks']['mysql']['user'],
+                'Password' => node['hopsworks']['mysql']['password']
               }
             },
             'resources' => {
