@@ -339,11 +339,11 @@ attribute "hopsworks/db",
 
 attribute "hopsworks/mysql/user",
           :description => "Hopsworks MySQL username",
-          :type => 'string',
+          :type => 'string'
 
 attribute "hopsworks/mysql/password",
           :description => "Hopsworks MySQL password",
-          :type => 'string',
+          :type => 'string'
 
 
 
