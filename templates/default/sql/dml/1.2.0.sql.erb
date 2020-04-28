@@ -1,12 +1,12 @@
-REPLACE INTO `hopsworks`.`variables` VALUES ("sudoers_dir", "<%= node['install']['sudoers']['scripts_dir'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("mysql_user", "<%= node['ndb']['user'] %>");
-REPLACE INTO variables VALUES ("client_path", "<%= node['hopsworks']['client_path'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("disable_password_login", "<%= node['hopsworks']['disable_password_login'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("disable_registration", "<%= node['hopsworks']['disable_registration'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("sudoers_dir", "<%= node['install']['sudoers']['scripts_dir'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("mysql_user", "<%= node['ndb']['user'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("client_path", "<%= node['hopsworks']['client_path'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("disable_password_login", "<%= node['hopsworks']['disable_password_login'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("disable_registration", "<%= node['hopsworks']['disable_registration'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_dir", "<%= node['hopsworks']['audit_log_dir'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_format", "<%= node['hopsworks']['audit_log_file_format'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_size_limit", "<%= node['hopsworks']['audit_log_size_limit'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_count", "<%= node['hopsworks']['audit_log_count'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_type", "<%= node['hopsworks']['audit_log_file_type'] %>");
-REPLACE INTO variables VALUES ("provenance_cleaner_period", "<%= node['hopsworks']['provenance']['cleaner']['period'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("audit_log_dir", "<%= node['hopsworks']['audit_log_dir'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("audit_log_file_format", "<%= node['hopsworks']['audit_log_file_format'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("audit_log_count", "<%= node['hopsworks']['audit_log_count'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("audit_log_size_limit", "<%= node['hopsworks']['audit_log_size_limit'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("audit_log_file_type", "<%= node['hopsworks']['audit_log_file_type'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provenance_cleaner_period", "<%= node['hopsworks']['provenance']['cleaner']['period'] %>");

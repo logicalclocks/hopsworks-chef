@@ -1,6 +1,6 @@
-REPLACE INTO `hopsworks`.`variables` VALUES ("kerberos_auth", "<%= node['kerberos']['enabled'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_search_filter", "<%= node['ldap']['krb_search_filter'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("ldap_krb_dyn_grp_search_filter", "<%= node['ldap']['krb_dyn_grp_search_filter'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kerberos_auth", "<%= node['kerberos']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ldap_krb_search_filter", "<%= node['ldap']['krb_search_filter'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ldap_krb_dyn_grp_search_filter", "<%= node['ldap']['krb_dyn_grp_search_filter'] %>");
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_spark_connector_version';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_dir';
@@ -11,44 +11,44 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_version';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='zeppelin_interpreters';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='livy_zeppelin_session_timeout';
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_lifetime_ms", "<%= node['hopsworks']['jwt']['service_lifetime_ms'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_jwt_exp_leeway_sec", "<%= node['hopsworks']['jwt']['service_exp_leeway_sec'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_jwt_lifetime_ms", "<%= node['hopsworks']['jwt']['service_lifetime_ms'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_jwt_exp_leeway_sec", "<%= node['hopsworks']['jwt']['service_exp_leeway_sec'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("keepalive_timeout", "<%= node['glassfish']['http']['keep_alive_timeout']  %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("keepalive_timeout", "<%= node['glassfish']['http']['keep_alive_timeout']  %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_ws_ping_interval", "<%= node['jupyter']['ws_ping_interval'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_ws_ping_interval", "<%= node['jupyter']['ws_ping_interval'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_enabled", "<%= node['oauth']['enabled'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_account_status", "<%= node['oauth']['account_status'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_redirect_uri", "<%= node['oauth']['redirect_uri'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_enabled", "<%= node['oauth']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_account_status", "<%= node['oauth']['account_status'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_redirect_uri", "<%= node['oauth']['redirect_uri'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_env';
-REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_user", "<%= node['kagent']['user'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_monitor_enabled", "<%= node['hopsworks']['kagent_liveness']['enabled'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("kagent_liveness_threshold", "<%= node['hopsworks']['kagent_liveness']['threshold'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_user", "<%= node['kagent']['user'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_liveness_monitor_enabled", "<%= node['hopsworks']['kagent_liveness']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_liveness_threshold", "<%= node['hopsworks']['kagent_liveness']['threshold'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_user", "<%= node['jupyter']['user'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_group", "<%= node['jupyter']['group'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_user", "<%= node['jupyter']['user'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_group", "<%= node['jupyter']['group'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_delay", "<%= node['hopsworks']['hive2']['scratch_dir_delay'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("hive_scratchdir_cleaner_interval", "<%= node['hopsworks']['hive2']['scratch_dir_cleaner_interval'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_scratchdir_delay", "<%= node['hopsworks']['hive2']['scratch_dir_delay'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_scratchdir_cleaner_interval", "<%= node['hopsworks']['hive2']['scratch_dir_cleaner_interval'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("admin_email", "<%= node['hopsworks']['admin']['email'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("admin_email", "<%= node['hopsworks']['admin']['email'] %>");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hdfs_ui_port';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_connection_pool_size';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='tf_serving_max_route_connections';
-REPLACE INTO `hopsworks`.`variables` VALUES ("serving_connection_pool_size", "<%= node['serving']['pool_size'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("serving_max_route_connections", "<%= node['serving']['max_route_connections'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("serving_connection_pool_size", "<%= node['serving']['pool_size'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("serving_max_route_connections", "<%= node['serving']['max_route_connections'] %>");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_serving';
-REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_tf_serving", "<%= node['logstash']['beats']['serving_tf_port'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_sklearn_serving", "<%= node['logstash']['beats']['serving_sklearn_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_tf_serving", "<%= node['logstash']['beats']['serving_tf_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_sklearn_serving", "<%= node['logstash']['beats']['serving_sklearn_port'] %>");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='recovery_path';

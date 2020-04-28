@@ -1,6 +1,6 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='vagrant_enabled';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='rest_port';
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsexamples_version", "<%= node['hadoop_spark']['hopsexamples_version']
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsexamples_version", "<%= node['hadoop_spark']['hopsexamples_version']
 %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['hostname'] %>:<%= node['hopsworks']['https']['port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsworks_endpoint" , "<%= node['hostname'] %>:<%= node['hopsworks']['https']['port'] %>");

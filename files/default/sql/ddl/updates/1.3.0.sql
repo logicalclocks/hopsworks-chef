@@ -40,3 +40,6 @@ CREATE TABLE IF NOT EXISTS `training_dataset_split` (
   KEY `training_dataset_id` (`training_dataset_id`),
   CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+ALTER TABLE `hopsworks`.`variables` ADD COLUMN `visibility` TINYINT NOT NULL DEFAULT 0;
