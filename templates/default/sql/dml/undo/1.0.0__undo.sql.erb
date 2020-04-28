@@ -6,11 +6,11 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='cloud';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='localhost';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='featurestore_online_enabled';
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsutil_version", "0.10.0");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsutil_version", "0.10.0");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_restart_script", "<%= node['kagent']['base_dir'] %>/bin/restart-service.sh");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_start_script", "<%= node['kagent']['base_dir'] %>/bin/start-service.sh");
-REPLACE INTO `hopsworks`.`variables` VALUES ("service_stop_script", "<%= node['kagent']['base_dir'] %>/bin/stop-service.sh");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_restart_script", "<%= node['kagent']['base_dir'] %>/bin/restart-service.sh");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_start_script", "<%= node['kagent']['base_dir'] %>/bin/start-service.sh");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_stop_script", "<%= node['kagent']['base_dir'] %>/bin/stop-service.sh");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='localhost';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='featurestore_jdbc_url';
