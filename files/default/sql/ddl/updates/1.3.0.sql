@@ -50,3 +50,6 @@ ALTER TABLE `hopsworks`.`conda_commands` CHANGE `proj` `docker_image` varchar(25
 ALTER TABLE `hopsworks`.`jupyter_project` CHANGE `pid` `cid` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`tensorboard` CHANGE `pid` `cid` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`serving` CHANGE `local_pid` `cid` varchar(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `error_message` VARCHAR(6000) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_yml` VARCHAR(6000) COLLATE latin1_general_cs DEFAULT NULL;
+

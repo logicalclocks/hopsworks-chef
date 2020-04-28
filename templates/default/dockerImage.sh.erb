@@ -33,7 +33,11 @@ elif [ "$1" == "delete" ] ; then
 	help
     fi
 
-    docker rmi $2
+    if [[ "$(docker images -q $2 2> /dev/null)" == "" ]]; then
+	exit 0
+    else
+	docker rmi -f $2
+    fi
     
 elif [ "$1" == "list" ] ; then
     re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
