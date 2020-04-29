@@ -429,3 +429,5 @@ default['hopsworks']['client_path']           = "COMMUNITY"
 default['hopsworks']['hdfs']['storage_policy']['base']        = "DB" 
 # To not fill the SSDs with Logs files that nobody access frequently we set the StoragePolicy for the LOGS dir to be default HOT
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
+
+default['hopsworks']['enable_metadata_designer']              = "false"
