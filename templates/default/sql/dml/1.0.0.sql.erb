@@ -1,13 +1,13 @@
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.14.0", "10.0", "7.6.0.64", "2.3");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("jupyter_origin_scheme", "<%= node['jupyter']['origin_scheme'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_origin_scheme", "<%= node['jupyter']['origin_scheme'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("cloud", "<%= node['install']['cloud'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("localhost", "<%= node['install']['localhost'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cloud", "<%= node['install']['cloud'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("localhost", "<%= node['install']['localhost'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("featurestore_online_enabled", "<%= node['hopsworks']['featurestore_online'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("featurestore_online_enabled", "<%= node['hopsworks']['featurestore_online'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("featurestore_jdbc_url", "<%= @featurestore_jdbc_url %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("featurestore_jdbc_url", "<%= @featurestore_jdbc_url %>");
 /*
 Insert default JDBC connectors to feature store for existing projects with the feature store service
 */
@@ -36,8 +36,8 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`="service_stop_script";
 DELETE FROM `hopsworks`.`variables` where id="telegraf";
 DELETE FROM `hopsworks`.`variables` where id="kapacitor";
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hops_verification_version", "<%= node['hadoop_spark']['hops_verification']['version'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hops_verification_version", "<%= node['hadoop_spark']['hops_verification']['version'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("aws_instance_role", "<%= node['install']['aws']['instance_role'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("requests_verify", "<%= node['hopsworks']['requests_verify'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("aws_instance_role", "<%= node['install']['aws']['instance_role'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("requests_verify", "<%= node['hopsworks']['requests_verify'] %>");

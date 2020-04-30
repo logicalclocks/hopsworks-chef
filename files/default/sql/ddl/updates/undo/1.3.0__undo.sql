@@ -16,3 +16,5 @@ ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `name` `service` varchar(4
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `seed`;
 
 DROP TABLE IF EXISTS `training_dataset_split`;
+
+ALTER TABLE `hopsworks`.`variables` DROP COLUMN `visibility`;
