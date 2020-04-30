@@ -1,22 +1,22 @@
-REPLACE INTO `hopsworks`.`variables` VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
 
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("spark_ui_logs_offset", "<%= node['hopsworks']['spark_ui_logs_offset'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("spark_ui_logs_offset", "<%= node['hopsworks']['spark_ui_logs_offset'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("provided_python_lib_names", "<%= node['conda']['provided_lib_names'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provided_python_lib_names", "<%= node['conda']['provided_lib_names'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("preinstalled_python_lib_names", "<%= node['conda']['preinstalled_lib_names'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("preinstalled_python_lib_names", "<%= node['conda']['preinstalled_lib_names'] %>");
 
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.8.0", "9.0", "7", "2.2");
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.10.0", "9.0", "7", "2.2");
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.11.0", "9.0", "7.3.0", "2.2");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_rest_log_level", "<%= node['hopsworks']['hopsworks_rest_log_level'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsworks_rest_log_level", "<%= node['hopsworks']['hopsworks_rest_log_level'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);
 
 -- Create the user who will be responsibile to log the inference requests to kafka
 -- This user should not be able to login. The password doesn't make any sense.
@@ -37,15 +37,15 @@ FROM `hopsworks`.`users` u
 WHERE u.`username` = "srvmanager"
 ON DUPLICATE KEY UPDATE `contact_person` = 'Admin';
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("kafka_max_num_topics", "<%= node['hopsworks']['kafka_max_num_topics'] %>");
-REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_port_serving", "<%= node['logstash']['beats']['serving_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kafka_max_num_topics", "<%= node['hopsworks']['kafka_max_num_topics'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_serving", "<%= node['logstash']['beats']['serving_port'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("py4j_archive", "<%= node['hadoop_spark']['yarn']['py4j_archive'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("py4j_archive", "<%= node['hadoop_spark']['yarn']['py4j_archive'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_signature_algorithm', "<%= node['hopsworks']['jwt']['signature_algorithm'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('jwt_signature_algorithm', "<%= node['hopsworks']['jwt']['signature_algorithm'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_lifetime_ms', "<%= node['hopsworks']['jwt']['lifetime_ms'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('jwt_lifetime_ms', "<%= node['hopsworks']['jwt']['lifetime_ms'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_exp_leeway_sec', "<%= node['hopsworks']['jwt']['exp_leeway_sec'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('jwt_exp_leeway_sec', "<%= node['hopsworks']['jwt']['exp_leeway_sec'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ('jwt_signing_key_name', "<%= node['hopsworks']['jwt']['signing_key_name'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('jwt_signing_key_name', "<%= node['hopsworks']['jwt']['signing_key_name'] %>");
