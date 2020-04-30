@@ -1705,6 +1705,7 @@ SET character_set_client = @saved_cs_client;
 CREATE TABLE `variables` (
   `id` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `value` varchar(1024) COLLATE latin1_general_cs NOT NULL,
+  `visibility` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
