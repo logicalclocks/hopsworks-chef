@@ -1,3 +1,3 @@
-REPLACE INTO variables VALUES ("featurestore_default_quota", "<%= @featurestore_default_quota %>");
-REPLACE INTO variables VALUES ("featurestore_default_storage_format", "<%= node['hopsworks']['featurestore_default_storage_format'] %>");
-REPLACE INTO variables VALUES ("tf_spark_connector_version", "<%= node['hadoop_spark']['tf_spark_connector_version'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("featurestore_default_quota", "<%= @featurestore_default_quota %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("featurestore_default_storage_format", "<%= node['hopsworks']['featurestore_default_storage_format'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("tf_spark_connector_version", "<%= node['hadoop_spark']['tf_spark_connector_version'] %>");

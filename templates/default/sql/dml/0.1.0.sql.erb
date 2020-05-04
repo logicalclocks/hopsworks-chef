@@ -83,8 +83,8 @@ REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
 -- For enabling two facto authentication
 --
 
-REPLACE INTO variables VALUES ("twofactor_auth", "<%= node['hopsworks']['twofactor_auth'] %>");
-REPLACE INTO variables VALUES ("twofactor-excluded-groups", "<%= node['hopsworks']['twofactor_exclude_groups'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("twofactor_auth", "<%= node['hopsworks']['twofactor_auth'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("twofactor-excluded-groups", "<%= node['hopsworks']['twofactor_exclude_groups'] %>");
 
 -- kmon
 
@@ -96,205 +96,205 @@ INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDAT
 -- Default settings
 --
 
-REPLACE INTO variables VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
 
-REPLACE INTO variables VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
 
-REPLACE INTO variables VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
 
-REPLACE INTO variables VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
 
-REPLACE INTO variables VALUES ("oozie_ip", "<%= @oozie_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("oozie_ip", "<%= @oozie_ip %>");
 
-REPLACE INTO variables VALUES ("jhs_ip", "<%= @jhs_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("jhs_ip", "<%= @jhs_ip %>");
 
-REPLACE INTO variables VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
 
-REPLACE INTO variables VALUES ("rm_ip", "<%= @rm_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("rm_ip", "<%= @rm_ip %>");
 
-REPLACE INTO variables VALUES ("rm_port", "<%= @rm_port %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("rm_port", "<%= @rm_port %>");
 
-REPLACE INTO variables VALUES ("epipe_ip", "<%= @epipe_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("epipe_ip", "<%= @epipe_ip %>");
 
-REPLACE INTO variables VALUES ("livy_ip", "<%= @livy_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("livy_ip", "<%= @livy_ip %>");
 
-REPLACE INTO variables VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
 
-REPLACE INTO variables VALUES ("yarn_ui_port", "<%= node['hops']['rm']['http_port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_port", "<%= node['hops']['rm']['http_port'] %>");
 
-REPLACE INTO variables VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
 
-REPLACE INTO variables VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
-REPLACE INTO variables VALUES ("file_preview_image_size", "<%= node['hopsworks']['file_preview_image_size'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("file_preview_image_size", "<%= node['hopsworks']['file_preview_image_size'] %>");
 
-REPLACE INTO variables VALUES ("file_preview_txt_size", "<%= node['hopsworks']['file_preview_txt_size'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("file_preview_txt_size", "<%= node['hopsworks']['file_preview_txt_size'] %>");
 
-REPLACE INTO variables VALUES ("recovery_path", "<%= node['hopsworks']['recovery_path'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("recovery_path", "<%= node['hopsworks']['recovery_path'] %>");
 
-REPLACE INTO variables VALUES ("verification_path", "<%= node['hopsworks']['verification_path'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("verification_path", "<%= node['hopsworks']['verification_path'] %>");
 
 -- ------
 -- More settings
 --
 
-REPLACE INTO variables VALUES ("hopsworks_user", "<%= node['hopsworks']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_user", "<%= node['hopsworks']['user'] %>");
 
-REPLACE INTO variables VALUES ("spark_user", "<%= node['hadoop_spark']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("spark_user", "<%= node['hadoop_spark']['user'] %>");
 
-REPLACE INTO variables VALUES ("flink_user", "<%= node['flink']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("flink_user", "<%= node['flink']['user'] %>");
 
-REPLACE INTO variables VALUES ("kafka_user", "<%= node['kkafka']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("kafka_user", "<%= node['kkafka']['user'] %>");
 
-REPLACE INTO variables VALUES ("zk_ip", "<%= @zk_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("zk_ip", "<%= @zk_ip %>");
 
-REPLACE INTO variables VALUES ("kafka_ip", "<%= @kafka_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("kafka_ip", "<%= @kafka_ip %>");
 
-REPLACE INTO variables VALUES ("kafka_num_partitions", "<%= node['hopsworks']['kafka_num_partitions'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_partitions", "<%= node['hopsworks']['kafka_num_partitions'] %>");
 
-REPLACE INTO variables VALUES ("kafka_num_replicas", "<%= node['hopsworks']['kafka_num_replicas'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_replicas", "<%= node['hopsworks']['kafka_num_replicas'] %>");
 
-REPLACE INTO variables VALUES ("drelephant_port", "<%= node['drelephant']['port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_port", "<%= node['drelephant']['port'] %>");
 
-REPLACE INTO variables VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
 
-REPLACE INTO variables VALUES ("drelephant_db", "<%= node['drelephant']['db'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_db", "<%= node['drelephant']['db'] %>");
 
-REPLACE INTO variables VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
 
-REPLACE INTO variables VALUES ("glassfish_cert", "false");
+REPLACE INTO variables(`id`, `value`) VALUES ("glassfish_cert", "false");
 
-REPLACE INTO variables VALUES ("certs_dir", "<%= node['certs']['dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("certs_dir", "<%= node['certs']['dir'] %>");
 
 -- --------------------------------------------------------
 --
 -- For enabling TLS support in RPCs
 --
 
-REPLACE INTO variables VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hops_rpc_tls", "<%= @hops_rpc_tls %>");
 
 -- --------------------------------------------------------
 --
 -- Certificate Materializer delay for removing cryptographic material from the local fs
 --
 
-REPLACE INTO variables VALUES ("cert_mater_delay", "<%= node['hopsworks']['cert_mater_delay'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("cert_mater_delay", "<%= node['hopsworks']['cert_mater_delay'] %>");
 
 --
 -- Comma-separated list of user emails that their login attempt should not be
 -- persisted in the database for auditing reasons
 --
 
-REPLACE INTO variables VALUES ("whitelist_users", "agent@hops.io");
+REPLACE INTO variables(`id`, `value`) VALUES ("whitelist_users", "agent@hops.io");
 
 -- --------------------------------------------------------
 
-REPLACE INTO variables VALUES ("jupyter_dir", "<%= node['hopsworks']['jupyter_dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("jupyter_dir", "<%= node['hopsworks']['jupyter_dir'] %>");
 
-REPLACE INTO variables VALUES ("JAVA_HOME", "<%= @java_home %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("JAVA_HOME", "<%= @java_home %>");
 
-REPLACE INTO variables VALUES ("staging_dir", "<%= node['hopsworks']['staging_dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("staging_dir", "<%= node['hopsworks']['staging_dir'] %>");
 
-REPLACE INTO variables VALUES ("max_status_poll_retry", "<%= node['hopsworks']['monitor_max_status_poll_try'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("max_status_poll_retry", "<%= node['hopsworks']['monitor_max_status_poll_try'] %>");
 
-REPLACE INTO variables VALUES ("hopsutil_version", "<%= node['hadoop_spark']['hopsutil_version'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopsutil_version", "<%= node['hadoop_spark']['hopsutil_version'] %>");
 
 -- --------------------------------------------------------
 --
 -- dela
 --
 
-REPLACE INTO variables VALUES ("dela_cluster_ip","<%= @dela_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("dela_cluster_ip","<%= @dela_ip %>");
 
-REPLACE INTO variables VALUES ("dela_cluster_http_port","<%= node['hopsworks']['dela']['cluster_http_port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("dela_cluster_http_port","<%= node['hopsworks']['dela']['cluster_http_port'] %>");
 
-REPLACE INTO variables VALUES ("dela_hopsworks_public_port","<%= node['hopsworks']['dela']['public_hopsworks_port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("dela_hopsworks_public_port","<%= node['hopsworks']['dela']['public_hopsworks_port'] %>");
 
-REPLACE INTO variables VALUES ("dela_enabled","<%= node['hopsworks']['dela']['enabled'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("dela_enabled","<%= node['hopsworks']['dela']['enabled'] %>");
 
 -- dela old
 
-REPLACE INTO variables VALUES ("hops_site_endpoint","<%= node['hopsworks']['hopssite']['base_uri'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hops_site_endpoint","<%= node['hopsworks']['hopssite']['base_uri'] %>");
 
-REPLACE INTO variables VALUES ("hops_site_host","<%= node['hopsworks']['hopssite']['domain'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hops_site_host","<%= node['hopsworks']['hopssite']['domain'] %>");
 
-REPLACE INTO variables VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks']['hopssite']['heartbeat'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks']['hopssite']['heartbeat'] %>");
 
 --
 
-REPLACE INTO variables VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
 
-REPLACE INTO variables VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_ip","<%= @hopsworks_ip %>");
 
-REPLACE INTO variables VALUES ("rest_port","<%= node['hopsworks']['port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("rest_port","<%= node['hopsworks']['port'] %>");
 
-REPLACE INTO variables VALUES ("max_gpu_request_size","<%= node['hopsworks']['max_gpu_request_size'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("max_gpu_request_size","<%= node['hopsworks']['max_gpu_request_size'] %>");
 
-REPLACE INTO variables VALUES ("max_cpu_request_size","<%= node['hopsworks']['max_cpu_request_size'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("max_cpu_request_size","<%= node['hopsworks']['max_cpu_request_size'] %>");
 
 --
 -- kibana, logstash, grafana, graphite
 --
 
-REPLACE INTO variables VALUES ("kibana_ip", "<%= @kibana_ip %>");
-REPLACE INTO variables VALUES ("logstash_ip", "<%= @logstash_ip %>");
-REPLACE INTO variables VALUES ("logstash_port", "<%= @logstash_port %>");
-REPLACE INTO variables VALUES ("grafana_ip", "<%= @grafana_ip %>");
-REPLACE INTO variables VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
-REPLACE INTO variables VALUES ("influxdb_port", "<%= node['influxdb']['http']['port'] %>");
-REPLACE INTO variables VALUES ("influxdb_user", "<%= node['influxdb']['db_user'] %>");
-REPLACE INTO variables VALUES ("influxdb_pw", "<%= node['influxdb']['db_password'] %>");
-REPLACE INTO variables VALUES ("graphite_ip", "<%= @graphite_ip %>");
-REPLACE INTO variables VALUES ("graphite_port", "<%= node['influxdb']['graphite']['port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("kibana_ip", "<%= @kibana_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("logstash_ip", "<%= @logstash_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("logstash_port", "<%= @logstash_port %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("grafana_ip", "<%= @grafana_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_port", "<%= node['influxdb']['http']['port'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_user", "<%= node['influxdb']['db_user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_pw", "<%= node['influxdb']['db_password'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("graphite_ip", "<%= @graphite_ip %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("graphite_port", "<%= node['influxdb']['graphite']['port'] %>");
 --
 -- pyspark, python
 --
-REPLACE INTO variables VALUES ("python_kernel", "<%= @python_kernel %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("python_kernel", "<%= @python_kernel %>");
 
-REPLACE INTO variables VALUES ("cuda_dir", "<%= node['cuda']['base_dir'] %>");
-REPLACE INTO variables VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
-REPLACE INTO variables VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
-REPLACE INTO variables VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
-REPLACE INTO variables VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("cuda_dir", "<%= node['cuda']['base_dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
 
 --
 -- Hive
 --
 
-REPLACE INTO variables VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname %>");
-REPLACE INTO variables VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
-REPLACE INTO variables VALUES ("hive_warehouse", "<%= node['hive2']['hopsfs_dir'] %>/warehouse");
-REPLACE INTO variables VALUES ("hive_scratchdir", "<%= node['hive2']['scratch_dir'] %>");
-REPLACE INTO variables VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hiveserver_ssl_hostname", "<%= @hivessl_hostname %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hiveserver_ext_hostname", "<%= @hiveext_hostname %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hive_warehouse", "<%= node['hive2']['hopsfs_dir'] %>/warehouse");
+REPLACE INTO variables(`id`, `value`) VALUES ("hive_scratchdir", "<%= node['hive2']['scratch_dir'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hive_superuser", "<%= node['hive2']['user'] %>");
 
 --
 -- First-time Login
 --
 
-REPLACE INTO variables VALUES ("first_time_login", "1");
+REPLACE INTO variables VALUES ("first_time_login", "1", 2);
 
 
 --
 -- Alerting
 --
 
-REPLACE INTO variables VALUES ("alert_email_addrs", "<%= node['hopsworks']['alert_email_addrs'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("alert_email_addrs", "<%= node['hopsworks']['alert_email_addrs'] %>");
 
 --
 -- LDAP
 --
 
-REPLACE INTO variables VALUES ("ldap_auth", "<%= node['ldap']['enabled'] %>");
-REPLACE INTO variables VALUES ("ldap_group_mapping", "<%= node['ldap']['group_mapping'] %>");
-REPLACE INTO variables VALUES ("ldap_user_id", "<%= node['ldap']['user_id'] %>");
-REPLACE INTO variables VALUES ("ldap_user_givenName", "<%= node['ldap']['user_givenName'] %>");
-REPLACE INTO variables VALUES ("ldap_user_surname", "<%= node['ldap']['user_surname'] %>");
-REPLACE INTO variables VALUES ("ldap_user_email", "<%= node['ldap']['user_email'] %>");
-REPLACE INTO variables VALUES ("ldap_user_search_filter", "<%= node['ldap']['user_search_filter'] %>");
-REPLACE INTO variables VALUES ("ldap_group_search_filter", "<%= node['ldap']['group_search_filter'] %>");
-REPLACE INTO variables VALUES ("ldap_attr_binary", "<%= node['ldap']['attr_binary'] %>");
-REPLACE INTO variables VALUES ("ldap_group_target", "<%= node['ldap']['group_target'] %>");
-REPLACE INTO variables VALUES ("ldap_dyn_group_target", "<%= node['ldap']['dyn_group_target'] %>");
-REPLACE INTO variables VALUES ("ldap_user_dn", "<%= node['ldap']['user_dn'] %>");
-REPLACE INTO variables VALUES ("ldap_group_dn", "<%= node['ldap']['group_dn'] %>");
-REPLACE INTO variables VALUES ("ldap_account_status", "<%= node['ldap']['account_status'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_auth", "<%= node['ldap']['enabled'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_group_mapping", "<%= node['ldap']['group_mapping'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_id", "<%= node['ldap']['user_id'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_givenName", "<%= node['ldap']['user_givenName'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_surname", "<%= node['ldap']['user_surname'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_email", "<%= node['ldap']['user_email'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_search_filter", "<%= node['ldap']['user_search_filter'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_group_search_filter", "<%= node['ldap']['group_search_filter'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_attr_binary", "<%= node['ldap']['attr_binary'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_group_target", "<%= node['ldap']['group_target'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_dyn_group_target", "<%= node['ldap']['dyn_group_target'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_user_dn", "<%= node['ldap']['user_dn'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_group_dn", "<%= node['ldap']['group_dn'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("ldap_account_status", "<%= node['ldap']['account_status'] %>");

@@ -12,3 +12,9 @@ DROP TABLE IF EXISTS `feature_store_tag`;
 
 ALTER TABLE `hopsworks`.`host_services` DROP KEY `service_UNIQUE`;
 ALTER TABLE `hopsworks`.`host_services` CHANGE COLUMN `name` `service` varchar(48) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `seed`;
+
+DROP TABLE IF EXISTS `training_dataset_split`;
+
+ALTER TABLE `hopsworks`.`variables` DROP COLUMN `visibility`;

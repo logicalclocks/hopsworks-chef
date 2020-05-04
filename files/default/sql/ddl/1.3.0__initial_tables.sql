@@ -1558,6 +1558,7 @@ CREATE TABLE `training_dataset` (
   `external_training_dataset_id` INT(11) NULL,
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
   `target_variable` varchar(1000) COLLATE latin1_general_cs NOT NULL DEFAULT '',  
+  `seed` BIGINT(11) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -1628,6 +1629,23 @@ CREATE TABLE `training_dataset_feature` (
   CONSTRAINT  `fk_fg_commit` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,  
   CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `training_dataset_split`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `training_dataset_split` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset_id` int(11) NOT NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `percentage` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1751,6 +1769,7 @@ SET character_set_client = @saved_cs_client;
 CREATE TABLE `variables` (
   `id` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `value` varchar(1024) COLLATE latin1_general_cs NOT NULL,
+  `visibility` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
