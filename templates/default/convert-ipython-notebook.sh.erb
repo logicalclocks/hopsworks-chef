@@ -59,7 +59,7 @@ CONTAINER_NAME=$2__nbconverter
 
 kill_named
 
-docker run --name $CONTAINER_NAME\
+docker run --rm --name $CONTAINER_NAME\
        --network=host \
        --init \
        -e "HADOOP_HOME=${HADOOP_HOME}" \

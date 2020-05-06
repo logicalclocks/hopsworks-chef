@@ -46,7 +46,7 @@ elif [ "$1" == "list" ] ; then
 	help
     fi
     
-    docker run $2 conda list -n theenv
+    docker run --rm $2 conda list -n theenv
 
 elif [ "$1" == "export" ] ; then
     re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
@@ -55,7 +55,7 @@ elif [ "$1" == "export" ] ; then
 	help
     fi
     
-    docker run $2 conda env export -n theenv
+    docker run --rm $2 conda env export -n theenv
     
 else
     help
