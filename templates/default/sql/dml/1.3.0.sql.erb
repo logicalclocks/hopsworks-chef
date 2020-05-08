@@ -15,3 +15,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_tf_serving';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_sklearn_serving';
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("enable_metadata_designer", "<%= node['hopsworks']['enable_metadata_designer'] %>", 1);
