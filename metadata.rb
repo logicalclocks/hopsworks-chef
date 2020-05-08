@@ -1989,3 +1989,7 @@ attribute "hopsworks/hdfs/storage_policy/base",
 attribute "hopsworks/hdfs/storage_policy/log",
           :description => "Set the project LOG_DIR storage policy. Default is HOT. Accepted values: CLOUD/DB/HOT",
           :type => 'string'
+# enable/disable metadata designer
+attribute "hopsworks/enable_metadata_designer",
+          :description => "Enable metadata designer. 'false' (default)",
+          :type => 'string'
