@@ -2,7 +2,7 @@ include_recipe "java"
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
-# This is set correctly in hopsworks::install by the chef-glassfish recipe. As each recipe has it's own 
+# This is set correctly in hopsworks::install by the chef-glassfish recipe. As each recipe has it's own
 # instance of chef we need to re-set it here.
 # If you set it in the attributes it will break glassfish installation.
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
@@ -118,9 +118,10 @@ bash 'create_hopsworks_db' do
       #{exec} -e \"CREATE USER IF NOT EXISTS #{node['hopsworks']['mysql']['user']} IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']}\';\"
       #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
       #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
+      # Hopsworks needs to the quotas tables
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.yarn_projects_quota TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.hdfs_directory_with_quota_feature TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
       #{exec} -e \"GRANT SELECT ON metastore.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
-      # Grant option for creating the online feature store 
-      #{exec} -e \"GRANT GRANT OPTION ON *.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'%\';\"
     EOF
 end
 
@@ -196,7 +197,7 @@ end
 # hops-util-py only works for localhost installations if you disable TLS hostname validations
 if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
-end  
+end
 
 
 # Hive metastore should be created before the hopsworks tables are created
@@ -237,7 +238,7 @@ end
 if current_version.eql?("")
 
   # Make sure the database is actually empty. Otherwise raise an error
-  ruby_block "check_db_empty" do 
+  ruby_block "check_db_empty" do
     block do
       raise "You are trying to initialize the database, but the database is not empty. Either there is a failed migration, or you forgot to set the current_version attribute"
     end
@@ -500,7 +501,7 @@ props =  {
  end
 
 # Enable JMX metrics
-glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amx true --logfrequency 15 --logfrequencyunit SECONDS" do 
+glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amx true --logfrequency 15 --logfrequencyunit SECONDS" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -516,10 +517,10 @@ glassfish_conf = {
   'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"",
   # Enable/Disable HTTP listener
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
-  # Make sure the https listener is listening on the requested port 
+  # Make sure the https listener is listening on the requested port
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port' => node['hopsworks']['https']['port'],
   # Disable SSL3
-  'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false, 
+  'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled' => false,
   # Disable TLS 1.0
   'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
@@ -622,8 +623,8 @@ logging_conf = {
   'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
   'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
   # These are just some random number, we are not enabling this logger. However if they are not set
-  # the main logger doesn't work either. 
-  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,  
+  # the main logger doesn't work either.
+  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,
   'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => 0,
   'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => 3
 }
@@ -643,7 +644,7 @@ loglevels_conf = {
 }
 
 loglevels_conf.each do |property, value|
-  glassfish_asadmin "set-log-levels #{property}=#{value}" do 
+  glassfish_asadmin "set-log-levels #{property}=#{value}" do
     domain_name domain_name
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
     username username
@@ -680,7 +681,7 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
   end
 end
 
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty? 
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty?
   krb_conf_path = node['kerberos']['krb_conf_path']
   remote_file "#{theDomain}/config/krb5.conf" do
     source "file:///#{krb_conf_path}"
@@ -691,7 +692,7 @@ if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_pat
   end
 end
 
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty? 
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty?
   key_tab_path = node['kerberos']['krb_server_key_tab_path']
   ket_tab_name = node['kerberos']['krb_server_key_tab_name']
   remote_file "#{theDomain}/config/#{ket_tab_name}" do
@@ -768,7 +769,7 @@ node.override['glassfish']['asadmin']['timeout'] = 400
 if node['install']['enterprise']['install'].casecmp? "true"
   node.override['hopsworks']['ear_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ear#{node['install']['kubernetes'].casecmp("true") == 0 ? "-kube" : ""}.ear"
   node.override['hopsworks']['war_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-web.war"
-  node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"  
+  node.override['hopsworks']['ca_url'] = "#{node['install']['enterprise']['download_url']}/hopsworks/#{node['hopsworks']['version']}/hopsworks-ca.war"
 end
 
 glassfish_deployable "hopsworks-ear" do
@@ -796,7 +797,7 @@ glassfish_deployable "hopsworks" do
   target "server"
   url node['hopsworks']['war_url']
   auth_username node['install']['enterprise']['username']
-  auth_password node['install']['enterprise']['password']  
+  auth_password node['install']['enterprise']['password']
   version node['hopsworks']['version']
   context_root "/hopsworks"
   domain_name domain_name
@@ -817,7 +818,7 @@ glassfish_deployable "hopsworks-ca" do
   target "server"
   url node['hopsworks']['ca_url']
   auth_username node['install']['enterprise']['username']
-  auth_password node['install']['enterprise']['password']  
+  auth_password node['install']['enterprise']['password']
   version node['hopsworks']['version']
   context_root "/hopsworks-ca"
   domain_name domain_name
@@ -896,7 +897,7 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   group node['glassfish']['group']
   mode 0750
   variables({
-    :pkgs_dirs => node['hopsworks']['conda_cache'] 
+    :pkgs_dirs => node['hopsworks']['conda_cache']
   })
   action :create
 end
@@ -925,7 +926,7 @@ case node['platform_family']
 
   scala_rpm_path="#{Chef::Config['file_cache_path']}/scala-#{node['scala']['version']}.rpm"
   remote_file scala_rpm_path do
-    source node['scala']['download_url'] 
+    source node['scala']['download_url']
     owner 'root'
     group 'root'
     mode '0755'
@@ -936,7 +937,7 @@ case node['platform_family']
     user "root"
     cwd Chef::Config['file_cache_path']
     code <<-EOF
-      set -e  
+      set -e
       yum install -y scala-#{node['scala']['version']}.rpm
     EOF
     not_if "which scala"
