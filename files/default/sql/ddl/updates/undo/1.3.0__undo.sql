@@ -18,3 +18,10 @@ ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `seed`;
 DROP TABLE IF EXISTS `training_dataset_split`;
 
 ALTER TABLE `hopsworks`.`variables` DROP COLUMN `visibility`;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` CHANGE COLUMN `base_dir` `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT '/Jupyter/';
+
+UPDATE `hopsworks`.`jupyter_settings` `j`
+JOIN `hopsworks`.`project` `p`
+ON `j`.`project_id` = `p`.`id`
+SET `j`.`base_dir` = '/Jupyter/';
