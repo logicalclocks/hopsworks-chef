@@ -8,3 +8,10 @@ ALTER TABLE `hopsworks`.`tensorboard` CHANGE `cid` `pid` bigint(20) NOT NULL;
 ALTER TABLE `hopsworks`.`serving` CHANGE `cid` `local_pid` bigint(20) NOT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `error_message`;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_yml` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` CHANGE COLUMN `base_dir` `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT '/Jupyter/';
+
+UPDATE `hopsworks`.`jupyter_settings` `j`
+JOIN `hopsworks`.`project` `p`
+ON `j`.`project_id` = `p`.`id`
+SET `j`.`base_dir` = '/Jupyter/';
