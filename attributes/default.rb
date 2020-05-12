@@ -36,6 +36,8 @@ default['hopsworks']['admin']['password']        = "adminpw"
 default['hopsworks']['admin']['email']           = "admin@hopsworks.ai"
 
 default['hopsworks']['db']                       = "hopsworks"
+default['hopsworks']['mysql']['user']            = "hopsworks"
+default['hopsworks']['mysql']['password']        = "hopsworks"
 
 default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
