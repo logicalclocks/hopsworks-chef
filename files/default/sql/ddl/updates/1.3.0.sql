@@ -44,7 +44,13 @@ CREATE TABLE IF NOT EXISTS `training_dataset_split` (
 
 ALTER TABLE `hopsworks`.`variables` ADD COLUMN `visibility` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `base_env` VARCHAR(45) COLLATE latin1_general_cs;
-ALTER TABLE `hopsworks`.`conda_commands` DROP FOREIGN KEY `FK_481_519`;
+
+-- drop foreign key to project it is not always pointing to a project now.
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "conda_commands" AND REFERENCED_TABLE_NAME="projects");
+SET @s := concat('ALTER TABLE hopsworks.conda_commands DROP FOREIGN KEY `', @fk_name, '`');
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `host_id`, DROP INDEX `host_id` ;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `proj` `docker_image` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`jupyter_project` CHANGE `pid` `cid` varchar(255) COLLATE latin1_general_cs NOT NULL;
