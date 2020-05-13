@@ -375,14 +375,6 @@ attribute "serving/base_dir",
           :description => "base directory for temporary directories for serving servers",
           :type => 'string'
 
-attribute "serving/user",
-          :description => "user to launch serving servers as",
-          :type => 'string'
-
-attribute "serving/group",
-          :description => "group to launch serving servers as",
-          :type => 'string'
-
 attribute "serving/pool_size",
           :description => "size of the connection pool for serving inference requests to model serving servers",
           :type => 'string'

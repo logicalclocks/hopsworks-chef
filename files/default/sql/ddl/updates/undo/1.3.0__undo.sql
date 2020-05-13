@@ -23,6 +23,6 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD CONSTRAINT `FK_481_519` FOREIGN KEY
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `docker_image` `proj` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`jupyter_project` CHANGE `cid` `pid` bigint(20) NOT NULL;
 ALTER TABLE `hopsworks`.`tensorboard` CHANGE `cid` `pid` bigint(20) NOT NULL;
-ALTER TABLE `hopsworks`.`tensorboard` CHANGE `cid` `local_pid` bigint(20) NOT NULL;
+ALTER TABLE `hopsworks`.`serving` CHANGE `cid` `local_pid` bigint(20) NOT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `error_message`;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_yml` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL;
