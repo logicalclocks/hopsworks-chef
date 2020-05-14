@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `training_dataset_split` (
 ALTER TABLE `hopsworks`.`variables` ADD COLUMN `visibility` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `base_env` VARCHAR(45) COLLATE latin1_general_cs;
 
+TRUNCATE TABLE `hopsworks`.`conda_commands`;
 -- drop foreign key to project it is not always pointing to a project now.
 SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "conda_commands" AND REFERENCED_TABLE_NAME="projects");
 SET @s := concat('ALTER TABLE hopsworks.conda_commands DROP FOREIGN KEY `', @fk_name, '`');
