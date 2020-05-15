@@ -17,3 +17,6 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_tf_serving';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_sklearn_serving';
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("enable_metadata_designer", "<%= node['hopsworks']['enable_metadata_designer'] %>", 1);
+
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_conf_path", "<%= node['hive']['conf_dir'] %>/hive-site.xml");
