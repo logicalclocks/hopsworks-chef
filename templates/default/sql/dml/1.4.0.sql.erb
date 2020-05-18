@@ -4,8 +4,6 @@ REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_user", "<%
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_group", "<%= node['hops']['group'] %>");
 -- the path is hardcoded because it is the path inside the docker image, not on the machine.
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("anaconda_dir", "/srv/hops/anaconda");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_name", "<%= @registry_host %>");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_port", "<%= node['hops']['docker']['registry']['port'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_conf_path", "<%= node['hive2']['conf_dir'] %>/hive-site.xml");
 
