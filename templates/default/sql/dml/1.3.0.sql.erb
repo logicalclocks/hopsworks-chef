@@ -17,12 +17,3 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_tf_serving';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_sklearn_serving';
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("enable_metadata_designer", "<%= node['hopsworks']['enable_metadata_designer'] %>", 1);
-
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("yarn_runtime", "docker");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_mounts", "<%= node['hops']['docker']['mounts'] %>");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_user", "<%= node['hops']['yarnapp']['user'] %>");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_group", "<%= node['hops']['group'] %>");
--- the path is hardcoded because it is the path inside the docker image, not on the machine.
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("anaconda_dir", "/srv/hops/anaconda");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_name", "<%= @registry_host %>");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_port", "<%= node['hops']['docker']['registry']['port'] %>");
