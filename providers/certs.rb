@@ -100,18 +100,97 @@ action :sign_hopssite do
   EOF
     not_if { ::File.exists?( "#{signed}" ) }
   end
+end
 
 
-  # bash "chown-certificates" do
-  #   user "root"
-  #   code <<-EOH
-  #     set -eo pipefail
-  #     cd #{node['kagent']['certs_dir']}
-  #     chown root:#{node['kagent']['certs_group']} .
-  #     chown -R root:#{node['kagent']['certs_group']} #{node['kagent']['keystore_dir']}
-  #     chown root:#{node['kagent']['group']} pub.pem ca_pub.pem priv.key
-  #   EOH
-  # end
+action :generate_int_certs do 
 
+  bash 'generate-key' do
+    user node['hopsworks']['user']
+    group node['hopsworks']['group']
+    cwd node['hopsworks']['config_dir']
+    code <<-EOH
+      openssl genrsa -out internal.key 2048 
+      openssl req -new -key internal.key -subj #{new_resource.subject} -out internal.csr
+    EOH
+  end
+
+  # Sign the certificate
+  ruby_block 'sign-csr' do
+    block do
+      require 'net/https'
+      require 'http-cookie'
+      require 'json'
+
+      url = URI.parse("https://127.0.0.1:#{node['hopsworks']['https']['port']}/hopsworks-api/api/auth/service")
+      ca_url = URI.parse("https://127.0.0.1:#{node['hopsworks']['https']['port']}/hopsworks-ca/v2/certificate/host")
+
+
+      params =  {
+        :email => node["kagent"]["dashboard"]["user"],
+        :password => node["kagent"]["dashboard"]["password"]
+      }
+
+      http = Net::HTTP.new(url.host, url.port)
+      http.read_timeout = 120
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      jar = ::HTTP::CookieJar.new
+
+      http.start do |connection|
+
+        request = Net::HTTP::Post.new(url)
+        request.set_form_data(params, '&')
+        response = connection.request(request)
+
+        if( response.is_a?( Net::HTTPSuccess ) )
+            # your request was successful
+            puts "The Response -> #{response.body}"
+
+            response.get_fields('Set-Cookie').each do |value|
+              jar.parse(value, url)
+            end
+
+            csr = ::File.read("#{node['hopsworks']['config_dir']}/internal.csr")
+            request = Net::HTTP::Post.new(ca_url)
+            request.body = {'csr' => csr}.to_json
+            request['Content-Type'] = "application/json"
+            request['Cookie'] = ::HTTP::Cookie.cookie_value(jar.cookies(ca_url))
+		        request['Authorization'] = response['Authorization']
+            response = connection.request(request)
+
+            if ( response.is_a? (Net::HTTPSuccess))
+              json_response = ::JSON.parse(response.body)
+              ::File.write("#{node['hopsworks']['config_dir']}/internal.crt", json_response['signedCert'])
+            else
+              raise "Error signing certificate"
+            end
+        else
+            puts response.body
+            raise "Error logging in"
+        end
+      end
+    end
+  end
+
+  # Add the certificate to the keystore.jks
+  bash "add_to_keystore" do 
+    user node['hopsworks']['user']
+    group node['hopsworks']['group']
+    cwd node['hopsworks']['config_dir']
+    code <<-EOH
+        set -e
+        # Create the bundle 
+        cat internal.crt #{node['certs']['dir']}/intermediate/certs/intermediate.cert.pem > internal_bundle.crt
+
+        openssl pkcs12 -export -in internal_bundle.crt -inkey internal.key -out cert_and_key.p12 -name internal -CAfile #{node['certs']['dir']}/certs/ca.cert.pem -caname internal -password pass:#{node['hopsworks']['master']['password']}
+
+        # Import into the keystore
+        keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias internal -srcstorepass #{node['hopsworks']['master']['password']} -deststorepass #{node['hopsworks']['master']['password']} -destkeypass #{node['hopsworks']['master']['password']}
+
+         keytool -import -noprompt -alias internal -file #{node['certs']['dir']}/certs/ca.cert.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+    EOH
+  end
 
 end

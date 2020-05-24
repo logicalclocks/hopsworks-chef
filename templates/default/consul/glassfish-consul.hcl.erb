@@ -4,9 +4,10 @@ services = [
         name = "glassfish"
         tags = [
             "http",
+            "monitoring",
             "hopsworks"
         ]
-        port = <%= node['hopsworks']['https']['port'] %>
+        port = <%= node['hopsworks']['internal']['port'] %>
     },
     {
         id = "hopsworks/admin"

@@ -30,6 +30,7 @@ default['hopsworks']['group']                    = node['install']['user'].empty
 default['glassfish']['group']                    = node['hopsworks']['group']
 
 default['hopsworks']['https']['port']            = 8181
+default['hopsworks']['internal']['port']         = 8182
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
@@ -67,6 +68,7 @@ default['hopsworks']['max_stack_size']           = "1500"
 default['glassfish']['max_stack_size']           = node['hopsworks']['max_stack_size'].to_i
 default['hopsworks']['http_logs']['enabled']     = "true"
 default['hopsworks']['env_var_file']             = "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_environment_variables"
+default['hopsworks']['config_dir']               = "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}/config"
 
 default['glassfish']['reschedule_failed_timer']     = "true"
 
@@ -405,7 +407,7 @@ default['featurestore']['user']                            = node['mysql']['user
 default['featurestore']['password']                        = node['mysql']['password']
 
 # hops-util-py
-default['hopsworks']['requests_verify'] = "true"
+default['hopsworks']['requests_verify']                    = node['hops']['tls']['enabled']
 
 #
 # Provenance
@@ -425,7 +427,7 @@ default['hopsworks']['client_path']           = "COMMUNITY"
 # hdfs storage policy
 # accepted hopsworks storage policy files: CLOUD, DB, HOT
 # Set the DIR_ROOT (/Projects) to have DB storage policy
-default['hopsworks']['hdfs']['storage_policy']['base']        = "DB" 
+default['hopsworks']['hdfs']['storage_policy']['base']        = "DB"
 # To not fill the SSDs with Logs files that nobody access frequently we set the StoragePolicy for the LOGS dir to be default HOT
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 

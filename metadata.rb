@@ -206,6 +206,10 @@ attribute "hopsworks/https/port",
           :description => "Port that webserver will listen on",
           :type => 'string'
 
+attribute "hopsworks/internal/port",
+          :description => "Port that the webserver will listen on for internal calls",
+          :type => 'string'
+
 attribute "hopsworks/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'
