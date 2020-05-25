@@ -240,8 +240,6 @@ default['hopsworks']['nonconda_hosts']               = ""
 # Jupyter
 #
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
-default['jupyter']['user']                             = node['install']['user'].empty? ? "jupyter" : node['install']['user']
-default['jupyter']['group']                            = node['install']['user'].empty? ? "jupyter" : node['install']['user']
 default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
@@ -251,8 +249,6 @@ default['jupyter']['origin_scheme']                    = "https"
 # Serving
 #
 default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
-default['serving']['user']                           = node['install']['user'].empty? ? "serving" : node['install']['user']
-default['serving']['group']                          = node['install']['user'].empty? ? "serving" : node['install']['user']
 default['serving']['pool_size']                      = "40"
 default['serving']['max_route_connections']          = "10"
 

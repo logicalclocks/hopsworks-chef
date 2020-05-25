@@ -1,6 +1,4 @@
 ALTER TABLE `hopsworks`.`shared_topics` DROP COLUMN `accepted`;
-
-
 ALTER TABLE `hopsworks`.`external_training_dataset` DROP COLUMN `path`;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `hdfs_user_id` int(11) NOT NULL;

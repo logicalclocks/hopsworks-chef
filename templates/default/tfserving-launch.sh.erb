@@ -8,23 +8,27 @@ RESTPORT=$3
 SECRET_DIR=$4
 ENABLE_BATCHING=$5
 PROJECT_NAME=$6
+IMAGE=$7
+SERVING_USER=$8
 LOGDIR=${SECRET_DIR}/logs
 LOGFILE=${LOGDIR}/${MODEL_NAME}.log
 PID_FILE=${SECRET_DIR}/tfserving.pid
 FILE_SYSTEM_POLLING_INTERVAL_SECS=10
+CONTAINER_NAME=tf_model_server_${MODEL_NAME}_${PROJECT_NAME}
 
+NOT_FOUND=127
 
 help() {
     echo ""
-    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR BATCHING PROJECTNAME"
+    echo "usage: $0 MODEL_NAME GRPCPORT RESTPORT SECRET_DIR BATCHING PROJECTNAME IMAGE_NAME"
     echo ""
     exit 1
 }
 
 function kill_named {
-    PID=$(ps aux | grep -i tensorflow_model_server | grep "$PORT" | grep -v grep | awk '{print $2}')
-    if [ "$PID" != "" ] ; then
-	    kill -9 "$PID" > /dev/null 2>&1
+    CID=$(docker container list -a | grep -i "$CONTAINER_NAME" | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+	    docker rm -f "$CID" > /dev/null 2>&1
       res=$?
     else
       res=$NOT_FOUND
@@ -33,7 +37,8 @@ function kill_named {
 }
 
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 8 ]; then
+    echo "wrond number of arguments, should be 7 was $#"
   help
 fi
 
@@ -43,21 +48,36 @@ if [ ! -d "$SECRET_DIR" ] ; then
 fi
 
 mkdir -p "$LOGDIR"
+chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$LOGDIR"
 
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 cd "$SECRET_DIR" || exit
 
-BATCHING_COMMAND=''
-if [ "$ENABLE_BATCHING" == "1" ];
-then
-  BATCHING_COMMAND='--enable_batching=true'
+
+kill_named
+
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
 fi
 
-setsid tensorflow_model_server --port="$GRPCPORT" --rest_api_port="$RESTPORT" --model_name="$MODEL_NAME" --model_base_path="$SECRET_DIR"/"$MODEL_NAME" $BATCHING_COMMAND --file_system_poll_wait_seconds="$FILE_SYSTEM_POLLING_INTERVAL_SECS" &> >(sed -u 's/.*/'"$PROJECT_NAME"','"$MODEL_NAME"' &/' &> "$LOGFILE") &
+docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
+       -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
+       -e "HADOOP_HOME=${HADOOP_HOME}" \
+       -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"\
+       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -u="yarnapp" \
+       -w="$SECRET_DIR" \
+       $IMAGE \
+       tfserving-launcher.sh $MODEL_NAME $GRPCPORT $RESTPORT $SECRET_DIR $ENABLE_BATCHING $PROJECT_NAME $FILE_SYSTEM_POLLING_INTERVAL_SECS &
 
-echo $! > "$PID_FILE"
+
 
 # Check that the token is written to the logfile, return when we see it.
 timeout=0
@@ -74,8 +94,8 @@ echo ""
 
 # If the timeout was exceeded, kill tfserver
 if [ "$timeout" -eq $WAIT_START ] ; then
- PID=$(cat "$PID_FILE")
- kill "$PID" > /dev/null 2>&1
+ CID=$(cat "$PID_FILE")
+ docker rm -f "$CID" > /dev/null 2>&1
  if [ $? -ne 0 ] ; then
      kill_named
  fi

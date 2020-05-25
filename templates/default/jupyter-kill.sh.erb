@@ -2,47 +2,26 @@
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME PID PORT"
+    echo "usage: $0 CONTAINER_ID PROJECT_USER_NAME"
     echo ""
     exit 1
 }
 
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 2 ]; then
   help
 fi
 
-JUPYTER_HOME=$1
-PID=$2
-PORT=$3
+if [ "$2" != "" ]; then
+    PROJECT_USER_NAME=$2
+    CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 
-
-function kill_named {
-    PID=$(ps aux | grep -i jupyter | grep "${PORT}" | grep -v grep | awk '{print $2}')
-    if [ "$PID" != "" ] ; then
-	kill -9 "$PID" > /dev/null 2>&1
-        res=$?
-    else
-	res=$NOT_FOUND
-    fi
-    return "$res"
-}
-
-echo "Killing input pid: $PID"
-kill "$PID" > /dev/null 2>&1
-if [ $? -ne 0 ] ; then
-    if [ "${JUPYTER_HOME}" != "" ] ; then
-      PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
-      if [ -f "$PID_FILE" ] ; then
-        PID=$(cat "$PID_FILE")
-        echo "Killing pid: $PID"
-	kill "$PID" > /dev/null 2>&1
-	if [ $? -ne 0 ] ; then
-	    kill_named
-	fi
-      else
-	kill_named
-      fi
-    fi
+    echo "Killing input container_name: $CONTAINER_NAME"
+    docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1
+    exit $?
 fi
+
+echo "Killing input container_id: $1"
+docker rm -f "$1" > /dev/null 2>&1
 exit $?
+
