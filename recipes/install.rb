@@ -2,7 +2,6 @@ require 'json'
 require 'base64'
 require 'digest'
 
-
 my_ip = my_private_ip()
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
@@ -42,6 +41,18 @@ group node['hopsworks']['group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+group node['jupyter']['group'] do
+  action :create
+  not_if "getent group #{node['jupyter']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['serving']['group'] do
+  action :create
+  not_if "getent group #{node['serving']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
 #
 # hdfs superuser group is 'hdfs'
 #
@@ -61,6 +72,27 @@ user node['hopsworks']['user'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+group node['jupyter']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['serving']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['jupyter']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
 group node['conda']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
@@ -76,6 +108,25 @@ group node['hops']['hdfs']['user'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+user node['jupyter']['user'] do
+  home node['jupyter']['base_dir']
+  gid node['jupyter']['group']
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node['jupyter']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+user node['serving']['user'] do
+  gid node['serving']['group']
+  action :create
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node['serving']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
 group node['kagent']['certs_group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
@@ -84,23 +135,16 @@ group node['kagent']['certs_group'] do
 end
 
 group node['hops']['group'] do
-  gid node['hops']['group_id']
-  action :create
-  not_if "getent group #{node['hops']['group']}"
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
-group node['hops']['group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}"]
+  members ["#{node['hopsworks']['user']}", "#{node['jupyter']['user']}", "#{node['serving']['user']}"]
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 #update permissions of base_dir to 770
 directory node['jupyter']['base_dir']  do
-  owner node['hops']['yarnapp']['user']
-  group node['hops']['group']
+  owner node['jupyter']['user']
+  group node['jupyter']['group']
   mode "770"
   action :create
 end
@@ -555,30 +599,6 @@ kagent_sudoers "jupyter" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "convert-ipython-notebook" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "convert-ipython-notebook.sh"
-  template      "convert-ipython-notebook.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
-end
-
-kagent_sudoers "dockerImage" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "dockerImage.sh"
-  template      "dockerImage.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
-end
-
-kagent_sudoers "tensorboard" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "tensorboard.sh"
-  template      "tensorboard.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
-end
-
 kagent_sudoers "tfserving" do 
   user          node['glassfish']['user']
   group         "root"
@@ -625,7 +645,7 @@ end
 
 kagent_sudoers "start-llap" do 
   user          node['glassfish']['user']
-  group         node['hops']['group']
+  group         node['hive2']['group']
   script_name   "start-llap.sh"
   template      "start-llap.sh.erb"
   run_as        node["hive2"]['user']
@@ -642,7 +662,7 @@ end
 template "#{theDomain}/bin/tfserving-launch.sh" do
   source "tfserving-launch.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']
+  group node['serving']['group']
   mode "550"
   variables({
      :command => command
@@ -663,12 +683,9 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
-["anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
- "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh",
- "tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh",
- "pipsearch.sh", "list_environment.sh", "jupyter-kill.sh", "jupyter-launch.sh",
- "tfserving-kill.sh", "sklearn_serving-launch.sh",
- "sklearn_serving-kill.sh"].each do |script|
+["convert-ipython-notebook.sh", "anaconda-rsync.sh", "zip-hdfs-files.sh", "zip-background.sh",
+  "unzip-background.sh", "anaconda-command-ssh.sh", "conda-command-ssh.sh", "tensorboard.sh", "tensorboard-launch.sh", 
+  "tensorboard-cleanup.sh", "condasearch.sh", "pipsearch.sh", "list_environment.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
@@ -678,12 +695,21 @@ end
   end
 end
 
-
-["sklearn_flask_server.py"].each do |script|
+["jupyter-kill.sh", "jupyter-launch.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
-    group node['glassfish']['group']
+    group node['jupyter']['group']
+    mode "750"
+    action :create
+  end
+end
+
+["tfserving-kill.sh", "sklearn_flask_server.py", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh"].each do |script|
+  template "#{theDomain}/bin/#{script}" do
+    source "#{script}.erb"
+    owner node['glassfish']['user']
+    group node['serving']['group']
     mode "750"
     action :create
   end
@@ -721,14 +747,13 @@ end
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.
 # The jupyter user will be able to read the files and write to the directories due to group permissions
 
-user node['hops']['yarnapp']['user'] do
-  uid node['hops']['yarnapp']['uid']
-  gid node['hops']['group']
-  system true
-  manage_home true
-  shell "/bin/bash"
+user node["jupyter"]["user"] do
+  home node["jupyter"]["base_dir"]
+  gid node["jupyter"]["group"]
   action :create
-  not_if "getent passwd #{node['hops']['yarnapp']['user']}"
+  shell "/bin/bash"
+  manage_home true
+  not_if "getent passwd #{node["jupyter"]["user"]}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 

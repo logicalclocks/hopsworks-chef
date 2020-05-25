@@ -264,14 +264,6 @@ unless node['install']['cloud'].strip.empty?
   node.override['hopsworks']['reserved_project_names'] = "#{node['hopsworks']['reserved_project_names']},cloud"
 end
 
-begin
-  registry_ip = private_recipe_ip("hops","docker_registry")
-  registry_host = resolve_hostname(registry_ip)
-rescue
-  registry_host = "localhost"
-  Chef::Log.warn "could not find the docker registry ip!"
-end
-
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -306,8 +298,7 @@ for version in versions do
          :dela_ip => dela_ip,
          :nonconda_hosts_list => nonconda_hosts_list,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :featurestore_jdbc_url => featurestore_jdbc_url,
-         :registry_host => registry_host
+         :featurestore_jdbc_url => featurestore_jdbc_url
     })
     action :create
   end
@@ -970,14 +961,14 @@ directory node['hopsworks']['staging_dir']  do
 end
 
 directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
-  owner node['hops']['yarnapp']['user']
+  owner node['jupyter']['user']
   group node['hopsworks']['group']
   mode "0370"
   action :create
 end
 
 directory node['hopsworks']['staging_dir'] + "/serving"  do
-  owner node['hopsworks']['user']
+  owner node['serving']['user']
   group node['hopsworks']['group']
   mode "0730"
   action :create
