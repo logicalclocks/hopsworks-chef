@@ -375,14 +375,6 @@ attribute "serving/base_dir",
           :description => "base directory for temporary directories for serving servers",
           :type => 'string'
 
-attribute "serving/user",
-          :description => "user to launch serving servers as",
-          :type => 'string'
-
-attribute "serving/group",
-          :description => "group to launch serving servers as",
-          :type => 'string'
-
 attribute "serving/pool_size",
           :description => "size of the connection pool for serving inference requests to model serving servers",
           :type => 'string'
@@ -396,14 +388,6 @@ attribute "serving/max_route_connections",
 ## Jupyter
 ##
 ##
-
-attribute "jupyter/user",
-          :description => "Jupyter username to run notebook servers as",
-          :type => 'string'
-
-attribute "jupyter/group",
-          :description => "Jupyter group to run notebook servers as",
-          :type => 'string'
 
 attribute "jupyter/python",
           :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",

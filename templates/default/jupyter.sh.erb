@@ -8,19 +8,15 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home java_home anaconda_env port logfile secret_dir certs_dir hadoop_username token jupyter_mode] | [kill jupyter_home pid port] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home project_user_name anaconda_env port logfile secret_dir certs_dir hadoop_username token jupyter_mode image_name] | [kill jupyter_home container_id project_user_name] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
     echo ""
     exit 1
 }
 
-PORT=0
-CONDA_DIR=<%= node["conda"]["base_dir"] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
-JUPYTER_USER=<%= node['jupyter']['user'] %>
-JUPYTER_GROUP=<%= node['jupyter']['group'] %>
+JUPYTER_USER=<%= node['hops']['yarnapp']['user'] %>
+JUPYTER_GROUP=<%= node['hops']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
-KERNELS_DIR=/usr/local/share/jupyter/kernels
-EXEC_AS_ANACONDA_USER=<%= node['conda']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -28,27 +24,8 @@ if [ "$1" == "kill" ] ; then
 	help
     fi
 
-    # Sanity checks for injection attacks
-    #    if [ ! -d "$2" ] ; then
-    #	echo "Invalid JUPYTER_HOME directory: $2"
-    #	exit 1
-    #    fi
-
-    # Check that the port is an int (and not some injection attack)
-    re='^[0-9]+$'
-     if ! [[ $3 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-
-    re='^[0-9]+$'
-     if ! [[ $4 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-
     # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'jupyter'
-    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $3 $4"
+    su ${JUPYTER_USER} -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $3 $4"
 
     # Remove all the directories in the home jupyter folder for this project-user.
     if [ "$2" != "" ] ; then
@@ -60,7 +37,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 12 ]; then
+    if [ $# -ne 13 ]; then
 	help
     fi
 
@@ -72,10 +49,6 @@ elif [ "$1" == "start" ] ; then
     if [ ! -d "$3" ] ; then
 	echo "Invalid HADOOP_HOME directory: $3"
 	exit 2
-    fi
-    if [ ! -f "${4}/bin/java" ] ; then
-	echo "Invalid JAVA_HOME directory: $4"
-	exit 3
     fi
 
     if [ ! -d "${9}" ] ; then
@@ -89,11 +62,16 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(ps -ef | grep -E "jupyter-(lab|notebook)" | grep "port=$6" | awk '{print $2}')
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    if ! [[ ${13} =~ $re ]] ; then
+	echo "error: Not an image name ${13}" >&2
+	help
+    fi
 
+    pid=$(ps -ef | grep -E "jupyter-(lab|notebook)" | grep "port=$6" | awk '{print $2}')
     if [ "$pid" != "" ] ; then
-        su $JUPYTER_USER -c "${DOMAINS_DIR}/domain1/bin/jupyter-kill.sh $2 $pid $6"
-	sleep 5
+	echo "There is already a notebook using this port"
+	exit 1
     fi
 
     # Should look like 'name-4444.log', where '4444' is the port number for the server
@@ -133,12 +111,12 @@ elif [ "$1" == "start" ] ; then
     chmod -R 770 "$2"
      
     # Launch JupyterLab
-    su "${JUPYTER_USER}" -c "${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
+    ${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
 
 # list 
 elif [ "$1" == "list" ] ; then
     # This command will output line-separated PIDs for all running jupyter-notebooks into the tmp file, from where it is read by Hopsworks
-    ps -ef | grep -v 'grep' | grep -iE "jupyter-(lab|notebook)" | awk '{print $2}' > /tmp/jupyterNotebookServer.pids
+    docker container list -a | grep "__jupyter" |  grep -v 'grep' | awk '{print $1}' > /tmp/jupyterNotebookServer.pids
 else
   help
 fi

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-WAIT_START=20
 SCRIPT_NAME=$1
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
 PORT=$2
@@ -9,20 +8,24 @@ PROJECT_NAME=$4
 PYTHONPATH=$5
 HDFS_USER=$6
 SERVING_NAME=$7
+IMAGE=$8
 LOGFILE=${SECRET_DIR}/${SCRIPT_NAME}-application.log
 PID_FILE=${SECRET_DIR}/sklearn_flask_server.pid
+CONTAINER_NAME=sk_model_server_${SERVING_NAMEs}_${PROJECT_NAME}
+
+NOT_FOUND=127
 
 help() {
     echo ""
-    echo "usage: $0 SCRIPT_NAME PORT SECRET_DIR PROJECTNAME PYTHONPATH HDFS_USER SERVING_NAME"
+    echo "usage: $0 SCRIPT_NAME PORT SECRET_DIR PROJECTNAME PYTHONPATH HDFS_USER SERVING_NAME IMAGE"
     echo ""
     exit 1
 }
 
 function kill_named {
-    PID=$(ps aux | grep sklearn_flask_server | grep "${PORT}" | grep -v grep | awk '{print $2}')
-    if [ "$PID" != "" ] ; then
-      kill -9 "$PID" > /dev/null 2>&1
+    CID=$(docker container list -a | grep -i "$CONTAINER_NAME" | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+	    docker rm -f "$CID" > /dev/null 2>&1
       res=$?
     else
       res=$NOT_FOUND
@@ -31,7 +34,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 8 ]; then
   help
 fi
 
@@ -40,18 +43,35 @@ if [ ! -d "$SECRET_DIR" ] ; then
     exit 2
 fi
 
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
-export HADOOP_HOME=$HADOOP_HOME
-export HDFS_USER=$HDFS_USER
-export HADOOP_PROXY_USER=$HDFS_USER
-export MATERIAL_DIRECTORY=$SECRET_DIR
-export PATH=${HADOOP_HOME}/bin:$PATH
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 cd "$SECRET_DIR" || exit
 
-setsid "$PYTHONPATH" "$SECRET_DIR"/sklearn_flask_server.py --port="$PORT" --file="$SCRIPT_NAME" &> >(sed -u 's/.*/'"$PROJECT_NAME"','"$SERVING_NAME"' &/' &> "$LOGFILE") &
+kill_named
 
-echo $! > "$PID_FILE"
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
+fi
+
+docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
+       -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
+       -e "HADOOP_HOME=${HADOOP_HOME}" \
+       -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"\
+       -e "HDFS_USER=$HDFS_USER"\
+       -e "HADOOP_PROXY_USER=$HDFS_USER"\
+       -e "MATERIAL_DIRECTORY=$SECRET_DIR"\
+       -e "PATH=${HADOOP_HOME}/bin:$PATH"\
+       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -u="yarnapp" \
+       -w="$SECRET_DIR" \
+       $IMAGE \
+       sklearn_serving-launcher.sh $SCRIPT_NAME $PORT $SECRET_DIR $PROJECT_NAME $PYTHONPATH $SERVING_NAME $LOGFILE  &
+
 
 exit $?

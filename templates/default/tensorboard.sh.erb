@@ -7,13 +7,14 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath hadoopVersion certsDir javaHome ldLibraryPath] | [kill pid] | [cleanup tbDir]"
+    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath ldLibraryPath image] | [kill cid ] | [cleanup tbDir]"
     echo ""
     exit 1
 }
 
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
+TENSORBOARD_USER=<%= node['hops']['yarnapp']['user'] %>
 
 if [ "$1" == "kill" ] ; then
 
@@ -21,30 +22,14 @@ if [ "$1" == "kill" ] ; then
 	    help
     fi
     
-    # Sanity checks for injection attacks
-    re='^[0-9]+$'
-    if ! [[ $2 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-
-    PID=$(ps aux | grep tensorboard | grep "$2")
-    if [ "$PID" != "" ] ; then
- 	    kill -9 "$2" > /dev/null 2>&1
-    fi
-
+    echo "Killing input container_id: $2"
+    docker rm -f "$2" > /dev/null 2>&1
     exit $?
-
+    
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 9 ]; then
+    if [ $# -ne 8 ]; then
 	help
-    fi
-
-    ls "$6"/bin/tensorboard
-    if [ $? -ne 0 ] ; then
-        echo "Could not find tensorboard binary"
-        exit 1
     fi
 
     if [ ! -d "$4" ] ; then
@@ -52,13 +37,15 @@ elif [ "$1" == "start" ] ; then
         exit 2
     fi
 
+    chown $TENSORBOARD_USER $4
+
     netstat -tulpn | grep :"$5"
     if [ $? -eq 0 ] ; then
         echo "Port is allocated already"
         exit 1
     fi
 
-    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9
+    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8
 
 elif [ "$1" == "cleanup" ] ; then
 

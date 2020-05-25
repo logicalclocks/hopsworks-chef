@@ -8,55 +8,36 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start model_name hdfs_model_path port secretdir username enable_batching project_name] | [kill pid port secretdir] | [update model_name hdfs_model_path secretdir username] "
+    echo "usage: $0 [start model_name hdfs_model_path grpcport restport secretdir username enable_batching project_name image_name] | [kill cid model_name project_name secretdir] | [update model_name hdfs_model_path secretdir username] "
     echo ""
     exit 1
 }
 
-SERVING_USER=<%= node['serving']['user'] %>
-SERVING_GROUP=<%= node['serving']['group'] %>
+SERVING_USER=<%= node['hops']['yarnapp']['user'] %>
+SERVING_GROUP=<%= node['hops']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
 
 if [ "$1" == "kill" ] ; then
 
-    if [ $# -ne 4 ]; then
+    if [ $# -ne 5 ]; then
 	help
     fi
 
-    # Sanity checks for injection attacks
-    re='^[0-9]+$'
-    if ! [[ $2 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-    # Check that the port is an int (and not some injection attack)
-    re='^[0-9]+$'
-     if ! [[ $3 =~ $re ]] ; then
-      echo "error: Not a number" >&2
-      help
-    fi
-
-    if [ ! -d "$4" ] ; then
+    if [ ! -d "$5" ] ; then
       echo "Invalid SECRET_DIR directory: $4"
       exit 1
     fi
 
-    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4"
+    ${DOMAINS_DIR}/domain1/bin/tfserving-kill.sh $2 $3 $4 $5
 
-    rm -rf "$4"
+    rm -rf "$5"
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 9 ]; then
+    if [ $# -ne 10 ]; then
       help
-    fi
-
-    command -v tensorflow_model_server
-    if [ $? -ne 0 ] ; then
-        echo "Could not find tensorflow_model_server command"
-        exit 1
     fi
 
     # Sanity checks for injection attacks
@@ -66,6 +47,12 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
+    pid=$(netstat -lntpu | grep ":$4" | awk '{print $7}')
+    if [ "$pid" != "" ] ; then
+	echo "There is already a service using this port $4"
+	exit 1
+    fi
+    
     # Sanity checks for injection attacks
     re='^[0-9]+$'
     if ! [[ $5 =~ $re ]] ; then
@@ -73,6 +60,12 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
+    pid=$(netstat -lntpu | grep ":$5" | awk '{print $7}')
+    if [ "$pid" != "" ] ; then
+	echo "There is already a service using this port $5"
+	exit 1
+    fi
+    
     SECRET_DIR=$6
     if [ -d "${SECRET_DIR}" ] ; then
       echo "Invalid secret directory. Directory already exists: $SECRET_DIR"
@@ -96,8 +89,8 @@ elif [ "$1" == "start" ] ; then
       exit 1
     fi
 
-    # Launch the tensorflow_serving process as user 'serving'
-    su "${SERVING_USER}" -c "${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9"
+    # Launch the tensorflow_serving process
+    ${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9 ${10} $SERVING_USER
 
     if [ $? -ne 0 ] ; then
       echo "Error starting the serving server"
@@ -130,7 +123,11 @@ elif [ "$1" == "logs" ] ; then
 
     cat "${LOGFILE}"
 elif [ "$1" == "alive" ] ; then
-    su "${SERVING_USER}" -c "pgrep -f -a tensorflow_model_server | grep -v pgrep | grep $2 | grep $3"
+    if [ $# -ne 3 ]; then
+        help
+    fi
+
+    docker container list | grep -v pgrep | grep $2 | grep $3
 else
   help
 fi
