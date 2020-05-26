@@ -1,4 +1,5 @@
 include_recipe "java"
+Chef::Resource.send(:include, Hops::Helpers)
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
@@ -298,7 +299,8 @@ for version in versions do
          :dela_ip => dela_ip,
          :nonconda_hosts_list => nonconda_hosts_list,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :featurestore_jdbc_url => featurestore_jdbc_url
+         :featurestore_jdbc_url => featurestore_jdbc_url,
+         :hops_version => get_hops_version(node['hops']['version'])
     })
     action :create
   end
