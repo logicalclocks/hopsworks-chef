@@ -6,4 +6,9 @@ REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_group", "<
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("anaconda_dir", "/srv/hops/anaconda");
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_name", "<%= @registry_host %>");
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_registry_port", "<%= node['hops']['docker']['registry']['port'] %>");
+
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hive_conf_path", "<%= node['hive2']['conf_dir'] %>/hive-site.xml");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='provided_python_lib_names';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='cuda_dir';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='cuda_version';

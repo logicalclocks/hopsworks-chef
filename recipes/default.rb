@@ -165,11 +165,6 @@ if node['conda']['channels']['default_mirrors'].empty? == false
    condaRepo = repos[0]
 end
 
-nonconda_hosts_list = []
-if node['hopsworks']['nonconda_hosts'].empty? == false
-  nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
-end
-
 mysql_host = private_recipe_ip("ndb","mysqld")
 
 featurestore_jdbc_url = node['featurestore']['jdbc_url']
@@ -305,7 +300,6 @@ for version in versions do
          :influxdb_ip => influxdb_ip,
          :public_ip => public_ip,
          :dela_ip => dela_ip,
-         :nonconda_hosts_list => nonconda_hosts_list,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :featurestore_jdbc_url => featurestore_jdbc_url,
          :registry_host => registry_host,
@@ -1067,17 +1061,12 @@ directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
   recursive true
 end
 
-include_recipe "tensorflow::serving"
-
 link "#{node['kagent']['certs_dir']}/cacerts.jks" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   to "#{theDomain}/config/cacerts.jks"
 end
 
-#
-# Need to synchronize conda enviornments for newly joined or rejoining nodes.
-#
 package "rsync"
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"

@@ -17,3 +17,10 @@ ON `j`.`project_id` = `p`.`id`
 SET `j`.`base_dir` = '/Jupyter/';
 
 ALTER TABLE `hopsworks`.`jupyter_git_config` DROP COLUMN `git_backend`;
+
+ALTER TABLE `hopsworks`.`python_dep` DROP INDEX `dependency`;
+ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `machine_type` int(11) NOT NULL;
+ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`dependency`,`version`,`install_type`,`repo_id`,`machine_type`);
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `machine_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `conda_enabled` tinyint(1) NOT NULL DEFAULT '1';
