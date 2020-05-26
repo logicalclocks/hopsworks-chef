@@ -108,7 +108,7 @@ REPLACE INTO variables(`id`, `value`) VALUES ("oozie_ip", "<%= @oozie_ip %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("jhs_ip", "<%= @jhs_ip %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("hadoop_version", "<%= node['hops']['version'] %>");
+REPLACE INTO variables(`id`, `value`) VALUES ("hadoop_version", "<%= @hops_version %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("rm_ip", "<%= @rm_ip %>");
 
