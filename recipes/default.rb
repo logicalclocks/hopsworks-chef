@@ -1057,7 +1057,7 @@ hopsworks_grants "restart_glassfish" do
 end
 
 hopsworks_certs "generate-int-certs" do
-  subject     "/CN=#{consul_helpers.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
   not_if      (::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt"))
 end
