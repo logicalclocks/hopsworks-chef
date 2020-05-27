@@ -1,6 +1,7 @@
 include_recipe "java"
 
 Chef::Recipe.send(:include, Hops::Helpers)
+Chef::Resource.send(:include, Hops::Helpers)
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
