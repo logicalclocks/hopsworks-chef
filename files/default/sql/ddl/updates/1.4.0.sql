@@ -14,3 +14,10 @@ ALTER TABLE `hopsworks`.`tensorboard` CHANGE `pid` `cid` varchar(255) COLLATE la
 ALTER TABLE `hopsworks`.`serving` CHANGE `local_pid` `cid` varchar(255) COLLATE latin1_general_cs NOT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `error_message` VARCHAR(6000) COLLATE latin1_general_cs DEFAULT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_yml` VARCHAR(6000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` CHANGE COLUMN `base_dir` `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+
+UPDATE `hopsworks`.`jupyter_settings` `j`
+JOIN `hopsworks`.`project` `p`
+ON `j`.`project_id` = `p`.`id`
+SET `j`.`base_dir` = CONCAT('/Projects/',`p`.`projectname`,'/Jupyter');

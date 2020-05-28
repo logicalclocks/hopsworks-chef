@@ -570,7 +570,7 @@ CREATE TABLE `jupyter_settings` (
   `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `advanced` tinyint(1) DEFAULT '0',
   `shutdown_level` int(11) NOT NULL DEFAULT '6',
-  `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT '/Jupyter/',
+  `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
   `job_config` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
   `docker_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   `git_backend` TINYINT(1) DEFAULT 0,
