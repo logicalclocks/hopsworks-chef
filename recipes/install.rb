@@ -2,8 +2,6 @@ require 'json'
 require 'base64'
 require 'digest'
 
-
-my_ip = my_private_ip()
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -12,12 +10,11 @@ password_file = "#{theDomain}_admin_passwd"
 featurestore_user=node['featurestore']['user']
 featurestore_password=node['featurestore']['password']
 
-mysql_host = private_recipe_ip("ndb","mysqld")
 featurestore_jdbc_url = node['featurestore']['jdbc_url']
 # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
 # connection pool for the online featurestore
 if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://#{mysql_host}:#{node['ndb']['mysql_port']}/"
+  featurestore_jdbc_url="jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
 end
 
 
@@ -286,7 +283,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{my_ip}:3306/",
+                'Url' => "jdbc:mysql://127.0.0.1:3306/",
                 'User' => node['hopsworks']['mysql']['user'],
                 'Password' => node['hopsworks']['mysql']['password']
               }
@@ -326,7 +323,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Airflow Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{my_ip}:3306/",
+                'Url' => "jdbc:mysql://127.0.0.1:3306/",
                 'User' => node['airflow']['mysql_user'],
                 'Password' => node['airflow']['mysql_password']
               }
@@ -346,7 +343,7 @@ node.override = {
               'ping' => 'true',
               'description' => 'Hopsworks Connection Pool',
               'properties' => {
-                'Url' => "jdbc:mysql://#{my_ip}:3306/glassfish_timers",
+                'Url' => "jdbc:mysql://127.0.0.1:3306/glassfish_timers",
                 'User' => node['hopsworks']['mysql']['user'],
                 'Password' => node['hopsworks']['mysql']['password']
               }
@@ -794,9 +791,6 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   source "flyway.conf.erb"
   owner node['glassfish']['user']
   mode 0750
-  variables({
-              :mysql_host => my_ip
-            })
   action :create
 end
 

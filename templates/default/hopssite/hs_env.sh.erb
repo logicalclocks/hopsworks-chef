@@ -14,7 +14,7 @@ export MYSQL_DIR="<%= node['ndb']['scripts_dir'] %>"
 export HOPS_SITE_WAR="${HOPS_SITE_DIR}/lib/hops-site.war"
 export HOPS_SITE_DOWNLOAD_URL="<%= node['hopssite']['download_url'] %>"
 #mysql
-export MYSQL_SERVER="<%= @ndb_ip %>"
+export MYSQL_SERVER="127.0.0.1"
 export MYSQL_PORT=<%= node['ndb']['mysql_port'] %>
 export MSQL_CONNECTOR="mysql-connector-java-5.1.29-bin.jar"
 export DB_NAME="hops_site"
