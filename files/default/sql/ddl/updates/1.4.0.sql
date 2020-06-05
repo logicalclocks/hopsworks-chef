@@ -23,4 +23,4 @@ ON `j`.`project_id` = `p`.`id`
 SET `j`.`base_dir` = CONCAT('/Projects/',`p`.`projectname`,'/Jupyter');
 
 
-ALTER TABLE `hopsworks`.`jupyter_git_config` ADD COLUMN `git_backend` VARCHAR(45) DEFAULT 'GITHUB';
+ALTER TABLE `hopsworks`.`jupyter_git_config` ADD COLUMN `git_backend` VARCHAR(45) COLLATE latin1_general_cs DEFAULT 'GITHUB';
