@@ -15,3 +15,5 @@ UPDATE `hopsworks`.`jupyter_settings` `j`
 JOIN `hopsworks`.`project` `p`
 ON `j`.`project_id` = `p`.`id`
 SET `j`.`base_dir` = '/Jupyter/';
+
+ALTER TABLE `hopsworks`.`jupyter_git_config` DROP COLUMN `git_backend`;

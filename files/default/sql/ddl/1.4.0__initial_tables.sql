@@ -1942,6 +1942,7 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `head_branch` VARCHAR(125),
        `startup_auto_pull` TINYINT(1) DEFAULT 1,
        `shutdown_auto_push` TINYINT(1) DEFAULT 1,
+       `git_backend` VARCHAR(45) DEFAULT 'GITHUB',
        PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
