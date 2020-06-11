@@ -3,10 +3,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("conda_default_repo"
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("support_email_addr", "<%= node['hopsworks']['support_email_addr'] %>");
 
-<% @nonconda_hosts_list.each do |host| %>
-  UPDATE `hopsworks`.`hosts` SET `conda_enabled`=0 WHERE `host_ip`='<%= host %>';
-<% end %>
-
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>", 1);
@@ -28,5 +24,4 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("kafka_version", "<%= node['kkafka'
 REPLACE INTO `hopsworks`.`variables` VALUES ("elastic_version", "<%= node['elastic']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("drelephant_version", "<%= node['drelephant']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("cuda_version", "<%= node['cuda']['major_version'] %>.<%= node['cuda']['minor_version'] %>_<%= node['cuda']['build_version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>", 1);

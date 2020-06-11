@@ -251,7 +251,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("graphite_port", "<%= node['influx
 --
 REPLACE INTO variables(`id`, `value`) VALUES ("python_kernel", "<%= @python_kernel %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("cuda_dir", "<%= node['cuda']['base_dir'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");

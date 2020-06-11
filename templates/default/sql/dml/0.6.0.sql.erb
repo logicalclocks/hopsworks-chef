@@ -6,8 +6,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("tensorboard_max_las
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("spark_ui_logs_offset", "<%= node['hopsworks']['spark_ui_logs_offset'] %>");
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provided_python_lib_names", "<%= node['conda']['provided_lib_names'] %>");
-
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("preinstalled_python_lib_names", "<%= node['conda']['preinstalled_lib_names'] %>");
 
 REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("1.8.0", "9.0", "7", "2.2");

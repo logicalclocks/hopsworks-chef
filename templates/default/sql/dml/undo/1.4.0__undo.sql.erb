@@ -5,3 +5,7 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_registry_name';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_registry_port';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hive_conf_path';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provided_python_lib_names", "");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_dir", "");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_version", "");

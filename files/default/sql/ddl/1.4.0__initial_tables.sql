@@ -170,7 +170,6 @@ CREATE TABLE `conda_commands` (
   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
-  `machine_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `environment_yml` varchar(6000) COLLATE latin1_general_cs DEFAULT NULL,
   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL,
@@ -488,7 +487,6 @@ CREATE TABLE `hosts` (
   `agent_password` varchar(25) COLLATE latin1_general_cs DEFAULT NULL,
   `num_gpus` tinyint(1) NOT NULL DEFAULT '0',
   `registered` tinyint(1) DEFAULT '0',
-  `conda_enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `hostname` (`hostname`),
   UNIQUE KEY `host_ip` (`host_ip`)
@@ -1196,10 +1194,9 @@ CREATE TABLE `python_dep` (
   `repo_id` int(11) NOT NULL,
   `preinstalled` tinyint(1) DEFAULT '0',
   `install_type` int(11) NOT NULL,
-  `machine_type` int(11) NOT NULL,
   `base_env` VARCHAR(45) COLLATE latin1_general_cs,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`,`machine_type`),
+  UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`),
   KEY `repo_id` (`repo_id`),
   CONSTRAINT `FK_501_510` FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

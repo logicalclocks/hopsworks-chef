@@ -52,6 +52,8 @@ os.environ['REQUESTS_VERIFY'] = "${conf.requestsVerify?c}"
 os.environ['DOMAIN_CA_TRUSTSTORE_PEM'] = "${conf.domainCATruststorePem}"
 os.environ['HADOOP_HOME'] = "${conf.hadoopHome}"
 os.environ['SERVICE_DISCOVERY_DOMAIN'] = "${conf.serviceDiscoveryDomain}"
+os.environ['PATH'] = "${conf.anacondaEnvironment}/bin:" + os.environ['PATH']
+os.environ['LD_LIBRARY_PATH'] = "${conf.anacondaEnvironment}/lib:" + os.environ['LD_LIBRARY_PATH']
 
 c.GitHandlersConfiguration.api_key = "${conf.apiKey}"
 os.environ['FLINK_CONF_DIR'] = "${conf.flinkConfDirectory}"
