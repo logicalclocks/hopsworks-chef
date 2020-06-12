@@ -42,3 +42,11 @@ ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `default_storage`;
 ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_feature_group` INT(11) DEFAULT NULL; 
 
 ALTER TABLE `hopsworks`.`cached_feature_group` ADD FOREIGN KEY `online_fg_fk` (`online_feature_group`) REFERENCES `online_feature_group` (`id`)  ON DELETE SET NULL ON UPDATE NO ACTION; 
+
+CREATE TABLE `hopsworks`.`tf_lib_mapping` (
+  `tf_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
+  `cuda_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
+  `cudnn_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
+  `nccl_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`tf_version`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
