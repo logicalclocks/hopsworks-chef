@@ -1,4 +1,4 @@
-flyway.url=jdbc:mysql://<%= @mysql_host %>:3306/hopsworks
+flyway.url=jdbc:mysql://127.0.0.1:3306/hopsworks
 flyway.user=<%= node['mysql']['user'] %>
 flyway.password=<%= node['mysql']['password'] %>
 # Run all migrations within a single DDL transaction (group=true)
