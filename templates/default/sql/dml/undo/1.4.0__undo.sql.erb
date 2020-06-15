@@ -9,3 +9,4 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='hive_conf_path';
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provided_python_lib_names", "");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_dir", "");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_version", "");
+REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);

@@ -1,4 +1,6 @@
 include_recipe "java"
+
+Chef::Recipe.send(:include, Hops::Helpers)
 Chef::Resource.send(:include, Hops::Helpers)
 
 domain_name= node['hopsworks']['domain_name']
@@ -40,20 +42,6 @@ begin
 rescue
   jhs_ip = node['hostname']
   Chef::Log.warn "could not find the MR job history server ip!"
-end
-
-begin
-  epipe_ip = private_recipe_ip("epipe","default")
-rescue
-  epipe_ip = node['hostname']
-  Chef::Log.warn "could not find th epipe server ip!"
-end
-
-begin
-  kafka_ip = private_recipe_ip("kkafka","default")
-rescue
-  kafka_ip = node['hostname']
-  Chef::Log.warn "could not find the kafka server ip!"
 end
 
 begin
@@ -276,7 +264,6 @@ for version in versions do
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
          :hosts => hosts,
-         :epipe_ip => epipe_ip,
          :jhs_ip => jhs_ip,
          :hopsworks_ip => hopsworks_ip,
          :elastic_ip => elastic_ips,
@@ -291,7 +278,6 @@ for version in versions do
          :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
          :java_home => node['java']['java_home'],
          :drelephant_ip => drelephant_ip,
-         :kafka_ip => kafka_ip,
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
          :grafana_ip => grafana_ip,
@@ -496,6 +482,34 @@ glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --
    secure false
 end
 
+# add new network listener for Hopsworks to listen on an internal port
+glassfish_asadmin "create-protocol --securityenabled=true --target server https-internal" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols | grep 'https-internal'"
+end
+
+glassfish_asadmin "create-http --default-virtual-server server https-internal" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} | grep 'https-internal'"
+end
+
+glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target server --protocol https-internal https-int-list" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners | grep 'https-int-list'"
+end
+
 glassfish_conf = {
   'server-config.security-service.default-realm' => 'cauthRealm',
   # Jobs in Hopsworks use the Timer service
@@ -509,12 +523,15 @@ glassfish_conf = {
   # Disable SSL3
   'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled' => false,
+  'server.network-config.protocols.protocol.https-internal.ssl.ssl3-enabled' => false,
   # Disable TLS 1.0
   'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled' => false,
+  'server.network-config.protocols.protocol.https-internal.ssl.tls-enabled' => false,
   # Restrict ciphersuite
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
   'configs.config.server-config.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  'configs.config.server-config.network-config.protocols.protocol.https-internal.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
   # Set correct thread-priority for the executor services - required during updates
   'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
@@ -538,10 +555,12 @@ glassfish_conf = {
   'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
   'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
+  'server.network-config.protocols.protocol.https-internal.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'resources.jdbc-connection-pool.hopsworksPool.property.User' => node['hopsworks']['mysql']['user'],
   'resources.jdbc-connection-pool.hopsworksPool.property.Password' => node['hopsworks']['mysql']['password'],
   'resources.jdbc-connection-pool.ejbTimerPool.property.User' => node['hopsworks']['mysql']['user'],
-  'resources.jdbc-connection-pool.ejbTimerPool.property.Password' => node['hopsworks']['mysql']['password']
+  'resources.jdbc-connection-pool.ejbTimerPool.property.Password' => node['hopsworks']['mysql']['password'],
+  'server.network-config.protocols.protocol.https-internal.ssl.cert-nickname' => 'internal'
 }
 
 glassfish_conf.each do |property, value|
@@ -609,8 +628,8 @@ end
 logging_conf = {
   'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
   'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
-  # These are just some random number, we are not enabling this logger. However if they are not set
   # the main logger doesn't work either.
+  # These are just some random number, we are not enabling this logger. However if they are not set
   'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,
   'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => 0,
   'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => 3
@@ -877,6 +896,7 @@ link "delete-crl-symlink" do
   action :delete
 end
 
+
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
   cookbook "conda"
@@ -1037,6 +1057,18 @@ hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
 
+hopsworks_certs "generate-int-certs" do
+  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  action      :generate_int_certs
+  not_if      (::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt"))
+end
+
+# Force reload of the certificate
+hopsworks_grants "restart_glassfish" do
+  action :reload_systemd
+end
+
+
 # Register Glassfish with Consul
 consul_service "Registering Glassfish with Consul" do
   service_definition "consul/glassfish-consul.hcl.erb"
@@ -1059,12 +1091,9 @@ directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
   recursive true
 end
 
-link "#{node['kagent']['certs_dir']}/cacerts.jks" do
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  to "#{theDomain}/config/cacerts.jks"
-end
-
+#
+# Need to synchronize conda enviornments for newly joined or rejoining nodes.
+#
 package "rsync"
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
