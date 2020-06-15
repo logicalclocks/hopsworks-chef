@@ -50,3 +50,8 @@ CREATE TABLE `hopsworks`.`tf_lib_mapping` (
   `nccl_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`tf_version`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `docker_image`;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda_env` tinyint(1) DEFAULT '0';
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `docker_image` varchar(255) COLLATE latin1_general_cs NOT NULL;

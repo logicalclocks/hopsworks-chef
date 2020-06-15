@@ -19,3 +19,6 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kafka_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='epipe_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='yarn_ui_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='yarn_ui_port';
+
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image", "<%= node['hops']['docker']['base']['name'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image_python_version", "<%= node['hops']['docker']['base']['python'] %>");

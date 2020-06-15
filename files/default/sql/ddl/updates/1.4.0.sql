@@ -40,3 +40,8 @@ DROP TABLE `hopsworks`.`online_feature_group`;
 ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `default_storage` TINYINT DEFAULT 0;
 
 DROP TABLE IF EXISTS `hopsworks`.`tf_lib_mapping`;
+
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `docker_image` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `conda_env`;
+
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `docker_image`;
