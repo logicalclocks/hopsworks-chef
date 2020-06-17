@@ -1854,27 +1854,16 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `online_feature_group` (
-  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-  `db_name`                           VARCHAR(5000)   NOT NULL,
-  `table_name`                        VARCHAR(5000)    NOT NULL,
-  PRIMARY KEY (`id`)
-)
-  ENGINE = ndbcluster
-  DEFAULT CHARSET = latin1
-  COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
   `offline_feature_group`          BIGINT(20)      NOT NULL,
-  `online_feature_group`           INT(11)         NULL,
+  `online_enabled`                 TINYINT(1)      NULL,
+  `default_storage`                TINYINT         NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  CONSTRAINT `online_fg_fk` FOREIGN KEY (`online_feature_group`) REFERENCES `hopsworks`.`online_feature_group` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE NO ACTION
 )
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1

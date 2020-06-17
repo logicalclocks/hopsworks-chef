@@ -24,3 +24,21 @@ ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`depend
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `machine_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL;
 ALTER TABLE `hopsworks`.`hosts` ADD COLUMN `conda_enabled` tinyint(1) NOT NULL DEFAULT '1';
+
+CREATE TABLE IF NOT EXISTS `online_feature_group` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `db_name`                           VARCHAR(5000)   NOT NULL,
+  `table_name`                        VARCHAR(5000)    NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
+
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_enabled`;
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `default_storage`;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_feature_group` INT(11) DEFAULT NULL; 
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD FOREIGN KEY `online_fg_fk` (`online_feature_group`) REFERENCES `online_feature_group` (`id`)  ON DELETE SET NULL ON UPDATE NO ACTION; 
