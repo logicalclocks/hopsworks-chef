@@ -81,6 +81,8 @@ elif [ "$1" == "start" ] ; then
       rm -r "$SECRET_DIR"
       exit 1
     fi
+    chown ${SERVING_USER}:${SERVING_GROUP} $SECRET_DIR/$2
+    chmod +x $SECRET_DIR/$2
 
     # Launch the flask_server process as user 'serving'
     ${DOMAINS_DIR}/domain1/bin/sklearn_serving-launch.sh $2 $4 $5 $7 $8 $6 ${12} ${13}
