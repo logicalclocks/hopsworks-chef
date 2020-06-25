@@ -1863,7 +1863,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
+    ON UPDATE NO ACTION
 )
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
