@@ -27,3 +27,14 @@ ALTER TABLE `hopsworks`.`jupyter_git_config` ADD COLUMN `git_backend` VARCHAR(45
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN machine_type;
 ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN machine_type;
 ALTER TABLE `hopsworks`.`hosts` DROP COLUMN conda_enabled;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_enabled` TINYINT DEFAULT 0; 
+
+-- Migrate the flag from the previous version to the new version
+UPDATE `hopsworks`.`cached_feature_group` SET online_enabled=1 WHERE `online_feature_group` IS NOT NULL;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP FOREIGN KEY `online_fg_fk`; 
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_feature_group`; 
+DROP TABLE `hopsworks`.`online_feature_group`;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `default_storage` TINYINT DEFAULT 0; 
