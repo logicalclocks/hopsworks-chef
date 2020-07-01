@@ -37,4 +37,6 @@ ALTER TABLE `hopsworks`.`cached_feature_group` DROP FOREIGN KEY `online_fg_fk`;
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_feature_group`; 
 DROP TABLE `hopsworks`.`online_feature_group`;
 
-ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `default_storage` TINYINT DEFAULT 0; 
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `default_storage` TINYINT DEFAULT 0;
+
+DROP TABLE IF EXISTS `hopsworks`.`tf_lib_mapping`;

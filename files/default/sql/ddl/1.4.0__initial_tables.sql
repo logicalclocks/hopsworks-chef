@@ -1472,21 +1472,6 @@ CREATE TABLE `tensorboard` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `tf_lib_mapping`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tf_lib_mapping` (
-  `tf_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
-  `cuda_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
-  `cudnn_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
-  `nccl_version` varchar(20) COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`tf_version`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `topic_acls`
 --
 
