@@ -1518,6 +1518,7 @@ CREATE TABLE `training_dataset` (
   `external_training_dataset_id` INT(11) NULL,
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
   `seed` BIGINT(11) NULL,
+  `query` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -1532,23 +1533,71 @@ CREATE TABLE `training_dataset` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `training_dataset_feature`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `training_dataset_feature` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset` int(11) NULL,
+  'feature_group' int(11) NULL,
+  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `type` varchar(1000) COLLATE latin1_general_cs,
+  `td_join`int(11) NULL,
+  'idx' int(11) NULL
+  PRIMARY KEY (`id`),
+  KEY `td_key` (`training_dataset`),
+  KEY `fg_key` (`feature_group`),
+  CONSTRAINT `join_fk` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fg_fk` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `training_dataset_join` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset` int(11) NULL,
+  `feature_group` int(11) NULL,
+  `type` tinyint(5) NOT NULL DEFAULT 0,
+  `idx` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `fg_key` (`feature_group`),
+  CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fg_left` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `training_dataset_join_condition` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `td_join` int(11) NOT NULL,
+  `left_feature` VARCHAR(1000) NOT NULL DEFAULT "",
+  `right_feature` VARCHAR(1000) NOT NULL DEFAULT "",
+  PRIMARY KEY (`id`),
+  KEY `join_key` (`td_join`),
+  CONSTRAINT `join_fk` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `feature_store_feature`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feature_store_feature` (
+CREATE TABLE `on_demand_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `training_dataset_id` int(11) NULL,
   `on_demand_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `training_dataset_id` (`training_dataset_id`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
-  CONSTRAINT `FK_812_1043` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
