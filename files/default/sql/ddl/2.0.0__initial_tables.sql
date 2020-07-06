@@ -1589,14 +1589,16 @@ CREATE TABLE `training_dataset_join_condition` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `on_demand_feature` (
+CREATE TABLE `feature_store_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `training_dataset_id` int(11) NULL,
   `on_demand_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
   CONSTRAINT `on_demand_feature_group_fk1` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
