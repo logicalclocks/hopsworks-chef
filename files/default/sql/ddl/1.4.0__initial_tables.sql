@@ -47,7 +47,7 @@ CREATE TABLE `account_audit` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `activity` varchar(256) COLLATE latin1_general_cs NOT NULL,
+  `activity` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `user_id` int(10) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `flag` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
