@@ -10,3 +10,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provided_python_lib
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_dir", "");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_version", "");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image_python_version';

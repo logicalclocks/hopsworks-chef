@@ -16,7 +16,7 @@ if [ "$1" == "create" ] ; then
 	echo "Invalid docker file: $2" >&2
 	help
     fi
-    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$'
     if ! [[ $3 =~ $re ]] ; then
 	echo "error: Not an image name $3" >&2
 	help
@@ -28,7 +28,7 @@ if [ "$1" == "create" ] ; then
 
 elif [ "$1" == "delete" ] ; then
     # Sanity checks for injection attacks
-    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$'
     if ! [[ $2 =~ $re ]] ; then
 	echo "error: Not an image name $3" >&2
 	help
@@ -41,7 +41,7 @@ elif [ "$1" == "delete" ] ; then
     fi
     
 elif [ "$1" == "list" ] ; then
-    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$'
     if ! [[ $2 =~ $re ]] ; then
 	echo "error: Not an image name $2" >&2
 	help
@@ -50,7 +50,7 @@ elif [ "$1" == "list" ] ; then
     docker run --rm $2 conda list -n theenv
 
 elif [ "$1" == "export" ] ; then
-    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
+    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$'
     if ! [[ $2 =~ $re ]] ; then
 	echo "error: Not an image name $2" >&2
 	help

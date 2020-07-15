@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
 LIBRARY="${1//[^a-zA-Z0-9\.\-\_]/}"
-ENV="${2//[^a-zA-Z0-9\.\-\_]/}"
 
 # pip search $1
 
-if [ $# -ne 2  ]; then
+if [ $# -ne 1  ]; then
  echo "incorrect usage"
  exit 2
 fi
