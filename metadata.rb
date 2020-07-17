@@ -944,3 +944,7 @@ attribute "hopsworks/hdfs/storage_policy/log",
 attribute "hopsworks/enable_metadata_designer",
           :description => "Enable metadata designer. 'false' (default)",
           :type => 'string'
+
+attribute "hopsworks/docker/image-validation-regex",
+          :description => "Validation regex for user/project Docker image name",
+          :type => 'string'

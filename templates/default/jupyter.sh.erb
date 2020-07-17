@@ -17,6 +17,7 @@ DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 JUPYTER_USER=<%= node['hops']['yarnapp']['user'] %>
 JUPYTER_GROUP=<%= node['hops']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+VALID_IMAGE_NAME='<%= node['hopsworks']['docker']['image-validation-regex'] %>'
 
 if [ "$1" == "kill" ] ; then
 
@@ -62,8 +63,7 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    re='^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?\/[_a-zA-Z0-9]{0,62}[a-zA-Z0-9]$'
-    if ! [[ ${13} =~ $re ]] ; then
+    if ! [[ ${13} =~ $VALID_IMAGE_NAME ]] ; then
 	echo "error: Not an image name ${13}" >&2
 	help
     fi
