@@ -22,3 +22,4 @@ REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image"
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image_python_version", "<%= node['hops']['docker']['base']['python'] %>");
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("managed_docker_registry", "<%= node['install']['managed_docker_registry'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("ldap_group_mapping_sync_interval", "<%= node['ldap']['group_mapping_sync_interval'] %>");

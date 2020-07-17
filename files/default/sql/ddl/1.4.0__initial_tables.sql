@@ -1928,3 +1928,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_tag` (
       PRIMARY KEY (`id`),
       UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `remote_group_project_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `remote_group` varchar(256) NOT NULL,
+  `project` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`remote_group`,`project`),
+  KEY `fk_remote_group_project_mapping_1_idx` (`project`),
+  CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

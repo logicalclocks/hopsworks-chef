@@ -331,6 +331,7 @@ default['ldap']['security_principal']                = ""
 default['ldap']['security_credentials']              = ""
 default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
+default['ldap']['group_mapping_sync_interval']         = 0
 
 # OAuth2
 default['oauth']['enabled']                          = "false"
