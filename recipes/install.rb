@@ -73,9 +73,15 @@ group node['hops']['hdfs']['user'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
-group node['kagent']['certs_group'] do
+group node['kagent']['userscerts_group'] do
+  action :create
+  not_if "getent group #{node['kagent']['userscerts_group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['kagent']['userscerts_group'] do
   action :modify
-  members ["#{node['hopsworks']['user']}"]
+  members node['hopsworks']['user']
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
@@ -473,7 +479,7 @@ ca_dir = node['certs']['dir']
 directory ca_dir do
   owner node['glassfish']['user']
   group node['kagent']['certs_group']
-  mode "750"
+  mode "755"
   action :create
 end
 
@@ -488,7 +494,7 @@ end
 
 directory "#{ca_dir}/transient" do
   owner node['glassfish']['user']
-  group node['kagent']['certs_group']
+  group node['kagent']['userscerts_group']
   mode "750"
   action :create
 end
