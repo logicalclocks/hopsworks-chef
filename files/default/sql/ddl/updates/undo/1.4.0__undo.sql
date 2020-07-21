@@ -55,3 +55,6 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `docker_image`;
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda_env` tinyint(1) DEFAULT '0';
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `docker_image` varchar(255) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `server_encryption_algorithm`;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `server_encryption_key`;

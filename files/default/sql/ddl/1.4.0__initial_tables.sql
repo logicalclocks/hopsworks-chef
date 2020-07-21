@@ -1789,13 +1789,16 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
   COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
-  `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
-  `feature_store_id`        INT(11)         NOT NULL,
-  `access_key`              VARCHAR(1000)   NULL,
-  `secret_key`              VARCHAR(1000)   NULL,
-  `bucket`                  VARCHAR(5000)   NOT NULL,
-  `description`             VARCHAR(1000)   NULL,
-  `name`                    VARCHAR(1000)   NOT NULL,
+  `id`                                  INT(11)         NOT NULL AUTO_INCREMENT,
+  `feature_store_id`                    INT(11)         NOT NULL,
+  `access_key`                          VARCHAR(1000)   NULL,
+  `secret_key`                          VARCHAR(1000)   NULL,
+  `bucket`                              VARCHAR(5000)   NOT NULL,
+  `description`                         VARCHAR(1000)   NULL,
+  `name`                                VARCHAR(1000)   NOT NULL,
+  `server_encryption_algorithm`         VARCHAR(100)    NULL,
+  `server_encryption_key`               VARCHAR(1000)   NULL
+
   PRIMARY KEY (`id`),
   CONSTRAINT `s3_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
