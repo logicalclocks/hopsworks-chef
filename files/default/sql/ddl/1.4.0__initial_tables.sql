@@ -1797,8 +1797,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `description`                         VARCHAR(1000)   NULL,
   `name`                                VARCHAR(1000)   NOT NULL,
   `server_encryption_algorithm`         INT(11)         NULL,
-  `server_encryption_key`               VARCHAR(1000)   NULL
-
+  `server_encryption_key`               VARCHAR(1000)   NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `s3_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
