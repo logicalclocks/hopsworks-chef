@@ -1,8 +1,6 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='yarn_runtime';
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
 DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_mounts';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_registry_name';
-DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_registry_port';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hive_conf_path';
 
