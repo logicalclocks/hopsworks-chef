@@ -62,7 +62,6 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "SPARKMAGIC_CONF_DIR=${JUPYTER_HOME}/conf" \
        -e "PYSPARK_PYTHON=${ANACONDA_ENV}/bin/python" \
        -e "PYLIB=${ANACONDA_ENV}/lib" \
-       -e "PATH=${HADOOP_HOME}/bin:$PATH" \
        -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
        -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
        -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
@@ -79,7 +78,7 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -u="yarnapp" \
        -w="$SECRET_DIR" \
        $IMAGE \
-       jupyter-launcher.sh $PORT $LOGFILE $TOKEN $JUPYTER_MODE &
+       /usr/local/bin/jupyter-launcher.sh $PORT $LOGFILE $TOKEN $JUPYTER_MODE &
 
 
 
