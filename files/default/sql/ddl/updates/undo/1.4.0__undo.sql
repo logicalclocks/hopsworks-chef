@@ -58,3 +58,5 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `docker_image` varchar(255) 
 
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `server_encryption_algorithm`;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `server_encryption_key`;
+
+ALTER TABLE `hopsworks`.`training_dataset_split` DROP INDEX `dataset_id_split_name`;
