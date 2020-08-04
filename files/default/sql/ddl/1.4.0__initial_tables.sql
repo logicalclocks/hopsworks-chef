@@ -1226,6 +1226,7 @@ CREATE TABLE `remote_material_references` (
 CREATE TABLE `remote_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
+  `status` varchar(45) COLLATE latin1_general_cs NOT NULL DEFAULT '0',
   `auth_key` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `uuid` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `uid` int(11) NOT NULL,
