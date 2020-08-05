@@ -58,3 +58,8 @@ CREATE TABLE `feature_store_statistic` (
   CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `cluster_analysis_enabled`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `num_clusters`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `num_bins`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `corr_method`;

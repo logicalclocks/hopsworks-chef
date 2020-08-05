@@ -331,10 +331,6 @@ CREATE TABLE `feature_group` (
   `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
   `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
   `feat_hist_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `cluster_analysis_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `num_clusters` int(11) NOT NULL DEFAULT '5',
-  `num_bins` INT(11) NOT NULL DEFAULT '20',
-  `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -394,7 +390,7 @@ CREATE TABLE `feature_store` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_store_statistic` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `commit_time` VARCHAR(20) COLLATE latin1_general_cs NOT NULL, 
+  `commit_time` VARCHAR(20) COLLATE latin1_general_cs NOT NULL,
   `inode_pid` BIGINT(20) NOT NULL,
   `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
   `partition_id` BIGINT(20) NOT NULL,
