@@ -1796,7 +1796,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `bucket`                              VARCHAR(5000)   NOT NULL,
   `description`                         VARCHAR(1000)   NULL,
   `name`                                VARCHAR(1000)   NOT NULL,
-  `server_encryption_algorithm`         VARCHAR(100)    NULL,
+  `server_encryption_algorithm`         INT(11)         NULL,
   `server_encryption_key`               VARCHAR(1000)   NULL
 
   PRIMARY KEY (`id`),

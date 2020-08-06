@@ -46,5 +46,5 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `conda_env`;
 
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `docker_image`;
 
-ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `server_encryption_algorithm` VARCHAR(100) DEFAULT NULL ;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `server_encryption_algorithm` INT(11) DEFAULT NULL ;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `server_encryption_key` VARCHAR(1000) DEFAULT NULL;
