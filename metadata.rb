@@ -239,7 +239,7 @@ attribute "hopsworks/reinstall",
           :type => 'string'
 
 attribute "hopsworks/download_url",
-          :description => "Base URL to download Hopsworks artifacts e.g. #{DOWNLOAD_URL}/hopsworks.war",
+          :description => "Base URL to download Hopsworks artifacts e.g. DOWNLOAD_URL/hopsworks.war",
           :type => 'string'
 
 attribute "hopsworks/war_url",
