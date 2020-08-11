@@ -952,3 +952,8 @@ attribute "hopsworks/enable_metadata_designer",
 attribute "hopsworks/docker/image-validation-regex",
           :description => "Validation regex for user/project Docker image name",
           :type => 'string'
+
+# Expat
+attribute "hopsworks/expat_url",
+					:description => "Url to download expat from",
+					:type => 'string'
