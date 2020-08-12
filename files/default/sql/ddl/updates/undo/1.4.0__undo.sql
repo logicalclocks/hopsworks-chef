@@ -72,3 +72,12 @@ ALTER TABLE `hopsworks`.`activity` CHANGE COLUMN `activity` `activity` VARCHAR(1
 UPDATE `hopsworks`.`anaconda_repo` SET `url`="PyPi" WHERE `url`="pypi";
 
 DROP TABLE IF EXISTS `remote_group_project_mapping`; 
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `access_key` VARCHAR(1000) COLLATE latin1_general_cs
+ DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `secret_key` VARCHAR(1000) COLLATE latin1_general_cs
+ DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(1000) COLLATE latin1_general_cs  NOT NULL;
+
+ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(125) COLLATE latin1_general_cs  NOT NULL;

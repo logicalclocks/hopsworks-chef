@@ -69,3 +69,10 @@ CREATE TABLE `remote_group_project_mapping` (
   KEY `fk_remote_group_project_mapping_1_idx` (`project`),
   CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `access_key`;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `secret_key`;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(150) COLLATE latin1_general_cs  NOT NULL;
+
+ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(200) COLLATE latin1_general_cs  NOT NULL;
