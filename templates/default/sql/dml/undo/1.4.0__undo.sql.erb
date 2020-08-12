@@ -11,3 +11,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['f
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image_python_version';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='managed_docker_registry';
