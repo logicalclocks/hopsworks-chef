@@ -955,5 +955,5 @@ attribute "hopsworks/docker/image-validation-regex",
 
 # Expat
 attribute "hopsworks/expat_url",
-					:description => "Url to download expat from",
-					:type => 'string'
+          :description => "Url to download expat from",
+          :type => 'string'
