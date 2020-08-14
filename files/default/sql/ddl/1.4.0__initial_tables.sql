@@ -1561,7 +1561,10 @@ CREATE TABLE IF NOT EXISTS `training_dataset_split` (
   `percentage` float NOT NULL,
   PRIMARY KEY (`id`),
   KEY `training_dataset_id` (`training_dataset_id`),
-  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  UNIQUE KEY `dataset_id_split_name` (`training_dataset_id`, `name`),
+  CONSTRAINT `training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE
+   CASCADE ON UPDATE NO ACTION
+
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1797,8 +1800,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `description`                         VARCHAR(1000)   NULL,
   `name`                                VARCHAR(1000)   NOT NULL,
   `server_encryption_algorithm`         INT(11)         NULL,
-  `server_encryption_key`               VARCHAR(1000)   NULL
-
+  `server_encryption_key`               VARCHAR(1000)   NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `s3_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
