@@ -27,18 +27,21 @@ if [ "$1" == "create" ] ; then
     docker push $3
 
 elif [ "$1" == "delete" ] ; then
-    # Sanity checks for injection attacks
-    if ! [[ $2 =~ $VALID_IMAGE_NAME ]] ; then
-	echo "error: Not an image name $3" >&2
-	help
-    fi
+<% if node['install']['managed_docker_registry'] == "false" -%>
+    # Remove tags from docker registry
+    docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/$2/_manifests/tags/$3
+<% else -%>
+    # Not supported yet
+<% end -%>
 
-    if [[ "$(docker images -q $2 2> /dev/null)" == "" ]]; then
-	exit 0
-    else
-	docker rmi -f $2
-    fi
-    
+elif [ "$1" == "gc" ] ; then
+<% if node['install']['managed_docker_registry'] == "false" -%>
+    # Run garbage collection for registry
+    docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
+<% else -%>
+    # Not supported yet
+<% end -%>
+
 elif [ "$1" == "list" ] ; then
     if ! [[ $2 =~ $VALID_IMAGE_NAME ]] ; then
 	echo "error: Not an image name $2" >&2

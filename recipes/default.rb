@@ -526,6 +526,7 @@ glassfish_conf = {
   # Set correct thread-priority for the executor services - required during updates
   'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
+  'resources.managed-executor-service.concurrent\/condaExecutorService.thread-priority' => 9,
   # Enable Single Sign on
   'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
