@@ -46,12 +46,9 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `conda_env`;
 
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `docker_image`;
 
-<<<<<<< HEAD
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `server_encryption_algorithm` INT(11) DEFAULT NULL ;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `server_encryption_key` VARCHAR(1000) DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`training_dataset_split` ADD UNIQUE KEY `dataset_id_split_name` (`training_dataset_id`, `name`);
 
-=======
 ALTER TABLE `hopsworks`.`remote_user` ADD COLUMN `status` varchar(45) COLLATE latin1_general_cs NOT NULL DEFAULT '0';
->>>>>>> add status to remote user
