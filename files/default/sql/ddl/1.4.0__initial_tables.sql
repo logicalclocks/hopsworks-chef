@@ -1226,6 +1226,7 @@ CREATE TABLE `remote_material_references` (
 CREATE TABLE `remote_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
+  `status` varchar(45) COLLATE latin1_general_cs NOT NULL DEFAULT '0',
   `auth_key` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `uuid` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `uid` int(11) NOT NULL,
@@ -1927,4 +1928,15 @@ CREATE TABLE IF NOT EXISTS `feature_store_tag` (
       `type` varchar(45) NOT NULL DEFAULT 'STRING',
       PRIMARY KEY (`id`),
       UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `remote_group_project_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `remote_group` varchar(256) NOT NULL,
+  `project` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`remote_group`,`project`),
+  KEY `fk_remote_group_project_mapping_1_idx` (`project`),
+  CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

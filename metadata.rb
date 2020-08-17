@@ -720,6 +720,10 @@ attribute "ldap/additional_props",
           :description => "LDAP additional properties. '' (default)",
           :type => 'string'
 
+attribute "ldap/group_mapping_sync_interval",
+          :description => "LDAP group mapping sync interval in hours. 0 (default)",
+          :type => 'string'
+
 #
 # Kerberos
 #
