@@ -55,7 +55,8 @@ elif [ "$1" == "export" ] ; then
 	echo "error: Not an image name $2" >&2
 	help
     fi
-    
+
+    docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda env export -n theenv
     
 else

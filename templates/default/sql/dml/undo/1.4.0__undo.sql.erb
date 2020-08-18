@@ -9,8 +9,10 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_dir", "");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("cuda_version", "");
 REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);
 
-DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image_python_name';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_base_image_python_version';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='managed_docker_registry';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='ldap_group_mapping_sync_interval';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='max_env_yml_byte_size';
