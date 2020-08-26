@@ -60,6 +60,7 @@ ${operator.id} = HopsworksLaunchOperator(dag=dag,
 					 project_name="${operator.projectName}",
 					 task_id="${operator.id}",
 					 job_name="${operator.jobName}",
+					 job_arguments="${operator.jobArgs}",
 					 wait_for_completion=<#if operator.wait>True<#else>False</#if>)
 					 
   <#elseif instanceOf(operator, AirflowJobSuccessSensor)>
