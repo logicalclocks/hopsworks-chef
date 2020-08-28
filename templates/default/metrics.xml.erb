@@ -555,6 +555,36 @@
          <description>Total number of tasks ever scheduled</description>
          <type>gauge</type>
       </metadata>
+     <metadata>
+       <name>executorService_concurrent_condaExecutorService_PoolSize_count</name>
+       <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/condaExecutorService/PoolSize#count</mbean>
+       <description>The current number of threads in the pool</description>
+       <type>gauge</type>
+     </metadata>
+     <metadata>
+       <name>executorService_concurrent_condaExecutorService_ActiveCount_count</name>
+       <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/condaExecutorService/ActiveCount#count</mbean>
+       <description>The approximate number of active threads</description>
+       <type>gauge</type>
+     </metadata>
+     <metadata>
+       <name>executorService_concurrent_condaExecutorService_CompletedTaskCount_count</name>
+       <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/condaExecutorService/CompletedTaskCount#count</mbean>
+       <description>Number of tasks completed</description>
+       <type>gauge</type>
+     </metadata>
+     <metadata>
+       <name>executorService_concurrent_condaExecutorService_LargestPoolSize_count</name>
+       <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/condaExecutorService/LargestPoolSize#count</mbean>
+       <description>The largest number of threads that have ever simultaneously been in the pool</description>
+       <type>gauge</type>
+     </metadata>
+     <metadata>
+       <name>executorService_concurrent_condaExecutorService_TaskCount_count</name>
+       <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/condaExecutorService/TaskCount#count</mbean>
+       <description>Total number of tasks ever scheduled</description>
+       <type>gauge</type>
+     </metadata>
       <metadata>
          <name>network_http_listener_2_connection_queue_peakqueued_count</name>
          <mbean>amx:pp=/mon/server-mon[server],type=connection-queue-mon,name=network/http-listener-2/connection-queue/peakqueued#count</mbean>
