@@ -17,7 +17,7 @@ DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 JUPYTER_USER=<%= node['hops']['yarnapp']['user'] %>
 JUPYTER_GROUP=<%= node['hops']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
-VALID_IMAGE_NAME='<%= node['hopsworks']['docker']['image-validation-regex'] %>'
+VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 
 if [ "$1" == "kill" ] ; then
 
