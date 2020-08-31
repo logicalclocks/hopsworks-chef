@@ -61,3 +61,7 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `server_encrypt
 
 ALTER TABLE `hopsworks`.`training_dataset_split` DROP INDEX `dataset_id_split_name`;
 ALTER TABLE `hopsworks`.`remote_user` DROP COLUMN `status`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `permission`;
+ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `permission`;
+
+ALTER TABLE `hopsworks`.`activity` CHANGE COLUMN `activity` `activity` VARCHAR(128) COLLATE latin1_general_cs NOT NULL;

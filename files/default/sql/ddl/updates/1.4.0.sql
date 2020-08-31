@@ -55,3 +55,7 @@ ALTER TABLE `hopsworks`.`remote_user` ADD COLUMN `status` varchar(45) COLLATE la
 
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_yml` VARCHAR(1000) COLLATE latin1_general_cs DEFAULT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`dataset` ADD COLUMN `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY';
+ALTER TABLE `hopsworks`.`dataset_shared_with` ADD COLUMN `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY';
+
+ALTER TABLE `hopsworks`.`activity` CHANGE COLUMN `activity` `activity` VARCHAR(255) COLLATE latin1_general_cs NOT NULL;

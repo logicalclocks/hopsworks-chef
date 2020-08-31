@@ -47,7 +47,7 @@ CREATE TABLE `account_audit` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `activity` varchar(128) COLLATE latin1_general_cs NOT NULL,
+  `activity` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `user_id` int(10) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `flag` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
@@ -199,6 +199,7 @@ CREATE TABLE `dataset` (
   `public_ds_id` varchar(1000) COLLATE latin1_general_cs DEFAULT '0',
   `dstype` int(11) NOT NULL DEFAULT '0',
   `feature_store_id` int(11) DEFAULT NULL,
+  `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_dataset` (`inode_pid`,`inode_name`,`partition_id`),
   KEY `inode_id` (`inode_id`),
@@ -224,6 +225,7 @@ CREATE TABLE `dataset_shared_with` (
   `project` int(11) NOT NULL,
   `accepted` tinyint(1) NOT NULL DEFAULT '0',
   `shared_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY',
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`dataset`,`project`),
   KEY `fk_dataset_shared_with_2_idx` (`project`),
