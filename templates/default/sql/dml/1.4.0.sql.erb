@@ -18,8 +18,10 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='epipe_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='yarn_ui_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='yarn_ui_port';
 
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image", "<%= node['hops']['docker']['base']['name'] %>");
-REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image_python_version", "<%= node['hops']['docker']['base']['python'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image_python_name", "<%= node['hops']['docker']['base']['image']['python']['name'] %>");
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("docker_base_image_python_version", "<%= node['hops']['docker']['base']['image']['python']['version'] %>");
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("managed_docker_registry", "<%= node['install']['managed_docker_registry'] %>");
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("ldap_group_mapping_sync_interval", "<%= node['ldap']['group_mapping_sync_interval'] %>");
+
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("max_env_yml_byte_size", "<%= node['conda']['max_env_yml_byte_size'] %>");
