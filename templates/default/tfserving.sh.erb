@@ -26,7 +26,7 @@ if [ "$1" == "kill" ] ; then
     fi
 
     if [ ! -d "$5" ] ; then
-      echo "Invalid SECRET_DIR directory: $4"
+      echo "Invalid SECRET_DIR directory: $5"
       exit 1
     fi
 
@@ -89,6 +89,8 @@ elif [ "$1" == "start" ] ; then
       exit 1
     fi
 
+    chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$SECRET_DIR/$2"
+
     # Launch the tensorflow_serving process
     ${DOMAINS_DIR}/domain1/bin/tfserving-launch.sh $2 $4 $5 $6 $8 $9 ${10} $SERVING_USER
 
@@ -116,6 +118,8 @@ elif [ "$1" == "update" ] ; then
       echo "Error downloading the model on the local Fs"
       exit 1
     fi
+
+    chown -R "${SERVING_USER}":"${SERVING_GROUP}" "$SECRET_DIR/$2"
 
 # get Logs for serving
 elif [ "$1" == "logs" ] ; then
