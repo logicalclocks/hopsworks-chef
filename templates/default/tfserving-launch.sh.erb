@@ -38,7 +38,7 @@ function kill_named {
 
 
 if [ $# -ne 8 ]; then
-    echo "wrond number of arguments, should be 7 was $#"
+    echo "wrong number of arguments, should be 8 was $#"
   help
 fi
 
@@ -65,6 +65,13 @@ fi
 docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        --network=host \
        --init \
+       -e "MODEL_NAME=${MODEL_NAME}" \
+       -e "GRPCPORT=${GRPCPORT}" \
+       -e "RESTPORT=${RESTPORT}" \
+       -e "SECRET_DIR=${SECRET_DIR}" \
+       -e "ENABLE_BATCHING=${ENABLE_BATCHING}" \
+       -e "PROJECT_NAME=${PROJECT_NAME}" \
+       -e "FILE_SYSTEM_POLLING_INTERVAL_SECS=${FILE_SYSTEM_POLLING_INTERVAL_SECS}" \
        -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
        -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
        -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
@@ -75,9 +82,7 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -u="yarnapp" \
        -w="$SECRET_DIR" \
        $IMAGE \
-       tfserving-launcher.sh $MODEL_NAME $GRPCPORT $RESTPORT $SECRET_DIR $ENABLE_BATCHING $PROJECT_NAME $FILE_SYSTEM_POLLING_INTERVAL_SECS &
-
-
+       tfserving-launcher.sh &
 
 # Check that the token is written to the logfile, return when we see it.
 timeout=0
