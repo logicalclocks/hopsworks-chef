@@ -54,24 +54,31 @@ if [ -f "$PID_FILE" ] ; then
     rm $PID_FILE
 fi
 
-docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE \
        --network=host \
        --init \
        -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
        -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
        -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
        -e "HADOOP_HOME=${HADOOP_HOME}" \
-       -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"\
-       -e "HDFS_USER=$HDFS_USER"\
-       -e "HADOOP_PROXY_USER=$HDFS_USER"\
-       -e "MATERIAL_DIRECTORY=$SECRET_DIR"\
-       -e "PATH=${HADOOP_HOME}/bin:$PATH"\
-       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}" \
+       -e "HDFS_USER=$HDFS_USER" \
+       -e "HADOOP_PROXY_USER=$HDFS_USER" \
+       -e "MATERIAL_DIRECTORY=$SECRET_DIR" \
+       -e "PATH=${HADOOP_HOME}/bin:$PATH" \
+       -e "SCRIPT_NAME=$SCRIPT_NAME" \
+       -e "PORT=$PORT" \
+       -e "PROJECT_NAME=$PROJECT_NAME" \
+       -e "PYTHONPATH=$PYTHONPATH" \
+       -e "SERVING_NAME=$SERVING_NAME" \
+       -e "SECRET_DIR=$SECRET_DIR" \
+       -e "LOGFILE=$LOGFILE" \
+       -e "MODEL_NAME=$SERVING_NAME" \
+       -v $SECRET_DIR:$SECRET_DIR:rw \
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
        -u="yarnapp" \
        -w="$SECRET_DIR" \
        $IMAGE \
-       sklearn_serving-launcher.sh $SCRIPT_NAME $PORT $SECRET_DIR $PROJECT_NAME $PYTHONPATH $SERVING_NAME $LOGFILE  &
-
+       /usr/local/bin/sklearn_serving-launcher.sh &
 
 exit $?
