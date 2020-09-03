@@ -489,7 +489,7 @@ glassfish_asadmin "create-http --default-virtual-server server https-internal" d
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} | grep 'https-internal'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols | grep 'https-internal'"
 end
 
 glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target server --protocol https-internal https-int-list" do
