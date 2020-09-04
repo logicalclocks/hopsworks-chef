@@ -397,6 +397,16 @@ ruby_block "export_hadoop_classpath" do
   action :create
 end
 
+ruby_block "export_hadoop_classpath" do
+  block do
+    file = Chef::Util::FileEdit.new("/lib/systemd/system/glassfish-domain1.service")
+    new_line = "ExecStartPre=/bin/bash -c 'sleep 5 && if systemctl list-units --full -all | grep -Fq 'mysqld.service'; then systemctl is-active --quiet mysqld; fi'"
+    file.insert_line_if_no_match(/#{new_line}/, new_line)
+    file.write_file
+  end
+  action :create
+end
+
 hopsworks_grants "restart_glassfish" do
   action :reload_systemd
 end
