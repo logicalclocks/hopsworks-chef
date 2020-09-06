@@ -435,6 +435,3 @@ default['hopsworks']['hdfs']['storage_policy']['base']        = "DB"
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 
 default['hopsworks']['enable_metadata_designer']              = "false"
-
-# Regular expression to sanitize projects Docker images
-default['hopsworks']['docker']['image-validation-regex']      = "^([a-z0-9]+(-[a-z0-9]+)*\.)*[a-z0-9]+(:[0-9]*)?(\/([a-zA-Z0-9\-]*))?\/([-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$)"

@@ -9,7 +9,7 @@ help() {
     exit 1
 }
 
-VALID_IMAGE_NAME='<%= node['hopsworks']['docker']['image-validation-regex'] %>'
+VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 if [ "$1" == "create" ] ; then
 
     # Sanity checks for injection attacks
