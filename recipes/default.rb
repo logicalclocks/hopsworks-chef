@@ -499,7 +499,7 @@ glassfish_asadmin "create-http --default-virtual-server server https-internal" d
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} | grep 'https-internal'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get server.network-config.protocols.protocol.https-internal.* | grep 'http.version'"
 end
 
 glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target server --protocol https-internal https-int-list" do
@@ -509,6 +509,15 @@ glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['i
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners | grep 'https-int-list'"
+end
+
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'conda'"
 end
 
 glassfish_conf = {
