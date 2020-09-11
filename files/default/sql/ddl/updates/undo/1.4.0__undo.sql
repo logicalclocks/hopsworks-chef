@@ -65,3 +65,5 @@ ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `permission`;
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `permission`;
 
 ALTER TABLE `hopsworks`.`activity` CHANGE COLUMN `activity` `activity` VARCHAR(128) COLLATE latin1_general_cs NOT NULL;
+
+UPDATE `hopsworks`.`anaconda_repo` SET `url`="PyPi" WHERE `url`="pypi";
