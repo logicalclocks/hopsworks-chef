@@ -54,7 +54,8 @@ end
 bash 'run-expat' do
   user "root"
   environment ({'HADOOP_HOME' => node['hops']['base_dir'],
-                'HOPSWORKS_EAR_HOME' => "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}/applications/hopsworks-ear~#{node['install']['version']}"}) 
+                'HADOOP_USER_NAME' => node['hops']['hdfs']['user'],
+                'HOPSWORKS_EAR_HOME' => "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}/applications/hopsworks-ear~#{node['install']['version']}"})
   code <<-EOH
     #{node['hopsworks']['expat_dir']}/bin/expat -a migrate -v #{node['install']['version']}
   EOH
@@ -64,7 +65,7 @@ end
 bash "set_project_storage_type" do
   user node['hops']['hdfs']['user']
   code <<-EOH
-    #{node['hops']['bin_dir']}/hdfs storagepolicies -setStoragePolicy -path /Projects -policy DB 
+    #{node['hops']['bin_dir']}/hdfs storagepolicies -setStoragePolicy -path /Projects -policy DB
   EOH
   action :run
   only_if "#{node['hops']['bin_dir']}/hdfs dfs -test -d /Projects"
