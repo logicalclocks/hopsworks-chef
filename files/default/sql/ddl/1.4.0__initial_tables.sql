@@ -1953,7 +1953,7 @@ CREATE TABLE `remote_group_project_mapping` (
 CREATE TABLE `featuregroup_hudi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `feature_group_id` int(11) DEFAULT NULL,
-  `temporary_view_tame` VARCHAR(255) NOT NULL,
+  `temporary_view_name` VARCHAR(255) NOT NULL,
   `precombine_column` VARCHAR(255) NOT NULL,
   `partition_path` VARCHAR(255) NOT NULL,
 --  `value` varchar(13300) COLLATE latin1_general_cs NOT NULL,
