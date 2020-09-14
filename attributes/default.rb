@@ -257,6 +257,11 @@ default['serving']['pool_size']                      = "40"
 default['serving']['max_route_connections']          = "10"
 
 #
+# TensorBoard
+#
+default['tensorboard']['max']['reload']['threads']          = "1"
+
+#
 # PyPi
 #
 default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"

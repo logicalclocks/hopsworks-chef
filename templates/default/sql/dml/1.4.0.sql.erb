@@ -25,3 +25,5 @@ REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("managed_docker_reg
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("ldap_group_mapping_sync_interval", "<%= node['ldap']['group_mapping_sync_interval'] %>");
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("max_env_yml_byte_size", "<%= node['conda']['max_env_yml_byte_size'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("tensorboard_max_reload_threads", "<%= node['tensorboard']['max']['reload']['threads'] %>");

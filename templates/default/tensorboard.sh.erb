@@ -7,7 +7,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath image] | [kill cid ] | [cleanup tbDir]"
+    echo "usage: $0 [start hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath image tensorboardMaxReloadThreads] | [kill cid ] | [cleanup tbDir]"
     echo ""
     exit 1
 }
@@ -28,7 +28,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 7 ]; then
+    if [ $# -ne 8 ]; then
 	help
     fi
 
@@ -45,7 +45,7 @@ elif [ "$1" == "start" ] ; then
         exit 1
     fi
 
-    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8
+    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7 $8 $9
 
 elif [ "$1" == "cleanup" ] ; then
 
