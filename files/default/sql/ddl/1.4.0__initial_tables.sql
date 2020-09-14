@@ -1942,3 +1942,76 @@ CREATE TABLE `remote_group_project_mapping` (
   KEY `fk_remote_group_project_mapping_1_idx` (`project`),
   CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+--
+-- Hudi Feature Store Tables
+--
+
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `featuregroup_hudi` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) DEFAULT NULL,
+  `temporary_view_tame` VARCHAR(255) NOT NULL,
+  `precombine_column` VARCHAR(255) NOT NULL,
+  `partition_path` VARCHAR(255) NOT NULL,
+--  `value` varchar(13300) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  CONSTRAINT `FK_693_956` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `feature_group_hudi_commits`
+-- Danger if there are too many commits that the FK on delete cascade will not work.
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feature_group_commit` (
+  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
+  `commit_id` int(11) NOT NULL DEFAULT '0', -- will this work for Hudi and Iceberg and Delta??
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `hopsfs_hudi_parquet_commit_id` INT(11) NOT NULL,
+  `num_rows` int(11) DEFAULT '0',
+  `name` varchar(500) COLLATE latin1_general_cs DEFAULT NULL,
+  `statistic_type` int(11) NOT NULL DEFAULT '0',
+  `value` varchar(13300) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
+  KEY `commit_id_idx` (`commit_id`),
+  KEY `commit_date_idx` (`committed_on`),
+  CONSTRAINT `hopsfs_hudi_parquet_commit_fk` FOREIGN KEY (`hopsfs_hudi_parquet_commit_id`) REFERENCES `hopsfs_hudi_parquet_commit` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- CREATE TABLE `feature_group_commit_statistic` (
+--   `statistic_id` int(11) NOT NULL,
+--   `feature_group_id` int(11) NOT NULL,
+--   `commit_id` int(11) NOT NULL,
+--   PRIMARY KEY (`statistic_id`,`feature_group_id`,`commit_id`),
+--   KEY (`feature_group_id`,`commit_id`),
+--   CONSTRAINT `FK_commit` FOREIGN KEY (`feature_group_id`,`commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`,`commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+--   CONSTRAINT `FK_commit_statistic` FOREIGN KEY (`statistic_id`) REFERENCES `featurestore_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+-- ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+CREATE TABLE IF NOT EXISTS `hopsfs_hudi_parquet_commit` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  `hopsfs_connector_id`               INT(11)         NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_td_connector_fk` FOREIGN KEY (`hopsfs_connector_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+)
+  ENGINE = ndbcluster
+  DEFAULT CHARSET = latin1
+  COLLATE = latin1_general_cs;
