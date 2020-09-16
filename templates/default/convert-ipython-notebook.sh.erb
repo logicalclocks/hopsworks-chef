@@ -54,8 +54,7 @@ fi
 
 cd "$conversion_dir"
 
-CONTAINER_NAME=$2__nbconverter
-
+CONTAINER_NAME=$2__nbconverter__$(uuidgen)
 
 kill_named
 
