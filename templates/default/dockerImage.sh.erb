@@ -26,20 +26,15 @@ if [ "$1" == "create" ] ; then
 
     docker push $3
 
-elif [ "$1" == "delete" ] ; then
 <% if node['install']['managed_docker_registry'] == "false" -%>
+elif [ "$1" == "delete" ] ; then
     # Remove tags from docker registry
     docker exec registry rm -rf /var/lib/registry/docker/registry/v2/repositories/$2/_manifests/tags/$3
-<% else -%>
-    # Not supported yet
-<% end -%>
 
 elif [ "$1" == "gc" ] ; then
-<% if node['install']['managed_docker_registry'] == "false" -%>
     # Run garbage collection for registry
     docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
-<% else -%>
-    # Not supported yet
+    
 <% end -%>
 
 elif [ "$1" == "list" ] ; then
