@@ -1,1 +1,3 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("rmyarn_user", "<%= node['hops']['rm']['user'] %>");
+
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("spark_executor_min_memory", 1024);
