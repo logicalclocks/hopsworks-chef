@@ -957,3 +957,8 @@ attribute "hopsworks/enable_metadata_designer",
 attribute "hopsworks/expat_url",
           :description => "Url to download expat from",
           :type => 'string'
+
+#TensorBoard'
+attribute "tensorboard/max/reload/threads",
+          :description => "The max number of threads that TensorBoard can use to reload runs. Not relevant for db read-only mode. Each thread reloads one run at a time.",
+          :type => "string"

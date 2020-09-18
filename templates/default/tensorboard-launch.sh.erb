@@ -7,12 +7,13 @@ PORT=$4
 ANACONDA_ENVIRONMENT_PATH=$5
 HADOOP_HOME=$6
 IMAGE=$7
+TENSORBOARD_MAX_RELOAD_THREADS=$8
 CONTAINER_NAME=${HDFS_USER}__tensorboard
 HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 help() {
     echo ""
-    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH HADOOP_HOME IMAGE"
+    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH HADOOP_HOME IMAGE TENSORBOARD_MAX_RELOAD_THREADS"
     echo ""
     exit 1
 }
@@ -30,7 +31,7 @@ function kill_named {
 }
 
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 8 ]; then
   help
 fi
 
@@ -59,6 +60,7 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "LC_ALL=C"\
        -e "HADOOP_HOME=$HADOOP_HOME" \
        -e "CUDA_VISIBLE_DEVICES=''"\
+       -e "TENSORBOARD_MAX_RELOAD_THREADS=$TENSORBOARD_MAX_RELOAD_THREADS"\
        -v $TENSORBOARD_DIR:$TENSORBOARD_DIR:rw\
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
        -u="yarnapp" \
