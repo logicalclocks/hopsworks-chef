@@ -106,7 +106,7 @@ default['hopsworks']['spark_ui_logs_offset'] = "512000"
 #Log level of REST API
 default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
 
-default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-5.1.29-bin.jar"
+default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-8.0.21-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "logicalclocks.com"
 default['hopsworks']['cert']['o']                   = "Logical Clocks AB"
@@ -275,7 +275,7 @@ default['hopsworks']['hive2']['scratch_dir_cleaner_interval']     = "24h"
 # Database upgrades
 #
 # "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.0.3/flyway-commandline-5.0.3-linux-x64.tar.gz"
-default['hopsworks']['flyway']['version']              = "5.0.3"
+default['hopsworks']['flyway']['version']              = "6.5.1"
 default['hopsworks']['flyway_url']                     = node['download_url'] + "/flyway-commandline-#{node['hopsworks']['flyway']['version']}-linux-x64.tar.gz"
 
 
