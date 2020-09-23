@@ -71,4 +71,4 @@ ALTER TABLE `hopsworks`.`activity` CHANGE COLUMN `activity` `activity` VARCHAR(1
 
 UPDATE `hopsworks`.`anaconda_repo` SET `url`="PyPi" WHERE `url`="pypi";
 
-DROP TABLE IF EXISTS `remote_group_project_mapping`;
+DROP TABLE IF EXISTS `remote_group_project_mapping`; 
