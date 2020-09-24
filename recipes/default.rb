@@ -784,8 +784,14 @@ end
 node.override['glassfish']['asadmin']['timeout'] = 400
   
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
-  ear_name = (node['install']['kubernetes'].casecmp?("true") and node['install']['managed_kubernetes'].casecmp?("true")) ? "hopsworks-ear-cloud-kube.ear" : "hopsworks-ear-cloud.ear"
-  node.override['hopsworks']['ear_url'] = "#{node['hopsworks']['download_url']}/#{ear_name}"
+  unmanaged = false
+  if node.attribute? 'cloud' and node['cloud'].attribute? 'init' and node['cloud']['init'].attribute? 'config' and node['cloud']['init']['config'].attribute? 'unmanaged'
+    unmanaged = node['cloud']['init']['config']['unmanaged'].casecmp? 'true'
+  end
+  unless unmanaged
+    ear_name = (node['install']['kubernetes'].casecmp?("true") and node['install']['managed_kubernetes'].casecmp?("true")) ? "hopsworks-ear-cloud-kube.ear" : "hopsworks-ear-cloud.ear"
+    node.override['hopsworks']['ear_url'] = "#{node['hopsworks']['download_url']}/#{ear_name}"
+  end
 end
 
 glassfish_deployable "hopsworks-ear" do
