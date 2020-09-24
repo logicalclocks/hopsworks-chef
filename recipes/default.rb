@@ -780,6 +780,8 @@ hopsworks_mail "gmail" do
    admin_port admin_port
    action :jndi
 end
+
+node.override['glassfish']['asadmin']['timeout'] = 400
   
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
   unmanaged = false
