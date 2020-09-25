@@ -1743,7 +1743,7 @@ CREATE TABLE `variables` (
 
 CREATE TABLE IF NOT EXISTS `secrets` (
        `uid` INT NOT NULL,
-       `secret_name` VARCHAR(200) NOT NULL,
+       `secret_name` VARCHAR(125) NOT NULL,
        `secret` VARBINARY(10000) NOT NULL,
        `added_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
        `visibility` TINYINT NOT NULL,
@@ -1797,9 +1797,11 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
 CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `id`                                  INT(11)         NOT NULL AUTO_INCREMENT,
   `feature_store_id`                    INT(11)         NOT NULL,
+  `access_key`                          VARCHAR(1000)   NULL,
+  `secret_key`                          VARCHAR(1000)   NULL,
   `bucket`                              VARCHAR(5000)   NOT NULL,
   `description`                         VARCHAR(1000)   NULL,
-  `name`                                VARCHAR(150)    NOT NULL,
+  `name`                                VARCHAR(1000)   NOT NULL,
   `server_encryption_algorithm`         INT(11)         NULL,
   `server_encryption_key`               VARCHAR(1000)   NULL,
   PRIMARY KEY (`id`),
