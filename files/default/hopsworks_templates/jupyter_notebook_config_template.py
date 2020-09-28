@@ -54,4 +54,5 @@ os.environ['HADOOP_HOME'] = "${conf.hadoopHome}"
 os.environ['SERVICE_DISCOVERY_DOMAIN'] = "${conf.serviceDiscoveryDomain}"
 
 c.GitHandlersConfiguration.api_key = "${conf.apiKey}"
+c.GitHandlersConfiguration.git_backend = "${conf.gitBackend}"
 os.environ['FLINK_CONF_DIR'] = "${conf.flinkConfDirectory}"
