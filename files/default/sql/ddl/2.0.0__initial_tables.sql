@@ -1541,11 +1541,11 @@ CREATE TABLE `training_dataset` (
 CREATE TABLE `training_dataset_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset` int(11) NULL,
-  'feature_group' int(11) NULL,
+  `feature_group` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(1000) COLLATE latin1_general_cs,
   `td_join`int(11) NULL,
-  'idx' int(11) NULL
+  `idx` int(11) NULL,
   PRIMARY KEY (`id`),
   KEY `td_key` (`training_dataset`),
   KEY `fg_key` (`feature_group`),
