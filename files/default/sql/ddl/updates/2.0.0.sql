@@ -20,3 +20,10 @@ ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `cluster_analysis_enabled`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `num_clusters`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `num_bins`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `corr_method`;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `access_key`;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `secret_key`;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(150) COLLATE latin1_general_cs  NOT NULL;
+
+ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(200) COLLATE latin1_general_cs  NOT NULL;

@@ -18,3 +18,12 @@ ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `cluster_analysis_enabled` TI
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN`num_clusters` int(11) NOT NULL DEFAULT '5';
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `num_bins` INT(11) NOT NULL DEFAULT '20';
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson';
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `access_key` VARCHAR(1000) COLLATE latin1_general_cs
+ DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `secret_key` VARCHAR(1000) COLLATE latin1_general_cs
+ DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(1000) COLLATE latin1_general_cs  NOT NULL;
+
+ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(125) COLLATE latin1_general_cs  NOT NULL;
