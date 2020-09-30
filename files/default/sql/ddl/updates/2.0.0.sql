@@ -27,3 +27,9 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `secret_key`;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(150) COLLATE latin1_general_cs  NOT NULL;
 
 ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(200) COLLATE latin1_general_cs  NOT NULL;
+
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "conda_commands" AND REFERENCED_TABLE_NAME="project");
+SET @s := concat('ALTER TABLE hopsworks.conda_commands DROP FOREIGN KEY `', @fk_name, '`');
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;

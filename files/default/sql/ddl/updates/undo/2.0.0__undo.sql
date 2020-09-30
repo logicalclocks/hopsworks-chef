@@ -27,3 +27,5 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `secret_key` VAR
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(1000) COLLATE latin1_general_cs  NOT NULL;
 
 ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(125) COLLATE latin1_general_cs  NOT NULL;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION ;
