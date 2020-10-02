@@ -15,7 +15,7 @@ include_attribute "hops"
 include_attribute "hops_airflow"
 include_attribute "kube-hops"
 
-default['hopsworks']['version']                  = node['install']['version']
+default['hopsworks']['version']                  = 1.4.1
 default['hopsworks']['current_version']          = node['install']['current_version']
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
