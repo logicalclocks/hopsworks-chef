@@ -80,6 +80,14 @@ PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
 
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "feature_group" AND REFERENCED_TABLE_NAME="hdfs_users");
+SET @s := concat('ALTER TABLE hopsworks.feature_group DROP FOREIGN KEY `', @fk_name, '`');
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `hdfs_user_id`;
+
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP KEY `training_dataset_id`;
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 
@@ -208,3 +216,4 @@ CALL DROP_FOREIGN_KEY_IF_EXISTS('feature_store_feature', 'on_demand_feature_grou
 CALL CREATE_FOREIGN_KEY_IF_NOT_EXISTS('feature_store_feature', 'on_demand_feature_group_id', 'on_demand_feature_group_fk1', 'on_demand_feature_group', 'id')$$
 
 DELIMITER ;
+
