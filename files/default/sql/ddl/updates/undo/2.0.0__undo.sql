@@ -27,3 +27,13 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `secret_key` VAR
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(1000) COLLATE latin1_general_cs  NOT NULL;
 
 ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(125) COLLATE latin1_general_cs  NOT NULL;
+
+DROP TABLE IF EXISTS `training_dataset_join`;
+DROP TABLE IF EXISTS `training_dataset_join_condition`;
+DROP TABLE IF EXISTS `training_dataset_feature`;
+
+RENAME TABLE `hopsworks`.`on_demand_feature` TO `hopsworks`.`feature_store_feature`;
+
+ALTER TABLE `hopsworks`.`feature_store_feature` ADD COLUMN `training_dataset_id` int(11) NULL;
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `query`;
