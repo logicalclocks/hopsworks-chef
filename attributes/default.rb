@@ -410,12 +410,12 @@ default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 # Online FeatureStore JDBC Connection Details
 #
 
-default['featurestore']['jdbc_url']                        = "localhost"
-default['featurestore']['user']                            = node['mysql']['user']
-default['featurestore']['password']                        = node['mysql']['password']
+default['featurestore']['jdbc_url']           = "jdbc:mysql://#{consul_helper.get_service_fqdn("jdbc.mysql")}:#{node['ndb']['mysql_port']}/"
+default['featurestore']['user']               = node['mysql']['user']
+default['featurestore']['password']           = node['mysql']['password']
 
 # hops-util-py
-default['hopsworks']['requests_verify']                    = node['hops']['tls']['enabled']
+default['hopsworks']['requests_verify']       = node['hops']['tls']['enabled']
 
 #
 # Provenance

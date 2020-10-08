@@ -153,15 +153,6 @@ if node['conda']['channels']['default_mirrors'].empty? == false
    condaRepo = repos[0]
 end
 
-featurestore_jdbc_url = node['featurestore']['jdbc_url']
-featurestore_jdbc_url_escaped = featurestore_jdbc_url.gsub(':', '\\\\:')
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for the online featurestore
-if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-  featurestore_jdbc_url_escaped="\"jdbc\\:mysql\\://127.0.0.1\\:#{node['ndb']['mysql_port']}/\""
-end
-
 # hops-util-py only works for localhost installations if you disable TLS hostname validations
 if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
@@ -277,7 +268,6 @@ for version in versions do
          :public_ip => public_ip,
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :featurestore_jdbc_url => featurestore_jdbc_url,
          :hops_version => get_hops_version(node['hops']['version'])
     })
     action :create
