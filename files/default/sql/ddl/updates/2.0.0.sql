@@ -210,7 +210,8 @@ CALL CREATE_FOREIGN_KEY_IF_NOT_EXISTS('feature_store_feature', 'on_demand_featur
 DELIMITER ;
 
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `default_storage`;
-CREATE TABLE `cloud_role_mapping` (
+
+CREATE TABLE `hopsworks`.`cloud_role_mapping` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL,
   `project_role` varchar(32) NOT NULL,
