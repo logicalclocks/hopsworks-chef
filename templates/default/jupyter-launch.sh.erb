@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WAIT_START=20
+WAIT_START=60
 JUPYTER_HOME=$1
 HADOOP_HOME=$2
 HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
@@ -13,6 +13,7 @@ CERTS_DIR=$8
 TOKEN=${10}
 JUPYTER_MODE=${11}
 IMAGE=${12}
+IS_GIT=${13}
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
@@ -21,7 +22,7 @@ NOT_FOUND=127
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME PROJECT_USER_NAME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE IMAGE_NAME"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME PROJECT_USER_NAME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE IMAGE_NAME IS_GIT"
     echo ""
     exit 1
 }
@@ -37,7 +38,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 12 ]; then
+if [ $# -ne 13 ]; then
   help
 fi
 
@@ -70,6 +71,7 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "HADOOP_HOME=${HADOOP_HOME}" \
        -e "ANACONDA_ENV=$4" \
        -e "PYTHONHASHSEED=0" \
+       -e "IS_GIT=${IS_GIT}" \
        -v $JUPYTER_HOME:$JUPYTER_HOME:rw\
        -v $SECRET_DIR:$SECRET_DIR:rw\
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
@@ -81,14 +83,11 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        /usr/local/bin/jupyter-launcher.sh $PORT $LOGFILE $TOKEN $JUPYTER_MODE &
 
 
-
-
-
 # Wait for jupyter to start
 timeout=0
 while [ $timeout -lt $WAIT_START ] ; do
   sleep 1
-  grep 'The Jupyter Notebook is running at' "$LOGFILE"
+  grep 'Use Control-C to stop this server' "$LOGFILE"
         if [ $? -eq 0 ] ; then
           break
         fi

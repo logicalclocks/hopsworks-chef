@@ -8,7 +8,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start jupyter_home hadoop_home project_user_name anaconda_env port logfile secret_dir certs_dir hadoop_username token jupyter_mode image_name] | [kill jupyter_home container_id project_user_name] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
+    echo "usage: $0 [start jupyter_home hadoop_home project_user_name anaconda_env port logfile secret_dir certs_dir hadoop_username token jupyter_mode image_name is_git] | [kill jupyter_home container_id project_user_name] | [list] | [kernel-add jupyter_home  project_user conda_environment] [kernel-remove project_user]"
     echo ""
     exit 1
 }
@@ -38,7 +38,7 @@ if [ "$1" == "kill" ] ; then
     
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 13 ]; then
+    if [ $# -ne 14 ]; then
 	help
     fi
 
@@ -108,7 +108,7 @@ elif [ "$1" == "start" ] ; then
     chmod -R 770 "$2"
      
     # Launch JupyterLab
-    ${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}
+    ${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14}
 
 # list 
 elif [ "$1" == "list" ] ; then
