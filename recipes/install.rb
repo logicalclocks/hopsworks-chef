@@ -7,9 +7,6 @@ domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 password_file = "#{theDomain}_admin_passwd"
 
-featurestore_user=node['featurestore']['user']
-featurestore_password=node['featurestore']['password']
-
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
@@ -320,9 +317,9 @@ node.override = {
               'ping' => 'true',
               'description' => 'FeatureStore Connection Pool',
               'properties' => {
-                'Url' => featurestore_jdbc_url,
-                'User' => featurestore_user,
-                'Password' => featurestore_password
+                'Url' => node['featurestore']['jdbc_url'],
+                'User' => node['featurestore']['user'],
+                'Password' => node['featurestore']['password']
               }
             },
             'resources' => {
