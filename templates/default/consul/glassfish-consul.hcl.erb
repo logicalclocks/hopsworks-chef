@@ -8,6 +8,14 @@ services = [
             "hopsworks"
         ]
         port = <%= node['hopsworks']['internal']['port'] %>
+        check = {
+            id = "hw-health-check"
+            name = "Health check for Hopsworks"
+            args = ["<%= node['glassfish']['domains_dir'] %>/<%= node['hopsworks']['domain_name'] %>/bin/glassfish-health.sh"]
+            interval = "20s"
+            timeout = "20s"
+            status = "passing"
+        }
     },
     {
         id = "hopsworks/admin"
@@ -16,5 +24,9 @@ services = [
             "admin"
         ]
         port = <%= node['hopsworks']['admin']['port'] %>
+        check = {
+            id = "adm-hw-health"
+            alias_service = "hopsworks/web"
+        }
     }
 ]
