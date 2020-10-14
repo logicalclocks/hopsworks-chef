@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+CHECK="curl --fail --silent --insecure https://localhost:<%= node['hopsworks']['internal']['port'] %>/hopsworks-api/api/variables/versions > /dev/null 2>&1"
+
+source <%= node['consul']['health-check']['retryable-check-file'] %>
+
+_run_health_check "$CHECK"
