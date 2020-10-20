@@ -443,3 +443,4 @@ default['hopsworks']['enable_metadata_designer']              = "false"
 
 #check nodemanager status
 default["hopsworks"]['check_nodemanager_status']              = "false"
+default['hopsworks']['cloud']['type']                         = "NONE"
