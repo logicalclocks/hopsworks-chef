@@ -216,8 +216,11 @@ CREATE TABLE `hopsworks`.`cloud_role_mapping` (
   `project_id` int(11) NOT NULL,
   `project_role` varchar(32) NOT NULL,
   `cloud_role` varchar(2048) NOT NULL,
+  `default_role` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `index3` (`project_id`,`cloud_role`),
+  UNIQUE KEY `index3_cloud_role_mapping` (`project_id`,`cloud_role`),
+  UNIQUE KEY `index4_cloud_role_mapping` (`project_id`,`project_role`,`default_role`),
   KEY `fk_cloud_role_mapping_1_idx` (`project_id`),
   CONSTRAINT `fk_cloud_role_mapping_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
