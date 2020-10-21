@@ -3,12 +3,12 @@ source 'https://supermarket.chef.io'
 
 metadata
 
-cookbook 'conda', github: "tkakantousis/conda-chef", branch: "beamer"
+cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
 cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "master"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "logicalclocks/spark-chef", branch: "master"
-cookbook 'flink', github: "tkakantousis/flink-chef", branch: "beamer"
+cookbook 'flink', github: "logicalclocks/flink-chef", branch: "master"
 cookbook 'livy', github: "logicalclocks/livy-chef", branch: "master"
 cookbook 'drelephant', github: "logicalclocks/dr-elephant-chef", branch: "master"
 cookbook 'epipe', github: "logicalclocks/epipe-chef", branch: "master"
