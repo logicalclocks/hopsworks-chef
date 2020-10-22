@@ -8,7 +8,7 @@
 
     <database>
         <url>jdbc:mysql://127.0.0.1/hopsworks</url>
-        <driver>com.mysql.jdbc.Driver</driver>
+        <driver>com.mysql.cj.jdbc.Driver</driver>
         <user><%= node['mysql']['user'] %></user>
         <password><%= node['mysql']['password'] %></password>
     </database>

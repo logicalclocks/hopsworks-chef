@@ -91,6 +91,7 @@ bash 'create_hopsworks_db' do
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
       #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']}\';\"
+      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
       #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
       #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
       # Hopsworks needs to the quotas tables
@@ -339,6 +340,7 @@ begin
     code <<-EOF
       set -e
       #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['kkafka']['mysql']['password']}\';\"
+      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
       #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.topic_acls TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
       #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\'\"
       #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.users TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
@@ -569,8 +571,12 @@ glassfish_conf = {
   'server.network-config.protocols.protocol.https-internal.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'resources.jdbc-connection-pool.hopsworksPool.property.User' => node['hopsworks']['mysql']['user'],
   'resources.jdbc-connection-pool.hopsworksPool.property.Password' => node['hopsworks']['mysql']['password'],
+  'resources.jdbc-connection-pool.hopsworksPool.property.useSSL' => 'false',
+  'resources.jdbc-connection-pool.hopsworksPool.property.allowPublicKeyRetrieval' => 'true',
   'resources.jdbc-connection-pool.ejbTimerPool.property.User' => node['hopsworks']['mysql']['user'],
   'resources.jdbc-connection-pool.ejbTimerPool.property.Password' => node['hopsworks']['mysql']['password'],
+  'resources.jdbc-connection-pool.ejbTimerPool.property.useSSL' => 'false',
+  'resources.jdbc-connection-pool.ejbTimerPool.property.allowPublicKeyRetrieval' => 'true',
   'server.network-config.protocols.protocol.https-internal.ssl.cert-nickname' => 'internal'
 }
 
@@ -598,13 +604,23 @@ if exists_local("hops_airflow", "default")
   airflow_exists = true
   # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
   # connection pool for Airflow
-  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\" airflowPool" do
+
+  # Drop Existing airflowPool connection pool and recreate it
+  glassfish_asadmin "delete-jdbc-connection-pool --cascade airflowPool" do
     domain_name domain_name
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
     username username
     admin_port admin_port
     secure false
-    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool'"
+    only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool$'"
+  end
+
+  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true airflowPool" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
   end
 
   glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
@@ -613,17 +629,26 @@ if exists_local("hops_airflow", "default")
     username username
     admin_port admin_port
     secure false
-    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow'"
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow$'"
   end
 end
 
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped} featureStorePool" do
+# Drop Existing featureStore connection pool and recreate it
+glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featureStorePool'"
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featureStorePool$'"
+end
+
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped}:useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
 end
 
 glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
@@ -632,9 +657,62 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --de
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/featurestore'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/featurestore$'"
 end
 
+# Drop Existing hopsworksPool connection pool and recreate it
+glassfish_asadmin "delete-jdbc-connection-pool --cascade hopsworksPool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'hopsworksPool$'"
+end
+
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true hopsworksPool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "create-jdbc-resource --connectionpoolid hopsworksPool --description \"Resource for Hopsworks Pool\" jdbc/hopsworks" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworks$'"
+end
+
+# Drop Existing ejbTimerPool connection pool and recreate it
+glassfish_asadmin "delete-jdbc-connection-pool --cascade ejbTimerPool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'ejbTimerPool$'"
+end
+
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks EJB Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/glassfish_timers\":useSSL=false:allowPublicKeyRetrieval=true ejbTimerPool" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --description \"Resource for Hopsworks EJB Timers Pool\" jdbc/hopsworksTimers" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworksTimers$'"
+end
 
 logging_conf = {
   'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,

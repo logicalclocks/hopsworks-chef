@@ -6,9 +6,9 @@ sudo -u $GLASSFISH_USER sh -s ${HOPS_SITE_DIR}<<'EOF'
 . $1/hs_env.sh
 cp ${DOMAIN_DIR}/domain1/lib/${MSQL_CONNECTOR} ${DOMAIN_DIR}/${DOMAIN}/lib
 cd ${GLASSFISH_PATH}/bin
-./asadmin --port $ADMIN_PORT $ASADMIN_PW  create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource \
+./asadmin --port $ADMIN_PORT $ASADMIN_PW  create-jdbc-connection-pool --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource \
                                                                        --restype javax.sql.DataSource \
-                                                                       --property user=kthfs:password=kthfs:DatabaseName=${DB_NAME}:ServerName=${MYSQL_SERVER}:port=${MYSQL_PORT} \
+                                                                       --property user=kthfs:password=kthfs:DatabaseName=${DB_NAME}:ServerName=${MYSQL_SERVER}:port=${MYSQL_PORT}:useSSL=false:allowPublicKeyRetrieval=true \
                                                                        hopsSitePool
 ./asadmin --port $ADMIN_PORT $ASADMIN_PW create-jdbc-resource --connectionpoolid hopsSitePool jdbc/hopssite
 EOF
