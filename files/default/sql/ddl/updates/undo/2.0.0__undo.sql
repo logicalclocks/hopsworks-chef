@@ -50,3 +50,5 @@ ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `base_env` VARCHAR(45) COLLATE l
 
 DROP TABLE IF EXISTS `cloud_role_mapping`; 
 DROP TABLE IF EXISTS `hopsworks`.`cloud_role_mapping`; 
+
+DROP TABLE IF EXISTS `hopsworks`.`cloud_role_mapping_default`;
