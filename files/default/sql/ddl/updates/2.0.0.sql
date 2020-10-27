@@ -106,6 +106,8 @@ ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `timetravel_format` IN
 
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit_id` BIGINT(20) NULL;
 
+ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `base_env`;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures
