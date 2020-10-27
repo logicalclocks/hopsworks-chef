@@ -254,3 +254,5 @@ CREATE TABLE `databricks_instance` (
   FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `label` TINYINT(1) NOT NULL DEFAULT '0';

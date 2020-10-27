@@ -1547,6 +1547,7 @@ CREATE TABLE `training_dataset_feature` (
   `type` varchar(1000) COLLATE latin1_general_cs,
   `td_join`int(11) NULL,
   `idx` int(11) NULL,
+  `label` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `td_key` (`training_dataset`),
   KEY `fg_key` (`feature_group`),
