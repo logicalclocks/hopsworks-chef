@@ -85,6 +85,33 @@ ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `query` TINYINT(1) NOT NULL DEFAULT '0';
 
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feature_group_commit` (
+  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
+  `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `num_rows_updated` int(11) DEFAULT '0',
+  `num_rows_inserted` int(11) DEFAULT '0',
+  `num_rows_deleted` int(11) DEFAULT '0',
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
+  KEY `commit_id_idx` (`commit_id`),
+  KEY `commit_date_idx` (`committed_on`),
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `timetravel_format`  ENUM('HUDI', 'NONE') NOT NULL DEFAULT 'HUDI';
+
+ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit_id` BIGINT(20) NULL;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures
