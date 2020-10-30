@@ -1585,14 +1585,13 @@ CREATE TABLE `training_dataset_join_condition` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `feature_store_feature`
+-- Table structure for table `on_demand_feature`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feature_store_feature` (
+CREATE TABLE `on_demand_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `training_dataset_id` int(11) NULL,
   `on_demand_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
