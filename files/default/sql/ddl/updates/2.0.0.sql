@@ -86,7 +86,7 @@ ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `query` TINYINT(1) NOT NULL DEFAULT '0';
 
 CREATE TABLE `feature_group_commit` (
-  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
+  `feature_group_id` int(11) NOT NULL, 
   `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `num_rows_updated` int(11) DEFAULT '0',
