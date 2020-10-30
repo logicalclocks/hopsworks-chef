@@ -37,3 +37,9 @@ RENAME TABLE `hopsworks`.`on_demand_feature` TO `hopsworks`.`feature_store_featu
 ALTER TABLE `hopsworks`.`feature_store_feature` ADD COLUMN `training_dataset_id` int(11) NULL;
 
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `query`;
+
+DROP TABLE IF EXISTS `feature_group_commit`;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `timetravel_format`;
+
+ALTER TABLE `hopsworks`.`training_dataset_join` DROP COLUMN `feature_group_commit_id`;
