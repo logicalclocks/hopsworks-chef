@@ -86,7 +86,7 @@ ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `query` TINYINT(1) NOT NULL DEFAULT '0';
 
 CREATE TABLE `feature_group_commit` (
-  `feature_group_id` int(11) NOT NULL, 
+  `feature_group_id` int(11) NOT NULL,
   `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `num_rows_updated` int(11) DEFAULT '0',
@@ -220,8 +220,8 @@ CREATE TABLE `hopsworks`.`cloud_role_mapping` (
   UNIQUE KEY `index3` (`project_id`,`cloud_role`),
   UNIQUE KEY `index4` (`id`,`project_id`,`project_role`),
   KEY `fk_cloud_role_mapping_1_idx` (`project_id`),
-  CONSTRAINT `fk_cloud_role_mapping_1` 
-  FOREIGN KEY (`project_id`) 
+  CONSTRAINT `fk_cloud_role_mapping_1`
+  FOREIGN KEY (`project_id`)
   REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -234,8 +234,17 @@ CREATE TABLE `cloud_role_mapping_default` (
   UNIQUE KEY `index3` (`project_id`,`project_role`),
   UNIQUE KEY `index4` (`mapping_id`,`project_id`,`project_role`),
   KEY `fk_cloud_role_mapping_default_1_idx` (`mapping_id`,`project_id`,`project_role`),
-  CONSTRAINT `fk_cloud_role_mapping_default_1` 
-  FOREIGN KEY (`mapping_id`,`project_id`,`project_role`) 
+  CONSTRAINT `fk_cloud_role_mapping_default_1`
+  FOREIGN KEY (`mapping_id`,`project_id`,`project_role`)
   REFERENCES `cloud_role_mapping` (`id`,`project_id`,`project_role`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE `databricks_instance` (
+  `id`              INT(11) NOT NULL AUTO_INCREMENT,
+  `url`             VARCHAR(255) NOT NULL,
+  `uid`             INT(11) NOT NULL,
+  `secret_name`     VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
