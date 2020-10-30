@@ -38,7 +38,7 @@ ALTER TABLE `hopsworks`.`feature_store_feature` ADD COLUMN `training_dataset_id`
 
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `query`;
 
-DROP TABLE IF EXISTS `feature_group_commit`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_group_commit`;
 
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `timetravel_format`;
 

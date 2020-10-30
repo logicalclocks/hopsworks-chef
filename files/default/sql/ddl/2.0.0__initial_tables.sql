@@ -1999,8 +1999,7 @@ CREATE TABLE `remote_group_project_mapping` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
-  `feature_group_version` int(11) NOT NULL,
-  `commit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `num_rows_updated` int(11) DEFAULT '0',
   `num_rows_inserted` int(11) DEFAULT '0',
@@ -2008,7 +2007,7 @@ CREATE TABLE `feature_group_commit` (
   `inode_pid`                         BIGINT(20)      NOT NULL,
   `inode_name`                        VARCHAR(255)    NOT NULL,
   `partition_id`                      BIGINT(20)      NOT NULL,
-  PRIMARY KEY (`feature_group_id`, `commit_id`, `feature_group_version`),
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
   KEY `commit_date_idx` (`committed_on`),
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
