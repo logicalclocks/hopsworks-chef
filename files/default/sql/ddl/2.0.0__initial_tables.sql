@@ -1561,6 +1561,7 @@ CREATE TABLE `training_dataset_join` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset` int(11) NULL,
   `feature_group` int(11) NULL,
+  `feature_group_commit_id` BIGINT(20) NULL,
   `type` tinyint(5) NOT NULL DEFAULT 0,
   `idx` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -1901,6 +1902,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `offline_feature_group`          BIGINT(20)      NOT NULL,
   `online_enabled`                 TINYINT(1)      NULL,
   `default_storage`                TINYINT         NULL,
+  `timetravel_format`              INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
     ON DELETE CASCADE
@@ -1990,4 +1992,21 @@ CREATE TABLE `remote_group_project_mapping` (
   UNIQUE KEY `index3` (`remote_group`,`project`),
   KEY `fk_remote_group_project_mapping_1_idx` (`project`),
   CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_group_commit` (
+  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
+  `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `num_rows_updated` int(11) DEFAULT '0',
+  `num_rows_inserted` int(11) DEFAULT '0',
+  `num_rows_deleted` int(11) DEFAULT '0',
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
+  KEY `commit_id_idx` (`commit_id`),
+  KEY `commit_date_idx` (`committed_on`),
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

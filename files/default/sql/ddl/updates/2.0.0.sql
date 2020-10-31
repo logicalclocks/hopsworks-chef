@@ -68,9 +68,9 @@ CREATE TABLE `training_dataset_feature` (
   CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-INSERT INTO `hopsworks`.`training_dataset_feature`(`training_dataset`, `name`, `type`) 
+INSERT INTO `hopsworks`.`training_dataset_feature`(`training_dataset`, `name`, `type`)
 SELECT `training_dataset_id`, `name`, `type` FROM `hopsworks`.`on_demand_feature`
-WHERE `training_dataset_id` IS NOT NULL; 
+WHERE `training_dataset_id` IS NOT NULL;
 
 DELETE FROM `hopsworks`.`on_demand_feature` WHERE `training_dataset_id` IS NOT NULL;
 
@@ -85,12 +85,33 @@ ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `query` TINYINT(1) NOT NULL DEFAULT '0';
 
+CREATE TABLE `feature_group_commit` (
+  `feature_group_id` int(11) NOT NULL, 
+  `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `num_rows_updated` int(11) DEFAULT '0',
+  `num_rows_inserted` int(11) DEFAULT '0',
+  `num_rows_deleted` int(11) DEFAULT '0',
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
+  KEY `commit_id_idx` (`commit_id`),
+  KEY `commit_date_idx` (`committed_on`),
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `timetravel_format` INT NOT NULL DEFAULT 1;
+
+ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit_id` BIGINT(20) NULL;
+
 /*
 The following changes are related to Migration to NDB8
-The following changes are implemented using procedures 
-so that database upgrades do not fail as these changes 
-might be applied twice. First at the time of manually 
-migrationg NDB and later by karamel. 
+The following changes are implemented using procedures
+so that database upgrades do not fail as these changes
+might be applied twice. First at the time of manually
+migrationg NDB and later by karamel.
 */
 DELIMITER $$
 /*
@@ -103,19 +124,19 @@ CREATE PROCEDURE DROP_FOREIGN_KEY_IF_EXISTS(IN tableName VARCHAR(128), IN constr
 BEGIN
     IF EXISTS(
         SELECT * FROM information_schema.TABLE_CONSTRAINTS
-        WHERE 
+        WHERE
             TABLE_SCHEMA    = DATABASE()     AND
             TABLE_NAME      = tableName      AND
             CONSTRAINT_NAME = constraintName AND
             CONSTRAINT_TYPE = 'FOREIGN KEY')
     THEN
         SET @query = CONCAT('ALTER TABLE ', DATABASE(), ".", tableName, ' DROP FOREIGN KEY ', constraintName);
-        PREPARE stmt FROM @query; 
-        EXECUTE stmt; 
-        DEALLOCATE PREPARE stmt; 
+        PREPARE stmt FROM @query;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
     ELSE
         SELECT concat('Unable to delete foreign key as it does not exist. Foreign Key: ', constraintName) AS ' ';
-    END IF; 
+    END IF;
 END$$
 
 /*
@@ -132,7 +153,7 @@ CREATE PROCEDURE CREATE_FOREIGN_KEY_IF_NOT_EXISTS(
 BEGIN
     IF EXISTS(
         SELECT * FROM information_schema.TABLE_CONSTRAINTS
-        WHERE 
+        WHERE
             TABLE_SCHEMA    = DATABASE()     AND
             TABLE_NAME      = tableName      AND
             CONSTRAINT_NAME = constraintName AND
@@ -141,10 +162,10 @@ BEGIN
         SELECT concat('Unable to create foreign key as it already exists. Foreign Key: ', constraintName) AS ' ';
     ELSE
         SET @query = CONCAT('ALTER TABLE ', DATABASE(), ".", tableName, ' ADD CONSTRAINT ', constraintName, ' FOREIGN KEY (', tableColumn, ') REFERENCES ', constraintTable, '(', contraintColumn, ') ', '  ON DELETE CASCADE ON UPDATE NO ACTION '  );
-        PREPARE stmt FROM @query; 
-        EXECUTE stmt; 
-        DEALLOCATE PREPARE stmt; 
-    END IF; 
+        PREPARE stmt FROM @query;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
 END$$
 
 
