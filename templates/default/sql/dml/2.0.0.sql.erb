@@ -3,3 +3,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("rmyarn_user", "<%= 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("spark_executor_min_memory", 1024);
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("check_nodemanagers_status", "<%= node['hopsworks']['check_nodemanagers_status'] %>");
+
+REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("provenance_type", "<%= node['hopsworks']['provenance']['type'] %>");
