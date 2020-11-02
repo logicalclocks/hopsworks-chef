@@ -116,6 +116,12 @@ ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit
 
 ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `base_env`;
 
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+    ADD COLUMN `inode_pid`  BIGINT(20) NOT NULL,
+    ADD COLUMN `inode_name` VARCHAR(255) NOT NULL,
+    ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
+    ADD CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures
