@@ -1197,7 +1197,6 @@ CREATE TABLE `python_dep` (
   `repo_id` int(11) NOT NULL,
   `preinstalled` tinyint(1) DEFAULT '0',
   `install_type` int(11) NOT NULL,
-  `base_env` VARCHAR(45) COLLATE latin1_general_cs,
   PRIMARY KEY (`id`),
   UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`),
   KEY `repo_id` (`repo_id`),
