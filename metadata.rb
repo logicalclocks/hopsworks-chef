@@ -964,8 +964,3 @@ attribute "hopsworks/expat_url",
 attribute "tensorboard/max/reload/threads",
           :description => "The max number of threads that TensorBoard can use to reload runs. Not relevant for db read-only mode. Each thread reloads one run at a time.",
           :type => "string"
-
-#Cloud
-attribute "hopsworks/cloud/type",
-          :description => "Type of cloud hopsworks is deployed on. Accepted values: NONE/AWS/GCP/AZURE",
-          :type => "string"
