@@ -1900,7 +1900,6 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
   `offline_feature_group`          BIGINT(20)      NOT NULL,
   `online_enabled`                 TINYINT(1)      NULL,
-  `default_storage`                TINYINT         NULL,
   `timetravel_format`              INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
