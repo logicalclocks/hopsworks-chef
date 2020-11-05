@@ -14,16 +14,16 @@ help() {
 NOT_FOUND=127
 
 escape_string(){
-  echo "$1" | sed 's/[^0-9a-zA-Z._/]/\\&/g'
+  echo "$1" | sed 's/[^0-9a-zA-Z._:/]/\\&/g'
 }
 
 function kill_named {
     CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
     if [ "$CID" != "" ] ; then
-	docker rm -f "$CID" > /dev/null 2>&1
-        res=$?
+      docker rm -f "$CID" > /dev/null 2>&1
+      res=$?
     else
-	res=$NOT_FOUND
+      res=$NOT_FOUND
     fi
     return "$res"
 }
@@ -54,7 +54,7 @@ chown yarnapp "$conversion_dir"
 if [ $? -ne 0 ] ; then
     echo "Could not chown directory in the staging directory for converting iPython notebook. Problem dir: $staging_dir as user yarnapp"
     exit 3
-fi    
+fi
 
 cd "$conversion_dir"
 

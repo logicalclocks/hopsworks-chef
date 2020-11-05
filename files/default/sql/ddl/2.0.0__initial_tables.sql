@@ -171,12 +171,14 @@ CREATE TABLE `conda_commands` (
   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `environment_yml` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
+  `git_api_key_name` VARCHAR(125) DEFAULT NULL,
+  `git_backend` VARCHAR(45) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `error_message` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL,
+  `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `user_fk_conda` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -346,7 +348,7 @@ CREATE TABLE `feature_group` (
   CONSTRAINT `FK_1012_790` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_191_772` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_656_740` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `on_demand_feature_group_fk2` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -404,8 +406,8 @@ CREATE TABLE `feature_store_statistic` (
   PRIMARY KEY (`id`),
   KEY `feature_group_id` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),
-  CONSTRAINT `fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fg_fk_fss` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk_fss` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1128,7 +1130,7 @@ CREATE TABLE `schemas` (
   `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `project_idx_schemas` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 --
 -- table structure for table `subjects`
@@ -1146,7 +1148,7 @@ CREATE TABLE `subjects` (
   PRIMARY KEY (`id`),
   KEY `project_id_idx` (`project_id`),
   KEY `created_on_idx` (`created_on`),
-  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `project_idx_subjects` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `schema_id_idx` FOREIGN KEY (`schema_id`) REFERENCES `schemas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `subjects__constraint_key` UNIQUE (`subject`, `version`, `project_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1162,7 +1164,7 @@ CREATE TABLE `subjects_compatibility` (
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `subjects_compatibility__constraint_key` UNIQUE (`subject`, `project_id`),
-  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `project_idx_sub_comp` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 
@@ -1179,7 +1181,7 @@ CREATE TABLE `project_topics` (
   `subject_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `topic_project` (`topic_name`,`project_id`),
-  CONSTRAINT `project_idx` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `project_idx_proj_topics` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `subject_idx` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1197,7 +1199,6 @@ CREATE TABLE `python_dep` (
   `repo_id` int(11) NOT NULL,
   `preinstalled` tinyint(1) DEFAULT '0',
   `install_type` int(11) NOT NULL,
-  `base_env` VARCHAR(45) COLLATE latin1_general_cs,
   PRIMARY KEY (`id`),
   UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`),
   KEY `repo_id` (`repo_id`),
@@ -1339,8 +1340,8 @@ CREATE TABLE `rstudio_settings` (
   PRIMARY KEY (`project_id`,`team_member`),
   KEY `team_member` (`team_member`),
   KEY `secret_idx` (`secret`),
-  CONSTRAINT `FK_262_309` FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_284_308` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `RS_FK_USERS` FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `RS_FK_PROJS` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1376,7 +1377,7 @@ CREATE TABLE `serving` (
   KEY `user_fk` (`creator`),
   KEY `kafka_fk` (`kafka_topic_id`),
   KEY `name_k` (`name`),
-  CONSTRAINT `user_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `user_fk_serving` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `project_topics` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `FK_284_315` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1395,7 +1396,7 @@ CREATE TABLE `shared_topics` (
   `accepted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`project_id`,`topic_name`),
   KEY `topic_idx` (`topic_name`,`owner_id`),
-  CONSTRAINT `topic_idx` FOREIGN KEY (`topic_name`,`owner_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `topic_idx_shared` FOREIGN KEY (`topic_name`,`owner_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
 /*!50100 PARTITION BY KEY (topic_name) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1495,7 +1496,7 @@ CREATE TABLE `topic_acls` (
   KEY `username` (`username`),
   KEY `topic_idx` (`topic_name`,`project_id`),
   CONSTRAINT `FK_262_338` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `topic_idx` FOREIGN KEY (`topic_name`,`project_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `topic_idx_topic_acls` FOREIGN KEY (`topic_name`,`project_id`) REFERENCES `project_topics` (`topic_name`,`project_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1549,9 +1550,9 @@ CREATE TABLE `training_dataset_feature` (
   PRIMARY KEY (`id`),
   KEY `td_key` (`training_dataset`),
   KEY `fg_key` (`feature_group`),
-  CONSTRAINT `join_fk` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fg_fk` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+  CONSTRAINT `join_fk_tdf` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk_tdf` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1561,11 +1562,12 @@ CREATE TABLE `training_dataset_join` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `training_dataset` int(11) NULL,
   `feature_group` int(11) NULL,
+  `feature_group_commit_id` BIGINT(20) NULL,
   `type` tinyint(5) NOT NULL DEFAULT 0,
   `idx` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fg_key` (`feature_group`),
-  CONSTRAINT `td_fk` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk_tdj` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fg_left` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1579,7 +1581,7 @@ CREATE TABLE `training_dataset_join_condition` (
   `right_feature` VARCHAR(1000) NOT NULL DEFAULT "",
   PRIMARY KEY (`id`),
   KEY `join_key` (`td_join`),
-  CONSTRAINT `join_fk` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `join_fk_tdjc` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1598,7 +1600,7 @@ CREATE TABLE `on_demand_feature` (
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
-  CONSTRAINT `on_demand_feature_group_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `on_demand_feature_group_fk1` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1804,6 +1806,7 @@ CREATE TABLE IF NOT EXISTS `secrets` (
           ON DELETE CASCADE
           ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `api_key` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `prefix` varchar(45) NOT NULL,
@@ -1900,7 +1903,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
   `offline_feature_group`          BIGINT(20)      NOT NULL,
   `online_enabled`                 TINYINT(1)      NULL,
-  `default_storage`                TINYINT         NULL,
+  `timetravel_format`              INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
     ON DELETE CASCADE
@@ -1990,4 +1993,59 @@ CREATE TABLE `remote_group_project_mapping` (
   UNIQUE KEY `index3` (`remote_group`,`project`),
   KEY `fk_remote_group_project_mapping_1_idx` (`project`),
   CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_group_commit` (
+  `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
+  `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `num_rows_updated` int(11) DEFAULT '0',
+  `num_rows_inserted` int(11) DEFAULT '0',
+  `num_rows_deleted` int(11) DEFAULT '0',
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  PRIMARY KEY (`feature_group_id`, `commit_id`),
+  KEY `commit_id_idx` (`commit_id`),
+  KEY `commit_date_idx` (`committed_on`),
+  CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cloud_role_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  `cloud_role` varchar(2048) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`project_id`,`cloud_role`),
+  UNIQUE KEY `index4` (`id`,`project_id`,`project_role`),
+  KEY `fk_cloud_role_mapping_1_idx` (`project_id`),
+  CONSTRAINT `fk_cloud_role_mapping_1`
+  FOREIGN KEY (`project_id`)
+  REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cloud_role_mapping_default` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mapping_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`project_id`,`project_role`),
+  UNIQUE KEY `index4` (`mapping_id`,`project_id`,`project_role`),
+  KEY `fk_cloud_role_mapping_default_1_idx` (`mapping_id`,`project_id`,`project_role`),
+  CONSTRAINT `fk_cloud_role_mapping_default_1`
+  FOREIGN KEY (`mapping_id`,`project_id`,`project_role`)
+  REFERENCES `cloud_role_mapping` (`id`,`project_id`,`project_role`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `databricks_instance` (
+  `id`              INT(11) NOT NULL AUTO_INCREMENT,
+  `url`             VARCHAR(255) NOT NULL,
+  `uid`             INT(11) NOT NULL,
+  `secret_name`     VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

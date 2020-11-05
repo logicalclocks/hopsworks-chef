@@ -290,7 +290,7 @@ node.override = {
         'jdbc_connection_pools' => {
           'hopsworksPool' => {
             'config' => {
-              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
               'validationmethod' => 'auto-commit',
@@ -299,7 +299,9 @@ node.override = {
               'properties' => {
                 'Url' => "jdbc:mysql://127.0.0.1:3306/",
                 'User' => node['hopsworks']['mysql']['user'],
-                'Password' => node['hopsworks']['mysql']['password']
+                'Password' => node['hopsworks']['mysql']['password'],
+                'useSSL' => 'false',
+                'allowPublicKeyRetrieval' => 'true'
               }
             },
             'resources' => {
@@ -310,7 +312,7 @@ node.override = {
           },
           'featureStorePool' => {
             'config' => {
-              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
               'validationmethod' => 'auto-commit',
@@ -319,7 +321,9 @@ node.override = {
               'properties' => {
                 'Url' => node['featurestore']['jdbc_url'],
                 'User' => node['featurestore']['user'],
-                'Password' => node['featurestore']['password']
+                'Password' => node['featurestore']['password'],
+                'useSSL' => 'false',
+                'allowPublicKeyRetrieval' => 'true'
               }
             },
             'resources' => {
@@ -330,7 +334,7 @@ node.override = {
           },
           'airflowPool' => {
             'config' => {
-              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
               'validationmethod' => 'auto-commit',
@@ -339,7 +343,9 @@ node.override = {
               'properties' => {
                 'Url' => "jdbc:mysql://127.0.0.1:3306/",
                 'User' => node['airflow']['mysql_user'],
-                'Password' => node['airflow']['mysql_password']
+                'Password' => node['airflow']['mysql_password'],
+                'useSSL' => 'false',
+                'allowPublicKeyRetrieval' => 'true'
               }
             },
             'resources' => {
@@ -350,16 +356,18 @@ node.override = {
           },
           'ejbTimerPool' => {
             'config' => {
-              'datasourceclassname' => 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource',
+              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
               'restype' => 'javax.sql.DataSource',
               'isconnectvalidatereq' => 'true',
               'validationmethod' => 'auto-commit',
               'ping' => 'true',
-              'description' => 'Hopsworks Connection Pool',
+              'description' => 'Hopsworks EJB Connection Pool',
               'properties' => {
                 'Url' => "jdbc:mysql://127.0.0.1:3306/glassfish_timers",
                 'User' => node['hopsworks']['mysql']['user'],
-                'Password' => node['hopsworks']['mysql']['password']
+                'Password' => node['hopsworks']['mysql']['password'],
+                'useSSL' => 'false',
+                'allowPublicKeyRetrieval' => 'true'
               }
             },
             'resources' => {
@@ -398,6 +406,16 @@ else
     end
   end
 end 
+
+mysql_connector = File.basename(node['hopsworks']['mysql_connector_url'])
+
+remote_file "#{theDomain}/lib/#{mysql_connector}"  do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['mysql_connector_url']
+  mode 0755
+  action :create_if_missing
+end
 
 cauth = File.basename(node['hopsworks']['cauth_url'])
 
@@ -795,10 +813,12 @@ bash "unpack_flyway" do
     mv #{flyway} #{theDomain}
     cd #{theDomain}
     chown -R #{node['glassfish']['user']} flyway*
-    rm -rf flyway
+    if [ -L flyway ]; then
+      cp -r flyway/sql #{flyway}/ 
+      rm -rf flyway
+    fi
     ln -s #{flyway} flyway
   EOF
-  not_if { ::File.exists?("#{theDomain}/flyway/flyway") }
 end
 
 template "#{theDomain}/flyway/conf/flyway.conf" do
