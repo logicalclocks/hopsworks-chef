@@ -108,6 +108,12 @@ ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit
 
 ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `base_env`;
 
+ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_api_key_name` VARCHAR(125) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_backend` VARCHAR(45) DEFAULT NULL;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures
