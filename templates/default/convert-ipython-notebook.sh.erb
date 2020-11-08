@@ -13,13 +13,17 @@ help() {
 
 NOT_FOUND=127
 
+escape_string(){
+  echo "$1" | sed 's/[^0-9a-zA-Z._:/]/\\&/g'
+}
+
 function kill_named {
     CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
     if [ "$CID" != "" ] ; then
-	docker rm -f "$CID" > /dev/null 2>&1
-        res=$?
+      docker rm -f "$CID" > /dev/null 2>&1
+      res=$?
     else
-	res=$NOT_FOUND
+      res=$NOT_FOUND
     fi
     return "$res"
 }
@@ -28,10 +32,10 @@ if [ "$#" -ne 7 ] ; then
     help
 fi
 
-NOTEBOOK_PATH=$1
+NOTEBOOK_PATH=$(escape_string "$1")
 HDFS_USER=$2
 CONDA_ENV=$3
-OUTPUT_PATH=$4
+OUTPUT_PATH=$(escape_string "$4")
 CONVERSION_TYPE=$6
 IMAGE=$7
 CERT_DIR=$8
@@ -50,7 +54,7 @@ chown yarnapp "$conversion_dir"
 if [ $? -ne 0 ] ; then
     echo "Could not chown directory in the staging directory for converting iPython notebook. Problem dir: $staging_dir as user yarnapp"
     exit 3
-fi    
+fi
 
 cd "$conversion_dir"
 
@@ -71,4 +75,4 @@ docker run --rm --name $CONTAINER_NAME\
        -u="yarnapp" \
        -w="$conversion_dir" \
        $IMAGE \
-       notebook-converter.sh $NOTEBOOK_PATH $CONDA_ENV $OUTPUT_PATH $CONVERSION_TYPE
+       notebook-converter.sh "$NOTEBOOK_PATH" $CONDA_ENV "$OUTPUT_PATH" $CONVERSION_TYPE

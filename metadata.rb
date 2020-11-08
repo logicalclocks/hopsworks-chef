@@ -357,7 +357,9 @@ attribute "hopsworks/mysql/password",
           :description => "Hopsworks MySQL password",
           :type => 'string'
 
-
+attribute "hopsworks/check_nodemanager_status",
+          :description => "Boolean value to check nodemanagers status before starting a job",
+          :type => 'string'
 
 
 ##
