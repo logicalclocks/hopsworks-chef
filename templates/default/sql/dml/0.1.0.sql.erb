@@ -154,12 +154,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_partitions", "<%= node[
 
 REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_replicas", "<%= node['hopsworks']['kafka_num_replicas'] %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_port", "<%= node['drelephant']['port'] %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_ip", "<%= @drelephant_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("drelephant_db", "<%= node['drelephant']['db'] %>");
-
 REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("glassfish_cert", "false");
