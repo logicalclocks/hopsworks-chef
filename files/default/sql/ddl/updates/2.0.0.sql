@@ -80,14 +80,6 @@ PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
 
-SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "feature_group" AND REFERENCED_TABLE_NAME="hdfs_users");
-SET @s := concat('ALTER TABLE hopsworks.feature_group DROP FOREIGN KEY `', @fk_name, '`');
-PREPARE stmt1 FROM @s;
-EXECUTE stmt1;
-DEALLOCATE PREPARE stmt1;
-
-ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `hdfs_user_id`;
-
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP KEY `training_dataset_id`;
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 
@@ -116,17 +108,25 @@ ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_group_commit
 
 ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `base_env`;
 
+ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_api_key_name` VARCHAR(125) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_backend` VARCHAR(45) DEFAULT NULL;
+
 ALTER TABLE `hopsworks`.`on_demand_feature_group` 
     ADD COLUMN `inode_pid`  BIGINT(20) NOT NULL,
     ADD COLUMN `inode_name` VARCHAR(255) NOT NULL,
     ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
     ADD CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL;
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "feature_group" AND REFERENCED_TABLE_NAME="hdfs_users");
+SET @s := concat('ALTER TABLE hopsworks.feature_group DROP FOREIGN KEY `', @fk_name, '`');
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 
-ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_api_key_name` VARCHAR(125) DEFAULT NULL;
-
-ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_backend` VARCHAR(45) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `hdfs_user_id`;
 
 /*
 The following changes are related to Migration to NDB8

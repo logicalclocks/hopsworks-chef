@@ -68,3 +68,5 @@ ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `git_backend`;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`training_dataset_feature` DROP COLUMN `label`;
+
+
