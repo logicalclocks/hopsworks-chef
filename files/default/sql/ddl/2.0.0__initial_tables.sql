@@ -171,8 +171,10 @@ CREATE TABLE `conda_commands` (
   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
   `environment_yml` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
+  `git_api_key_name` VARCHAR(125) DEFAULT NULL,
+  `git_backend` VARCHAR(45) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `error_message` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL,
+  `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1542,6 +1544,7 @@ CREATE TABLE `training_dataset_feature` (
   `type` varchar(1000) COLLATE latin1_general_cs,
   `td_join`int(11) NULL,
   `idx` int(11) NULL,
+  `label` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `td_key` (`training_dataset`),
   KEY `fg_key` (`feature_group`),
@@ -1801,6 +1804,7 @@ CREATE TABLE IF NOT EXISTS `secrets` (
           ON DELETE CASCADE
           ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `api_key` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `prefix` varchar(45) NOT NULL,
@@ -1900,7 +1904,6 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
   `offline_feature_group`          BIGINT(20)      NOT NULL,
   `online_enabled`                 TINYINT(1)      NULL,
-  `default_storage`                TINYINT         NULL,
   `timetravel_format`              INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
@@ -2008,4 +2011,42 @@ CREATE TABLE `feature_group_commit` (
   KEY `commit_date_idx` (`committed_on`),
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cloud_role_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  `cloud_role` varchar(2048) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`project_id`,`cloud_role`),
+  UNIQUE KEY `index4` (`id`,`project_id`,`project_role`),
+  KEY `fk_cloud_role_mapping_1_idx` (`project_id`),
+  CONSTRAINT `fk_cloud_role_mapping_1`
+  FOREIGN KEY (`project_id`)
+  REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cloud_role_mapping_default` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mapping_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `project_role` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index3` (`project_id`,`project_role`),
+  UNIQUE KEY `index4` (`mapping_id`,`project_id`,`project_role`),
+  KEY `fk_cloud_role_mapping_default_1_idx` (`mapping_id`,`project_id`,`project_role`),
+  CONSTRAINT `fk_cloud_role_mapping_default_1`
+  FOREIGN KEY (`mapping_id`,`project_id`,`project_role`)
+  REFERENCES `cloud_role_mapping` (`id`,`project_id`,`project_role`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `databricks_instance` (
+  `id`              INT(11) NOT NULL AUTO_INCREMENT,
+  `url`             VARCHAR(255) NOT NULL,
+  `uid`             INT(11) NOT NULL,
+  `secret_name`     VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
