@@ -410,7 +410,7 @@ default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 # Online FeatureStore JDBC Connection Details
 #
 
-default['featurestore']['jdbc_url']           = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}"
+default['featurestore']['jdbc_url']           = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}/"
 default['featurestore']['hopsworks_url']      = "jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
 default['featurestore']['user']               = node['mysql']['user']
 default['featurestore']['password']           = node['mysql']['password']
