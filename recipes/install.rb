@@ -7,17 +7,6 @@ domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 password_file = "#{theDomain}_admin_passwd"
 
-featurestore_user=node['featurestore']['user']
-featurestore_password=node['featurestore']['password']
-
-featurestore_jdbc_url = node['featurestore']['jdbc_url']
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for the online featurestore
-if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-end
-
-
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
@@ -330,9 +319,9 @@ node.override = {
               'ping' => 'true',
               'description' => 'FeatureStore Connection Pool',
               'properties' => {
-                'Url' => featurestore_jdbc_url,
-                'User' => featurestore_user,
-                'Password' => featurestore_password,
+                'Url' => node['featurestore']['hopsworks_url'],
+                'User' => node['featurestore']['user'],
+                'Password' => node['featurestore']['password'],
                 'useSSL' => 'false',
                 'allowPublicKeyRetrieval' => 'true'
               }
