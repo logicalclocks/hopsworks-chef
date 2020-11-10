@@ -154,15 +154,6 @@ if node['conda']['channels']['default_mirrors'].empty? == false
    condaRepo = repos[0]
 end
 
-featurestore_jdbc_url = node['featurestore']['jdbc_url']
-featurestore_jdbc_url_escaped = featurestore_jdbc_url.gsub(':', '\\\\:')
-# In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-# connection pool for the online featurestore
-if node['featurestore']['jdbc_url'].eql? "localhost"
-  featurestore_jdbc_url="jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-  featurestore_jdbc_url_escaped="\"jdbc\\:mysql\\://127.0.0.1\\:#{node['ndb']['mysql_port']}/\""
-end
-
 # hops-util-py only works for localhost installations if you disable TLS hostname validations
 if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
@@ -278,7 +269,6 @@ for version in versions do
          :public_ip => public_ip,
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :featurestore_jdbc_url => featurestore_jdbc_url,
          :hops_version => get_hops_version(node['hops']['version'])
     })
     action :create
@@ -632,7 +622,7 @@ if exists_local("hops_airflow", "default")
     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow$'"
   end
 end
-
+  
 # Drop Existing featureStore connection pool and recreate it
 glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   domain_name domain_name
@@ -643,7 +633,7 @@ glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featureStorePool$'"
 end
 
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=#{featurestore_jdbc_url_escaped}:useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=\"#{node['featurestore']['hopsworks_url'].gsub(":", "\\:")}\":useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
