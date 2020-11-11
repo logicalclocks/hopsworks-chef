@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.0.0"
+version          "2.1.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -16,7 +16,7 @@ depends 'java', '~> 7.0.0'
 depends 'simple-logstash', '~> 0.2.4'
 depends 'compat_resource', '~> 12.19.0'
 depends 'authbind', '~> 0.1.10'
-depends 'ntp', '~> 2.0.0'
+depends 'ntp', '~> 2.1.0'
 depends 'sysctl', '~> 1.0.3'
 depends 'ulimit2', '~> 0.2.0'
 depends 'conda'
@@ -842,7 +842,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 2.0.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 2.1.000)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",
