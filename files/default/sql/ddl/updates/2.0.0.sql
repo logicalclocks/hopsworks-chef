@@ -114,6 +114,20 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_api_key_name` VARCHAR(1
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `git_backend` VARCHAR(45) DEFAULT NULL;
 
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+    ADD COLUMN `inode_pid`  BIGINT(20) NOT NULL,
+    ADD COLUMN `inode_name` VARCHAR(255) NOT NULL,
+    ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
+    ADD CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "feature_group" AND REFERENCED_TABLE_NAME="hdfs_users");
+SET @s := concat('ALTER TABLE hopsworks.feature_group DROP FOREIGN KEY `', @fk_name, '`');
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `hdfs_user_id`;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures

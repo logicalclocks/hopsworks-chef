@@ -324,7 +324,6 @@ CREATE TABLE `feature_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(63) NOT NULL,
   `feature_store_id` int(11) NOT NULL,
-  `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `creator` int(11) NOT NULL,
   `version` int(11) NOT NULL,
@@ -341,12 +340,10 @@ CREATE TABLE `feature_group` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
-  KEY `hdfs_user_id` (`hdfs_user_id`),
   KEY `creator` (`creator`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
   CONSTRAINT `FK_1012_790` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_191_772` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_656_740` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_feature_group_fk2` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -1890,11 +1887,14 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `query`                   VARCHAR(11000)  NOT NULL,
   `jdbc_connector_id`       INT(11)         NOT NULL,
   `description`             VARCHAR(1000)   NULL,
+  `inode_pid`               BIGINT(20)      NOT NULL,
+  `inode_name`              VARCHAR(255)    NOT NULL,
+  `partition_id`            BIGINT(20)      NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `on_demand_fg_jdbc_fk` FOREIGN KEY (`jdbc_connector_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+  CONSTRAINT `on_demand_fg_jdbc_fk` FOREIGN KEY (`jdbc_connector_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
+
   ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
