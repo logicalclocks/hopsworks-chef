@@ -23,7 +23,6 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `access_key` VAR
  DEFAULT NULL;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `secret_key` VARCHAR(1000) COLLATE latin1_general_cs
  DEFAULT NULL;
-
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` MODIFY `name` VARCHAR(1000) COLLATE latin1_general_cs  NOT NULL;
 
 ALTER TABLE `hopsworks`.`secrets` MODIFY `secret_name` VARCHAR(125) COLLATE latin1_general_cs  NOT NULL;
@@ -48,6 +47,14 @@ ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `default_storage` TINY
 
 ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `base_env` VARCHAR(45) COLLATE latin1_general_cs;
 
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `hdfs_user_id` int(11) NOT NULL;
+
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+    DROP FOREIGN KEY `on_demand_inode_fk`,
+    DROP COLUMN `inode_pid`,
+    DROP COLUMN `inode_name`,
+    DROP COLUMN `partition_id`;
+
 DROP TABLE IF EXISTS `hopsworks`.`cloud_role_mapping`;
 
 DROP TABLE IF EXISTS `hopsworks`.`cloud_role_mapping_default`;
@@ -61,3 +68,5 @@ ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `git_backend`;
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `error_message` `error_message` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`training_dataset_feature` DROP COLUMN `label`;
+
+
