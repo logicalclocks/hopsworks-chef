@@ -8,7 +8,6 @@ include_attribute "elastic"
 include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
-include_attribute "drelephant"
 include_attribute "dela"
 include_attribute "hive2"
 include_attribute "hops"
@@ -441,6 +440,4 @@ default['hopsworks']['hdfs']['storage_policy']['base']        = "DB"
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 
 default['hopsworks']['enable_metadata_designer']              = "false"
-
-#check nodemanager status
 default["hopsworks"]['check_nodemanager_status']              = "false"

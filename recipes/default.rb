@@ -45,13 +45,6 @@ rescue
 end
 
 begin
-  drelephant_ip = private_recipe_ip("drelephant","default")
-rescue
-  drelephant_ip = node['hostname']
-  Chef::Log.warn "could not find the dr elephant server ip!"
-end
-
-begin
   dela_ip = private_recipe_ip("dela","default")
 rescue
   dela_ip = node['hostname']
@@ -261,7 +254,6 @@ for version in versions do
          :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
          :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
          :java_home => node['java']['java_home'],
-         :drelephant_ip => drelephant_ip,
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
          :grafana_ip => grafana_ip,
@@ -850,7 +842,7 @@ hopsworks_mail "gmail" do
 end
 
 node.override['glassfish']['asadmin']['timeout'] = 400
-  
+
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
   unmanaged = false
   if node.attribute? 'cloud' and node['cloud'].attribute? 'init' and node['cloud']['init'].attribute? 'config' and node['cloud']['init']['config'].attribute? 'unmanaged'
