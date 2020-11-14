@@ -53,7 +53,17 @@ elif [ "$1" == "list" ] ; then
 	help
     fi
 
+    docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda list -n theenv
+
+elif [ "$1" == "check" ] ; then
+    if ! [[ $2 =~ $VALID_IMAGE_NAME ]] ; then
+	echo "error: Not an image name $2" >&2
+	help
+    fi
+
+    docker pull $2 > /dev/null 2>&1
+    docker run --rm $2 pip check
 
 elif [ "$1" == "export" ] ; then
     if ! [[ $2 =~ $VALID_IMAGE_NAME ]] ; then
