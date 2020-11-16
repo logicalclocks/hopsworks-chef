@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
 help() {
-  echo "usage: $0 localWorkdir directoryInHdfs IMPERSONATED_USERNAME"
+  echo "usage: $0 localWorkdir directoryInHdfs IMPERSONATED_USERNAME [destDirectoryInHdfs]"
   exit 1
 }
 
-if [ $# -ne 3 ] ; then
+if [ $# -ne 3 && $# -ne 4 ] ; then
   help
 fi
 
 workdir=$1
 hdfsFile="$2"
 IMPERSONATED_USERNAME=$3
+dir="$4"
 
 #FSM states: STAGING, ZIPPING, UPLOADING, CHOWNING, SUCCESS, FAILED
 fsmFile="${workdir}/fsm.txt"
@@ -40,7 +41,9 @@ check_error
 
 file=$(basename "$normalizedPath")
 check_error
-dir=$(dirname "$normalizedPath")
+if [ -z "$dir" ] ; then
+  dir=$(dirname "$normalizedPath")
+fi
 check_error
 
 cd "$workdir"
