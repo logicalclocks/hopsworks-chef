@@ -584,6 +584,14 @@ kagent_sudoers "jupyter" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
+kagent_sudoers "get-notebook-kernel" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "get-notebook-kernel.sh"
+  template      "get-notebook-kernel.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 kagent_sudoers "convert-ipython-notebook" do 
   user          node['glassfish']['user']
   group         "root"

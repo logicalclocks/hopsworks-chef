@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+#
+# This script gets the kernel of a notebook
+#
+
+help() {
+    echo ""
+    echo "usage: $0 path notebook_path hadoop_home"
+    echo ""
+    exit 1
+}
+
+NOT_FOUND=127
+
+escape_string(){
+  echo "$1" | sed 's/[^0-9a-zA-Z._:/]/\\&/g'
+}
+
+if [ "$#" -ne 2 ] ; then
+    help
+fi
+
+NOTEBOOK=$(escape_string "$1")
+HADOOP_HOME=<%= node['hops']['base_dir'] %>
+HDFS_USER="hdfs"
+
+NOTEBOOK_KERNEL=$(su -c "$HADOOP_HOME/bin/hdfs dfs -cat '$NOTEBOOK' | jq '.metadata.kernelspec.display_name'" -m "$HDFS_USER")
+
+echo $NOTEBOOK_KERNEL
