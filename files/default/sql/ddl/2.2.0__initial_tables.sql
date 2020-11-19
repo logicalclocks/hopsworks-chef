@@ -2054,7 +2054,7 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
 CREATE TABLE IF NOT EXISTS `feature_store_tag` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `name` varchar(255) NOT NULL,
-      `type` varchar(45) NOT NULL DEFAULT 'STRING',
+      `tag_schema` varchar(13000) NOT NULL DEFAULT '{"type":"string"}',
       PRIMARY KEY (`id`),
       UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
