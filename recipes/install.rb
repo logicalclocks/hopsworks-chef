@@ -652,14 +652,6 @@ kagent_sudoers "ca-keystore" do
   only_if       { node['hopsworks']['dela']['enabled'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "start-llap" do 
-  user          node['glassfish']['user']
-  group         node['hops']['group']
-  script_name   "start-llap.sh"
-  template      "start-llap.sh.erb"
-  run_as        node["hive2"]['user']
-end
-
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
