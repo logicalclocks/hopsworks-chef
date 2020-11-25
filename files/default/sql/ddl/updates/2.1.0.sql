@@ -6,3 +6,5 @@ SET @s = (SELECT IF((@fk_name) is not null,
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
+
+ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_file` VARCHAR(1000) COLLATE latin1_general_cs DEFAULT NULL;
