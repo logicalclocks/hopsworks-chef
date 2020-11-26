@@ -26,6 +26,7 @@ CREATE TABLE `feature_store_redshift_connector` (
   `id` int NOT NULL AUTO_INCREMENT,
   `feature_store_id` int NOT NULL,
   `cluster_identifier` varchar(64) NOT NULL,
+  `database_endpoint` varchar(128) DEFAULT NULL,
   `database_name` varchar(64) DEFAULT NULL,
   `database_port` int DEFAULT NULL,
   `database_user_name` varchar(128) DEFAULT NULL,
