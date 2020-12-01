@@ -2067,6 +2067,8 @@ CREATE TABLE `feature_store_redshift_connector` (
   `database_port` int DEFAULT NULL,
   `table_name` varchar(128) DEFAULT NULL,
   `database_user_name` varchar(128) DEFAULT NULL,
+  `auto_create` tinyint(1) DEFAULT 0,
+  `database_group` varchar(2048) DEFAULT NULL,
   `iam_role` varchar(2048) DEFAULT NULL,
   `arguments` varchar(2000) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
