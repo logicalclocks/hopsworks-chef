@@ -1998,7 +1998,7 @@ CREATE TABLE `remote_group_project_mapping` (
 CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
   `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `committed_on` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `num_rows_updated` int(11) DEFAULT '0',
   `num_rows_inserted` int(11) DEFAULT '0',
   `num_rows_deleted` int(11) DEFAULT '0',
@@ -2052,7 +2052,7 @@ CREATE TABLE `databricks_instance` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cashed_feature` (
+CREATE TABLE `cached_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
   `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
