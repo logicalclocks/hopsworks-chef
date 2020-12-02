@@ -8,3 +8,9 @@ EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
 
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_file` VARCHAR(1000) COLLATE latin1_general_cs DEFAULT NULL;
+
+CREATE TABLE `active_keywords` (
+  `name`     VARCHAR(63) NOT NULL,
+  `counter`  INT(11)     NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
