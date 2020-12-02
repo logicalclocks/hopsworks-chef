@@ -15,8 +15,6 @@ CREATE TABLE `cached_feature` (
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `partition_column` tinyint(1) NOT NULL DEFAULT '0',
   `precombine_column` tinyint(1) NOT NULL DEFAULT '0',
-  `description` varchar(10000) COLLATE latin1_general_cs,
-  `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
   CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
