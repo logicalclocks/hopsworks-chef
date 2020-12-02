@@ -9,7 +9,7 @@ DEALLOCATE PREPARE stmt1;
 
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_yml` `environment_file` VARCHAR(1000) COLLATE latin1_general_cs DEFAULT NULL;
 
-CREATE TABLE `active_keywords` (
+CREATE TABLE `feature_store_active_keywords` (
   `name`     VARCHAR(63) NOT NULL,
   `counter`  INT(11)     NOT NULL,
   PRIMARY KEY (`name`)

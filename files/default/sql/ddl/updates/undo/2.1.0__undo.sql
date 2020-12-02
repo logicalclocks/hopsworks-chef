@@ -2,4 +2,4 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD CONSTRAINT `FK_284_520` FOREIGN KEY
 
 ALTER TABLE `hopsworks`.`conda_commands` CHANGE `environment_file` `environment_yml` VARCHAR(1000) COLLATE latin1_general_cs DEFAULT NULL;
 
-DROP TABLE `active_keywords`;
+DROP TABLE `feature_store_active_keywords`;

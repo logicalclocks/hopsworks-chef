@@ -2050,7 +2050,7 @@ CREATE TABLE `databricks_instance` (
   FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `active_keywords` (
+CREATE TABLE `feature_store_active_keywords` (
   `name`     VARCHAR(63) NOT NULL,
   `counter`  INT(11)     NOT NULL,
   PRIMARY KEY (`name`)
