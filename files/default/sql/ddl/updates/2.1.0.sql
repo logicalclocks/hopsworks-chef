@@ -6,9 +6,7 @@ SET @s = (SELECT IF((@fk_name) is not null,
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cached_feature` (
+
 CREATE TABLE `cached_feature_extra_constraints` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
