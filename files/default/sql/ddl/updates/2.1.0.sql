@@ -38,7 +38,6 @@ CREATE TABLE `feature_store_redshift_connector` (
   `database_pwd_secret_uid` int DEFAULT NULL,
   `database_pwd_secret_name` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_feature_store_redshift_connector_1_idx` (`feature_store_id`),
   KEY `fk_feature_store_redshift_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
   CONSTRAINT `fk_feature_store_redshift_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
   REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
