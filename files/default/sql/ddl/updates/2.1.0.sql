@@ -63,16 +63,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
   CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `s3_id`)
-SELECT `feature_store_id`, `name`, `description`, 0, `id` FROM `feature_store_s3_connector`;
-ALTER TABLE `feature_store_s3_connector`
-    DROP FOREIGN KEY `s3_connector_featurestore_fk`,
-    DROP COLUMN `feature_store_id`,
-    DROP COLUMN `name`,
-    DROP COLUMN `description`;
-
 INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `jdbc_id`)
-SELECT `feature_store_id`, `name`, `description`, 1, `id` FROM `feature_store_jdbc_connector`;
+SELECT `feature_store_id`, `name`, `description`, 0, `id` FROM `feature_store_jdbc_connector`;
 ALTER TABLE `feature_store_jdbc_connector`
     DROP FOREIGN KEY `jdbc_connector_featurestore_fk`,
     DROP COLUMN `feature_store_id`,
@@ -80,9 +72,17 @@ ALTER TABLE `feature_store_jdbc_connector`
     DROP COLUMN `description`;
 
 INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `hopsfs_id`)
-SELECT `feature_store_id`, `name`, `description`, 2, `id` FROM `feature_store_hopsfs_connector`;
+SELECT `feature_store_id`, `name`, `description`, 1, `id` FROM `feature_store_hopsfs_connector`;
 ALTER TABLE `feature_store_hopsfs_connector`
     DROP FOREIGN KEY `hopsfs_connector_featurestore_fk`,
+    DROP COLUMN `feature_store_id`,
+    DROP COLUMN `name`,
+    DROP COLUMN `description`;
+
+INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `s3_id`)
+SELECT `feature_store_id`, `name`, `description`, 2, `id` FROM `feature_store_s3_connector`;
+ALTER TABLE `feature_store_s3_connector`
+    DROP FOREIGN KEY `s3_connector_featurestore_fk`,
     DROP COLUMN `feature_store_id`,
     DROP COLUMN `name`,
     DROP COLUMN `description`;
