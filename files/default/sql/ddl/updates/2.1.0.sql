@@ -88,6 +88,9 @@ ALTER TABLE `feature_store_hopsfs_connector`
     DROP COLUMN `description`;
 
 ALTER TABLE `on_demand_feature_group` ADD COLUMN `connector_id` int(11), 
+    ADD COLUMN `data_format` VARCHAR(10),
+    ADD COLUMN `path` VARCHAR(1000),
+    MODIFY `query` VARCHAR(11000),
     ADD CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) 
     REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
