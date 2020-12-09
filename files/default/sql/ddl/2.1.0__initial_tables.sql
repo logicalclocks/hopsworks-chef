@@ -1833,7 +1833,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
   `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
   `connection_string`       VARCHAR(5000)    NOT NULL,
   `arguments`               VARCHAR(2000)    NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
@@ -1907,14 +1907,9 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `inode_name`              VARCHAR(255)    NOT NULL,
   `partition_id`            BIGINT(20)      NOT NULL,
   PRIMARY KEY (`id`),
-  ADD CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) 
-  REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-)
-
-  ENGINE = ndbcluster
-  DEFAULT CHARSET = latin1
-  COLLATE = latin1_general_cs;
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
