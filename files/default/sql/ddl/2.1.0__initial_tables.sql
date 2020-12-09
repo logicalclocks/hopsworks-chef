@@ -1934,10 +1934,8 @@ CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
   `partition_id`                      BIGINT(20)      NOT NULL,
   `connector_id`                      INT(11)         NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `hopsfs_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) 
-    REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `hopsfs_td_conn_fk` FOREIGN KEY (`connector_id`) 
-    REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `hopsfs_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
@@ -1945,8 +1943,7 @@ CREATE TABLE IF NOT EXISTS `external_training_dataset` (
   `connector_id`                      INT(11)         NOT NULL,
   `path`                              VARCHAR(10000),
   PRIMARY KEY (`id`),
-  ADD CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) 
-    REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE `feature_store_job` (
