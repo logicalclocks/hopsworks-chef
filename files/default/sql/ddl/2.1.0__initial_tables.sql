@@ -1829,30 +1829,11 @@ CREATE TABLE IF NOT EXISTS `api_key_scope` (
   CONSTRAINT `fk_api_key_scope_1` FOREIGN KEY (`api_key`) REFERENCES `api_key` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)
   ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `feature_store_connector` (
-  `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
-  `feature_store_id`        INT(11)          NOT NULL,
-  `name`                    VARCHAR(150)     NOT NULL,
-  `description`             VARCHAR(1000)    NULL,
-  `type`                    INT(11)          NOT NULL,
-  `jdbc_id`                 INT(11),
-  `s3_id`                   INT(11),
-  `hopsfs_id`               INT(11),
-  `redshift_id`               INT(11),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
-  CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_connector_jdbc_fk` FOREIGN KEY (`jdbc_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_connector_s3_fk` FOREIGN KEY (`s3_id`) REFERENCES `hopsworks`.`feature_store_s3_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_connector_hopsfs_fk` FOREIGN KEY (`hopsfs_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
-
 CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
   `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
   `connection_string`       VARCHAR(5000)    NOT NULL,
   `arguments`               VARCHAR(2000)    NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
@@ -1877,6 +1858,46 @@ CREATE TABLE IF NOT EXISTS `feature_store_hopsfs_connector` (
   REFERENCES `hopsworks`.`dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+CREATE TABLE `feature_store_redshift_connector` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cluster_identifier` varchar(64) NOT NULL,
+  `database_driver` varchar(64) NOT NULL,
+  `database_endpoint` varchar(128) DEFAULT NULL,
+  `database_name` varchar(64) DEFAULT NULL,
+  `database_port` int DEFAULT NULL,
+  `table_name` varchar(128) DEFAULT NULL,
+  `database_user_name` varchar(128) DEFAULT NULL,
+  `auto_create` tinyint(1) DEFAULT 0,
+  `database_group` varchar(2048) DEFAULT NULL,
+  `iam_role` varchar(2048) DEFAULT NULL,
+  `arguments` varchar(2000) DEFAULT NULL,
+  `database_pwd_secret_uid` int DEFAULT NULL,
+  `database_pwd_secret_name` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_feature_store_redshift_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
+  CONSTRAINT `fk_feature_store_redshift_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
+  REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_store_connector` (
+  `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
+  `feature_store_id`        INT(11)          NOT NULL,
+  `name`                    VARCHAR(150)     NOT NULL,
+  `description`             VARCHAR(1000)    NULL,
+  `type`                    INT(11)          NOT NULL,
+  `jdbc_id`                 INT(11),
+  `s3_id`                   INT(11),
+  `hopsfs_id`               INT(11),
+  `redshift_id`               INT(11),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
+  CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_connector_jdbc_fk` FOREIGN KEY (`jdbc_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_connector_s3_fk` FOREIGN KEY (`s3_id`) REFERENCES `hopsworks`.`feature_store_s3_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_connector_hopsfs_fk` FOREIGN KEY (`hopsfs_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
   `query`                   VARCHAR(11000),
@@ -1888,14 +1909,9 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `data_format`             VARCHAR(10),
   `path`                    VARCHAR(1000),
   PRIMARY KEY (`id`),
-  ADD CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) 
-  REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-)
-
-  ENGINE = ndbcluster
-  DEFAULT CHARSET = latin1
-  COLLATE = latin1_general_cs;
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
@@ -1920,10 +1936,8 @@ CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
   `partition_id`                      BIGINT(20)      NOT NULL,
   `connector_id`                      INT(11)         NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `hopsfs_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) 
-    REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `hopsfs_td_conn_fk` FOREIGN KEY (`connector_id`) 
-    REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `hopsfs_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `hopsfs_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
@@ -1931,8 +1945,7 @@ CREATE TABLE IF NOT EXISTS `external_training_dataset` (
   `connector_id`                      INT(11)         NOT NULL,
   `path`                              VARCHAR(10000),
   PRIMARY KEY (`id`),
-  ADD CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) 
-    REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE `feature_store_job` (
@@ -2036,25 +2049,4 @@ CREATE TABLE `databricks_instance` (
   PRIMARY KEY (`id`),
   FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE `feature_store_redshift_connector` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `cluster_identifier` varchar(64) NOT NULL,
-  `database_driver` varchar(64) NOT NULL,
-  `database_endpoint` varchar(128) DEFAULT NULL,
-  `database_name` varchar(64) DEFAULT NULL,
-  `database_port` int DEFAULT NULL,
-  `table_name` varchar(128) DEFAULT NULL,
-  `database_user_name` varchar(128) DEFAULT NULL,
-  `auto_create` tinyint(1) DEFAULT 0,
-  `database_group` varchar(2048) DEFAULT NULL,
-  `iam_role` varchar(2048) DEFAULT NULL,
-  `arguments` varchar(2000) DEFAULT NULL,
-  `database_pwd_secret_uid` int DEFAULT NULL,
-  `database_pwd_secret_name` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_feature_store_redshift_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
-  CONSTRAINT `fk_feature_store_redshift_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
-  REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
