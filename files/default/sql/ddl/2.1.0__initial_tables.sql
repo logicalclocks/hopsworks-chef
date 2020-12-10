@@ -2087,7 +2087,7 @@ CREATE TABLE `feature_store_redshift_connector` (
 CREATE TABLE `cached_feature_extra_constraints` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
-  `name` varchar(200) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
