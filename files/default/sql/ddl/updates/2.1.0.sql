@@ -87,7 +87,7 @@ ALTER TABLE `feature_store_s3_connector`
     DROP COLUMN `description`;
 
 ALTER TABLE `on_demand_feature_group` ADD COLUMN `connector_id` int(11), 
-    ADD COLUMN `data_format` INT(11) default,
+    ADD COLUMN `data_format` INT(11),
     ADD COLUMN `path` VARCHAR(1000),
     MODIFY `query` VARCHAR(11000),
     ADD CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) 
