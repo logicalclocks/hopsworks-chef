@@ -76,8 +76,8 @@ SET `fg`.`jdbc_connector_id` = (SELECT `fc`.`jdbc_id` FROM `feature_store_connec
 WHERE `fc`.`id` = `fg`.`connector_id`);
 SET SQL_SAFE_UPDATES = 1;
 
-ALTER TABLE `on_demand_feature_group` DROP FOREIGN KEY `on_demand_fg_jdbc_fk`,
-    DROP COLUMN `jdbc_connector_id`;
+ALTER TABLE `on_demand_feature_group` DROP FOREIGN KEY `on_demand_conn_fk`,
+    DROP COLUMN `connector_id`;
 
 ALTER TABLE `external_training_dataset` ADD COLUMN `s3_connector_id` int(11),
     ADD CONSTRAINT `external_td_s3_connector_fk` FOREIGN KEY (`s3_connector_id`) 
