@@ -169,7 +169,7 @@ CREATE TABLE `conda_commands` (
   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
-  `environment_yml` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+  `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
   `git_api_key_name` VARCHAR(125) DEFAULT NULL,
   `git_backend` VARCHAR(45) DEFAULT NULL,
@@ -177,7 +177,6 @@ CREATE TABLE `conda_commands` (
   `error_message` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
-  CONSTRAINT `FK_284_520` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `user_fk_conda` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1838,6 +1837,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
   `description`             VARCHAR(1000)    NULL,
   `name`                    VARCHAR(1000)    NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `jdbc_connector_feature_store_id_name` (`name`,`feature_store_id`),
   CONSTRAINT `jdbc_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
@@ -1850,16 +1850,22 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `id`                                  INT(11)         NOT NULL AUTO_INCREMENT,
   `feature_store_id`                    INT(11)         NOT NULL,
   `bucket`                              VARCHAR(5000)   NOT NULL,
+  `iam_role`                            VARCHAR(2048)   DEFAULT NULL,
   `description`                         VARCHAR(1000)   NULL,
-  `name`                                VARCHAR(150)   NOT NULL,
+  `name`                                VARCHAR(150)    NOT NULL,
   `server_encryption_algorithm`         INT(11)         NULL,
   `server_encryption_key`               VARCHAR(1000)   NULL,
+  `key_secret_uid`                      INT             DEFAULT NULL,
+  `key_secret_name`                     VARCHAR(200)    DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `s3_connector_feature_store_id_name` (`name`,`feature_store_id`),
+  KEY `fk_feature_store_s3_connector_1_idx` (`key_secret_uid`, `key_secret_name`),
   CONSTRAINT `s3_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = ndbcluster
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_feature_store_s3_connector_1` FOREIGN KEY (`key_secret_uid` , `key_secret_name`)
+  REFERENCES `hopsworks`.`secrets` (`uid` , `secret_name`) ON DELETE RESTRICT
+) ENGINE = ndbcluster
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
@@ -2049,4 +2055,42 @@ CREATE TABLE `databricks_instance` (
   PRIMARY KEY (`id`),
   FOREIGN KEY `db_secret_fk` (`uid`, `secret_name`) REFERENCES `secrets` (`uid`, `secret_name`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY `db_user_fk` (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_store_redshift_connector` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `feature_store_id` int NOT NULL,
+  `cluster_identifier` varchar(64) NOT NULL,
+  `database_driver` varchar(64) NOT NULL,
+  `database_endpoint` varchar(128) DEFAULT NULL,
+  `database_name` varchar(64) DEFAULT NULL,
+  `database_port` int DEFAULT NULL,
+  `table_name` varchar(128) DEFAULT NULL,
+  `database_user_name` varchar(128) DEFAULT NULL,
+  `auto_create` tinyint(1) DEFAULT 0,
+  `database_group` varchar(2048) DEFAULT NULL,
+  `iam_role` varchar(2048) DEFAULT NULL,
+  `arguments` varchar(2000) DEFAULT NULL,
+  `description` varchar(1000) DEFAULT NULL,
+  `name` varchar(150) NOT NULL,
+  `database_pwd_secret_uid` int DEFAULT NULL,
+  `database_pwd_secret_name` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `redshift_connector_feature_store_id_name` (`name`,`feature_store_id`),
+  KEY `fk_feature_store_redshift_connector_1_idx` (`feature_store_id`),
+  KEY `fk_feature_store_redshift_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
+  CONSTRAINT `fk_feature_store_redshift_connector_1` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_feature_store_redshift_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
+  REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `cached_feature_extra_constraints` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cached_feature_group_id` int(11) NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+  `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
