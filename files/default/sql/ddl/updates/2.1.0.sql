@@ -15,7 +15,7 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `iam_role` VARCH
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `key_secret_uid` INT DEFAULT NULL;
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `key_secret_name` VARCHAR(200) DEFAULT NULL;
 
-ALTER TABLE `hopsworks`.`feature_store_s3_connector` 
+ALTER TABLE `hopsworks`.`feature_store_s3_connector`
 ADD INDEX `fk_feature_store_s3_connector_1_idx` (`key_secret_uid`, `key_secret_name`);
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD CONSTRAINT `fk_feature_store_s3_connector_1`
   FOREIGN KEY (`key_secret_uid` , `key_secret_name`)
@@ -127,3 +127,14 @@ SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsfs_training_dataset` DROP FOREIGN KEY `hopsfs_td_connector_fk`,
     DROP COLUMN `hopsfs_connector_id`;
+
+CREATE TABLE `cached_feature_extra_constraints` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cached_feature_group_id` int(11) NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+  `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
