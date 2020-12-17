@@ -34,6 +34,7 @@ elif [ "$1" == "delete" ] ; then
 elif [ "$1" == "gc" ] ; then
     # Run garbage collection for registry
     docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
+	  docker container restart registry
 
 <% end -%>
 
