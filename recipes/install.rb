@@ -592,14 +592,6 @@ kagent_sudoers "convert-ipython-notebook" do
   run_as        "ALL" # run this as root - inside we change to different users 
 end
 
-kagent_sudoers "dockerImage" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "dockerImage.sh"
-  template      "dockerImage.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
-end
-
 kagent_sudoers "tensorboard" do 
   user          node['glassfish']['user']
   group         "root"
