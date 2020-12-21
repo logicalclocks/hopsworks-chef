@@ -1196,6 +1196,15 @@ kagent_keys "#{homedir}" do
   action :return_publickey
 end
 
+registry_addr = { :registry_addr => consul_helper.get_service_fqdn("registry") + ":#{node['hops']['docker']['registry']['port']}"}
+kagent_sudoers "dockerImage" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "dockerImage.sh"
+  template      "dockerImage.sh.erb"
+  variables     registry_addr
+  run_as        "ALL" # run this as root - inside we change to different users
+end
 
 #
 # Rstudio
