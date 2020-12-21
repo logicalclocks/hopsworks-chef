@@ -106,3 +106,4 @@ ALTER TABLE `hopsfs_training_dataset` DROP FOREIGN KEY `hopsfs_td_conn_fk`,
     DROP COLUMN `connector_id`;
 
 DROP TABLE `feature_store_connector`;
+DROP TABLE `on_demand_option`;
