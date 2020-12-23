@@ -59,15 +59,6 @@ rescue
 end
 
 begin
-  grafana_ip = private_recipe_ip("hopsmonitor","default")
-  influxdb_ip = private_recipe_ip("hopsmonitor","default")
-rescue
-  grafana_ip = node['hostname']
-  influxdb_ip = node['hostname']
-  Chef::Log.warn "could not find the hopsmonitor server ip!"
-end
-
-begin
   python_kernel = "#{node['jupyter']['python']}".downcase
 rescue
   python_kernel = "true"
@@ -256,8 +247,6 @@ for version in versions do
          :java_home => node['java']['java_home'],
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
-         :grafana_ip => grafana_ip,
-         :influxdb_ip => influxdb_ip,
          :public_ip => public_ip,
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
@@ -614,7 +603,7 @@ if exists_local("hops_airflow", "default")
     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/airflow$'"
   end
 end
-  
+
 # Drop Existing featureStore connection pool and recreate it
 glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   domain_name domain_name

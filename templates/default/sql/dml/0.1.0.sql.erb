@@ -227,19 +227,12 @@ REPLACE INTO variables(`id`, `value`) VALUES ("max_gpu_request_size","<%= node['
 REPLACE INTO variables(`id`, `value`) VALUES ("max_cpu_request_size","<%= node['hopsworks']['max_cpu_request_size'] %>");
 
 --
--- kibana, logstash, grafana, graphite
+-- kibana, logstash,
 --
 
 REPLACE INTO variables(`id`, `value`) VALUES ("kibana_ip", "<%= @kibana_ip %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("logstash_ip", "<%= @logstash_ip %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("logstash_port", "<%= @logstash_port %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("grafana_ip", "<%= @grafana_ip %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_ip", "<%= @influxdb_ip %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_port", "<%= node['influxdb']['http']['port'] %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_user", "<%= node['influxdb']['db_user'] %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("influxdb_pw", "<%= node['influxdb']['db_password'] %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("graphite_ip", "<%= @graphite_ip %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("graphite_port", "<%= node['influxdb']['graphite']['port'] %>");
 --
 -- pyspark, python
 --

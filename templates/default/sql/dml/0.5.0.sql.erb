@@ -6,7 +6,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("support_email_addr"
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
 REPLACE INTO `hopsworks`.`variables` VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("influxdb_version", "<%= node['influxdb']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("grafana_version", "<%= node['grafana']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_version", "<%= node['logstash']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_version", "<%= node['kibana']['version'] %>", 1);
