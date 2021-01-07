@@ -329,13 +329,6 @@ CREATE TABLE `feature_group` (
   `feature_group_type` INT(11) NOT NULL DEFAULT '0',
   `on_demand_feature_group_id` INT(11) NULL,
   `cached_feature_group_id` INT(11) NULL,
-  `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `feat_hist_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `cluster_analysis_enabled` TINYINT(1) NOT NULL DEFAULT '1',
-  `num_clusters` int(11) NOT NULL DEFAULT '5',
-  `num_bins` INT(11) NOT NULL DEFAULT '20',
-  `corr_method` VARCHAR(50) NOT NULL DEFAULT 'pearson',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -350,6 +343,27 @@ CREATE TABLE `feature_group` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `statistics_config`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statistics_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11),
+  `training_dataset_id` int(11),
+  `descriptive` TINYINT(1) NOT NULL DEFAULT '1',
+  `correlations` TINYINT(1) NOT NULL DEFAULT '1',
+  `histograms` TINYINT(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  CONSTRAINT `fg_statistics_config_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `td_statistics_config_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `statistic_columns`
 --
 
@@ -357,11 +371,11 @@ CREATE TABLE `feature_group` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `statistic_columns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `feature_group_id` int(11) DEFAULT NULL,
+  `statistics_config_id` int(11),
   `name` varchar(500) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `feature_group_id` (`feature_group_id`),
-  CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `statistics_config_id` (`statistics_config_id`),
+  CONSTRAINT `statistics_config_fk` FOREIGN KEY (`statistics_config_id`) REFERENCES `statistics_config` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
