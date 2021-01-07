@@ -1583,7 +1583,7 @@ CREATE TABLE `training_dataset_join_condition` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `feature_store_feature`
+-- Table structure for table `on_demand_feature`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1600,6 +1600,25 @@ CREATE TABLE `on_demand_feature` (
   CONSTRAINT `on_demand_feature_group_fk1` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `on_demand_option`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `on_demand_option` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `on_demand_feature_group_id` int(11) NULL,
+  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `value` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `on_demand_option_key` (`on_demand_feature_group_id`),
+  CONSTRAINT `on_demand_option_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
 
 --
 -- Table structure for table `training_dataset_split`
@@ -1900,12 +1919,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
   `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
-  `query`                   VARCHAR(11000)  NOT NULL,
+  `query`                   VARCHAR(11000),
   `connector_id`            INT(11)         NOT NULL,
   `description`             VARCHAR(1000)   NULL,
   `inode_pid`               BIGINT(20)      NOT NULL,
   `inode_name`              VARCHAR(255)    NOT NULL,
   `partition_id`            BIGINT(20)      NOT NULL,
+  `data_format`             VARCHAR(10),
+  `path`                    VARCHAR(1000),
   PRIMARY KEY (`id`),
   CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION

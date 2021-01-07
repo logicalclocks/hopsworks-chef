@@ -105,4 +105,10 @@ SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsfs_training_dataset` DROP FOREIGN KEY `hopsfs_td_conn_fk`,
     DROP COLUMN `connector_id`;
 
+ALTER TABLE `on_demand_feature_group` 
+    DROP COLUMN `data_format`,
+    DROP COLUMN `path`,
+    MODIFY `query` VARCHAR(11000) NOT NULL;
+
 DROP TABLE `feature_store_connector`;
+DROP TABLE `on_demand_option`;

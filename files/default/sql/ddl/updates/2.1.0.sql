@@ -87,6 +87,9 @@ ALTER TABLE `feature_store_s3_connector`
     DROP COLUMN `description`;
 
 ALTER TABLE `on_demand_feature_group` ADD COLUMN `connector_id` int(11), 
+    ADD COLUMN `data_format` INT(11),
+    ADD COLUMN `path` VARCHAR(1000),
+    MODIFY `query` VARCHAR(11000),
     ADD CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) 
     REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -134,4 +137,14 @@ CREATE TABLE `cached_feature_extra_constraints` (
   PRIMARY KEY (`id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
   CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `on_demand_option` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `on_demand_feature_group_id` int(11) NULL,
+  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  `value` varchar(255) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `on_demand_option_key` (`on_demand_feature_group_id`),
+  CONSTRAINT `on_demand_option_fk` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
