@@ -266,6 +266,7 @@ for version in versions do
    cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__hopsworks.sql" do
     source "sql/ddl/updates/#{version}.sql"
     owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode 0750
     action :create
   end
@@ -273,6 +274,7 @@ for version in versions do
   cookbook_file "#{theDomain}/flyway/all/undo/U#{version}__undo.sql" do
     source "sql/ddl/updates/undo/#{version}__undo.sql"
     owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode 0750
     action :create
   end
