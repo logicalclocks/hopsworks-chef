@@ -1,7 +1,7 @@
 -- MySQL dump 10.13  Distrib 5.7.25-ndb-7.6.9, for linux-glibc2.12 (x86_64)
 --
--- Host: localhost    Database: hopsworks 
-------------------------------------------------------
+-- Host: localhost    Database: hopsworks
+-- ----------------------------------------------------
 -- Server version	5.7.25-ndb-7.6.9-cluster-gpl
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
