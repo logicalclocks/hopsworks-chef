@@ -114,7 +114,7 @@ ALTER TABLE `on_demand_feature_group`
 DROP TABLE `feature_store_connector`;
 DROP TABLE `on_demand_option`;
 
-ALTER TABLE `hopsworks`.`python_environment` DROP FOREIGN KEY `FK_PROJECT_ID`;
+ALTER TABLE `hopsworks`.`python_environment` DROP FOREIGN KEY `FK_PYTHONENV_PROJECT`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_env_id`;
 

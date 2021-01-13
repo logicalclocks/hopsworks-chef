@@ -1045,8 +1045,8 @@ CREATE TABLE `python_environment` (
   `conflicts` VARCHAR(12000) COLLATE latin1_general_cs DEFAULT NULL,
   UNIQUE KEY `project_env` (`project_id`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_PROJECT_ID` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+  CONSTRAINT `FK_PYTHONENV_PROJECT` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
