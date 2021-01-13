@@ -122,3 +122,5 @@ DROP TABLE IF EXISTS `hopsworks`.`python_environment`;
 
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda` tinyint(1) DEFAULT '0';
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL;
+
+DROP TABLE `feature_store_activity`;
