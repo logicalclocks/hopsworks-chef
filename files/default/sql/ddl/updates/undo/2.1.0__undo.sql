@@ -114,11 +114,22 @@ ALTER TABLE `on_demand_feature_group`
 DROP TABLE `feature_store_connector`;
 DROP TABLE `on_demand_option`;
 
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda` tinyint(1) DEFAULT '0';
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`project`
+SET `hopsworks`.`project`.`python_version` = (SELECT `python_version`
+                                  FROM `hopsworks`.`python_environment`
+                                  WHERE `hopsworks`.`project`.`id` = `python_environment`.`project_id`),
+`project`.`conda` = (CASE WHEN EXISTS (SELECT 1
+                                      FROM `hopsworks`.`python_environment`
+                                      WHERE `hopsworks`.`project`.`id` = `python_environment`.`project_id`)
+                                      THEN 1 ELSE 0 END);
+SET SQL_SAFE_UPDATES = 1;
+
 ALTER TABLE `hopsworks`.`python_environment` DROP FOREIGN KEY `FK_PYTHONENV_PROJECT`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_env_id`;
 
 DROP TABLE IF EXISTS `hopsworks`.`python_environment`;
-
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda` tinyint(1) DEFAULT '0';
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL;

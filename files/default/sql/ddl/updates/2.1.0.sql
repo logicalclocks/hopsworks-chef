@@ -163,6 +163,18 @@ CREATE TABLE IF NOT EXISTS `python_environment` (
   CONSTRAINT `FK_PYTHONENV_PROJECT` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+INSERT INTO `hopsworks`.`python_environment` (`project_id`, `python_version`)
+SELECT `id`, `python_version`
+FROM `hopsworks`.`project`
+WHERE `python_version` IS NOT NULL
+AND `conda` = true;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `project`
+SET `project`.`python_env_id` = (SELECT `id` FROM `python_environment`
+WHERE `python_environment`.`project_id` = `project`.`id`);
+SET SQL_SAFE_UPDATES = 1;
+
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `conda`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_version`;
