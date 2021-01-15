@@ -170,7 +170,7 @@ WHERE `python_version` IS NOT NULL
 AND `conda` = true;
 
 SET SQL_SAFE_UPDATES = 0;
-UPDATE `project`
+UPDATE `hopsworks`.`project`
 SET `project`.`python_env_id` = (SELECT `id` FROM `python_environment`
 WHERE `python_environment`.`project_id` = `project`.`id`);
 SET SQL_SAFE_UPDATES = 1;
