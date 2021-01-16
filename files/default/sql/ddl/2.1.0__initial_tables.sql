@@ -1919,9 +1919,10 @@ CREATE TABLE IF NOT EXISTS `feature_store_adl_connector` (
   `id`                    INT(11)         NOT NULL AUTO_INCREMENT,
   `directory_id`          VARCHAR(40)   NOT NULL,
   `application_id`        VARCHAR(40)   NOT NULL,
+  `service_credentials`   VARCHAR(100)  NOT NULL,
   `account_name`          VARCHAR(30)   NOT NULL,
-  `service_credentials`   VARCHAR(100)   NOT NULL,
-  PRIMARY KEY (`id`),
+  `container_name`        VARCHAR(65)   NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
