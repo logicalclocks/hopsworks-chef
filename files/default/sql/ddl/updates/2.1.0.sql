@@ -43,7 +43,7 @@ CREATE TABLE `feature_store_redshift_connector` (
   REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `feature_store_adl_connector` (
+CREATE TABLE IF NOT EXISTS `feature_store_adls_connector` (
   `id`                    INT(11)         NOT NULL AUTO_INCREMENT,
   `directory_id`          VARCHAR(40)   NOT NULL,
   `application_id`        VARCHAR(40)   NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
   `s3_id`                   INT(11),
   `hopsfs_id`               INT(11),
   `redshift_id`             INT(11),
-  `adl_id`                  INT(11),
+  `adls_id`                 INT(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
   CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
   CONSTRAINT `fs_connector_s3_fk` FOREIGN KEY (`s3_id`) REFERENCES `hopsworks`.`feature_store_s3_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_connector_hopsfs_fk` FOREIGN KEY (`hopsfs_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_connector_adl_fk` FOREIGN KEY (`adl_id`) REFERENCES `hopsworks`.`feature_store_adl_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `jdbc_id`)
