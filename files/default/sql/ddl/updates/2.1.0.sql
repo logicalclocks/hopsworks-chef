@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_adls_connector` (
   `directory_id`          VARCHAR(40)   NOT NULL,
   `application_id`        VARCHAR(40)   NOT NULL,
   `account_name`          VARCHAR(30)   NOT NULL,
-  `container_name`        VARCHAR(65)   NOT NULL,
+  `container_name`        VARCHAR(65),
   `cred_secret_uid`       INT           NOT NULL,
   `cred_secret_name`      VARCHAR(200)  NOT NULL,
   PRIMARY KEY (`id`),
