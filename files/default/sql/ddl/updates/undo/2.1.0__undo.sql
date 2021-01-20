@@ -133,3 +133,31 @@ ALTER TABLE `hopsworks`.`python_environment` DROP FOREIGN KEY `FK_PYTHONENV_PROJ
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_env_id`;
 
 DROP TABLE IF EXISTS `hopsworks`.`python_environment`;
+
+ALTER TABLE `hopsworks`.`feature_group`
+    ADD COLUMN `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+    ADD COLUMN `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
+    ADD COLUMN `feat_hist_enabled` TINYINT(1) NOT NULL DEFAULT '1';
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`feature_group` `fg` INNER JOIN `hopsworks`.`statistics_config` `sc` ON `fg`.`id` = `sc`.`feature_group_id`
+SET `fg`.`desc_stats_enabled` =  `sc`.`descriptive`,
+    `fg`.`feat_corr_enabled` = `sc`.`correlations`,
+    `fg`.`feat_hist_enabled` = `sc`.`histograms`;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`statistic_columns`
+  DROP KEY `statistics_config_id`,
+  DROP FOREIGN KEY `statistics_config_fk`,
+  ADD COLUMN `feature_group_id` int(11) after `id`,
+  ADD KEY `feature_group_id` (`feature_group_id`),
+  ADD CONSTRAINT `statistic_column_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`statistics_config` `sc` INNER JOIN `hopsworks`.`statistic_columns` `col` ON `sc`.`id` = `col`.`statistics_config_id`
+SET `col`.`feature_group_id` =  `sc`.`feature_group_id`;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `statistics_config_id`;
+
+DROP TABLE `hopsworks`.`statistics_config`;
