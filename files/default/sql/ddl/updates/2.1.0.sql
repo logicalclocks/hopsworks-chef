@@ -163,6 +163,18 @@ CREATE TABLE IF NOT EXISTS `python_environment` (
   CONSTRAINT `FK_PYTHONENV_PROJECT` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+INSERT INTO `hopsworks`.`python_environment` (`project_id`, `python_version`)
+SELECT `id`, `python_version`
+FROM `hopsworks`.`project`
+WHERE `python_version` IS NOT NULL
+AND `conda` = true;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`project`
+SET `project`.`python_env_id` = (SELECT `id` FROM `python_environment`
+WHERE `python_environment`.`project_id` = `project`.`id`);
+SET SQL_SAFE_UPDATES = 1;
+
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `conda`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_version`;
@@ -188,3 +200,74 @@ CREATE TABLE `feature_store_activity` (
   CONSTRAINT `fs_act_stat_fk` FOREIGN KEY (`statistics_id`) REFERENCES `feature_store_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `statistics_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11),
+  `training_dataset_id` int(11),
+  `descriptive` TINYINT(1) NOT NULL DEFAULT '1',
+  `correlations` TINYINT(1) NOT NULL DEFAULT '0',
+  `histograms` TINYINT(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  CONSTRAINT `fg_statistics_config_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `td_statistics_config_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+INSERT INTO `hopsworks`.`statistics_config` (`feature_group_id`, `descriptive`, `correlations`, `histograms`)
+SELECT `id` as `feature_group_id`,
+       `desc_stats_enabled` as `descriptive`,
+       `feat_corr_enabled` as `correlations`,
+       `feat_hist_enabled` as `histograms`
+    FROM `hopsworks`.`feature_group`;
+
+ALTER TABLE `hopsworks`.`feature_group`
+    DROP COLUMN `desc_stats_enabled`,
+    DROP COLUMN `feat_corr_enabled`,
+    DROP COLUMN `feat_hist_enabled`;
+
+drop procedure if exists schema_change;
+delimiter ';;'
+create procedure schema_change() begin
+
+ /* delete columns if they exist */
+ if exists (select * from information_schema.columns where table_name = 'feature_group' and column_name = 'cluster_analysis_enabled') then
+  alter table `hopsworks`.`feature_group` drop column `cluster_analysis_enabled`;
+ end if;
+ if exists (select * from information_schema.columns where table_name = 'feature_group' and column_name = 'num_clusters') then
+  alter table `hopsworks`.`feature_group` drop column `num_clusters`;
+ end if;
+ if exists (select * from information_schema.columns where table_name = 'feature_group' and column_name = 'num_bins') then
+  alter table `hopsworks`.`feature_group` drop column `num_bins`;
+ end if;
+ if exists (select * from information_schema.columns where table_name = 'feature_group' and column_name = 'corr_method') then
+  alter table `hopsworks`.`feature_group` drop column `corr_method`;
+ end if;
+
+end;;
+
+delimiter ';'
+call schema_change();
+drop procedure if exists schema_change;
+
+INSERT INTO `hopsworks`.`statistics_config` (`training_dataset_id`, `descriptive`, `correlations`, `histograms`)
+SELECT `id` as `training_dataset_id`,
+       1 as `descriptive`,
+       0 as `correlations`,
+       0 as `histograms`
+    FROM `hopsworks`.`training_dataset`;
+
+ALTER TABLE `hopsworks`.`statistic_columns`
+  DROP KEY `feature_group_id`,
+  DROP FOREIGN KEY `statistic_column_fk`,
+  ADD COLUMN `statistics_config_id` int(11) after `id`,
+  ADD KEY `statistics_config_id` (`statistics_config_id`),
+  ADD CONSTRAINT `statistics_config_fk` FOREIGN KEY (`statistics_config_id`) REFERENCES `statistics_config` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`statistics_config` `sc` INNER JOIN `hopsworks`.`statistic_columns` `col` ON `sc`.`feature_group_id` = `col`.`feature_group_id`
+SET `col`.`statistics_config_id` =  `sc`.`id`;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `feature_group_id`;
