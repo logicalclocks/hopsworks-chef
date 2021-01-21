@@ -135,7 +135,7 @@ default['hopsworks']['hdfs_default_quota_mbs']           = "500000"
 default['hopsworks']['hive_default_quota_mbs']           = "250000"
 default['hopsworks']['featurestore_default_quota_mbs']   = "250000"
 default['hopsworks']['max_num_proj_per_user']            = "10"
-default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys"
+default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,^(python\\d{2})$"
 
 # file preview and download
 default['hopsworks']['file_preview_image_size']  = "10000000"
