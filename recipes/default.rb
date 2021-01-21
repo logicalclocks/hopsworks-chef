@@ -261,6 +261,23 @@ for version in versions do
     mode 0750
     action :create
   end
+
+   # template all the ddl files from all versions
+   cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__hopsworks.sql" do
+    source "sql/ddl/updates/#{version}.sql"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode 0750
+    action :create
+  end
+
+  cookbook_file "#{theDomain}/flyway/all/undo/U#{version}__undo.sql" do
+    source "sql/ddl/updates/undo/#{version}__undo.sql"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode 0750
+    action :create
+  end
 end
 
 if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
