@@ -161,7 +161,6 @@ SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `statistics_config_id`;
 
 DROP TABLE `hopsworks`.`statistics_config`;
-DROP TABLE `feature_store_connector`;
 
 ALTER TABLE `hopsworks`.`oauth_login_state` CHANGE COLUMN `token` `token` VARCHAR(2048) COLLATE latin1_general_cs DEFAULT NULL;
 
