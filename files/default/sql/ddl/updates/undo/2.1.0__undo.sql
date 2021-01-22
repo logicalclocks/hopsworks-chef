@@ -10,6 +10,7 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `key_secret_uid
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `key_secret_name`;
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_redshift_connector`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_adls_connector`;
 
 DROP TABLE IF EXISTS `hopsworks`.`cached_feature_extra_constraints`;
 
