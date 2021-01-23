@@ -277,10 +277,6 @@ attribute "hopsworks/featurestore_online",
           :description => "Enable the creation of NDB databases for the online featurestore. Default 'false'",
           :type => 'string'
 
-attribute "hopsworks/job_activity_timer",
-          :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
-          :type => 'string'
-
 attribute "hopsworks/max_num_proj_per_user",
           :description => "Maximum number of projects that can be created by each user",
           :type => 'string'
@@ -903,6 +899,10 @@ attribute "featurestore/user",
 
 attribute "featurestore/password",
           :description => "Password for the JDBC Connection to the the Online FeatureStore"
+
+attribute "featurestore/job_activity_timer",
+          :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
+          :type => 'string'
 
 # hops-util-py
 attribute "hopsworks/requests_verify",
