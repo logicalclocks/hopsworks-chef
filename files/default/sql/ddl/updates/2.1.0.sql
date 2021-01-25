@@ -221,7 +221,7 @@ ALTER TABLE `hopsworks`.`feature_group`
     DROP COLUMN `feat_hist_enabled`;
 
 drop procedure if exists schema_change;
-delimiter ';;'
+delimiter ;;
 create procedure schema_change() begin
 
  /* delete columns if they exist */
@@ -238,10 +238,11 @@ create procedure schema_change() begin
   alter table `hopsworks`.`feature_group` drop column `corr_method`;
  end if;
 
-end;;
+end ;;
+
+call schema_change();;
 
 delimiter ';'
-call schema_change();
 drop procedure if exists schema_change;
 
 INSERT INTO `hopsworks`.`statistics_config` (`training_dataset_id`, `descriptive`, `correlations`, `histograms`)
