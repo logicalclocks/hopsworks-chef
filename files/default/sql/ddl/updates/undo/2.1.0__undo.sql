@@ -177,9 +177,6 @@ DROP COLUMN `session_id`,
 DROP COLUMN `redirect_uri`,
 DROP COLUMN `scopes`;
 
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `conda` tinyint(1) DEFAULT '0';
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL;
-
 ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` VARCHAR(20) NOT NULL,
     DROP COLUMN `feature_group_commit_id`,
     DROP FOREIGN KEY `fg_ci_fk_fss`;
