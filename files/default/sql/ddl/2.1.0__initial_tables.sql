@@ -912,6 +912,8 @@ CREATE TABLE `oauth_client` (
   `authorisation_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `token_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `userinfo_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
+  `end_session_endpoint` VARCHAR(1024) COLLATE latin1_general_cs DEFAULT NULL,
+  `logout_redirect_param` VARCHAR(45) COLLATE latin1_general_cs DEFAULT NULL,
   `jwks_uri` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `provider_metadata_endpoint_supported` tinyint(1) NOT NULL DEFAULT '0',
   `offline_access` tinyint(1) NOT NULL DEFAULT '0',

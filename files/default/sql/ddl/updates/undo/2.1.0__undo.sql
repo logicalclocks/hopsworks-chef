@@ -176,3 +176,7 @@ DROP COLUMN `code_challenge`,
 DROP COLUMN `session_id`,
 DROP COLUMN `redirect_uri`,
 DROP COLUMN `scopes`;
+
+ALTER TABLE `hopsworks`.`oauth_client` 
+DROP COLUMN `end_session_endpoint`,
+DROP COLUMN `logout_redirect_param`;
