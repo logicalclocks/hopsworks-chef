@@ -1,1 +1,4 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs_utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.py");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("remote_auth_need_consent", "<%= node['remote_auth']['need_consent'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_logout_redirect_uri", "<%= node['oauth']['logout_redirect_uri'] %>");
