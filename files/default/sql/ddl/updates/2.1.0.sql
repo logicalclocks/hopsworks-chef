@@ -242,7 +242,7 @@ end ;;
 
 call schema_change();;
 
-delimiter ';'
+delimiter ;
 drop procedure if exists schema_change;
 
 INSERT INTO `hopsworks`.`statistics_config` (`training_dataset_id`, `descriptive`, `correlations`, `histograms`)
