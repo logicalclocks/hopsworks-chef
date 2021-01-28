@@ -278,3 +278,25 @@ ADD COLUMN `code_challenge` varchar(128) DEFAULT NULL,
 ADD COLUMN `session_id` VARCHAR(128) NOT NULL,
 ADD COLUMN `redirect_uri` VARCHAR(1024) NOT NULL,
 ADD COLUMN `scopes` VARCHAR(2048) NOT NULL;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_store_snowflake_connector` (
+  `id`                       INT(11)       NOT NULL AUTO_INCREMENT,
+  `url`                      VARCHAR(3000)   NOT NULL,
+  `database_user`            VARCHAR(128)  NOT NULL,
+  `database_name`            VARCHAR(64)   NOT NULL,
+  `database_schema`          VARCHAR(45)   NOT NULL,
+  `table_name`               VARCHAR(128),
+  `role`                     VARCHAR(65),
+  `warehouse`                VARCHAR(128)  NOT NULL,
+  `arguments`                VARCHAR(2000),
+  `database_pwd_secret_uid`  INT DEFAULT NULL,
+  `database_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_feature_store_snowflake_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
+  CONSTRAINT `fk_feature_store_snowflake_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
+  REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector`
+  ADD COLUMN `snowflake_id` INT(11) after `adls_id`,
+  ADD CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

@@ -176,3 +176,9 @@ DROP COLUMN `code_challenge`,
 DROP COLUMN `session_id`,
 DROP COLUMN `redirect_uri`,
 DROP COLUMN `scopes`;
+
+ALTER TABLE `hopsworks`.`feature_store_connector` 
+DROP FOREIGN KEY `fs_connector_snowflake_fk`,
+DROP COLUMN `snowflake_id`;
+
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_snowflake_connector`;
