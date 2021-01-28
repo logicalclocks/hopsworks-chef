@@ -279,6 +279,6 @@ ADD COLUMN `session_id` VARCHAR(128) NOT NULL,
 ADD COLUMN `redirect_uri` VARCHAR(1024) NOT NULL,
 ADD COLUMN `scopes` VARCHAR(2048) NOT NULL;
 
-ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` timestamp NOT NULL,
+ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` DATETIME(3)  NOT NULL,
     ADD COLUMN `feature_group_commit_id` BIGINT(20),
     ADD CONSTRAINT `fg_ci_fk_fss` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
