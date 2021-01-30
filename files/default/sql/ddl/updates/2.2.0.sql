@@ -1,3 +1,5 @@
+DROP VIEW `hops_users`;
+
 DROP TABLE `address`;
 DROP TABLE `organization`;
 DROP TABLE `authorized_sshkeys`;
