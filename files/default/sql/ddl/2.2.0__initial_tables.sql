@@ -61,28 +61,6 @@ CREATE TABLE `activity` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `address`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `address` (
-  `address_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `address1` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `address2` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `address3` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `city` varchar(40) COLLATE latin1_general_cs DEFAULT 'San Francisco',
-  `state` varchar(50) COLLATE latin1_general_cs DEFAULT 'CA',
-  `country` varchar(40) COLLATE latin1_general_cs DEFAULT 'US',
-  `postalcode` varchar(10) COLLATE latin1_general_cs DEFAULT '-',
-  PRIMARY KEY (`address_id`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `FK_257_265` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `anaconda_repo`
 --
 
@@ -94,22 +72,6 @@ CREATE TABLE `anaconda_repo` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `authorized_sshkeys`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authorized_sshkeys` (
-  `project` varchar(64) NOT NULL,
-  `user` varchar(48) NOT NULL,
-  `sshkey_name` varchar(64) NOT NULL,
-  PRIMARY KEY (`project`,`user`,`sshkey_name`),
-  KEY `idx_user` (`user`),
-  KEY `idx_project` (`project`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -967,28 +929,6 @@ CREATE TABLE `ops_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `organization`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `organization` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) DEFAULT NULL,
-  `org_name` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `website` varchar(2083) COLLATE latin1_general_cs DEFAULT '-',
-  `contact_person` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `contact_email` varchar(150) COLLATE latin1_general_cs DEFAULT '-',
-  `department` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `phone` varchar(20) COLLATE latin1_general_cs DEFAULT '-',
-  `fax` varchar(20) COLLATE latin1_general_cs DEFAULT '-',
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `FK_257_380` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `pia`
 --
 
@@ -1437,21 +1377,6 @@ CREATE TABLE `shared_topics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `ssh_keys`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ssh_keys` (
-  `uid` int(11) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `public_key` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`uid`,`name`),
-  CONSTRAINT `FK_257_471` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `system_commands`
 --
 
@@ -1758,12 +1683,9 @@ CREATE TABLE `users` (
   `validation_key` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `validation_key_updated` timestamp DEFAULT NULL,
   `validation_key_type` VARCHAR(20) DEFAULT NULL,
-  `security_question` varchar(20) COLLATE latin1_general_cs DEFAULT NULL,
-  `security_answer` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `mode` int(11) NOT NULL DEFAULT '0',
   `password_changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `notes` varchar(500) COLLATE latin1_general_cs DEFAULT '-',
-  `mobile` varchar(15) COLLATE latin1_general_cs DEFAULT '-',
   `max_num_projects` int(11) NOT NULL,
   `num_active_projects` int(11) NOT NULL DEFAULT '0',
   `num_created_projects` int(11) NOT NULL DEFAULT '0',
