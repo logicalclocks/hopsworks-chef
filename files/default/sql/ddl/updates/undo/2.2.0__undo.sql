@@ -269,3 +269,6 @@ CREATE TABLE `meta_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `serving_tool`;
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `model_server` TO `serving_type`;

@@ -139,3 +139,6 @@ DROP TABLE IF EXISTS `meta_templates`;
 DROP TABLE IF EXISTS `meta_inode_basic_metadata`;
 DROP TABLE IF EXISTS `meta_tuple_to_file`;
 DROP TABLE IF EXISTS `meta_log`;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `serving_tool` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `serving_type` TO `model_server`;
