@@ -97,20 +97,26 @@ ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` DATETIME(
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `coalesce` TINYINT(1) NOT NULL DEFAULT '0';
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_store_snowflake_connector` (
+CREATE TABLE IF NOT EXISTS `feature_store_snowflake_connector` (
   `id`                       INT(11)       NOT NULL AUTO_INCREMENT,
-  `url`                      VARCHAR(3000)   NOT NULL,
+  `url`                      VARCHAR(3000) NOT NULL,
   `database_user`            VARCHAR(128)  NOT NULL,
   `database_name`            VARCHAR(64)   NOT NULL,
   `database_schema`          VARCHAR(45)   NOT NULL,
-  `table_name`               VARCHAR(128),
-  `role`                     VARCHAR(65),
-  `warehouse`                VARCHAR(128)  NOT NULL,
-  `arguments`                VARCHAR(2000),
+  `table_name`               VARCHAR(128)  DEFAULT NULL,
+  `role`                     VARCHAR(65)   DEFAULT NULL,
+  `warehouse`                VARCHAR(128)  DEFAULT NULL,
+  `arguments`                VARCHAR(8000) DEFAULT NULL,
   `database_pwd_secret_uid`  INT DEFAULT NULL,
   `database_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
+  `oauth_token_secret_uid`   INT DEFAULT NULL,
+  `oauth_token_secret_name`  VARCHAR(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_feature_store_snowflake_connector_2_idx` (`database_pwd_secret_uid`,`database_pwd_secret_name`),
   CONSTRAINT `fk_feature_store_snowflake_connector_2` FOREIGN KEY (`database_pwd_secret_uid`, `database_pwd_secret_name`)
+  REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+  KEY `fk_feature_store_snowflake_connector_3_idx` (`oauth_token_secret_uid`,`oauth_token_secret_name`),
+  CONSTRAINT `fk_feature_store_snowflake_connector_3` FOREIGN KEY (`oauth_token_secret_uid`, `oauth_token_secret_name`)
   REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
