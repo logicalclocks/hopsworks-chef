@@ -278,7 +278,3 @@ ADD COLUMN `code_challenge` varchar(128) DEFAULT NULL,
 ADD COLUMN `session_id` VARCHAR(128) NOT NULL,
 ADD COLUMN `redirect_uri` VARCHAR(1024) NOT NULL,
 ADD COLUMN `scopes` VARCHAR(2048) NOT NULL;
-
-ALTER TABLE `hopsworks`.`oauth_client` 
-ADD COLUMN `end_session_endpoint` VARCHAR(1024) DEFAULT NULL,
-ADD COLUMN `logout_redirect_param` VARCHAR(45) DEFAULT NULL;

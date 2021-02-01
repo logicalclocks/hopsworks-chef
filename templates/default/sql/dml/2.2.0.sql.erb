@@ -26,3 +26,6 @@ REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, descrip
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_CONTAINED_IN", "LEGAL_VALUES", "String", "");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'hops_verification_version';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("remote_auth_need_consent", "<%= node['remote_auth']['need_consent'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_logout_redirect_uri", "<%= node['oauth']['logout_redirect_uri'] %>");
