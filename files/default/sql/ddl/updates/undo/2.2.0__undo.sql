@@ -49,3 +49,6 @@ ALTER TABLE `users`
     ADD COLUMN `security_question` varchar(20) COLLATE latin1_general_cs DEFAULT NULL,
     ADD COLUMN `security_answer` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
     ADD COLUMN `mobile` varchar(15) COLLATE latin1_general_cs DEFAULT "-";
+
+ALTER TABLE `hopsworks`.`feature_store_tag` ADD COLUMN `type` varchar(45) NOT NULL DEFAULT 'STRING';
+ALTER TABLE `hopsworks`.`feature_store_tag` DROP COLUMN `tag_schema`;
