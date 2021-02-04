@@ -135,7 +135,7 @@ default['hopsworks']['yarn_default_payment_type']        = "NOLIMIT"
 default['hopsworks']['hdfs_default_quota_mbs']           = "-1"
 default['hopsworks']['hive_default_quota_mbs']           = "-1"
 default['hopsworks']['featurestore_default_quota_mbs']   = "-1"
-default['hopsworks']['max_num_proj_per_user']            = "100"
+default['hopsworks']['max_num_proj_per_user']            = "10"
 default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,filebeat"
 
 # file preview and download
