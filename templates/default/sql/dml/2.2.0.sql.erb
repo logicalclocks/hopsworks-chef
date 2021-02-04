@@ -24,3 +24,5 @@ REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, descrip
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_GREATER_THAN", "LEGAL_VALUES", "Fractional", "");
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_GREATER_THAN_OR_EQUAL_TO", "LEGAL_VALUES", "Fractional", "");
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_CONTAINED_IN", "LEGAL_VALUES", "String", "");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'hops_verification_version';
