@@ -78,7 +78,10 @@ INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDAT
 
 REPLACE INTO variables(`id`, `value`) VALUES ("elastic_ip", "<%= @elastic_ip %>"), ("spark_dir", "<%= node['hadoop_spark']['dir'] %>/spark"),  ("flink_dir", "<%= node['flink']['dir'] %>/flink"), ("elastic_dir", "<%= node['elastic']['dir'] %>/elastic"),  ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql"), ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster"), ("hadoop_dir", "<%= node['hops']['dir'] %>/hadoop"), ("hdfs_user", "<%= node['hops']['hdfs']['user'] %>"), ("yarn_user", "<%= node['hops']['yarn']['user'] %>"), ("mr_user","<%= node['hops']['mr']['user'] %>"), ("elastic_user","<%= node['elastic']['user'] %>"), ("hopsworks_dir", "<%= @hopsworks_dir %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("yarn_default_quota", "<%= @yarn_default_quota %>"), ("hdfs_default_quota", "<%= @hdfs_default_quota %>"), ("hive_default_quota", "<%= @hive_default_quota %>");
+REPLACE INTO variables(`id`, `value`) VALUES
+  ("yarn_default_quota", "<%= @yarn_default_quota %>"),
+  ("hdfs_default_quota", "<%= node['hopsworks']['hdfs_default_quota_mbs'] %>"),
+  ("hive_default_quota", "<%= node['hopsworks']['hive_default_quota_mbs'] %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
 
