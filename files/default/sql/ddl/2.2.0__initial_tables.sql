@@ -1967,17 +1967,17 @@ CREATE TABLE `remote_group_project_mapping` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE  IF NOT EXISTS `feature_group_validation` (
-                                                           `id` int(11) NOT NULL AUTO_INCREMENT,
-                                                           `validation_time` TIMESTAMP(3),
-                                                           `inode_pid` BIGINT(20) NOT NULL,
-                                                           `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
-                                                           `partition_id` BIGINT(20) NOT NULL,
-                                                           `feature_group_id` INT(11),
-                                                           `status` VARCHAR(20) COLLATE latin1_general_cs NOT NULL,
-                                                           PRIMARY KEY (`id`),
-                                                           KEY `feature_group_id` (`feature_group_id`),
-                                                           CONSTRAINT `fg_fk_fgv` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                           CONSTRAINT `featuregroupvalidation_inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `validation_time` TIMESTAMP(3),
+  `inode_pid` BIGINT(20) NOT NULL,
+  `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+  `partition_id` BIGINT(20) NOT NULL,
+  `feature_group_id` INT(11),
+  `status` VARCHAR(20) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  CONSTRAINT `fg_fk_fgv` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `featuregroupvalidation_inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `feature_group_commit` (
