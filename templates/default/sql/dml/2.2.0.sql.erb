@@ -1,1 +1,28 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("yarn_default_payment_type", "<%= node['hopsworks']['yarn_default_payment_type'] %>");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MEAN", "VALUE", "Fractional", "A rule that asserts on the mean of the feature");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MIN", "VALUE", "Fractional", "A rule that asserts on the min of the feature");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MAX", "VALUE", "Fractional", "A rule that asserts on the max of the feature");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_SUM", "VALUE", "Fractional", "A rule that asserts on the sum of the feature");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_SIZE", "VALUE", "Integral", "A rule that asserts the number of rows of the dataframe");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_COMPLETENESS", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_UNIQUENESS", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_DISTINCTNESS", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_UNIQUE_VALUE_RATIO", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_NUMBER_OF_DISTINCT_VALUES", "VALUE", "Integral", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_ENTROPY", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MUTUAL_INFORMATION", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_APPROX_QUANTILE", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_STANDARD_DEVIATION", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_APPROX_COUNT_DISTINCT", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_CORRELATION", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_PATTERN", "PATTERN", "String", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_DATATYPE", "ACCEPTED_TYPE", "String", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_NON_NEGATIVE", "VALUE", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_POSITIVE", "VALUE", "Boolean", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_LESS_THAN", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_LESS_THAN_OR_EQUAL_TO", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_GREATER_THAN", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_GREATER_THAN_OR_EQUAL_TO", "LEGAL_VALUES", "Fractional", "");
+REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("IS_CONTAINED_IN", "LEGAL_VALUES", "String", "");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'hops_verification_version';
