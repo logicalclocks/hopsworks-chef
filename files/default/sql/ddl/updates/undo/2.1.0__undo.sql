@@ -176,4 +176,3 @@ DROP COLUMN `code_challenge`,
 DROP COLUMN `session_id`,
 DROP COLUMN `redirect_uri`,
 DROP COLUMN `scopes`;
-
