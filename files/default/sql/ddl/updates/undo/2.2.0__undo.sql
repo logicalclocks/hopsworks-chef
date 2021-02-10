@@ -57,3 +57,7 @@ DROP TABLE IF EXISTS `feature_group_rule`;
 DROP TABLE IF EXISTS `feature_group_validation`;
 DROP TABLE IF EXISTS `feature_store_expectation_rule`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `validation_type`;
+
+ALTER TABLE `hopsworks`.`oauth_client` 
+DROP COLUMN `end_session_endpoint`,
+DROP COLUMN `logout_redirect_param`;
