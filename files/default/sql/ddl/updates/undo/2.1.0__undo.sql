@@ -165,19 +165,14 @@ DROP TABLE `hopsworks`.`statistics_config`;
 
 ALTER TABLE `hopsworks`.`oauth_login_state` CHANGE COLUMN `token` `token` VARCHAR(2048) COLLATE latin1_general_cs DEFAULT NULL;
 
-ALTER TABLE `hopsworks`.`oauth_client`
+ALTER TABLE `hopsworks`.`oauth_client` 
 DROP COLUMN `offline_access`,
 DROP COLUMN `code_challenge`,
 DROP COLUMN `code_challenge_method`,
 DROP COLUMN `verify_email`;
 
-ALTER TABLE `hopsworks`.`oauth_login_state`
+ALTER TABLE `hopsworks`.`oauth_login_state` 
 DROP COLUMN `code_challenge`,
 DROP COLUMN `session_id`,
 DROP COLUMN `redirect_uri`,
 DROP COLUMN `scopes`;
-
-ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` VARCHAR(20) NOT NULL,
-    DROP COLUMN `feature_group_commit_id`,
-    DROP FOREIGN KEY `fg_ci_fk_fss`;
-

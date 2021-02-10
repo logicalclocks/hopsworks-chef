@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_adls_connector` (
   `cred_secret_uid`       INT           NOT NULL,
   `cred_secret_name`      VARCHAR(200)  NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `adls_cred_secret_fk` FOREIGN KEY (`cred_secret_uid` , `cred_secret_name`)
+  CONSTRAINT `adls_cred_secret_fk` FOREIGN KEY (`cred_secret_uid` , `cred_secret_name`) 
   REFERENCES `hopsworks`.`secrets` (`uid` , `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -267,18 +267,14 @@ SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `feature_group_id`;
 ALTER TABLE `hopsworks`.`oauth_login_state` CHANGE COLUMN `token` `token` VARCHAR(8000) COLLATE latin1_general_cs DEFAULT NULL;
 
-ALTER TABLE `hopsworks`.`oauth_client`
+ALTER TABLE `hopsworks`.`oauth_client` 
 ADD COLUMN `offline_access` tinyint(1) NOT NULL DEFAULT '0',
 ADD COLUMN `code_challenge` tinyint(1) NOT NULL DEFAULT '0',
 ADD COLUMN `code_challenge_method` varchar(16) DEFAULT NULL,
 ADD COLUMN `verify_email` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `hopsworks`.`oauth_login_state`
+ALTER TABLE `hopsworks`.`oauth_login_state` 
 ADD COLUMN `code_challenge` varchar(128) DEFAULT NULL,
 ADD COLUMN `session_id` VARCHAR(128) NOT NULL,
 ADD COLUMN `redirect_uri` VARCHAR(1024) NOT NULL,
 ADD COLUMN `scopes` VARCHAR(2048) NOT NULL;
-
-ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` DATETIME(3)  NOT NULL,
-    ADD COLUMN `feature_group_commit_id` BIGINT(20),
-    ADD CONSTRAINT `fg_ci_fk_fss` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION;

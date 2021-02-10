@@ -91,3 +91,8 @@ CREATE TABLE `feature_store_activity` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
+
+
+ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` DATETIME(3)  NOT NULL,
+    ADD COLUMN `feature_group_commit_id` BIGINT(20),
+    ADD CONSTRAINT `fg_ci_fk_fss` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
