@@ -97,7 +97,6 @@ ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` DATETIME(
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `coalesce` TINYINT(1) NOT NULL DEFAULT '0';
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_store_snowflake_connector` (
-CREATE TABLE IF NOT EXISTS `feature_store_snowflake_connector` (
   `id`                       INT(11)       NOT NULL AUTO_INCREMENT,
   `url`                      VARCHAR(3000) NOT NULL,
   `database_user`            VARCHAR(128)  NOT NULL,
