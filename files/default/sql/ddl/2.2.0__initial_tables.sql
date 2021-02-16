@@ -1,7 +1,7 @@
 -- MySQL dump 10.13  Distrib 5.7.25-ndb-7.6.9, for linux-glibc2.12 (x86_64)
 --
 -- Host: localhost    Database: hopsworks
--- ----------------------------------------------------
+-- ------------------------------------------------------
 -- Server version	5.7.25-ndb-7.6.9-cluster-gpl
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -61,28 +61,6 @@ CREATE TABLE `activity` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `address`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `address` (
-  `address_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `address1` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `address2` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `address3` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `city` varchar(40) COLLATE latin1_general_cs DEFAULT 'San Francisco',
-  `state` varchar(50) COLLATE latin1_general_cs DEFAULT 'CA',
-  `country` varchar(40) COLLATE latin1_general_cs DEFAULT 'US',
-  `postalcode` varchar(10) COLLATE latin1_general_cs DEFAULT '-',
-  PRIMARY KEY (`address_id`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `FK_257_265` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `anaconda_repo`
 --
 
@@ -94,22 +72,6 @@ CREATE TABLE `anaconda_repo` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `authorized_sshkeys`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `authorized_sshkeys` (
-  `project` varchar(64) NOT NULL,
-  `user` varchar(48) NOT NULL,
-  `sshkey_name` varchar(64) NOT NULL,
-  PRIMARY KEY (`project`,`user`,`sshkey_name`),
-  KEY `idx_user` (`user`),
-  KEY `idx_project` (`project`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,6 +291,7 @@ CREATE TABLE `feature_group` (
   `feature_group_type` INT(11) NOT NULL DEFAULT '0',
   `on_demand_feature_group_id` INT(11) NULL,
   `cached_feature_group_id` INT(11) NULL,
+  `validation_type` INT(11) NOT NULL DEFAULT '4',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
@@ -435,16 +398,6 @@ CREATE TABLE `files_to_remove` (
   CONSTRAINT `FK_361_376` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Temporary table structure for view `hops_users`
---
-
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `hops_users` AS SELECT
- 1 AS `project_user`*/;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `hopssite_cluster_certs`
@@ -912,6 +865,8 @@ CREATE TABLE `oauth_client` (
   `authorisation_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `token_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `userinfo_endpoint` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
+  `end_session_endpoint` VARCHAR(1024) COLLATE latin1_general_cs DEFAULT NULL,
+  `logout_redirect_param` VARCHAR(45) COLLATE latin1_general_cs DEFAULT NULL,
   `jwks_uri` varchar(1024) COLLATE latin1_general_cs DEFAULT NULL,
   `provider_metadata_endpoint_supported` tinyint(1) NOT NULL DEFAULT '0',
   `offline_access` tinyint(1) NOT NULL DEFAULT '0',
@@ -964,28 +919,6 @@ CREATE TABLE `ops_log` (
   `inode_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=308 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `organization`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `organization` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) DEFAULT NULL,
-  `org_name` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `website` varchar(2083) COLLATE latin1_general_cs DEFAULT '-',
-  `contact_person` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `contact_email` varchar(150) COLLATE latin1_general_cs DEFAULT '-',
-  `department` varchar(100) COLLATE latin1_general_cs DEFAULT '-',
-  `phone` varchar(20) COLLATE latin1_general_cs DEFAULT '-',
-  `fax` varchar(20) COLLATE latin1_general_cs DEFAULT '-',
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  CONSTRAINT `FK_257_380` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1437,21 +1370,6 @@ CREATE TABLE `shared_topics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `ssh_keys`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ssh_keys` (
-  `uid` int(11) NOT NULL,
-  `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-  `public_key` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-  PRIMARY KEY (`uid`,`name`),
-  CONSTRAINT `FK_257_471` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `system_commands`
 --
 
@@ -1758,12 +1676,9 @@ CREATE TABLE `users` (
   `validation_key` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `validation_key_updated` timestamp DEFAULT NULL,
   `validation_key_type` VARCHAR(20) DEFAULT NULL,
-  `security_question` varchar(20) COLLATE latin1_general_cs DEFAULT NULL,
-  `security_answer` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `mode` int(11) NOT NULL DEFAULT '0',
   `password_changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `notes` varchar(500) COLLATE latin1_general_cs DEFAULT '-',
-  `mobile` varchar(15) COLLATE latin1_general_cs DEFAULT '-',
   `max_num_projects` int(11) NOT NULL,
   `num_active_projects` int(11) NOT NULL DEFAULT '0',
   `num_created_projects` int(11) NOT NULL DEFAULT '0',
@@ -1803,23 +1718,6 @@ CREATE TABLE `variables` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Final view structure for view `hops_users`
---
-
-/*!50001 DROP VIEW IF EXISTS `hops_users`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `hops_users` AS select concat(`pt`.`team_member`,'__',`p`.`projectname`) AS `project_user` from ((`project` `p` join `project_team` `pt`) join `ssh_keys` `sk`) where `pt`.`team_member` in (select `u`.`email` from (`users` `u` join `ssh_keys` `s`) where (`u`.`uid` = `s`.`uid`)) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
 -- Final view structure for view `users_groups`
@@ -1904,7 +1802,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
   `key_secret_name`                     VARCHAR(200)    DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_feature_store_s3_connector_1_idx` (`key_secret_uid`, `key_secret_name`),
-  CONSTRAINT `fk_feature_store_s3_connector_1` FOREIGN KEY (`key_secret_uid` , `key_secret_name`)
+  CONSTRAINT `fk_feature_store_s3_connector_1` FOREIGN KEY (`key_secret_uid` , `key_secret_name`) 
   REFERENCES `hopsworks`.`secrets` (`uid` , `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -1912,7 +1810,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_hopsfs_connector` (
   `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
   `hopsfs_dataset`          INT(11)         NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `hopsfs_connector_dataset_fk` FOREIGN KEY (`hopsfs_dataset`)
+  CONSTRAINT `hopsfs_connector_dataset_fk` FOREIGN KEY (`hopsfs_dataset`) 
   REFERENCES `hopsworks`.`dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -2054,7 +1952,7 @@ CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
 CREATE TABLE IF NOT EXISTS `feature_store_tag` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `name` varchar(255) NOT NULL,
-      `type` varchar(45) NOT NULL DEFAULT 'STRING',
+      `tag_schema` varchar(13000) NOT NULL DEFAULT '{"type":"string"}',
       PRIMARY KEY (`id`),
       UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -2070,6 +1968,20 @@ CREATE TABLE `remote_group_project_mapping` (
   CONSTRAINT `fk_remote_group_project_mapping_1` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE  IF NOT EXISTS `feature_group_validation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `validation_time` TIMESTAMP(3),
+  `inode_pid` BIGINT(20) NOT NULL,
+  `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+  `partition_id` BIGINT(20) NOT NULL,
+  `feature_group_id` INT(11),
+  `status` VARCHAR(20) COLLATE latin1_general_cs NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  CONSTRAINT `fg_fk_fgv` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `featuregroupvalidation_inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 CREATE TABLE `feature_group_commit` (
   `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
   `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -2080,33 +1992,13 @@ CREATE TABLE `feature_group_commit` (
   `inode_pid`                         BIGINT(20)      NOT NULL,
   `inode_name`                        VARCHAR(255)    NOT NULL,
   `partition_id`                      BIGINT(20)      NOT NULL,
+  `validation_id` int(11),
   PRIMARY KEY (`feature_group_id`, `commit_id`),
   KEY `commit_id_idx` (`commit_id`),
   KEY `commit_date_idx` (`committed_on`),
   CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE `feature_store_activity` (
-  `id`                            INT(11) NOT NULL AUTO_INCREMENT,
-  `event_time`                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `uid`                           INT(11) NOT NULL,
-  `type`                          INT(11) NOT NULL,
-  `meta_type`                     INT(11) NULL,
-  `meta_msg`                      VARCHAR(255) NULL,
-  `execution_id`                  INT(11) NULL,
-  `execution_last_event_time`     BIGINT(20) NULL,
-  `statistics_id`                 INT(11) NULL,
-  `commit_id`                     BIGINT(20) NULL,
-  `feature_group_id`              INT(11) NULL,
-  `training_dataset_id`           INT(11) NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fs_act_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_uid_fk` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_exec_fk` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_stat_fk` FOREIGN KEY (`statistics_id`) REFERENCES `feature_store_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fgc_fk_fgv` FOREIGN KEY (`validation_id`) REFERENCES `feature_group_validation` (`id`) ON DELETE SET NULL  ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `cloud_role_mapping` (
@@ -2156,4 +2048,43 @@ CREATE TABLE `cached_feature_extra_constraints` (
   PRIMARY KEY (`id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
   CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `validation_rule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `value_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `description` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`value_type`)
+) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_store_expectation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
+  `description` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+  `feature_store_id` int(11) NOT NULL,
+  `assertions` varchar(12000) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `unique_fs_rules` (`feature_store_id`,`name`),
+  CONSTRAINT `fk_fs_expectation_to_fs` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_group_expectation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) NOT NULL,
+  `feature_store_expectation_id` int(11) NOT NULL,
+  `description` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_fg_expectation_to_fg` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fg_expectation_to_fs_expectation` FOREIGN KEY (`feature_store_expectation_id`) REFERENCES `feature_store_expectation` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_store_expectation_rule` (
+  `feature_store_expectation_id` int(11) NOT NULL,
+  `validation_rule_id` int(11) NOT NULL,
+  PRIMARY KEY (`feature_store_expectation_id`, `validation_rule_id`),
+  CONSTRAINT `fk_fs_expectation_rule_id` FOREIGN KEY (`feature_store_expectation_id`) REFERENCES `feature_store_expectation` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_validation_rule_id` FOREIGN KEY (`validation_rule_id`) REFERENCES `validation_rule` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

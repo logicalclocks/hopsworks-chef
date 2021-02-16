@@ -10,6 +10,7 @@ ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `key_secret_uid
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` DROP COLUMN `key_secret_name`;
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_redshift_connector`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_adls_connector`;
 
 DROP TABLE IF EXISTS `hopsworks`.`cached_feature_extra_constraints`;
 
@@ -163,3 +164,17 @@ SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `statistics_config_id`;
 
 DROP TABLE `hopsworks`.`statistics_config`;
+
+ALTER TABLE `hopsworks`.`oauth_login_state` CHANGE COLUMN `token` `token` VARCHAR(2048) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`oauth_client` 
+DROP COLUMN `offline_access`,
+DROP COLUMN `code_challenge`,
+DROP COLUMN `code_challenge_method`,
+DROP COLUMN `verify_email`;
+
+ALTER TABLE `hopsworks`.`oauth_login_state` 
+DROP COLUMN `code_challenge`,
+DROP COLUMN `session_id`,
+DROP COLUMN `redirect_uri`,
+DROP COLUMN `scopes`;

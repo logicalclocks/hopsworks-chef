@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.1.0"
+version          "2.2.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -768,11 +768,18 @@ attribute "oauth/enabled",
 attribute "oauth/redirect_uri",
           :description => "OAuth redirect uri. 'hopsworks/callback' (default)",
           :type => 'string'
+attribute "oauth/logout_redirect_uri",
+          :description => "OAuth logout redirect uri. 'hopsworks/' (default)",
+          :type => 'string'
 attribute "oauth/account_status",
           :description => "Hopsworks account status given for new OAuth user. '1' verified account (default)",
           :type => 'string'
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
+          :type => 'string'
+
+attribute "remote_auth/need_consent",
+          :description => "Remote user need to consent on first login. 'true' (default)",
           :type => 'string'
 
 attribute "hopsworks/disable_password_login",
@@ -841,7 +848,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 2.1.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 2.2.000)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",

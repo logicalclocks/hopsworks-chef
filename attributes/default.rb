@@ -129,13 +129,14 @@ default['hopsworks']['alert_email_addrs']        = ""
 
 default['hopsworks']['support_email_addr']       = "support@logicalclocks.com"
 
-# #quotas
+#quotas
 default['hopsworks']['yarn_default_quota_mins']          = "1000000"
-default['hopsworks']['hdfs_default_quota_mbs']           = "500000"
-default['hopsworks']['hive_default_quota_mbs']           = "250000"
-default['hopsworks']['featurestore_default_quota_mbs']   = "250000"
+default['hopsworks']['yarn_default_payment_type']        = "NOLIMIT"
+default['hopsworks']['hdfs_default_quota_mbs']           = "-1"
+default['hopsworks']['hive_default_quota_mbs']           = "-1"
+default['hopsworks']['featurestore_default_quota_mbs']   = "-1"
 default['hopsworks']['max_num_proj_per_user']            = "10"
-default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys"
+default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,filebeat"
 
 # file preview and download
 default['hopsworks']['file_preview_image_size']  = "10000000"
@@ -340,8 +341,11 @@ default['ldap']['group_mapping_sync_interval']       = 0
 # OAuth2
 default['oauth']['enabled']                          = "false"
 default['oauth']['redirect_uri']                     = "hopsworks/callback"
+default['oauth']['logout_redirect_uri']              = "hopsworks/"
 default['oauth']['account_status']                   = 1
 default['oauth']['group_mapping']                    = ""
+
+default['remote_auth']['need_consent']               = "true"
 
 default['hopsworks']['disable_password_login']       = "false"
 default['hopsworks']['disable_registration']         = "false"
@@ -386,7 +390,7 @@ default['hopsworks']['expat_dir']                    = "#{node['install']['dir']
 #
 # Feature Store
 #
-default['hopsworks']['featurestore_default_storage_format']   = "ORC"
+default['hopsworks']['featurestore_default_storage_format']   = "PARQUET"
 default['hopsworks']['featurestore_online']                   = "false"
 
 default['scala']['version']                   = "2.11.8"

@@ -241,9 +241,6 @@ for version in versions do
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
-         :hdfs_default_quota => node['hopsworks']['hdfs_default_quota_mbs'].to_i,
-         :hive_default_quota => node['hopsworks']['hive_default_quota_mbs'].to_i,
-         :featurestore_default_quota => node['hopsworks']['featurestore_default_quota_mbs'].to_i,
          :java_home => node['java']['java_home'],
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
@@ -258,6 +255,23 @@ for version in versions do
   template "#{theDomain}/flyway/dml/undo/U#{version}__undo.sql" do
     source "sql/dml/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
+    mode 0750
+    action :create
+  end
+
+   # template all the ddl files from all versions
+   cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__hopsworks.sql" do
+    source "sql/ddl/updates/#{version}.sql"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode 0750
+    action :create
+  end
+
+  cookbook_file "#{theDomain}/flyway/all/undo/U#{version}__undo.sql" do
+    source "sql/ddl/updates/undo/#{version}__undo.sql"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
     mode 0750
     action :create
   end

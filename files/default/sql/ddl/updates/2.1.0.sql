@@ -1,5 +1,4 @@
-SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "conda_commands" AND REFERENCED_TABLE_NAME="project");
-# If fk does not exist, then just execute "SELECT 1"
+SET @fk_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = "hopsworks" AND TABLE_NAME = "conda_commands" AND REFERENCED_TABLE_NAME="project"); # If fk does not exist, then just execute "SELECT 1"
 SET @s = (SELECT IF((@fk_name) is not null,
                     concat('ALTER TABLE hopsworks.conda_commands DROP FOREIGN KEY `', @fk_name, '`'),
                     "SELECT 1"));
@@ -44,6 +43,20 @@ CREATE TABLE `feature_store_redshift_connector` (
   REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `feature_store_adls_connector` (
+  `id`                    INT(11)       NOT NULL AUTO_INCREMENT,
+  `generation`            INT(11)       NOT NULL,
+  `directory_id`          VARCHAR(40)   NOT NULL,
+  `application_id`        VARCHAR(40)   NOT NULL,
+  `account_name`          VARCHAR(30)   NOT NULL,
+  `container_name`        VARCHAR(65),
+  `cred_secret_uid`       INT           NOT NULL,
+  `cred_secret_name`      VARCHAR(200)  NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `adls_cred_secret_fk` FOREIGN KEY (`cred_secret_uid` , `cred_secret_name`) 
+  REFERENCES `hopsworks`.`secrets` (`uid` , `secret_name`) ON DELETE RESTRICT
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
   `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
   `feature_store_id`        INT(11)          NOT NULL,
@@ -54,13 +67,15 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
   `s3_id`                   INT(11),
   `hopsfs_id`               INT(11),
   `redshift_id`             INT(11),
+  `adls_id`                 INT(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
   CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_connector_jdbc_fk` FOREIGN KEY (`jdbc_id`) REFERENCES `hopsworks`.`feature_store_jdbc_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_connector_s3_fk` FOREIGN KEY (`s3_id`) REFERENCES `hopsworks`.`feature_store_s3_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_connector_hopsfs_fk` FOREIGN KEY (`hopsfs_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 INSERT INTO `feature_store_connector`(`feature_store_id`, `name`, `description`, `type`, `jdbc_id`)
@@ -228,7 +243,7 @@ ALTER TABLE `hopsworks`.`feature_group`
     DROP COLUMN `feat_hist_enabled`;
 
 drop procedure if exists schema_change;
-delimiter ';;'
+delimiter ;;
 create procedure schema_change() begin
 
  /* delete columns if they exist */
@@ -245,10 +260,11 @@ create procedure schema_change() begin
   alter table `hopsworks`.`feature_group` drop column `corr_method`;
  end if;
 
-end;;
+end ;;
 
-delimiter ';'
-call schema_change();
+call schema_change();;
+
+delimiter ;
 drop procedure if exists schema_change;
 
 INSERT INTO `hopsworks`.`statistics_config` (`training_dataset_id`, `descriptive`, `correlations`, `histograms`)
@@ -271,3 +287,16 @@ SET `col`.`statistics_config_id` =  `sc`.`id`;
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`statistic_columns` DROP COLUMN `feature_group_id`;
+ALTER TABLE `hopsworks`.`oauth_login_state` CHANGE COLUMN `token` `token` VARCHAR(8000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`oauth_client` 
+ADD COLUMN `offline_access` tinyint(1) NOT NULL DEFAULT '0',
+ADD COLUMN `code_challenge` tinyint(1) NOT NULL DEFAULT '0',
+ADD COLUMN `code_challenge_method` varchar(16) DEFAULT NULL,
+ADD COLUMN `verify_email` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `hopsworks`.`oauth_login_state` 
+ADD COLUMN `code_challenge` varchar(128) DEFAULT NULL,
+ADD COLUMN `session_id` VARCHAR(128) NOT NULL,
+ADD COLUMN `redirect_uri` VARCHAR(1024) NOT NULL,
+ADD COLUMN `scopes` VARCHAR(2048) NOT NULL;

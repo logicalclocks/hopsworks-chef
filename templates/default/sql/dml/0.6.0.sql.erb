@@ -15,21 +15,9 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['f
 -- Create the user who will be responsibile to log the inference requests to kafka
 -- This user should not be able to login. The password doesn't make any sense.
 INSERT INTO `hopsworks`.`users`
-(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `security_question`, `security_answer`, `mode`, `password_changed`, `notes`, `mobile`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
-('srvmanager', 'kkiulkflnccswpvtndwcjmbbibmpwdfywwuxgbqymwogenhcmnoqoyuzkzgeyrapmwsvemksckvbgmliyrzfzoudarwiopjvsgoqfzmbfkxyhgkshjgkfeiphmxpozgl', 'serving@hopsworks.se', 'Serving', 'Manager', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 'PET', 'gfixoaipdukedtclnnwvuxhwqgjnjsusxgzaggonmkjkgiuclypndzmrnzwavujhutumsnxukqpbcorpcoireuxryswdsunmihnywvuxebeasktisretplkzghhqrdrv', 0, '2015-04-28 15:18:42', NULL, '123456789', 2, 30, 0, 3, 'nbyrnglnpfxhltlfrvcfsoyspwtzyonequiggafnvhpsbnftqzqovlquxthemegjrkkmhhvhmnefjuzgfwgducdnyulsbbkrjaotwdzbpzokqutbpqakdqrfqpxrxocg')
+(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+('srvmanager', 'kkiulkflnccswpvtndwcjmbbibmpwdfywwuxgbqymwogenhcmnoqoyuzkzgeyrapmwsvemksckvbgmliyrzfzoudarwiopjvsgoqfzmbfkxyhgkshjgkfeiphmxpozgl', 'serving@hopsworks.se', 'Serving', 'Manager', '2015-05-15 10:22:36', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2015-04-28 15:18:42', NULL, 2, 30, 0, 3, 'nbyrnglnpfxhltlfrvcfsoyspwtzyonequiggafnvhpsbnftqzqovlquxthemegjrkkmhhvhmnefjuzgfwgducdnyulsbbkrjaotwdzbpzokqutbpqakdqrfqpxrxocg')
 ON DUPLICATE KEY UPDATE `username`="srvmanager";
-
-INSERT INTO `hopsworks`.`address` (`uid`, `address1`, `address2`, `address3`, `city`, `state`, `country`, `postalcode`)
-SELECT `u`.`uid`, 'Admin Office','Teknikringen 14', 'Vallhalevägen', 'Stockholm län', "<%= @org_city %>", "<%= @org_country_code %>", '10044'
-FROM `hopsworks`.`users` u
-WHERE u.`username` = "srvmanager"
-ON DUPLICATE KEY UPDATE `address1` = "Admin Office";
-
-INSERT INTO `organization` (`uid`, `org_name`, `website`, `contact_person`, `contact_email`, `department`, `phone`, `fax`)
-SELECT `u`.`uid`, "<%= @org_name %>", "<%= @org_domain %>", 'Admin', "<%= @org_email %>", 'DataScience', '+4670080010', '+4670080015'
-FROM `hopsworks`.`users` u
-WHERE u.`username` = "srvmanager"
-ON DUPLICATE KEY UPDATE `contact_person` = 'Admin';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kafka_max_num_topics", "<%= node['hopsworks']['kafka_max_num_topics'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_serving", "<%= node['logstash']['beats']['serving_port'] %>");

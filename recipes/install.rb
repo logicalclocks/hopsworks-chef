@@ -837,3 +837,20 @@ directory "#{theDomain}/flyway/dml/undo" do
   action :create
 end
 
+directory "#{theDomain}/flyway/all" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
+
+directory "#{theDomain}/flyway/all/sql" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
+
+directory "#{theDomain}/flyway/all/undo" do
+  owner node['glassfish']['user']
+  mode "770"
+  action :create
+end
