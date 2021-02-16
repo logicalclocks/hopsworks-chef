@@ -135,8 +135,6 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_env_id`;
 
 DROP TABLE IF EXISTS `hopsworks`.`python_environment`;
 
-DROP TABLE `feature_store_activity`;
-
 ALTER TABLE `hopsworks`.`feature_group`
     ADD COLUMN `desc_stats_enabled` TINYINT(1) NOT NULL DEFAULT '1',
     ADD COLUMN `feat_corr_enabled` TINYINT(1) NOT NULL DEFAULT '1',
