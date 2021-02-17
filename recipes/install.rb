@@ -490,14 +490,9 @@ ulimit_domain node['hopsworks']['user'] do
   end
 end
 
-
-  hopsworks_grants "reload_systemd" do
-    tables_path  ""
-    views_path ""
-    rows_path  ""
-    action :reload_systemd
+  kagent_config "glassfish-domain1" do 
+    action :systemd_reload
   end
-
 end
 
 ca_dir = node['certs']['dir']

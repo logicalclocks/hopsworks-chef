@@ -96,7 +96,6 @@ end
 
 hopsworks_grants "timers_tables" do
   tables_path  "#{timerTablePath}"
-  rows_path  ""
   action :nothing
 end
 
@@ -394,8 +393,8 @@ ruby_block "export_hadoop_classpath" do
   action :create
 end
 
-hopsworks_grants "restart_glassfish" do
-  action :reload_systemd
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
 end
 
 glassfish_secure_admin domain_name do
@@ -1132,8 +1131,8 @@ ruby_block "generate_service_jwt" do
 end
 
 # Force variables reload
-hopsworks_grants "restart_glassfish" do
-  action :reload_systemd
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
 end
 
 hopsworks_certs "generate-int-certs" do
@@ -1143,10 +1142,9 @@ hopsworks_certs "generate-int-certs" do
 end
 
 # Force reload of the certificate
-hopsworks_grants "restart_glassfish" do
-  action :reload_systemd
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
 end
-
 
 # Register Glassfish with Consul
 template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
