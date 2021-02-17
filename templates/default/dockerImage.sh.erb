@@ -46,6 +46,30 @@ elif [ "$1" == "gc" ] ; then
     docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
 	  docker container restart registry
 
+<% else -%>
+
+elif [ "$1" == "delete-acr" ] ; then
+  registry=$2
+  image_prefix=$3
+  if [[ -z "$registry" ||  -z "$image_prefix" ]] then
+    echo ""
+    echo "usage: delete-acr [registry_name image_prefix]"
+    echo "deletes all images under the specified image_prefix inside the specified regitry"
+    echo ""
+    exit 1
+  fi
+  repos=`az acr repository list --name $registry --query "[?starts_with(@, '$image_prefix')]" -o tsv`
+
+  for repo in $repos
+  do
+      tags=`az acr repository show-tags --name $registry --repository $repo -o tsv`
+      for tag in $tags
+      do
+          az acr repository delete --name $registry -y --image $repo:$tag > /dev/null 2>&1
+          echo $tag
+      done
+  done
+
 <% end -%>
 
 elif [ "$1" == "list" ] ; then
