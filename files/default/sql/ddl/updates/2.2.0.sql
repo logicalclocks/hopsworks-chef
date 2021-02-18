@@ -67,3 +67,5 @@ ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `validation_id` int(11
 ALTER TABLE `hopsworks`.`oauth_client` 
 ADD COLUMN `end_session_endpoint` VARCHAR(1024) DEFAULT NULL,
 ADD COLUMN `logout_redirect_param` VARCHAR(45) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `coalesce` TINYINT(1) DEFAULT '0';

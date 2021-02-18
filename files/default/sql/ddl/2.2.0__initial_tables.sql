@@ -1473,6 +1473,7 @@ CREATE TABLE `training_dataset` (
   `training_dataset_type`   INT(11) NOT NULL DEFAULT '0',
   `seed` BIGINT(11) NULL,
   `query` TINYINT(1) NOT NULL DEFAULT '0',
+  `coalesce` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
   KEY `feature_store_id` (`feature_store_id`),
