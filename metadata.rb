@@ -907,6 +907,10 @@ attribute "featurestore/user",
 attribute "featurestore/password",
           :description => "Password for the JDBC Connection to the the Online FeatureStore"
 
+attribute "featurestore/job_activity_timer",
+          :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
+          :type => 'string'
+
 # hops-util-py
 attribute "hopsworks/requests_verify",
           :description => "Whether to verify http(s) requests in hops-util-py",

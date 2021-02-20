@@ -2001,6 +2001,30 @@ CREATE TABLE `feature_group_commit` (
   CONSTRAINT `fgc_fk_fgv` FOREIGN KEY (`validation_id`) REFERENCES `feature_group_validation` (`id`) ON DELETE SET NULL  ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE `feature_store_activity` (
+  `id`                            INT(11) NOT NULL AUTO_INCREMENT,
+  `event_time`                    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `uid`                           INT(11) NOT NULL,
+  `type`                          INT(11) NOT NULL,
+  `meta_type`                     INT(11) NULL,
+  `meta_msg`                      VARCHAR(255) NULL,
+  `execution_id`                  INT(11) NULL,
+  `execution_last_event_time`     BIGINT(20) NULL,
+  `statistics_id`                 INT(11) NULL,
+  `commit_id`                     BIGINT(20) NULL,
+  `feature_group_id`              INT(11) NULL,
+  `training_dataset_id`           INT(11) NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fs_act_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_act_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_act_uid_fk` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_act_exec_fk` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_act_stat_fk` FOREIGN KEY (`statistics_id`) REFERENCES `feature_store_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+
+
 CREATE TABLE `cloud_role_mapping` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_id` int(11) NOT NULL,
