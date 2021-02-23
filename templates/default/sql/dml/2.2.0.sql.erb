@@ -1,4 +1,5 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("yarn_default_payment_type", "<%= node['hopsworks']['yarn_default_payment_type'] %>");
+
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MEAN", "VALUE", "Fractional", "Assert on the mean of a feature.");
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MIN", "VALUE", "Fractional", "Assert on the min of a feature.");
 REPLACE INTO `hopsworks`.`validation_rule` (name, predicate, value_type, description) VALUES ("HAS_MAX", "VALUE", "Fractional", "Assert on the max of a feature.");
@@ -29,3 +30,8 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'hops_verification_version';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("remote_auth_need_consent", "<%= node['remote_auth']['need_consent'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_logout_redirect_uri", "<%= node['oauth']['logout_redirect_uri'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_job_activity_time", "<%= node['featurestore']['job_activity_timer'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_indexer_timer_interval", "<%= node['hopsworks']['pypi_indexer_timer_interval'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_simple_endpoint", "<%= node['hopsworks']['pypi_simple_endpoint'] %>");

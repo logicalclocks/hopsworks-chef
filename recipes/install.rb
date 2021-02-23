@@ -672,7 +672,7 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
 end
 
 ["zip-hdfs-files.sh", "zip-background.sh", "unzip-background.sh",  "tensorboard-launch.sh",
- "tensorboard-cleanup.sh", "condasearch.sh", "pipsearch.sh", "list_environment.sh", "jupyter-kill.sh",
+ "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
  "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"

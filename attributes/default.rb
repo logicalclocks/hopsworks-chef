@@ -265,6 +265,8 @@ default['tensorboard']['max']['reload']['threads']          = "1"
 # PyPi
 #
 default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
+default['hopsworks']['pypi_indexer_timer_interval']    = "1d"
+default['hopsworks']['pypi_simple_endpoint']           = "https://pypi.org/simple/"
 
 # Hive
 
@@ -413,10 +415,11 @@ default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 # Online FeatureStore JDBC Connection Details
 #
 
-default['featurestore']['jdbc_url']           = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}/"
-default['featurestore']['hopsworks_url']      = "jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-default['featurestore']['user']               = node['mysql']['user']
-default['featurestore']['password']           = node['mysql']['password']
+default['featurestore']['jdbc_url']             = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}/"
+default['featurestore']['hopsworks_url']        = "jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
+default['featurestore']['user']                 = node['mysql']['user']
+default['featurestore']['password']             = node['mysql']['password']
+default['featurestore']['job_activity_timer']   = "5m"
 
 # hops-util-py
 default['hopsworks']['requests_verify']       = node['hops']['tls']['enabled']
