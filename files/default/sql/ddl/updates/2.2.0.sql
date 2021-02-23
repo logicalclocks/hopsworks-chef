@@ -124,3 +124,5 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_store_snowflake_connector` (
 ALTER TABLE `hopsworks`.`feature_store_connector`
   ADD COLUMN `snowflake_id` INT(11) after `adls_id`,
   ADD CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`jupyter_git_config` CHANGE `api_key_name` `api_key_name` VARCHAR(125) DEFAULT NULL;

@@ -1969,7 +1969,7 @@ CREATE TABLE `feature_store_job` (
 CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
        `id` INT NOT NULL AUTO_INCREMENT,
        `remote_git_url` VARCHAR(255) NOT NULL,
-       `api_key_name` VARCHAR(125) NOT NULL,
+       `api_key_name` VARCHAR(125) DEFAULT NULL,
        `base_branch` VARCHAR(125),
        `head_branch` VARCHAR(125),
        `startup_auto_pull` TINYINT(1) DEFAULT 1,
