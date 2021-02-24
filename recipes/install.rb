@@ -427,22 +427,6 @@ remote_file "#{theDomain}/lib/#{cauth}"  do
   action :create_if_missing
 end
 
-template "#{theDomain}/docroot/404.html" do
-  source "404.html.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "444"
-  action :create
-end
-
-cookbook_file"#{theDomain}/docroot/hops_icon.png" do
-  source 'hops_icon.png'
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode '0755'
-  action :create_if_missing
-end
-
 remote_directory "#{theDomain}/templates" do
   source 'hopsworks_templates'
   owner node["glassfish"]["user"]

@@ -511,7 +511,7 @@ glassfish_conf = {
   # Jobs in Hopsworks use the Timer service
   'server-config.ejb-container.ejb-timer-service.timer-datasource' => 'jdbc/hopsworksTimers',
   'server.ejb-container.ejb-timer-service.property.reschedule-failed-timer' => node['glassfish']['reschedule_failed_timer'],
-  'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/404.html reason=Resource_not_found\"",
+  'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
   # Enable/Disable HTTP listener
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
@@ -919,6 +919,34 @@ glassfish_deployable "hopsworks-ca" do
 end
 
 
+# Deploy the new react frontend - clean the directory from the previous version
+directory "#{theDomain}/docroot" do
+  action :delete
+end
+
+directory "#{theDomain}/docroot" do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "770"
+  action :create
+end
+
+remote_file "#{Chef::Config['file_cache_path']}/frontend.tgz" do
+  source default['hopsworks']['frontend_url']
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0755
+  action :create
+end
+
+bash "extract_frontend" do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  code <<-EOH
+    tar xf #{Chef::Config['file_cache_path']}/frontend.tgz -C #{theDomain}/docroot
+  EOH
+end
+
 #
 # If deployment of the new version succeeds, then undeploy the previous version
 #
@@ -962,18 +990,11 @@ template "/bin/hopsworks-2fa" do
     owner "root"
     mode 0700
     action :create
- end
+end
 
 hopsworks_certs "generate-certs" do
   action :generate
 end
-
-# Since Hopsworks v1.1 we don't need the symlink
-link "delete-crl-symlink" do
-  target_file "#{domains_dir}/#{domain_name}/docroot/intermediate.crl.pem"
-  action :delete
-end
-
 
 template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   source "condarc.erb"
