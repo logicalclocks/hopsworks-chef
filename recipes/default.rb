@@ -921,6 +921,7 @@ end
 
 # Deploy the new react frontend - clean the directory from the previous version
 directory "#{theDomain}/docroot" do
+  recursive true
   action :delete
 end
 
