@@ -932,7 +932,7 @@ directory "#{theDomain}/docroot" do
 end
 
 remote_file "#{Chef::Config['file_cache_path']}/frontend.tgz" do
-  source default['hopsworks']['frontend_url']
+  source node['hopsworks']['frontend_url']
   user node['glassfish']['user']
   group node['glassfish']['group']
   mode 0755
@@ -940,7 +940,7 @@ remote_file "#{Chef::Config['file_cache_path']}/frontend.tgz" do
 end
 
 bash "extract_frontend" do
-  owner node['hopsworks']['user']
+  user node['hopsworks']['user']
   group node['hopsworks']['group']
   code <<-EOH
     tar xf #{Chef::Config['file_cache_path']}/frontend.tgz -C #{theDomain}/docroot
