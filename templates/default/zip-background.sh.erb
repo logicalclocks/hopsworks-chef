@@ -3,12 +3,12 @@
 set -e
 
 help() {
-  echo "usage: $0 localWorkdir directoryInHdfs HDFS_USER"
+  echo "usage: $0 localWorkdir directoryInHdfs HDFS_USER [destDirectoryInHdfs]"
   exit 1
 }
 
 
-if [ $# -ne 3 ] ; then
+if [ $# -ne 3 && $# -ne 4 ] ; then
   help
 fi
 
@@ -32,5 +32,5 @@ if [ $filesize -gt $freespace ] ; then
 fi
 
 
-nohup "${DIR}"/zip-hdfs-files.sh "$1" "$2" "$3" > "$1/$filename".log &
+nohup "${DIR}"/zip-hdfs-files.sh "$1" "$2" "$3" "$4" > "$1/$filename".log &
 
