@@ -1333,12 +1333,14 @@ CREATE TABLE `training_dataset_feature` (
   `td_join`int(11) NULL,
   `idx` int(11) NULL,
   `label` tinyint(1) NOT NULL DEFAULT '0',
+  `transformation_function`  int(11) NULL,
   PRIMARY KEY (`id`),
   KEY `td_key` (`training_dataset`),
   KEY `fg_key` (`feature_group`),
   CONSTRAINT `join_fk_tdf` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `td_fk_tdf` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+  CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `tfn_fk_tdf` FOREIGN KEY (`transformation_function`) REFERENCES `transformation_function` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2019,3 +2021,20 @@ CREATE TABLE `project_service_alert` (
   KEY `fk_project_service_2_idx` (`project_id`),
   CONSTRAINT `fk_project_service_alert_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `transformation_function` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  `name`                              VARCHAR(255)    NOT NULL,
+  `output_type`                       varchar(32)     NOT NULL,
+  `version`                           INT(11)         NOT NULL,
+  `feature_store_id`                  INT(11)         NOT NULL,
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `creator` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `inode_fn_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
