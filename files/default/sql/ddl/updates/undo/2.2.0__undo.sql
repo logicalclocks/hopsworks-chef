@@ -69,3 +69,9 @@ ALTER TABLE `hopsworks`.`feature_store_statistic` MODIFY `commit_time` VARCHAR(3
     DROP FOREIGN KEY `fg_ci_fk_fss`;
 
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `coalesce`;
+
+ALTER TABLE `hopsworks`.`feature_store_connector` 
+DROP FOREIGN KEY `fs_connector_snowflake_fk`,
+DROP COLUMN `snowflake_id`;
+
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_snowflake_connector`;
