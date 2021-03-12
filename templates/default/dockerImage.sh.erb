@@ -78,10 +78,7 @@ elif [ "$1" == "list" ] ; then
 	help
     fi
 
-    # make sure that the image has RepoDigests before pulling, images loaded using docker load will not have it
-    if [[ $(docker inspect --format='{{len .RepoDigests}}' $2) -gt 0 ]] ; then
-         docker pull $2 > /dev/null 2>&1
-    fi
+    docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda list -n theenv
 
 elif [ "$1" == "check" ] ; then
@@ -90,10 +87,7 @@ elif [ "$1" == "check" ] ; then
 	help
     fi
 
-    # make sure that the image has RepoDigests before pulling, images loaded using docker load will not have it
-    if [[ $(docker inspect --format='{{len .RepoDigests}}' $2) -gt 0 ]] ; then
-         docker pull $2 > /dev/null 2>&1
-    fi
+    docker pull $2 > /dev/null 2>&1
     docker run --rm $2 pip check
 
 elif [ "$1" == "export" ] ; then
@@ -102,10 +96,7 @@ elif [ "$1" == "export" ] ; then
 	help
     fi
 
-    # make sure that the image has RepoDigests before pulling, images loaded using docker load will not have it
-    if [[ $(docker inspect --format='{{len .RepoDigests}}' $2) -gt 0 ]] ; then
-         docker pull $2 > /dev/null 2>&1
-    fi
+    docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda env export -n theenv
 
 else
