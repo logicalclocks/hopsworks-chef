@@ -14,6 +14,11 @@ bash 'letsencrypt-run' do
 EOF
 end
 
+remote_file '/tmp/DigiCertGlobalRootG2.crt' do
+  source "#{node['hopsworks']['azure-ca-cert']['download-url']}"
+  mode '0755'
+  action :create
+end
 
 bash 'letsencrypt-setup' do
     user "root"
@@ -56,6 +61,9 @@ bash 'letsencrypt-setup' do
 
 	#{keytool} -import -noprompt -alias s1as -file s1as.cert -keystore cacerts.jks -storepass $KEYSTOREPW
 	#{keytool} -import -noprompt -alias glassfish-instance -file glassfish-instance.cert -keystore cacerts.jks -storepass $KEYSTOREPW
+
+	#{keytool} -import -noprompt -alias digicertglobalrootg2 -file /tmp/DigiCertGlobalRootG2.crt -keystore cacerts.jks -storepass $KEYSTOREPW
+
 	#Replace old Keystore & Truststore
 	cp -f keystore.jks cacerts.jks $GFDOMAIN/config/
 	chown -R #{node['glassfish']['user']} $GFDOMAIN/config/
