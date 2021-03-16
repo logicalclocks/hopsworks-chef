@@ -175,6 +175,13 @@ action :generate_int_certs do
     end
   end
 
+  # Download azure root CA cert
+  remote_file '/tmp/DigiCertGlobalRootG2.crt' do
+    source "#{node['hopsworks']['azure-ca-cert']['download-url']}"
+    mode '0755'
+    action :create
+  end
+
   # Add the certificate to the keystore.jks
   bash "add_to_keystore" do 
     user node['hopsworks']['user']
@@ -190,7 +197,9 @@ action :generate_int_certs do
         # Import into the keystore
         keytool -importkeystore -destkeystore keystore.jks -srckeystore cert_and_key.p12 -srcstoretype PKCS12 -alias internal -srcstorepass #{node['hopsworks']['master']['password']} -deststorepass #{node['hopsworks']['master']['password']} -destkeypass #{node['hopsworks']['master']['password']}
 
-         keytool -import -noprompt -alias internal -file #{node['certs']['dir']}/certs/ca.cert.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+        keytool -import -noprompt -alias internal -file #{node['certs']['dir']}/certs/ca.cert.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+        
+        keytool -import -noprompt -alias digicertglobalrootg2 -file /tmp/DigiCertGlobalRootG2.crt -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
   end
 
