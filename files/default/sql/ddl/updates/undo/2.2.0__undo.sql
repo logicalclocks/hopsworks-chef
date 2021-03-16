@@ -75,3 +75,5 @@ DROP FOREIGN KEY `fs_connector_snowflake_fk`,
 DROP COLUMN `snowflake_id`;
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_snowflake_connector`;
+
+ALTER TABLE `hopsworks`.`jupyter_git_config` CHANGE `api_key_name` `api_key_name` VARCHAR(125) NOT NULL;
