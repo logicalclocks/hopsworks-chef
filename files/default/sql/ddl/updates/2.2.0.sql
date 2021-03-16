@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS `validation_rule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
   `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
-  `value_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `accepted_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
   `description` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`value_type`)
+  UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`accepted_type`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_expectation` (
