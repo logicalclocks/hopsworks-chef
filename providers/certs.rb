@@ -211,8 +211,9 @@ action :download_azure_ca_cert do
     cwd "/tmp"
     code <<-EOH
       set -e
+      GFDOMAIN=#{node['glassfish']['domains_dir']}/domain1
       # Import into the keystore
-      keytool -import -noprompt -alias digicertglobalrootg2 -file DigiCertGlobalRootG2.crt -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+      keytool -import -noprompt -alias digicertglobalrootg2 -file DigiCertGlobalRootG2.crt -keystore $GFDOMAIN/config/cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
   end
 end
