@@ -127,7 +127,7 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
 
 ALTER TABLE `hopsworks`.`jupyter_git_config` CHANGE `api_key_name` `api_key_name` VARCHAR(125) DEFAULT NULL;
 
-# drop meta designer
+-- drop metadata designer
 DROP TABLE IF EXISTS `meta_data`;
 DROP TABLE IF EXISTS `meta_field_predefined_values`;
 DROP TABLE IF EXISTS `meta_raw_data`;
