@@ -210,9 +210,9 @@ action :download_azure_ca_cert do
     user "root"
     cwd "/tmp"
     code <<-EOH
-        set -e
-        # Import into the keystore
-        keytool -import -noprompt -alias digicertglobalrootg2 -file DigiCertGlobalRootG2.crt -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+      set -e
+      # Import into the keystore
+      keytool -import -noprompt -alias digicertglobalrootg2 -file DigiCertGlobalRootG2.crt -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
   end
 end
