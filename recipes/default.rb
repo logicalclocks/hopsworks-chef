@@ -1,3 +1,5 @@
+require 'digest'
+
 include_recipe "java"
 
 Chef::Recipe.send(:include, Hops::Helpers)
@@ -221,6 +223,9 @@ unless node['install']['cloud'].strip.empty?
   node.override['hopsworks']['reserved_project_names'] = "#{node['hopsworks']['reserved_project_names']},cloud"
 end
 
+# encrypt onlinefs user password
+encrypted_onlinfefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + node['onlinefs']['hopsworks']['salt']
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -246,7 +251,10 @@ for version in versions do
          :public_ip => public_ip,
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :hops_version => get_hops_version(node['hops']['version'])
+         :hops_version => get_hops_version(node['hops']['version']),
+         :onlinefs_password => encrypted_onlinfefs_password,
+         :onlinefs_email => node['onlinefs']['hopsworks']['password'],
+         :onlinefs_salt => node['onlinefs']['hopsworks']['salt']
     })
     action :create
   end
