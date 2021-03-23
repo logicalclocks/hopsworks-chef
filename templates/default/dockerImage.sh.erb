@@ -70,6 +70,13 @@ elif [ "$1" == "delete-acr" ] ; then
       done
   done
 
+elif [ "$1" == "loginaz" ] ; then
+    if [ "$#" -ne 2 ] ; then
+	echo "Illegal number of parameters"
+	help
+    fi
+    az acr login --name $2
+
 <% end -%>
 
 elif [ "$1" == "list" ] ; then
@@ -98,7 +105,7 @@ elif [ "$1" == "export" ] ; then
 
     docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda env export -n theenv
-
+    
 else
     help
 fi
