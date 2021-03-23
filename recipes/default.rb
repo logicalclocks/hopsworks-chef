@@ -1,4 +1,5 @@
 require 'digest'
+require 'securerandom'
 
 include_recipe "java"
 
@@ -224,7 +225,8 @@ unless node['install']['cloud'].strip.empty?
 end
 
 # encrypt onlinefs user password
-encrypted_onlinfefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + node['onlinefs']['hopsworks']['salt']
+onlinefs_salt = SecureRandom.base64(64)
+encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
 
 for version in versions do
   # Template DML files
@@ -252,7 +254,8 @@ for version in versions do
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => get_hops_version(node['hops']['version']),
-         :onlinefs_password => encrypted_onlinfefs_password
+         :onlinefs_password => encrypted_onlinefs_password,
+         :onlinefs_salt => onlinefs_salt
     })
     action :create
   end

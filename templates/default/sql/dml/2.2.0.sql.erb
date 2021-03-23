@@ -38,5 +38,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_simple_endpoin
 
 INSERT INTO `hopsworks`.`users`
 (`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
-('onlinefs', '<%= @onlinefs_password %>', '<%= node['onlinefs']['hopsworks']['email'] %>', 'OnlineFS', 'Server', '2021-03-16 16:17:00', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2021-03-16 16:17:00', NULL, 2, 30, 0, 3, '<%= node['onlinefs']['hopsworks']['salt'] %>')
+('onlinefs', '<%= @onlinefs_password %>', '<%= node['onlinefs']['hopsworks']['email'] %>', 'OnlineFS', 'Server', '2021-03-16 16:17:00', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2021-03-16 16:17:00', NULL, 2, 30, 0, 3, '<%= @onlinefs_salt %>')
 ON DUPLICATE KEY UPDATE `username`="onlinefs";
