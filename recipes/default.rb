@@ -252,9 +252,7 @@ for version in versions do
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => get_hops_version(node['hops']['version']),
-         :onlinefs_password => encrypted_onlinfefs_password,
-         :onlinefs_email => node['onlinefs']['hopsworks']['password'],
-         :onlinefs_salt => node['onlinefs']['hopsworks']['salt']
+         :onlinefs_password => encrypted_onlinfefs_password
     })
     action :create
   end
