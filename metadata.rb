@@ -970,3 +970,8 @@ attribute "hopsworks/expat_url",
 attribute "tensorboard/max/reload/threads",
           :description => "The max number of threads that TensorBoard can use to reload runs. Not relevant for db read-only mode. Each thread reloads one run at a time.",
           :type => "string"
+
+#Azure CA cert download url
+attribute "hopsworks/azure-ca-cert/download-url",
+          :description => "Azure CA cert download url. 'https://cacerts.digicert.com/DigiCertGlobalRootG2.crt' (default)",
+          :type => "string"

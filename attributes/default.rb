@@ -450,3 +450,5 @@ default['hopsworks']['hdfs']['storage_policy']['base']        = "DB"
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 
 default["hopsworks"]['check_nodemanager_status']              = "false"
+
+default['hopsworks']['azure-ca-cert']['download-url']         = "https://cacerts.digicert.com/DigiCertGlobalRootG2.crt"
