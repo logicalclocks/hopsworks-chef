@@ -1172,6 +1172,11 @@ hopsworks_certs "generate-int-certs" do
   not_if      (::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt"))
 end
 
+hopsworks_certs "download_azure_ca_cert" do
+  action      :download_azure_ca_cert
+  not_if      (::File.exist?("/tmp/DigiCertGlobalRootG2.crt"))
+end
+
 # Force reload of the certificate
 kagent_config "glassfish-domain1" do 
   action :systemd_reload

@@ -126,3 +126,19 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
   ADD CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE `hopsworks`.`jupyter_git_config` CHANGE `api_key_name` `api_key_name` VARCHAR(125) DEFAULT NULL;
+
+-- drop metadata designer
+DROP TABLE IF EXISTS `meta_data`;
+DROP TABLE IF EXISTS `meta_field_predefined_values`;
+DROP TABLE IF EXISTS `meta_raw_data`;
+DROP TABLE IF EXISTS `meta_fields`;
+DROP TABLE IF EXISTS `meta_field_types`;
+DROP TABLE IF EXISTS `meta_tables`;
+DROP TABLE IF EXISTS `meta_template_to_inode`;
+DROP TABLE IF EXISTS `meta_templates`;
+DROP TABLE IF EXISTS `meta_inode_basic_metadata`;
+DROP TABLE IF EXISTS `meta_tuple_to_file`;
+DROP TABLE IF EXISTS `meta_log`;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `serving_tool` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `serving_type` TO `model_server`;
