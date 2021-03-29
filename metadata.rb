@@ -836,6 +836,10 @@ attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
           :type => 'string'
 
+attribute "hopsworks/python_library_updates_monitor_interval",
+          :description => "Interval for monitoring new releases for libraries",
+          :type => 'string'
+
 ### TensorBoard
 
 attribute "hopsworks/tensorboard_max_last_accessed",
