@@ -456,4 +456,4 @@ default["hopsworks"]['check_nodemanager_status']              = "false"
 default['hopsworks']['azure-ca-cert']['download-url']         = "https://cacerts.digicert.com/DigiCertGlobalRootG2.crt"
 
 #livy
-default['livy_startup_timeout']           = "240"
+default['hopsworks']['livy_startup_timeout']           = "240"
