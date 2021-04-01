@@ -980,3 +980,7 @@ attribute "tensorboard/max/reload/threads",
 attribute "hopsworks/azure-ca-cert/download-url",
           :description => "Azure CA cert download url. 'https://cacerts.digicert.com/DigiCertGlobalRootG2.crt' (default)",
           :type => "string"
+
+attribute "hopsworks/livy_startup_timeout",
+          :description => "timeout for livy sessions startup",
+          :type => "string"
