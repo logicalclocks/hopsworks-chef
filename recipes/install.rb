@@ -97,6 +97,13 @@ group node['hops']['group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+group node['hopsmonitor']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
 #update permissions of base_dir to 770
 directory node['jupyter']['base_dir']  do
   owner node['hops']['yarnapp']['user']
