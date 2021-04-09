@@ -984,3 +984,15 @@ attribute "hopsworks/azure-ca-cert/download-url",
 attribute "hopsworks/livy_startup_timeout",
           :description => "timeout for livy sessions startup",
           :type => "string"
+# Docker job
+attribute "hopsworks/docker-job/docker_job_mounts_list",
+					:description => "Host path directories that can be mounted with Docker jobs",
+					:type => "string"
+
+attribute "hopsworks/docker-job/docker_job_mounts_allowed",
+					:description => "Enable or disable mounting host paths with Docker jobs",
+					:type => "string"
+
+attribute "hopsworks/docker-job/docker_job_uid_strict",
+					:description => "Enable or disable strict mode for uig/gid of docker jobs. In strict mode, users cannot set the uid/gid of the job.",
+					:type => "string"
