@@ -49,3 +49,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("livy_startup_timeou
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_mounts_list", "<%= node['hopsworks']['docker-job']['docker_job_mounts_list'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_mounts_allowed", "<%= node['hopsworks']['docker-job']['docker_job_mounts_allowed'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_uid_strict", "<%= node['hopsworks']['docker-job']['docker_job_uid_strict'] %>");
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kfserving']['enabled'] %>", 1);
