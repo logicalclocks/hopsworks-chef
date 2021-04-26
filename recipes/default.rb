@@ -179,6 +179,14 @@ if node['install']['enterprise']['install'].casecmp? "true"
     mode 0555
     action :create_if_missing
   end
+
+  bash "extract clients jar" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    code <<-EOF
+      tar xf #{file_name}
+    EOF
+  end
 end
 
 if current_version.eql?("")
