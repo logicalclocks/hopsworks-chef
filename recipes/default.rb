@@ -159,6 +159,7 @@ current_version = node['hopsworks']['current_version']
 if node['install']['enterprise']['install'].casecmp? "true"
   file_name = "clients.tar.gz"
   client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
+  node.override['hopsworks']['client_path'] = client_dir
 
   directory client_dir do
     owner node['glassfish']['user']
@@ -168,9 +169,8 @@ if node['install']['enterprise']['install'].casecmp? "true"
     recursive true
   end
 
-  node.override['hopsworks']['client_path']="#{client_dir}/#{file_name}"
   source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
-  remote_file "#{node['hopsworks']['client_path']}" do
+  remote_file "#{node['hopsworks']['client_path']}/#{file_name}" do
     user node['glassfish']['user']
     group node['glassfish']['group']
     source source
@@ -178,6 +178,16 @@ if node['install']['enterprise']['install'].casecmp? "true"
     sensitive true
     mode 0555
     action :create_if_missing
+  end
+
+  bash "extract clients jar" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    cwd client_dir
+    code <<-EOF
+      tar xf #{file_name}
+    EOF
+    not_if { ::Dir.exists?("#{client_dir}/client")}
   end
 end
 
