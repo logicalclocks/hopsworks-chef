@@ -183,9 +183,11 @@ if node['install']['enterprise']['install'].casecmp? "true"
   bash "extract clients jar" do
     user node['glassfish']['user']
     group node['glassfish']['group']
+    cwd client_dir
     code <<-EOF
       tar xf #{file_name}
     EOF
+    not_if { ::Dir.exists?("#{client_dir}/client")}
   end
 end
 
