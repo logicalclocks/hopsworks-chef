@@ -159,6 +159,7 @@ current_version = node['hopsworks']['current_version']
 if node['install']['enterprise']['install'].casecmp? "true"
   file_name = "clients.tar.gz"
   client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
+  node.override['hopsworks']['client_path'] = client_dir
 
   directory client_dir do
     owner node['glassfish']['user']
@@ -168,9 +169,8 @@ if node['install']['enterprise']['install'].casecmp? "true"
     recursive true
   end
 
-  node.override['hopsworks']['client_path']="#{client_dir}/#{file_name}"
   source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
-  remote_file "#{node['hopsworks']['client_path']}" do
+  remote_file "#{node['hopsworks']['client_path']}/#{file_name}" do
     user node['glassfish']['user']
     group node['glassfish']['group']
     source source
