@@ -142,3 +142,5 @@ DROP TABLE IF EXISTS `meta_log`;
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `serving_tool` INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `serving_type` TO `model_server`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `deployed` timestamp DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `revision` VARCHAR(8) DEFAULT NULL;
