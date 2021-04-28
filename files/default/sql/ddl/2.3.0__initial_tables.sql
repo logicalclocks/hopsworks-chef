@@ -1154,6 +1154,8 @@ CREATE TABLE `serving` (
   `kafka_topic_id` int(11) DEFAULT NULL,
   `model_server` int(11) NOT NULL DEFAULT '0',
   `serving_tool` int(11) NOT NULL DEFAULT '0',
+  `deployed` timestamp DEFAULT NULL,
+  `revision` varchar(8) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Serving_Constraint` (`project_id`,`name`),
   KEY `user_fk` (`creator`),
