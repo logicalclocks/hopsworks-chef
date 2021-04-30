@@ -12,7 +12,6 @@ source_url       "https://github.com/logicalclocks/hopsworks-chef"
   supports os
 end
 
-depends 'java', '~> 7.0.0'
 depends 'compat_resource', '~> 12.19.0'
 depends 'authbind', '~> 0.1.10'
 depends 'ntp', '~> 2.0.0'
@@ -41,6 +40,7 @@ depends 'ulimit'
 depends 'glassfish'
 depends 'kube-hops'
 depends 'onlinefs'
+depends 'java'
 
 
 recipe  "hopsworks::install", "Installs Glassfish"
