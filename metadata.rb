@@ -13,7 +13,6 @@ source_url       "https://github.com/logicalclocks/hopsworks-chef"
 end
 
 depends 'compat_resource', '~> 12.19.0'
-depends 'seven_zip', '~> 3.2.0'
 depends 'authbind', '~> 0.1.10'
 depends 'ntp', '~> 2.0.0'
 depends 'sysctl', '~> 1.0.3'
