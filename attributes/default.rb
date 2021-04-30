@@ -107,7 +107,7 @@ default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
 #Max number of bytes of logs to show in Spark UI
 default['hopsworks']['spark_ui_logs_offset'] = "512000"
 #Log level of REST API
-default['hopsworks']['hopsworks_rest_log_level'] = "PROD"
+default['hopsworks']['hopsworks_rest_log_level'] = "TEST"
 
 default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-8.0.21-bin.jar"
 

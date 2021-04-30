@@ -1938,6 +1938,7 @@ CREATE TABLE IF NOT EXISTS `validation_rule` (
   `name` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
   `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
   `accepted_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `feature_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
   `description` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`accepted_type`)
