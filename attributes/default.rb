@@ -268,9 +268,10 @@ default['tensorboard']['max']['reload']['threads']          = "1"
 #
 # PyPi
 #
-default['hopsworks']['pypi_rest_endpoint']             = "https://pypi.org/pypi/{package}/json"
-default['hopsworks']['pypi_indexer_timer_interval']    = "1d"
-default['hopsworks']['pypi_simple_endpoint']           = "https://pypi.org/simple/"
+default['hopsworks']['pypi_rest_endpoint']                         = "https://pypi.org/pypi/{package}/json"
+default['hopsworks']['pypi_indexer_timer_interval']                = "1d"
+default['hopsworks']['pypi_indexer_timer_enabled']                 = "true"
+default['hopsworks']['pypi_simple_endpoint']                       = "https://pypi.org/simple/"
 default['hopsworks']['python_library_updates_monitor_interval']    = "1d"
 
 # Hive
