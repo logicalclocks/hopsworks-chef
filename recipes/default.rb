@@ -159,6 +159,7 @@ current_version = node['hopsworks']['current_version']
 if node['install']['enterprise']['install'].casecmp? "true"
   file_name = "clients.tar.gz"
   client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
+  node.override['hopsworks']['client_path'] = client_dir
 
   directory client_dir do
     owner node['glassfish']['user']
@@ -168,9 +169,8 @@ if node['install']['enterprise']['install'].casecmp? "true"
     recursive true
   end
 
-  node.override['hopsworks']['client_path']="#{client_dir}/#{file_name}"
   source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
-  remote_file "#{node['hopsworks']['client_path']}" do
+  remote_file "#{node['hopsworks']['client_path']}/#{file_name}" do
     user node['glassfish']['user']
     group node['glassfish']['group']
     source source
@@ -178,6 +178,16 @@ if node['install']['enterprise']['install'].casecmp? "true"
     sensitive true
     mode 0555
     action :create_if_missing
+  end
+
+  bash "extract clients jar" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    cwd client_dir
+    code <<-EOF
+      tar xf #{file_name}
+    EOF
+    not_if { ::Dir.exists?("#{client_dir}/client")}
   end
 end
 
@@ -529,14 +539,23 @@ glassfish_conf = {
   'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled' => false,
   'server.network-config.protocols.protocol.https-internal.ssl.ssl3-enabled' => false,
+  'server.admin-service.jmx-connector.system.ssl.ssl3-enabled' => false,
+  'server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled' => false,
+  'server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled' => false,
   # Disable TLS 1.0
   'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled' => false,
   'server.network-config.protocols.protocol.https-internal.ssl.tls-enabled' => false,
+  'server.admin-service.jmx-connector.system.ssl.tls-enabled' => false,
+  'server.iiop-service.iiop-listener.SSL.ssl.tls-enabled' => false,
+  'server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.tls-enabled' => false,
   # Restrict ciphersuite
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
   'configs.config.server-config.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
   'configs.config.server-config.network-config.protocols.protocol.https-internal.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  'server.admin-service.jmx-connector.system.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  'server.iiop-service.iiop-listener.SSL.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
+  'server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers' => node['glassfish']['ciphersuite'],
   # Set correct thread-priority for the executor services - required during updates
   'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,

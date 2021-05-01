@@ -272,3 +272,5 @@ CREATE TABLE `meta_log` (
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `serving_tool`;
 ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `model_server` TO `serving_type`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `deployed`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `revision`;
