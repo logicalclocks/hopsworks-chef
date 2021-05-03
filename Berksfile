@@ -26,3 +26,4 @@ cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "2.1"
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "2.1"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "2.1"
+cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"
