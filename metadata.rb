@@ -836,6 +836,18 @@ attribute "hopsworks/pypi_rest_endpoint",
           :description => "Url to PyPi REST API to query package information",
           :type => 'string'
 
+attribute "hopsworks/pypi_simple_endpoint",
+          :description => "Url to PyPi simple endpoint",
+          :type => 'string'
+
+attribute "hopsworks/pypi_indexer_timer_interval",
+          :description => "How often to run the PyPi Indexer",
+          :type => 'string'
+
+attribute "hopsworks/pypi_indexer_timer_enabled",
+          :description => "Whether to enable the PyPi Indexer",
+          :type => 'string'
+
 attribute "hopsworks/python_library_updates_monitor_interval",
           :description => "Interval for monitoring new releases for libraries",
           :type => 'string'
