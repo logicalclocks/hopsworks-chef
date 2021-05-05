@@ -7,8 +7,6 @@ CREATE TABLE IF NOT EXISTS `default_job_configuration` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hopsworks`.`validation_rule` ADD COLUMN `feature_type` VARCHAR(45) COLLATE latin1_general_cs DEFAULT NULL AFTER `accepted_type`;
-ALTER TABLE `hopsworks`.`serving` ADD COLUMN `deployed` timestamp DEFAULT NULL;
-ALTER TABLE `hopsworks`.`serving` ADD COLUMN `revision` VARCHAR(8) DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS `alert_manager_config` (
   `id` int NOT NULL AUTO_INCREMENT,
