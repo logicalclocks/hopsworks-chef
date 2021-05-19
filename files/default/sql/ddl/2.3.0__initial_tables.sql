@@ -1353,7 +1353,7 @@ CREATE TABLE `training_dataset_join` (
   `feature_group_commit_id` BIGINT(20) NULL,
   `type` tinyint(5) NOT NULL DEFAULT 0,
   `idx` int(11) NOT NULL DEFAULT 0,
-  `prefix` VARCHAR(10) NULL,
+  `prefix` VARCHAR(100) NULL,
   PRIMARY KEY (`id`),
   KEY `fg_key` (`feature_group`),
   CONSTRAINT `td_fk_tdj` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
