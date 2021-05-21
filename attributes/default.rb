@@ -463,3 +463,5 @@ default['hopsworks']['livy_startup_timeout']           = "240"
 default['hopsworks']['docker-job']['docker_job_mounts_list']    = ""
 default['hopsworks']['docker-job']['docker_job_mounts_allowed'] = "false"
 default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
+
+default['hopsworks']['enable_user_search'] = "true"
