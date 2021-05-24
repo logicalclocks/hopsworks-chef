@@ -76,3 +76,5 @@ ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `transformation_fu
   ADD CONSTRAINT `tfn_fk_tdf` FOREIGN KEY (`transformation_function`) REFERENCES `hopsworks`.`transformation_function` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(63) NULL;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `docker_resource_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;
