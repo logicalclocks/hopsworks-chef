@@ -78,3 +78,4 @@ ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `transformation_fu
 
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(10) NULL;
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(100) NULL;
+ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(63) NULL;
