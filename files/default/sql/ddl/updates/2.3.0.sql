@@ -75,7 +75,4 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `transformation_function` int(11) DEFAULT NULL,
   ADD CONSTRAINT `tfn_fk_tdf` FOREIGN KEY (`transformation_function`) REFERENCES `hopsworks`.`transformation_function` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
-
-ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(10) NULL;
-ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(100) NULL;
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(63) NULL;
