@@ -54,3 +54,23 @@ CREATE TABLE `project_service_alert` (
   KEY `fk_project_service_2_idx` (`project_id`),
   CONSTRAINT `fk_project_service_alert_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `transformation_function` (
+  `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
+  `inode_pid`                         BIGINT(20)      NOT NULL,
+  `inode_name`                        VARCHAR(255)    NOT NULL,
+  `partition_id`                      BIGINT(20)      NOT NULL,
+  `name`                              VARCHAR(255)    NOT NULL,
+  `output_type`                       varchar(32)     NOT NULL,
+  `version`                           INT(11)         NOT NULL,
+  `feature_store_id`                  INT(11)         NOT NULL,
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `creator` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `inode_fn_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `transformation_function` int(11) DEFAULT NULL,
+  ADD CONSTRAINT `tfn_fk_tdf` FOREIGN KEY (`transformation_function`) REFERENCES `hopsworks`.`transformation_function` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
