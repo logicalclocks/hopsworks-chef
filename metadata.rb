@@ -1008,3 +1008,7 @@ attribute "hopsworks/docker-job/docker_job_mounts_allowed",
 attribute "hopsworks/docker-job/docker_job_uid_strict",
 					:description => "Enable or disable strict mode for uig/gid of docker jobs. In strict mode, users cannot set the uid/gid of the job.",
 					:type => "string"
+
+attribute "hopsworks/enable_user_search",
+          :description => "Whether to enable user search or not",
+          :type => 'string'
