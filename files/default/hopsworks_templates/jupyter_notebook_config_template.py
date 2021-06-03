@@ -53,6 +53,7 @@ os.environ['DOMAIN_CA_TRUSTSTORE'] = "${conf.domainCATruststore}"
 os.environ['HADOOP_HOME'] = "${conf.hadoopHome}"
 os.environ['SERVICE_DISCOVERY_DOMAIN'] = "${conf.serviceDiscoveryDomain}"
 os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
+os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
 c.GitHandlersConfiguration.api_key = "${conf.apiKey}"
 c.GitHandlersConfiguration.git_backend = "${conf.gitBackend}"
