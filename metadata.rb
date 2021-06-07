@@ -1012,3 +1012,7 @@ attribute "hopsworks/docker-job/docker_job_uid_strict",
 attribute "hopsworks/enable_user_search",
           :description => "Whether to enable user search or not",
           :type => 'string'
+      
+attribute "hopsworks/kubernetes/api_max_attempts",
+          :description => "Maximum number of Kubernetes client retries before failing the request. Default: 12",
+          :type => 'string'
