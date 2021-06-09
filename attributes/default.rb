@@ -462,3 +462,5 @@ default['hopsworks']['docker-job']['docker_job_mounts_allowed'] = "false"
 default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 
 default['hopsworks']['enable_user_search'] = "true"
+
+default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
