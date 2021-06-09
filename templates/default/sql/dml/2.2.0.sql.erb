@@ -53,3 +53,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_uid_stri
 REPLACE INTO `hopsworks`.`variables` VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kfserving']['enabled'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_indexer_timer_enabled", "<%= node['hopsworks']['pypi_indexer_timer_enabled'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_api_max_attempts", "<%= node['hopsworks']['kubernetes']['api_max_attempts'] %>");
