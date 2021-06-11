@@ -10,3 +10,6 @@ ALTER TABLE `hopsworks`.`training_dataset_feature` DROP FOREIGN KEY `tfn_fk_tdf`
 DROP TABLE `hopsworks`.`transformation_function`;
 
 ALTER TABLE `hopsworks`.`training_dataset_join` DROP COLUMN `prefix`;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `docker_resource_config`;
+
