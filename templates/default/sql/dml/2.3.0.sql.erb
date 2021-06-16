@@ -2,3 +2,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_indexer_timer_
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("enable_user_search", "<%= node['hopsworks']['enable_user_search'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_api_max_attempts", "<%= node['hopsworks']['kubernetes']['api_max_attempts'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("onlinefs_service_thread_number", "<%= node['onlinefs']['service']['thread_number'] %>");
