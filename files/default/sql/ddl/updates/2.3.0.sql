@@ -78,3 +78,5 @@ ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `transformation_fu
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(63) NULL;
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `docker_resource_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `schemas` MODIFY COLUMN `schema` VARCHAR(29000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;

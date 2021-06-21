@@ -923,7 +923,7 @@ CREATE TABLE `project_team` (
 /*!40101 set character_set_client = utf8 */;
 CREATE TABLE `schemas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `schema` varchar(10000) COLLATE latin1_general_cs NOT NULL,
+  `schema` varchar(29000) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `project_idx_schemas` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
