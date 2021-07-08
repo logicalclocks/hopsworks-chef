@@ -80,3 +80,10 @@ ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `prefix` VARCHAR(63) 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `docker_resource_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `schemas` MODIFY COLUMN `schema` VARCHAR(29000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `artifact_path` TO `model_path`;
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `version` TO `model_version`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `artifact_version` int(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer_instances` int(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `inference_logging` int(11) DEFAULT NULL;
