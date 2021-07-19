@@ -550,6 +550,29 @@ end
 
 ca_dir = node['certs']['dir']
 
+bash 'Move system users x.509 to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{ca_dir}/* #{node['certs']['data_volume']['dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(ca_dir)}
+  not_if { File.symlink?(ca_dir)}
+  not_if { Dir.empty?(ca_dir)}
+end
+
+bash 'Delete old users x.509 directory' do
+  user 'root'
+  code <<-EOH
+    set -e
+    rm -rf #{ca_dir}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(ca_dir)}
+  not_if { File.symlink?(ca_dir)}
+end
+
 link ca_dir do
   owner node['glassfish']['user']
   group node['kagent']['certs_group']
