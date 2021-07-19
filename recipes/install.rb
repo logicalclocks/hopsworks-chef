@@ -789,6 +789,7 @@ bash "unpack_flyway" do
     fi
     ln -s #{flyway} flyway
   EOF
+  not_if { Dir.exist?("#{theDomain}/#{flyway}")}
 end
 
 template "#{theDomain}/flyway/conf/flyway.conf" do
