@@ -403,6 +403,7 @@ CREATE TABLE `feature_store_code` (
   `feature_group_id` INT(11),
   `feature_group_commit_id` BIGINT(20),
   `training_dataset_id`INT(11),
+  `application_id`VARCHAR(255),
   PRIMARY KEY (`id`),
   KEY `feature_group_id` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),
@@ -1901,7 +1902,6 @@ CREATE TABLE `feature_store_activity` (
   `execution_id`                  INT(11) NULL,
   `execution_last_event_time`     BIGINT(20) NULL,
   `statistics_id`                 INT(11) NULL,
-  `code_id`                       INT(11) NULL,
   `commit_id`                     BIGINT(20) NULL,
   `validation_id`                 INT(11) NULL,
   `feature_group_id`              INT(11) NULL,
@@ -1912,7 +1912,6 @@ CREATE TABLE `feature_store_activity` (
   CONSTRAINT `fs_act_uid_fk` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_act_exec_fk` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_act_stat_fk` FOREIGN KEY (`statistics_id`) REFERENCES `feature_store_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fs_act_code_fk` FOREIGN KEY (`code_id`) REFERENCES `feature_store_code` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_act_val_fk` FOREIGN KEY (`validation_id`) REFERENCES `feature_group_validation` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
