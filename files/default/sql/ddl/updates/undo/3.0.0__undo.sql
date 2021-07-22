@@ -59,3 +59,5 @@ ALTER TABLE `hopsworks`.`project_service_alert` DROP FOREIGN KEY `fk_project_ser
 ALTER TABLE `hopsworks`.`job_alert` DROP FOREIGN KEY `fk_job_alert_1`, DROP COLUMN `receiver`;
 
 ALTER TABLE `hopsworks`.`feature_group_alert` DROP FOREIGN KEY `fk_feature_group_alert_1`, DROP COLUMN `receiver`;
+
+DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;

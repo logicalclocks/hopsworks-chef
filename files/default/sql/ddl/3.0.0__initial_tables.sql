@@ -1972,6 +1972,14 @@ CREATE TABLE IF NOT EXISTS `alert_manager_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE `hopsworks`.`alert_receiver` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `config` BLOB NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 CREATE TABLE `job_alert` (
   `id` int NOT NULL AUTO_INCREMENT,
   `job_id` int NOT NULL,
@@ -2016,14 +2024,6 @@ CREATE TABLE `project_service_alert` (
   KEY `fk_project_service_alert_1_idx` (`receiver`),
   CONSTRAINT `fk_project_service_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_project_service_alert_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE `hopsworks`.`alert_receiver` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(128) NOT NULL,
-  `config` BLOB NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
