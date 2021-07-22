@@ -51,3 +51,11 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `shared_by`;
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `accepted_by`;
 
 DROP TABLE IF EXISTS `feature_store_code`;
+
+DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
+
+ALTER TABLE `hopsworks`.`project_service_alert` DROP FOREIGN KEY `fk_project_service_alert_1`, DROP COLUMN `receiver`;
+
+ALTER TABLE `hopsworks`.`job_alert` DROP FOREIGN KEY `fk_job_alert_1`, DROP COLUMN `receiver`;
+
+ALTER TABLE `hopsworks`.`feature_group_alert` DROP FOREIGN KEY `fk_feature_group_alert_1`, DROP COLUMN `receiver`;

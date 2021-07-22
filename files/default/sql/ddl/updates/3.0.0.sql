@@ -30,3 +30,32 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` ADD COLUMN `accepted_by` INT(11) D
 
 ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_shared_by` FOREIGN KEY (`shared_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_accepted_by` FOREIGN KEY (`accepted_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+CREATE TABLE `hopsworks`.`alert_receiver` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `config` BLOB NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`project_service_alert` ADD COLUMN `receiver` INT NOT NULL,
+ADD INDEX `fk_project_service_alert_1_idx` (`receiver`);
+
+ALTER TABLE `hopsworks`.`project_service_alert` 
+ADD CONSTRAINT `fk_project_service_alert_1` FOREIGN KEY (`receiver`)
+  REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`job_alert` ADD COLUMN `receiver` INT NOT NULL,
+ADD INDEX `fk_job_alert_1_idx` (`receiver`);
+
+ALTER TABLE `hopsworks`.`job_alert` 
+ADD CONSTRAINT `fk_job_alert_1` FOREIGN KEY (`receiver`)
+  REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`feature_group_alert` ADD COLUMN `receiver` INT NOT NULL,
+ADD INDEX `fk_feature_group_alert_1_idx` (`receiver` ASC);
+
+ALTER TABLE `hopsworks`.`feature_group_alert` 
+ADD CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`)
+  REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

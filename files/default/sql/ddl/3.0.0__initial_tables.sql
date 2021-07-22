@@ -1982,6 +1982,8 @@ CREATE TABLE `job_alert` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_job_alert` (`job_id`,`status`),
   KEY `fk_job_alert_2_idx` (`job_id`),
+  KEY `fk_job_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_job_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_job_alert_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -1995,6 +1997,8 @@ CREATE TABLE `feature_group_alert` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_feature_group_alert` (`feature_group_id`,`status`),
   KEY `fk_feature_group_alert_2_idx` (`feature_group_id`),
+  KEY `fk_feature_group_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_feature_group_alert_2` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -2009,8 +2013,19 @@ CREATE TABLE `project_service_alert` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_project_service_alert` (`project_id`,`status`),
   KEY `fk_project_service_2_idx` (`project_id`),
+  KEY `fk_project_service_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_project_service_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_project_service_alert_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `hopsworks`.`alert_receiver` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `config` BLOB NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 
 CREATE TABLE IF NOT EXISTS `transformation_function` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
