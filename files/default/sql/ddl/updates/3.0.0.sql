@@ -31,7 +31,7 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` ADD COLUMN `accepted_by` INT(11) D
 ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_shared_by` FOREIGN KEY (`shared_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_accepted_by` FOREIGN KEY (`accepted_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-CREATE TABLE `hopsworks`.`alert_receiver` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`alert_receiver` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(128) NOT NULL,
   `config` BLOB NOT NULL,
