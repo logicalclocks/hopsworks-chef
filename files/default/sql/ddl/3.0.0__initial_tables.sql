@@ -1972,7 +1972,7 @@ CREATE TABLE IF NOT EXISTS `alert_manager_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `hopsworks`.`alert_receiver` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`alert_receiver` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(128) NOT NULL,
   `config` BLOB NOT NULL,
@@ -1980,7 +1980,7 @@ CREATE TABLE `hopsworks`.`alert_receiver` (
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `job_alert` (
+CREATE TABLE IF NOT EXISTS `job_alert` (
   `id` int NOT NULL AUTO_INCREMENT,
   `job_id` int NOT NULL,
   `status` varchar(45) NOT NULL,
@@ -1996,7 +1996,7 @@ CREATE TABLE `job_alert` (
   CONSTRAINT `fk_job_alert_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `feature_group_alert` (
+CREATE TABLE IF NOT EXISTS `feature_group_alert` (
   `id` int NOT NULL AUTO_INCREMENT,
   `feature_group_id` int NOT NULL,
   `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
@@ -2012,7 +2012,7 @@ CREATE TABLE `feature_group_alert` (
   CONSTRAINT `fk_feature_group_alert_2` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project_service_alert` (
+CREATE TABLE IF NOT EXISTS `project_service_alert` (
   `id` int NOT NULL AUTO_INCREMENT,
   `project_id` int NOT NULL,
   `service` VARCHAR(32) COLLATE latin1_general_cs NOT NULL,
