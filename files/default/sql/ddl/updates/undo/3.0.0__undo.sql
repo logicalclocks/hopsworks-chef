@@ -1,0 +1,1 @@
+ALTER TABLE `hopsworks`.`statistics_config` DROP COLUMN `exact_uniqueness`;
