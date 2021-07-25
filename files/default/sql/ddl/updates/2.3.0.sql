@@ -81,11 +81,9 @@ ALTER TABLE `hopsworks`.`serving` ADD COLUMN `docker_resource_config` varchar(10
 
 ALTER TABLE `schemas` MODIFY COLUMN `schema` VARCHAR(29000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;
 
-DROP TABLE `project_devices`; 
-DROP TABLE `project_devices_settings`; 
-
-ALTER TABLE `hopsworks`.`dataset_shared_with` ADD COLUMN `shared_by` INT(11) DEFAULT NULL;
-ALTER TABLE `hopsworks`.`dataset_shared_with` ADD COLUMN `accepted_by` INT(11) DEFAULT NULL;
-
-ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_shared_by` FOREIGN KEY (`shared_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-ALTER TABLE `hopsworks`.`dataset_shared_with` ADD CONSTRAINT `fk_accepted_by` FOREIGN KEY (`accepted_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `artifact_path` TO `model_path`;
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `version` TO `model_version`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `artifact_version` int(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer_instances` int(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `inference_logging` int(11) DEFAULT NULL;

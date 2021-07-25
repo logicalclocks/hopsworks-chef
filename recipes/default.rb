@@ -1162,12 +1162,12 @@ end
 hopsworks_certs "generate-int-certs" do
   subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
-  not_if      (::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt"))
+  not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
 end
 
 hopsworks_certs "download_azure_ca_cert" do
   action      :download_azure_ca_cert
-  not_if      (::File.exist?("/tmp/DigiCertGlobalRootG2.crt"))
+  not_if      { ::File.exist?("/tmp/DigiCertGlobalRootG2.crt") }
 end
 
 # Force reload of the certificate
