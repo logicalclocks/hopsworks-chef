@@ -1135,6 +1135,22 @@ if node['kagent']['enabled'].casecmp? "true"
   end
 end
 
+# Force reload of the certificate
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
+end
+
+hopsworks_certs "generate-int-certs" do
+  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  action      :generate_int_certs
+  not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
+end
+
+hopsworks_certs "download_azure_ca_cert" do
+  action      :download_azure_ca_cert
+  not_if      { ::File.exist?("/tmp/DigiCertGlobalRootG2.crt") }
+end
+
 # Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
 ruby_block "generate_service_jwt" do
   block do
@@ -1159,22 +1175,6 @@ kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
-hopsworks_certs "generate-int-certs" do
-  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
-  action      :generate_int_certs
-  not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
-end
-
-hopsworks_certs "download_azure_ca_cert" do
-  action      :download_azure_ca_cert
-  not_if      { ::File.exist?("/tmp/DigiCertGlobalRootG2.crt") }
-end
-
-# Force reload of the certificate
-kagent_config "glassfish-domain1" do 
-  action :systemd_reload
-end
-
 # Register Glassfish with Consul
 template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
   source "consul/glassfish-health.sh.erb"
@@ -1195,19 +1195,6 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   mode 0770
   action :create
 end
-
-directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
-  owner "root"
-  group "root"
-  mode "775"
-  action :create
-  recursive true
-end
-
-#
-# Need to synchronize conda enviornments for newly joined or rejoining nodes.
-#
-package "rsync"
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
