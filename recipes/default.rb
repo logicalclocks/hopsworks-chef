@@ -23,7 +23,6 @@ if node['hopsworks']['dela']['enabled'] == "true"
 end
 
 public_ip=my_public_ip()
-hopsworks_db = "hopsworks"
 realmname = "kthfsrealm"
 
 begin
@@ -871,6 +870,11 @@ hopsworks_mail "gmail" do
    action :jndi
 end
 
+# Reload glassfish with new configuration 
+kagent_config "glassfish-domain1" do
+  action :systemd_reload
+end
+
 node.override['glassfish']['asadmin']['timeout'] = 400
 
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
@@ -1011,14 +1015,6 @@ glassfish_deployable "undeploy_hopsworks-ca" do
   admin_port admin_port
   secure true
   action :undeploy
-end
-
-
-template "/bin/hopsworks-2fa" do
-    source "hopsworks-2fa.erb"
-    owner "root"
-    mode 0700
-    action :create
 end
 
 hopsworks_certs "generate-certs" do
