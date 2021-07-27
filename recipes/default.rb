@@ -1135,11 +1135,6 @@ if node['kagent']['enabled'].casecmp? "true"
   end
 end
 
-# Force reload of the certificate
-kagent_config "glassfish-domain1" do 
-  action :systemd_reload
-end
-
 hopsworks_certs "generate-int-certs" do
   subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
@@ -1149,6 +1144,11 @@ end
 hopsworks_certs "download_azure_ca_cert" do
   action      :download_azure_ca_cert
   not_if      { ::File.exist?("/tmp/DigiCertGlobalRootG2.crt") }
+end
+
+# Force reload of the certificate
+kagent_config "glassfish-domain1" do
+  action :systemd_reload
 end
 
 # Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
