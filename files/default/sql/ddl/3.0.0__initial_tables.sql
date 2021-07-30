@@ -407,7 +407,7 @@ CREATE TABLE `feature_store_code` (
   `feature_group_id` INT(11),
   `feature_group_commit_id` BIGINT(20),
   `training_dataset_id`INT(11),
-  `application_id`VARCHAR(255),
+  `application_id`VARCHAR(50),
   PRIMARY KEY (`id`),
   KEY `feature_group_id` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),
