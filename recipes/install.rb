@@ -553,14 +553,6 @@ template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   action :create
 end
 
-kagent_sudoers "ndb_backup" do 
-  user          node['glassfish']['user']
-  group         node['ndb']['group']
-  script_name   "ndb_backup.sh"
-  template      "ndb_backup.sh.erb"
-  run_as        node['ndb']['user']
-end
-
 kagent_sudoers "jupyter" do 
   user          node['glassfish']['user']
   group         "root"
