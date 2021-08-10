@@ -51,3 +51,5 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `shared_by`;
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `accepted_by`;
 
 DROP TABLE IF EXISTS `feature_store_code`;
+
+ALTER TABLE `hopsworks`.`feature_store_snowflake_connector` DROP COLUMN `application`;
