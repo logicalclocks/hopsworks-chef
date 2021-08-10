@@ -1966,14 +1966,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_expectation_rule` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `alert_manager_config` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` mediumblob NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`alert_receiver` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(128) NOT NULL,
   `config` BLOB NOT NULL,
   PRIMARY KEY (`id`),
@@ -1981,12 +1981,12 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`alert_receiver` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `job_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) NOT NULL,
   `status` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
   `severity` varchar(45) NOT NULL,
-  `receiver` int NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_job_alert` (`job_id`,`status`),
@@ -1997,12 +1997,12 @@ CREATE TABLE IF NOT EXISTS `job_alert` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_group_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `feature_group_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) NOT NULL,
   `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
-  `receiver` int NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_feature_group_alert` (`feature_group_id`,`status`),
@@ -2013,13 +2013,13 @@ CREATE TABLE IF NOT EXISTS `feature_group_alert` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `project_service_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `project_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
   `service` VARCHAR(32) COLLATE latin1_general_cs NOT NULL,
   `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
-  `receiver` int NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_project_service_alert` (`project_id`,`status`),
