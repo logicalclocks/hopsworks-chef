@@ -4,3 +4,5 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("kube_serving_node_tolerations", "<
 DELETE FROM `hopsworks`.`variables` WHERE id="ndb_dir";
 DELETE FROM `hopsworks`.`variables` WHERE id="mysql_dir";
 DELETE FROM `hopsworks`.`variables` WHERE id="mysql_user";
+
+REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_service_log_viewer", "<%= node['elastic']['opendistro_security']['service_log_viewer']['username'] %>", 1);
