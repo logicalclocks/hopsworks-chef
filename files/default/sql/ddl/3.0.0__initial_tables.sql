@@ -189,11 +189,15 @@ CREATE TABLE `dataset_shared_with` (
   `accepted` tinyint(1) NOT NULL DEFAULT '0',
   `shared_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY',
+  `shared_by` INT(11) DEFAULT NULL,
+  `accepted_by` INT(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`dataset`,`project`),
   KEY `fk_dataset_shared_with_2_idx` (`project`),
   CONSTRAINT `fk_dataset_shared_with_1` FOREIGN KEY (`dataset`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_dataset_shared_with_2` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_dataset_shared_with_2` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_shared_by` FOREIGN KEY (`shared_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_accepted_by` FOREIGN KEY (`accepted_by`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -388,6 +392,32 @@ CREATE TABLE `feature_store_statistic` (
   CONSTRAINT `inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `feature_store_code`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feature_store_code` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `commit_time` DATETIME(3) NOT NULL,
+  `inode_pid` BIGINT(20) NOT NULL,
+  `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+  `partition_id` BIGINT(20) NOT NULL,
+  `feature_group_id` INT(11),
+  `feature_group_commit_id` BIGINT(20),
+  `training_dataset_id`INT(11),
+  `application_id`VARCHAR(50),
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
+  CONSTRAINT `fg_fk_fsc` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fg_ci_fk_fsc` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk_fsc` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `inode_fk_fsc` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
 -- Table structure for table `files_to_remove`
@@ -650,19 +680,6 @@ CREATE TABLE `message_to_user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `ndb_backup`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ndb_backup` (
-  `backup_id` int(11) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`backup_id`)
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `oauth_client`
 --
 
@@ -831,40 +848,6 @@ CREATE TABLE `default_job_configuration` (
   PRIMARY KEY (`project_id`, `type`),
   CONSTRAINT `FK_JOBCONFIG_PROJECT` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `project_devices`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `project_devices` (
-  `project_id` int(11) NOT NULL,
-  `device_uuid` varchar(36) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `alias` varchar(80) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `state` tinyint(1) NOT NULL DEFAULT '0',
-  `last_logged_in` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`project_id`,`device_uuid`),
-  CONSTRAINT `FK_284_533` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `project_devices_settings`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `project_devices_settings` (
-  `project_id` int(11) NOT NULL,
-  `jwt_secret` varchar(128) NOT NULL,
-  `jwt_token_duration` int(11) NOT NULL,
-  PRIMARY KEY (`project_id`),
-  CONSTRAINT `FK_284_535` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1393,6 +1376,7 @@ CREATE TABLE `on_demand_feature` (
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
   `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
+  `idx` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
   CONSTRAINT `on_demand_feature_group_fk1` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
