@@ -1683,6 +1683,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_snowflake_connector` (
   `role`                     VARCHAR(65)   DEFAULT NULL,
   `warehouse`                VARCHAR(128)  DEFAULT NULL,
   `arguments`                VARCHAR(8000) DEFAULT NULL,
+  `application`              VARCHAR(50) DEFAULT NULL,
   `database_pwd_secret_uid`  INT DEFAULT NULL,
   `database_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
   `oauth_token_secret_uid`   INT DEFAULT NULL,
