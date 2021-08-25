@@ -394,6 +394,32 @@ CREATE TABLE `feature_store_statistic` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `feature_store_code`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `feature_store_code` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `commit_time` DATETIME(3) NOT NULL,
+  `inode_pid` BIGINT(20) NOT NULL,
+  `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+  `partition_id` BIGINT(20) NOT NULL,
+  `feature_group_id` INT(11),
+  `feature_group_commit_id` BIGINT(20),
+  `training_dataset_id`INT(11),
+  `application_id`VARCHAR(50),
+  PRIMARY KEY (`id`),
+  KEY `feature_group_id` (`feature_group_id`),
+  KEY `training_dataset_id` (`training_dataset_id`),
+  KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
+  CONSTRAINT `fg_fk_fsc` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fg_ci_fk_fsc` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `td_fk_fsc` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `inode_fk_fsc` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+--
 -- Table structure for table `files_to_remove`
 --
 
@@ -650,19 +676,6 @@ CREATE TABLE `message_to_user` (
   KEY `user_email` (`user_email`),
   CONSTRAINT `FK_262_458` FOREIGN KEY (`user_email`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_438_457` FOREIGN KEY (`message`) REFERENCES `message` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `ndb_backup`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ndb_backup` (
-  `backup_id` int(11) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`backup_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1671,6 +1684,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_snowflake_connector` (
   `role`                     VARCHAR(65)   DEFAULT NULL,
   `warehouse`                VARCHAR(128)  DEFAULT NULL,
   `arguments`                VARCHAR(8000) DEFAULT NULL,
+  `application`              VARCHAR(50) DEFAULT NULL,
   `database_pwd_secret_uid`  INT DEFAULT NULL,
   `database_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
   `oauth_token_secret_uid`   INT DEFAULT NULL,
@@ -1954,51 +1968,69 @@ CREATE TABLE IF NOT EXISTS `feature_store_expectation_rule` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `alert_manager_config` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` mediumblob NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `job_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `hopsworks`.`alert_receiver` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) NOT NULL,
+  `config` BLOB NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `job_alert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) NOT NULL,
   `status` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
   `severity` varchar(45) NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_job_alert` (`job_id`,`status`),
   KEY `fk_job_alert_2_idx` (`job_id`),
+  KEY `fk_job_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_job_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_job_alert_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `feature_group_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `feature_group_id` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `feature_group_alert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) NOT NULL,
   `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_feature_group_alert` (`feature_group_id`,`status`),
   KEY `fk_feature_group_alert_2_idx` (`feature_group_id`),
+  KEY `fk_feature_group_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_feature_group_alert_2` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE `project_service_alert` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `project_id` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `project_service_alert` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
   `service` VARCHAR(32) COLLATE latin1_general_cs NOT NULL,
   `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
   `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
+  `receiver` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_project_service_alert` (`project_id`,`status`),
   KEY `fk_project_service_2_idx` (`project_id`),
+  KEY `fk_project_service_alert_1_idx` (`receiver`),
+  CONSTRAINT `fk_project_service_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_project_service_alert_2` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 
 CREATE TABLE IF NOT EXISTS `transformation_function` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
