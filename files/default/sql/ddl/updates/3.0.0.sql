@@ -62,4 +62,4 @@ ALTER TABLE `hopsworks`.`feature_group_alert`
 ADD CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`)
   REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `hopsworks`.`jupyter_project` MODIFY `expires` timestamp NULL;
+ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `no_limit` tinyint(1) DEFAULT 0;
