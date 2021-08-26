@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS `feature_store_code` (
 
 ALTER TABLE `hopsworks`.`on_demand_feature` ADD COLUMN `idx` int(11) NOT NULL DEFAULT 0;
 
+ALTER TABLE `hopsworks`.`statistics_config`
+ADD COLUMN `exact_uniqueness` TINYINT(1) NOT NULL DEFAULT '1';
+
 DROP TABLE `hopsworks`.`ndb_backup`;
 
 DROP TABLE `project_devices`; 

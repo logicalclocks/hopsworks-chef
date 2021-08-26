@@ -322,6 +322,7 @@ CREATE TABLE `statistics_config` (
   `descriptive` TINYINT(1) NOT NULL DEFAULT '1',
   `correlations` TINYINT(1) NOT NULL DEFAULT '1',
   `histograms` TINYINT(1) NOT NULL DEFAULT '1',
+  `exact_uniqueness` TINYINT(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `feature_group_id` (`feature_group_id`),
   KEY `training_dataset_id` (`training_dataset_id`),

@@ -1,5 +1,7 @@
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `idx`;
 
+ALTER TABLE `hopsworks`.`statistics_config` DROP COLUMN `exact_uniqueness`;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ndb_backup` (
@@ -48,6 +50,7 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` DROP CONSTRAINT `fk_shared_by`;
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP CONSTRAINT `fk_accepted_by`;
 
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `shared_by`;
+
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `accepted_by`;
 
 DROP TABLE IF EXISTS `feature_store_code`;
