@@ -63,3 +63,5 @@ ALTER TABLE `hopsworks`.`job_alert` DROP FOREIGN KEY `fk_job_alert_1`, DROP COLU
 ALTER TABLE `hopsworks`.`feature_group_alert` DROP FOREIGN KEY `fk_feature_group_alert_1`, DROP COLUMN `receiver`;
 
 DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
+
+ALTER TABLE `hopsworks`.`jupyter_project` MODIFY `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
