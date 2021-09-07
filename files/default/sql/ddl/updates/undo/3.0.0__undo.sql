@@ -1,5 +1,7 @@
 ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `idx`;
 
+ALTER TABLE `hopsworks`.`statistics_config` DROP COLUMN `exact_uniqueness`;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ndb_backup` (
@@ -48,6 +50,21 @@ ALTER TABLE `hopsworks`.`dataset_shared_with` DROP CONSTRAINT `fk_shared_by`;
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP CONSTRAINT `fk_accepted_by`;
 
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `shared_by`;
+
 ALTER TABLE `hopsworks`.`dataset_shared_with` DROP COLUMN `accepted_by`;
 
 DROP TABLE IF EXISTS `feature_store_code`;
+
+ALTER TABLE `hopsworks`.`feature_store_snowflake_connector` DROP COLUMN `application`;
+
+DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
+
+ALTER TABLE `hopsworks`.`project_service_alert` DROP FOREIGN KEY `fk_project_service_alert_1`, DROP COLUMN `receiver`;
+
+ALTER TABLE `hopsworks`.`job_alert` DROP FOREIGN KEY `fk_job_alert_1`, DROP COLUMN `receiver`;
+
+ALTER TABLE `hopsworks`.`feature_group_alert` DROP FOREIGN KEY `fk_feature_group_alert_1`, DROP COLUMN `receiver`;
+
+DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
+
+ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `no_limit`;

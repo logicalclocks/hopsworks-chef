@@ -25,8 +25,10 @@ default['hopsworks']['versions']                 = node['install']['versions']
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
+default['hopsworks']['user_id']                  = '1522'
 default['glassfish']['user']                     = node['hopsworks']['user']
 default['hopsworks']['group']                    = node['install']['user'].empty? ? "glassfish" : node['install']['user']
+default['hopsworks']['group_id']                 = '1517'
 default['glassfish']['group']                    = node['hopsworks']['group']
 default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
 

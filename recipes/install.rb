@@ -23,6 +23,7 @@ else
 end
 
 group node['hopsworks']['group'] do
+  gid node['hopsworks']['group_id']
   action :create
   not_if "getent group #{node['hopsworks']['group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
@@ -31,14 +32,16 @@ end
 #
 # hdfs superuser group is 'hdfs'
 #
-group node['hops']['hdfs']['user'] do
+group node['hops']['hdfs']['group'] do
+  gid node['hops']['hdfs']['group_id']
   action :create
-  not_if "getent group #{node['hops']['hdfs']['user']}"
+  not_if "getent group #{node['hops']['hdfs']['group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 user node['hopsworks']['user'] do
   home node['glassfish']['user-home']
+  uid node['hopsworks']['user_id']
   gid node['hopsworks']['group']
   action :create
   shell "/bin/bash"
@@ -63,7 +66,7 @@ group node['conda']['group'] do
 end
 
 # Add to the hdfs superuser group
-group node['hops']['hdfs']['user'] do
+group node['hops']['hdfs']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
@@ -71,6 +74,7 @@ group node['hops']['hdfs']['user'] do
 end
 
 group node['kagent']['userscerts_group'] do
+  gid node['kagent']['userscerts_group_id']
   action :create
   not_if "getent group #{node['kagent']['userscerts_group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
