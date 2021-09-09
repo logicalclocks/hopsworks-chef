@@ -11,17 +11,10 @@ bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
   code <<-EOF
-    systemctl stop glassfish-#{domain_name}
     systemctl daemon-reload
+    systemctl stop glassfish-#{domain_name}
   EOF
 end
-
-if node['hopsworks']['systemd'] == "true"
-  systemd = true
-else
-  systemd = false
-end
-
 
 group node['logger']['group'] do
   gid node['logger']['group_id']
@@ -149,10 +142,6 @@ end
 dtrx=""
 case node['platform_family']
 when "debian"
-
-  if node['platform_version'].to_f <= 14.04
-    node.override['hopsworks']['systemd'] = "false"
-  end
   package ["dtrx", "libkrb5-dev"]
 
   dtrx="dtrx"
@@ -236,7 +225,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
-          'systemd_enabled' => systemd,
+          'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
@@ -523,21 +512,20 @@ remote_directory "#{theDomain}/templates" do
   files_mode 0550
 end
 
-if systemd == true
-  directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
-    owner "root"
-    group "root"
-    mode "755"
-    action :create
-  end
+directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
+  owner "root"
+  group "root"
+  mode "755"
+  action :create
+end
 
 
-   template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
-     source "limits.conf.erb"
-     owner "root"
-     mode 0774
-     action :create
-   end
+template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+  source "limits.conf.erb"
+  owner "root"
+  mode 0774
+  action :create
+end
 
 ulimit_domain node['hopsworks']['user'] do
   rule do
@@ -552,9 +540,8 @@ ulimit_domain node['hopsworks']['user'] do
   end
 end
 
-  kagent_config "glassfish-domain1" do 
-    action :systemd_reload
-  end
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
 end
 
 directory node['certs']['data_volume']['dir'] do
