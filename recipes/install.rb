@@ -22,9 +22,28 @@ else
   systemd = false
 end
 
+
+group node['logger']['group'] do
+  gid node['logger']['group_id']
+  action :create
+  not_if "getent group #{node['logger']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+user node['logger']['user'] do
+  uid node['logger']['user_id']
+  gid node['logger']['group_id']
+  shell "/bin/nologin"
+  action :create
+  system true
+  not_if "getent passwd #{node['logger']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
 group node['hopsworks']['group'] do
   gid node['hopsworks']['group_id']
   action :create
+  members [node['logger']['user']]
   not_if "getent group #{node['hopsworks']['group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
@@ -56,13 +75,6 @@ group node["kagent"]["certs_group"] do
   excluded_members node['hopsworks']['user']
   not_if { node['install']['external_users'].casecmp("true") == 0 }
   only_if { conda_helpers.is_upgrade }
-end
-
-group node['conda']['group'] do
-  action :modify
-  members ["#{node['hopsworks']['user']}"]
-  append true
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 # Add to the hdfs superuser group
