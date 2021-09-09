@@ -16,27 +16,9 @@ bash "systemd_reload_for_glassfish_failures" do
   EOF
 end
 
-group node['logger']['group'] do
-  gid node['logger']['group_id']
-  action :create
-  not_if "getent group #{node['logger']['group']}"
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
-user node['logger']['user'] do
-  uid node['logger']['user_id']
-  gid node['logger']['group_id']
-  shell "/bin/nologin"
-  action :create
-  system true
-  not_if "getent passwd #{node['logger']['user']}"
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
 group node['hopsworks']['group'] do
   gid node['hopsworks']['group_id']
   action :create
-  members [node['logger']['user']]
   not_if "getent group #{node['hopsworks']['group']}"
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
@@ -109,6 +91,30 @@ end
 group node['hopsmonitor']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['logger']['group'] do
+  gid node['logger']['group_id']
+  action :create
+  not_if "getent group #{node['logger']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+user node['logger']['user'] do
+  uid node['logger']['user_id']
+  gid node['logger']['group_id']
+  shell "/bin/nologin"
+  action :create
+  system true
+  not_if "getent passwd #{node['logger']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node["hopsworks"]["group"] do
+  action :modify
+  members [node['logger']['user']]
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
