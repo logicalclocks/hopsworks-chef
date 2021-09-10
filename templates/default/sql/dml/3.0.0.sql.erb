@@ -5,4 +5,6 @@ DELETE FROM `hopsworks`.`variables` WHERE id="ndb_dir";
 DELETE FROM `hopsworks`.`variables` WHERE id="mysql_dir";
 DELETE FROM `hopsworks`.`variables` WHERE id="mysql_user";
 
+DELETE FROM `hopsworks`.`bbc_group` WHERE group_name="AUDITOR";
+
 REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_service_log_viewer", "<%= node['elastic']['opendistro_security']['service_log_viewer']['username'] %>", 1);
