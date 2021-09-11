@@ -546,6 +546,7 @@ CREATE TABLE `jupyter_project` (
   `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `no_limit` tinyint(1) DEFAULT 0,
   `token` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `secret` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
