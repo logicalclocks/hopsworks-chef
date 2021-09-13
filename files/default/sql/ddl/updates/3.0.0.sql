@@ -66,3 +66,8 @@ ADD CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`)
   REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `no_limit` tinyint(1) DEFAULT 0;
+
+CREATE VIEW project_username AS
+ SELECT CONCAT(project.projectname, "__", users.username) as project_username, project.projectname, users.email, project_team.team_role
+ FROM project_team, users, project
+ WHERE project_team.team_member = users.email AND project.id=project_team.project_id;

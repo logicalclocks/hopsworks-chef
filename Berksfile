@@ -5,7 +5,7 @@ metadata
 
 cookbook 'conda', github: "logicalclocks/conda-chef", branch: "install_python_version"
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
-cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "master"
+cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "install_python_version"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "logicalclocks/spark-chef", branch: "upgrade_elastic_connector"
 cookbook 'flink', github: "logicalclocks/flink-chef", branch: "upgrade_1_13_2"

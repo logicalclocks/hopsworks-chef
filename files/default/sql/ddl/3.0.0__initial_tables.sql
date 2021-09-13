@@ -2049,3 +2049,11 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
   CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- View used by Airflow authentication controller
+-- 
+CREATE VIEW project_username AS
+ SELECT CONCAT(project.projectname, "__", users.username) as project_username, project.projectname, users.fname, users.lname, users.email, project_team.team_role
+ FROM project_team, users, project
+ WHERE project_team.team_member = users.email AND project.id=project_team.project_id;
