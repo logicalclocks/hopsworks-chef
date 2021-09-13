@@ -64,7 +64,7 @@ echo "UNZIPPING" > "$fsmFile"
 
 
 cd "$workdir"
-/usr/local/bin/dtrx -o -n "$file"
+<%= node['conda']['base_dir'] %>/envs/hops-system/bin/dtrx -o -n "$file"
 check_error
 
 # State Machine State Change. File now extracted to local FS.
