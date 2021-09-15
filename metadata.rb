@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.3.0"
+version          "3.0.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -865,7 +865,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 2.3.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 3.0.000)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",
@@ -1008,3 +1008,11 @@ attribute "hopsworks/docker-job/docker_job_mounts_allowed",
 attribute "hopsworks/docker-job/docker_job_uid_strict",
 					:description => "Enable or disable strict mode for uig/gid of docker jobs. In strict mode, users cannot set the uid/gid of the job.",
 					:type => "string"
+
+attribute "hopsworks/enable_user_search",
+          :description => "Whether to enable user search or not",
+          :type => 'string'
+      
+attribute "hopsworks/kubernetes/api_max_attempts",
+          :description => "Maximum number of Kubernetes client retries before failing the request. Default: 12",
+          :type => 'string'

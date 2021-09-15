@@ -62,7 +62,7 @@ CREATE TABLE  IF NOT EXISTS `feature_group_validation` (
     CONSTRAINT `featuregroupvalidation_inode_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `validation_type` INT(11) DEFAULT '4' AFTER `corr_method`;
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `validation_type` INT(11) DEFAULT '3' AFTER `cached_feature_group_id`;
 ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `validation_id` int(11), ADD CONSTRAINT `fgc_fk_fgv` FOREIGN KEY (`validation_id`) REFERENCES `feature_group_validation` (`id`) ON DELETE SET NULL  ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`oauth_client` 
 ADD COLUMN `end_session_endpoint` VARCHAR(1024) DEFAULT NULL,

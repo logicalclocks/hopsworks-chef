@@ -25,8 +25,10 @@ default['hopsworks']['versions']                 = node['install']['versions']
 
 default['glassfish']['variant']                  = "payara"
 default['hopsworks']['user']                     = node['install']['user'].empty? ? "glassfish" : node['install']['user']
+default['hopsworks']['user_id']                  = '1522'
 default['glassfish']['user']                     = node['hopsworks']['user']
 default['hopsworks']['group']                    = node['install']['user'].empty? ? "glassfish" : node['install']['user']
+default['hopsworks']['group_id']                 = '1517'
 default['glassfish']['group']                    = node['hopsworks']['group']
 default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
 
@@ -51,6 +53,12 @@ default['glassfish']['base_dir']                 = node['glassfish']['install_di
 default['hopsworks']['domains_dir']              = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/domains" : node['install']['dir'] + "/domains"
 default['hopsworks']['domain_name']              = "domain1"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']
+default['hopsworks']['domain1']['logs']          = "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs"
+
+# Data volume directories
+default['hopsworks']['data_volume']['root_dir']  = "#{node['data']['dir']}/hopsworks"
+default['hopsworks']['data_volume']['domain1']   = "#{node['hopsworks']['data_volume']['root_dir']}/#{node['hopsworks']['domain_name']}"
+default['hopsworks']['data_volume']['domain1_logs'] = "#{node['hopsworks']['data_volume']['domain1']}/logs"
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
 default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
@@ -368,11 +376,11 @@ default['rstudio']['enabled']                        = "false"
 default['hopsworks']['kafka_max_num_topics']                   = '100'
 
 default['hopsworks']['audit_log_dump_enabled']       = "false"
-default['hopsworks']['audit_log_dir']                = "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs/audit"
+default['hopsworks']['audit_log_dir']                = "#{node['hopsworks']['domain1']['logs']}/audit"
 default['hopsworks']['audit_log_file_format']        = "server_audit_log%g.log"
 default['hopsworks']['audit_log_size_limit']         = "256000000"
 default['hopsworks']['audit_log_count']              = "10"
-default['hopsworks']['audit_log_file_type']          = "Text"
+default['hopsworks']['audit_log_file_type']          = "java.util.logging.SimpleFormatter"
 
 #
 # JWT
@@ -400,9 +408,6 @@ default['hopsworks']['expat_dir']                    = "#{node['install']['dir']
 #
 default['hopsworks']['featurestore_default_storage_format']   = "PARQUET"
 default['hopsworks']['featurestore_online']                   = "false"
-
-default['scala']['version']                   = "2.11.8"
-default['scala']['download_url']              = "#{node['download_url']}/scala-#{node['scala']['version']}.rpm"
 
 #
 # Glassfish Http configuration
@@ -454,7 +459,7 @@ default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 
 default["hopsworks"]['check_nodemanager_status']              = "false"
 
-default['hopsworks']['azure-ca-cert']['download-url']         = "https://cacerts.digicert.com/DigiCertGlobalRootG2.crt"
+default['hopsworks']['azure-ca-cert']['download-url']         = "#{node['download_url']}/DigiCertGlobalRootG2.crt"
 
 #livy
 default['hopsworks']['livy_startup_timeout']           = "240"
@@ -463,3 +468,7 @@ default['hopsworks']['livy_startup_timeout']           = "240"
 default['hopsworks']['docker-job']['docker_job_mounts_list']    = ""
 default['hopsworks']['docker-job']['docker_job_mounts_allowed'] = "false"
 default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
+
+default['hopsworks']['enable_user_search'] = "true"
+
+default['hopsworks']['kubernetes']['api_max_attempts']        = "12"

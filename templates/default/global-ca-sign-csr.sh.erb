@@ -13,6 +13,11 @@ if [ $# -gt 5 ]; then
   EXPIRATION_DATE="$6"
 fi
 
+START_DATE=""
+if [ $# -gt 6 ]; then
+  START_DATE="-startdate $7"
+fi
+
 #Variables
 CA_FILE="$1"
 MASTERPW="$2"
@@ -21,7 +26,7 @@ CSR_PATH="$4"
 GENERATED_CERT_PATH="$5"
 
 openssl ca -batch -config "$CA_FILE" -passin pass:"${MASTERPW}" \
-        -extensions "$EXTENSION" -enddate "$EXPIRATION_DATE" -notext -md sha256 -in "${CSR_PATH}" -out "${GENERATED_CERT_PATH}"
+        -extensions "$EXTENSION" ${START_DATE} -enddate "$EXPIRATION_DATE" -notext -md sha256 -in "${CSR_PATH}" -out "${GENERATED_CERT_PATH}"
 
 
 chmod +r "${GENERATED_CERT_PATH}"

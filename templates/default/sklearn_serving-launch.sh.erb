@@ -43,7 +43,6 @@ if [ ! -d "$SECRET_DIR" ] ; then
     exit 2
 fi
 
-LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 cd "$SECRET_DIR" || exit
@@ -61,11 +60,9 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE \
        -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
        -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
        -e "HADOOP_HOME=${HADOOP_HOME}" \
-       -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}" \
        -e "HDFS_USER=$HDFS_USER" \
        -e "HADOOP_PROXY_USER=$HDFS_USER" \
        -e "MATERIAL_DIRECTORY=$SECRET_DIR" \
-       -e "PATH=${HADOOP_HOME}/bin:$PATH" \
        -e "SCRIPT_NAME=$SCRIPT_NAME" \
        -e "PORT=$PORT" \
        -e "PROJECT_NAME=$PROJECT_NAME" \

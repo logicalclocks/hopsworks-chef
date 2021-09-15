@@ -23,7 +23,6 @@ if node['hopsworks']['dela']['enabled'] == "true"
 end
 
 public_ip=my_public_ip()
-hopsworks_db = "hopsworks"
 realmname = "kthfsrealm"
 
 begin
@@ -376,13 +375,6 @@ template "#{domains_dir}/#{domain_name}/config/login.conf" do
   group node['glassfish']['group']
   mode "0600"
   action :create
-end
-
-template "#{domains_dir}/#{domain_name}/config/log4j.properties" do
-  cookbook 'hopsworks'
-  source "log4j.properties.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
 end
 
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
@@ -871,6 +863,11 @@ hopsworks_mail "gmail" do
    action :jndi
 end
 
+# Reload glassfish with new configuration 
+kagent_config "glassfish-domain1" do
+  action :systemd_reload
+end
+
 node.override['glassfish']['asadmin']['timeout'] = 400
 
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
@@ -1013,14 +1010,6 @@ glassfish_deployable "undeploy_hopsworks-ca" do
   action :undeploy
 end
 
-
-template "/bin/hopsworks-2fa" do
-    source "hopsworks-2fa.erb"
-    owner "root"
-    mode 0700
-    action :create
-end
-
 hopsworks_certs "generate-certs" do
   action :generate
 end
@@ -1051,32 +1040,6 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
   group node['glassfish']['group']
   mode 0750
   action :create
-end
-
-case node['platform_family']
- when 'debian'
-   package "scala"
-
- when 'rhel'
-
-  scala_rpm_path="#{Chef::Config['file_cache_path']}/scala-#{node['scala']['version']}.rpm"
-  remote_file scala_rpm_path do
-    source node['scala']['download_url']
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-
-  bash 'scala-install-redhat' do
-    user "root"
-    cwd Chef::Config['file_cache_path']
-    code <<-EOF
-      set -e
-      yum install -y scala-#{node['scala']['version']}.rpm
-    EOF
-    not_if "which scala"
-  end
 end
 
 homedir = "/home/#{node['hopsworks']['user']}"
@@ -1161,6 +1124,22 @@ if node['kagent']['enabled'].casecmp? "true"
   end
 end
 
+hopsworks_certs "generate-int-certs" do
+  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  action      :generate_int_certs
+  not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
+end
+
+hopsworks_certs "download_azure_ca_cert" do
+  action      :download_azure_ca_cert
+  not_if      { ::File.exist?("/tmp/DigiCertGlobalRootG2.crt") }
+end
+
+# Force reload of the certificate
+kagent_config "glassfish-domain1" do
+  action :systemd_reload
+end
+
 # Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
 ruby_block "generate_service_jwt" do
   block do
@@ -1185,22 +1164,6 @@ kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
-hopsworks_certs "generate-int-certs" do
-  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
-  action      :generate_int_certs
-  not_if      (::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt"))
-end
-
-hopsworks_certs "download_azure_ca_cert" do
-  action      :download_azure_ca_cert
-  not_if      (::File.exist?("/tmp/DigiCertGlobalRootG2.crt"))
-end
-
-# Force reload of the certificate
-kagent_config "glassfish-domain1" do 
-  action :systemd_reload
-end
-
 # Register Glassfish with Consul
 template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
   source "consul/glassfish-health.sh.erb"
@@ -1221,19 +1184,6 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   mode 0770
   action :create
 end
-
-directory "/usr/local/share/jupyter/nbextensions/witwidget"  do
-  owner "root"
-  group "root"
-  mode "775"
-  action :create
-  recursive true
-end
-
-#
-# Need to synchronize conda enviornments for newly joined or rejoining nodes.
-#
-package "rsync"
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."

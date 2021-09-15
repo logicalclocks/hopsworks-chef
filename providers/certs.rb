@@ -165,6 +165,7 @@ action :generate_int_certs do
               json_response = ::JSON.parse(response.body)
               ::File.write("#{node['hopsworks']['config_dir']}/internal.crt", json_response['signedCert'])
             else
+              puts "The Response -> #{response.body}"
               raise "Error signing certificate"
             end
         else
