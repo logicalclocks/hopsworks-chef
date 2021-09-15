@@ -1388,9 +1388,9 @@ CREATE TABLE `training_dataset_join_condition` (
 CREATE TABLE `on_demand_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `on_demand_feature_group_id` int(11) NULL,
-  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `name` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   `primary_column` tinyint(1) NOT NULL DEFAULT '0',
-  `description` varchar(256) COLLATE latin1_general_cs,
+  `description` varchar(10000) COLLATE latin1_general_cs,
   `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
   PRIMARY KEY (`id`),
   KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
