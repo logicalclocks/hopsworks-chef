@@ -44,7 +44,7 @@ check_error
 filename=$(basename "$hdfsFile")
 check_error
 if [ -z "$dir" ] ; then
-  dir="$(dirname $normalizedPath)/${filename}.zip"
+  dir=$(dirname "$normalizedPath")"/${filename}.zip"
 fi
 check_error
 
