@@ -68,3 +68,4 @@ ALTER TABLE `hopsworks`.`feature_group_alert` DROP FOREIGN KEY `fk_feature_group
 DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
 
 ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `no_limit`;
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `no_limit`;
