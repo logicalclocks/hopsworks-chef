@@ -69,4 +69,6 @@ DROP TABLE IF EXISTS `hopsworks`.`alert_receiver`;
 
 ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `no_limit`;
 
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `no_limit`;
+
 DROP VIEW project_username;
