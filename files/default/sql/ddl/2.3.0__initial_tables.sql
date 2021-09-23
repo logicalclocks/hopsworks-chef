@@ -1765,6 +1765,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
   DEFAULT CHARSET = latin1
   COLLATE = latin1_general_cs;
 
+
 CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
   `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
   `inode_pid`                         BIGINT(20)      NOT NULL,
