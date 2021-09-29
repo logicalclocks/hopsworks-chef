@@ -69,6 +69,7 @@ ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `no_limit` tinyint(1) DEFAU
 
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `no_limit` tinyint(1) DEFAULT 0;
 
+ALTER TABLE `hopsworks`.`oauth_login_state` MODIFY COLUMN `state` VARCHAR(256);
 
 CREATE VIEW project_username AS
  SELECT CONCAT(project.projectname, "__", users.username) as project_username, project.projectname, users.email, project_team.team_role

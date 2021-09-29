@@ -720,7 +720,7 @@ CREATE TABLE `oauth_client` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oauth_login_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` varchar(128) COLLATE latin1_general_cs NOT NULL,
+  `state` varchar(256) COLLATE latin1_general_cs NOT NULL,
   `session_id` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `client_id` varchar(256) COLLATE latin1_general_cs NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

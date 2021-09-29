@@ -472,3 +472,6 @@ default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 default['hopsworks']['enable_user_search'] = "true"
 
 default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
+
+default['hopsworks']['reject_remote_user_no_group'] = "false"
+default['hopsworks']['managed_cloud_redirect_uri'] = ""
