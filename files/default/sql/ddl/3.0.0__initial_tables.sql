@@ -547,6 +547,7 @@ CREATE TABLE `jupyter_project` (
   `hdfs_user_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `no_limit` tinyint(1) DEFAULT 0,
   `token` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `secret` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
@@ -571,6 +572,7 @@ CREATE TABLE `jupyter_settings` (
   `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `advanced` tinyint(1) DEFAULT '0',
   `shutdown_level` int(11) NOT NULL DEFAULT '6',
+  `no_limit` tinyint(1) DEFAULT 0,
   `base_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
   `job_config` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
   `docker_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
@@ -719,7 +721,7 @@ CREATE TABLE `oauth_client` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oauth_login_state` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `state` varchar(128) COLLATE latin1_general_cs NOT NULL,
+  `state` varchar(256) COLLATE latin1_general_cs NOT NULL,
   `session_id` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `client_id` varchar(256) COLLATE latin1_general_cs NOT NULL,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

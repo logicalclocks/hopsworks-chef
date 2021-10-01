@@ -65,4 +65,10 @@ ALTER TABLE `hopsworks`.`feature_group_alert`
 ADD CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`)
   REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
+ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `no_limit` tinyint(1) DEFAULT 0;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `no_limit` tinyint(1) DEFAULT 0;
+
+ALTER TABLE `hopsworks`.`oauth_login_state` MODIFY COLUMN `state` VARCHAR(256);
+
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `event_time` VARCHAR(63) DEFAULT NULL;

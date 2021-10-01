@@ -1016,3 +1016,11 @@ attribute "hopsworks/enable_user_search",
 attribute "hopsworks/kubernetes/api_max_attempts",
           :description => "Maximum number of Kubernetes client retries before failing the request. Default: 12",
           :type => 'string'
+
+attribute "hopsworks/reject_remote_user_no_group",
+          :description => "Whether to reject oauth user creation if the user does not map with any group",
+          :type => 'string'
+
+attribute "hopsworks/managed_cloud_redirect_uri",
+          :description => "redirect uri for managed group setup",
+          :type => 'string'
