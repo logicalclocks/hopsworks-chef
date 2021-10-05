@@ -72,3 +72,5 @@ ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `no_limit`;
 ALTER TABLE `hopsworks`.`jupyter_settings` DROP COLUMN `no_limit`;
 
 ALTER TABLE `hopsworks`.`oauth_login_state` MODIFY COLUMN `state` VARCHAR(128);
+
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `event_time`;
