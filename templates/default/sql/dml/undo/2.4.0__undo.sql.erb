@@ -1,0 +1,12 @@
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_node_labels';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_node_tolerations';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("mysql_user", "<%= node['ndb']['user'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ndb_dir", "<%= node['ndb']['dir'] %>/mysql-cluster");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("mysql_dir", "<%= node['mysql']['dir'] %>/mysql");
+
+
+DELETE FROM `hopsworks`.`variables` WHERE id="kibana_service_log_viewer";
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='reject_remote_user_no_group';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='managed_cloud_redirect_uri';
