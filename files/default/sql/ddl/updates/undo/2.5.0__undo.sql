@@ -28,3 +28,11 @@ DROP TABLE IF EXISTS `hopsworks`.`training_dataset_filter_condition`;
 ALTER TABLE `hopsworks`.`variables` DROP COLUMN `hide`;
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `user` varchar(52) COLLATE latin1_general_cs NOT NULL;
+
+DROP TABLE IF EXISTS `git_executions`;
+
+DROP TABLE IF EXISTS `git_repositories`;
+
+DROP TABLE IF EXISTS `git_commits`;
+
+DROP TABLE IF EXISTS `git_repository_remotes`;
