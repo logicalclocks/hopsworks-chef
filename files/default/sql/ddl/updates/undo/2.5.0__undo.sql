@@ -17,3 +17,4 @@ DROP TABLE IF EXISTS `hopsworks`.`oauth_token`;
 ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `access_token` TO `token`;
 ALTER TABLE `hopsworks`.`oauth_login_state` DROP COLUMN `id_token`;
 ALTER TABLE `hopsworks`.`oauth_login_state` DROP COLUMN `refresh_token`;
+ALTER TABLE `hopsworks`.`feature_store_statistic` DROP COLUMN `for_transformation`;

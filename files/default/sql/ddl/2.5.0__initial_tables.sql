@@ -382,6 +382,7 @@ CREATE TABLE `feature_store_statistic` (
                                            `feature_group_id` INT(11),
                                            `feature_group_commit_id` BIGINT(20),
                                            `training_dataset_id`INT(11),
+                                           `for_transformation` TINYINT(1) DEFAULT '0',
                                            PRIMARY KEY (`id`),
                                            KEY `feature_group_id` (`feature_group_id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
