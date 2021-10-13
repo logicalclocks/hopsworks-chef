@@ -377,7 +377,7 @@ default['hopsworks']['audit_log_dir']                = "#{node['hopsworks']['dom
 default['hopsworks']['audit_log_file_format']        = "server_audit_log%g.log"
 default['hopsworks']['audit_log_size_limit']         = "256000000"
 default['hopsworks']['audit_log_count']              = "10"
-default['hopsworks']['audit_log_file_type']          = "Text"
+default['hopsworks']['audit_log_file_type']          = "java.util.logging.SimpleFormatter"
 
 #
 # JWT
@@ -469,3 +469,6 @@ default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 default['hopsworks']['enable_user_search'] = "true"
 
 default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
+
+default['hopsworks']['reject_remote_user_no_group'] = "false"
+default['hopsworks']['managed_cloud_redirect_uri'] = ""

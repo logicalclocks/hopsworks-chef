@@ -11,15 +11,9 @@ bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
   code <<-EOF
-    systemctl stop glassfish-#{domain_name}
     systemctl daemon-reload
+    systemctl stop glassfish-#{domain_name}
   EOF
-end
-
-if node['hopsworks']['systemd'] == "true"
-  systemd = true
-else
-  systemd = false
 end
 
 group node['hopsworks']['group'] do
@@ -56,13 +50,6 @@ group node["kagent"]["certs_group"] do
   excluded_members node['hopsworks']['user']
   not_if { node['install']['external_users'].casecmp("true") == 0 }
   only_if { conda_helpers.is_upgrade }
-end
-
-group node['conda']['group'] do
-  action :modify
-  members ["#{node['hopsworks']['user']}"]
-  append true
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
 # Add to the hdfs superuser group
@@ -104,6 +91,30 @@ end
 group node['hopsmonitor']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['logger']['group'] do
+  gid node['logger']['group_id']
+  action :create
+  not_if "getent group #{node['logger']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+user node['logger']['user'] do
+  uid node['logger']['user_id']
+  gid node['logger']['group_id']
+  shell "/bin/nologin"
+  action :create
+  system true
+  not_if "getent passwd #{node['logger']['user']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node["hopsworks"]["group"] do
+  action :modify
+  members [node['logger']['user']]
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
@@ -187,7 +198,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
-          'systemd_enabled' => systemd,
+          'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
@@ -202,7 +213,7 @@ node.override = {
           'remote_access' => false,
           'secure' => false,
           'environment_file' => node['hopsworks']['env_var_file'],
-          'jvm_options' => ["-DHADOOP_HOME=#{node['hops']['dir']}/hadoop", "-DHADOOP_CONF_DIR=#{node['hops']['dir']}/hadoop/etc/hadoop", '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true', '-Dlog4j.configuration=file:///${com.sun.aas.instanceRoot}/config/log4j.properties']
+          'jvm_options' => ["-DHADOOP_HOME=#{node['hops']['dir']}/hadoop", "-DHADOOP_CONF_DIR=#{node['hops']['dir']}/hadoop/etc/hadoop", '-Dcom.sun.enterprise.tools.admingui.NO_NETWORK=true']
         },
         'extra_libraries' => {
           'jdbcdriver' => {
@@ -474,21 +485,20 @@ remote_directory "#{theDomain}/templates" do
   files_mode 0550
 end
 
-if systemd == true
-  directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
-    owner "root"
-    group "root"
-    mode "755"
-    action :create
-  end
+directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
+  owner "root"
+  group "root"
+  mode "755"
+  action :create
+end
 
 
-   template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
-     source "limits.conf.erb"
-     owner "root"
-     mode 0774
-     action :create
-   end
+template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+  source "limits.conf.erb"
+  owner "root"
+  mode 0774
+  action :create
+end
 
 ulimit_domain node['hopsworks']['user'] do
   rule do
@@ -503,9 +513,8 @@ ulimit_domain node['hopsworks']['user'] do
   end
 end
 
-  kagent_config "glassfish-domain1" do 
-    action :systemd_reload
-  end
+kagent_config "glassfish-domain1" do 
+  action :systemd_reload
 end
 
 directory node['certs']['data_volume']['dir'] do

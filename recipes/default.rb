@@ -377,13 +377,6 @@ template "#{domains_dir}/#{domain_name}/config/login.conf" do
   action :create
 end
 
-template "#{domains_dir}/#{domain_name}/config/log4j.properties" do
-  cookbook 'hopsworks'
-  source "log4j.properties.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-end
-
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
 # systemd unit environment variables file
 hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
