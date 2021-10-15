@@ -2,17 +2,17 @@
   "kernel_python_credentials": {
     "username": "",
     "password": "",
-    "url": "http://${conf.livyIp}:8998"
+    "url": "https://${conf.livyIp}:8998"
   },
   "kernel_scala_credentials": {
     "username": "",
     "password": "",
-    "url": "http://${conf.livyIp}:8998"
+    "url": "https://${conf.livyIp}:8998"
   },
   "kernel_r_credentials": {
     "username": "",
     "password": "",
-    "url": "http://${conf.livyIp}:8998"
+    "url": "https://${conf.livyIp}:8998"
   },
   "logging_config": {
     "version": 1,
@@ -42,7 +42,7 @@
   "statement_sleep_seconds": 2,
   "livy_session_startup_timeout_seconds": ${conf.livyStartupTimeout},
   "fatal_error_suggestion": "The code failed because of a fatal error:\n\t{}.\n\nSome things to try:\na) Make sure Spark has enough available resources for Jupyter to create a Spark context.\nb) Contact your Jupyter administrator to make sure the Spark magics library is configured correctly.\nc) Restart the kernel.",
-  "ignore_ssl_errors": false,
+  "ignore_ssl_errors": true,
   "session_configs": {
     "driverCores": ${conf.driverCores?c},
     "driverMemory": "${conf.driverMemory}",
