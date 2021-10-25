@@ -72,3 +72,31 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
 
 ALTER TABLE `hopsworks`.`variables` ADD COLUMN `hide` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `user`;
+
+CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `bootstrap_servers` VARCHAR(1000) NOT NULL,
+    `security_protocol` VARCHAR(1000) NOT NULL,
+    `ssl_truststore_location` VARCHAR(1000) NOT NULL,
+    `ssl_truststore_pwd_secret_uid`  INT DEFAULT NULL,
+    `ssl_truststore_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
+    `ssl_keystore_location` VARCHAR(1000) NOT NULL,
+    `ssl_keystore_pwd_secret_uid`  INT NOT NULL,
+    `ssl_keystore_pwd_secret_name` VARCHAR(200) NOT NULL,
+    `ssl_key_pwd_secret_uid`  INT NOT NULL,
+    `ssl_key_pwd_secret_name` VARCHAR(200) NOT NULL,
+    `ssl_endpoint_identification_algorithm` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_feature_store_kafka_truststore_idx` (`ssl_truststore_pwd_secret_uid`,`ssl_truststore_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_truststore_fk` FOREIGN KEY (`ssl_truststore_pwd_secret_uid`, `ssl_truststore_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    KEY `fk_feature_store_kafka_keystore_idx` (`ssl_keystore_pwd_secret_uid`,`ssl_keystore_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_keystore_fk` FOREIGN KEY (`ssl_keystore_pwd_secret_uid`, `ssl_keystore_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    KEY `fk_feature_store_kafka_key_idx` (`ssl_key_pwd_secret_uid`,`ssl_key_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_key_fk` FOREIGN KEY (`ssl_key_pwd_secret_uid`, `ssl_key_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector` ADD COLUMN `kafka_id` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_store_connector` ADD CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

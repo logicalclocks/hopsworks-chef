@@ -28,3 +28,8 @@ DROP TABLE IF EXISTS `hopsworks`.`training_dataset_filter_condition`;
 ALTER TABLE `hopsworks`.`variables` DROP COLUMN `hide`;
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `user` varchar(52) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_connector` DROP FOREIGN KEY `fs_connector_kafka_fk`;
+ALTER TABLE `hopsworks`.`feature_store_connector` DROP COLUMN `kafka_id`;
+
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_kafka_connector`;

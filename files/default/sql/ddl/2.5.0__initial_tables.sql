@@ -1726,6 +1726,31 @@ CREATE TABLE IF NOT EXISTS `feature_store_snowflake_connector` (
                                                                        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `bootstrap_servers` VARCHAR(1000) NOT NULL,
+    `security_protocol` VARCHAR(1000) NOT NULL,
+    `ssl_truststore_location` VARCHAR(1000) NOT NULL,
+    `ssl_truststore_pwd_secret_uid`  INT DEFAULT NULL,
+    `ssl_truststore_pwd_secret_name` VARCHAR(200) DEFAULT NULL,
+    `ssl_keystore_location` VARCHAR(1000) NOT NULL,
+    `ssl_keystore_pwd_secret_uid`  INT NOT NULL,
+    `ssl_keystore_pwd_secret_name` VARCHAR(200) NOT NULL,
+    `ssl_key_pwd_secret_uid`  INT NOT NULL,
+    `ssl_key_pwd_secret_name` VARCHAR(200) NOT NULL,
+    `ssl_endpoint_identification_algorithm` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_feature_store_kafka_truststore_idx` (`ssl_truststore_pwd_secret_uid`,`ssl_truststore_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_truststore_fk` FOREIGN KEY (`ssl_truststore_pwd_secret_uid`, `ssl_truststore_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    KEY `fk_feature_store_kafka_keystore_idx` (`ssl_keystore_pwd_secret_uid`,`ssl_keystore_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_keystore_fk` FOREIGN KEY (`ssl_keystore_pwd_secret_uid`, `ssl_keystore_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    KEY `fk_feature_store_kafka_key_idx` (`ssl_key_pwd_secret_uid`,`ssl_key_pwd_secret_name`),
+    CONSTRAINT `fk_feature_store_kafka_key_fk` FOREIGN KEY (`ssl_key_pwd_secret_uid`, `ssl_key_pwd_secret_name`)
+        REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
                                                          `feature_store_id`        INT(11)          NOT NULL,
@@ -1738,6 +1763,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `redshift_id`             INT(11),
                                                          `adls_id`                 INT(11),
                                                          `snowflake_id`            INT(11),
+                                                         `kafka_id`                INT(11),
                                                          PRIMARY KEY (`id`),
                                                          UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
                                                          CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1746,7 +1772,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          CONSTRAINT `fs_connector_hopsfs_fk` FOREIGN KEY (`hopsfs_id`) REFERENCES `hopsworks`.`feature_store_hopsfs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                         CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                                         CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                                         CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
