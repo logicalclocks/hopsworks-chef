@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# This script will create a symlink from a project's DAGs in hopsfs to the Airflow local DAGs dir
+# This script can be run by hopsworks (running as user 'glassfish') as a sudo command
+
+help() {
+  echo ""
+  echo "usage: $0 project_name"
+  echo ""
+  exit 1
+}
+
+rm -f /srv/hops/airflow/dags/$1
+ln -s <%= node['hops']['fuse']['mount_point'] %>/Projects/$1/Airflow <%= node['airflow']['data_volume']['dags_dir'] %>/$1
+if [ $? -ne 0 ] ; then
+    exit 2
+fi
+

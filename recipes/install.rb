@@ -715,6 +715,14 @@ kagent_sudoers "ca-keystore" do
   only_if       { node['hopsworks']['dela']['enabled'].casecmp("true") == 0 }
 end
 
+kagent_sudoers "airflowSymlink" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "airflow-symlink.sh"
+  template      "airflow-symlink.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -795,7 +803,6 @@ template "#{theDomain}/bin/dump_audit_logs_to_hdfs.sh" do
               :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_audit_logs"
             })
 end
-
 
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
