@@ -690,6 +690,14 @@ kagent_sudoers "docker-cgroup-rewrite" do
   run_as        "ALL"
 end
 
+kagent_sudoers "airflowSymlink" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "airflow-symlink.sh"
+  template      "airflow-symlink.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
