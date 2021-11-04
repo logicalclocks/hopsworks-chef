@@ -1936,9 +1936,9 @@ CREATE TABLE IF NOT EXISTS `validation_rule` (
                                                  `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
                                                  `accepted_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
                                                  `feature_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
-                                                 `description` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
+                                                 `description` varchar(200) COLLATE latin1_general_cs DEFAULT NULL,
                                                  PRIMARY KEY (`id`),
-                                                 UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`accepted_type`)
+                                                 UNIQUE KEY `unique_validation_rule` (`name`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_expectation` (
