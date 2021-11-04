@@ -8,7 +8,7 @@ DELETE FROM `hopsworks`.`variables` WHERE id="mysql_user";
 DELETE FROM `hopsworks`.`bbc_group` WHERE group_name="AUDITOR";
 
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_service_log_viewer", "<%= node['elastic']['opendistro_security']['service_log_viewer']['username'] %>", 1);
+REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_service_log_viewer", "<%= node['elastic']['opensearch_security']['service_log_viewer']['username'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("reject_remote_user_no_group", "<%= node['hopsworks']['reject_remote_user_no_group'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("managed_cloud_redirect_uri", "<%= node['hopsworks']['managed_cloud_redirect_uri'] %>");
