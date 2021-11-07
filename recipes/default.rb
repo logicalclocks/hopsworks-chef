@@ -11,7 +11,7 @@ Chef::Resource.send(:include, Hops::Helpers)
 #
 group node['airflow']['group'] do
   action :modify
-  members [hopsworksGroup]    
+  members node['hopsworks']['group']
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }  
 end
