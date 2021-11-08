@@ -57,10 +57,10 @@
     </ldap>
 
     <elastic>
-        <user><%= node['elastic']['opendistro_security']['admin']['username'] %></user>
-        <pass><%= node['elastic']['opendistro_security']['admin']['password'] %></pass>
-        <services-logs-user><%= node['elastic']['opendistro_security']['service_log_viewer']['username'] %></services-logs-user>
-        <services-logs-pass><%= node['elastic']['opendistro_security']['service_log_viewer']['password'] %></services-logs-pass>
+        <user><%= node['elastic']['opensearch_security']['admin']['username'] %></user>
+        <pass><%= node['elastic']['opensearch_security']['admin']['password'] %></pass>
+        <services-logs-user><%= node['elastic']['opensearch_security']['service_log_viewer']['username'] %></services-logs-user>
+        <services-logs-pass><%= node['elastic']['opensearch_security']['service_log_viewer']['password'] %></services-logs-pass>
         <snapshot>
             <repo>
                 <name>expat</name>
