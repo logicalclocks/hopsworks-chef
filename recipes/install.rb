@@ -143,47 +143,14 @@ directory domains_dir  do
   not_if "test -d #{domains_dir}"
 end
 
-
-# For unzipping files
-dtrx=""
-case node['platform_family']
-when "debian"
-  package ["dtrx", "libkrb5-dev"]
-
-  dtrx="dtrx"
-when "rhel"
-  package ["krb5-libs", "p7zip"]
-
-  remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    source node['dtrx']['download_url']
-    mode 0755
-    action :create
-  end
-
-  bash "unpack_dtrx" do
-    user "root"
-    code <<-EOF
-      set -e
-      cd #{Chef::Config['file_cache_path']}
-      tar -xzf dtrx.tar.gz
-      cd dtrx-7.1
-      python setup.py install --prefix=/usr/local
-      # dtrx expects 7z to on its path. create a symbolic link from /bin/7z to /bin/7za
-      rm -f /bin/7z
-      ln -s /bin/7za /bin/7z
-    EOF
-    not_if "which dtrx"
-  end
-  dtrx="/usr/local/bin/dtrx"
-end
-
 # Install authbind to allow glassfish to bind on ports < 1024
+# and Kerberos libraries for SSO
 case node['platform_family']
 when "debian"
-  package "authbind"
+  package ["libkrb5-dev", "authbind"]
 when "rhel"
+  package ["krb5-libs"]
+
   authbind_rpm = ::File.basename(node['authbind']['download_url'])
 
   remote_file "#{Chef::Config['file_cache_path']}/#{authbind_rpm}" do
@@ -739,11 +706,6 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "550"
-  variables(lazy {
-    h = {}
-    h['dtrx'] = dtrx
-    h
-  })
   action :create
 end
 
