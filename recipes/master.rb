@@ -8,7 +8,7 @@ end
 package "openssh-server"
 
 
-homedir = "/home/#{node['hopsworks']['user']}"
+homedir = ::Dir.home(node['hopsworks']['user'])
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
