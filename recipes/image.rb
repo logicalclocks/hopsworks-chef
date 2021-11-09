@@ -11,8 +11,8 @@ bash 'mkdir_autostart' do
   user 'root'
   ignore_failure true
   code <<-EOF
-       mkdir -p /home/#{node['glassfish']['user']}/.config/autostart
-       chown -R #{node['glassfish']['user']}  /home/#{node['glassfish']['user']}/.config
+       mkdir -p #{::Dir.home(node['glassfish']['user'])}/.config/autostart
+       chown -R #{node['glassfish']['user']}  #{::Dir.home(node['glassfish']['user'])}/.config
        groupadd -r autologin
        gpasswd -a #{node['glassfish']['user']} autologin
     EOF
@@ -23,14 +23,14 @@ end
 # Firefox desktop entry should start after hops-services.desktop.
 # Change firefox name to 'x' so that it starts last.
 #  
-template "/home/#{node['glassfish']['user']}/.config/autostart/x-firefox.desktop" do
+template "#{::Dir.home(node['glassfish']['user'])}/.config/autostart/x-firefox.desktop" do
     source "virtualbox/firefox.desktop.erb"
     owner node['glassfish']['user']
     mode 0774
     action :create
 end
 
-template "/home/#{node['glassfish']['user']}/.config/autostart/hops-services.desktop" do
+template "#{::Dir.home(node['glassfish']['user'])}/.config/autostart/hops-services.desktop" do
     source "virtualbox/hops-services.desktop.erb"
     owner node['glassfish']['user']
     mode 0774
