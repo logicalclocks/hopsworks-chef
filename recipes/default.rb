@@ -1053,7 +1053,7 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
   action :create
 end
 
-homedir = "/home/#{node['hopsworks']['user']}"
+homedir = ::Dir.home(node['hopsworks']['user'])
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
 #
@@ -1196,7 +1196,7 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
+homedir = node['hopsworks']['user'].eql?("root") ? "/root" : ::Dir.home(node['hopsworks']['user'])
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
 
 kagent_keys "#{homedir}" do
