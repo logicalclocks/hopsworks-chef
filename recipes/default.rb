@@ -1025,7 +1025,9 @@ hopsworks_certs "generate-certs" do
   action :generate
 end
 
-template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
+hopsworks_user_home = conda_helpers.get_user_home(node['hopsworks']['user'])
+
+template "#{hopsworks_user_home}/.condarc" do
   source "condarc.erb"
   cookbook "conda"
   owner node['glassfish']['user']
@@ -1037,14 +1039,14 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.condarc" do
   action :create
 end
 
-directory "#{::Dir.home(node['hopsworks']['user'])}/.pip" do
+directory "#{hopsworks_user_home}/.pip" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode '0700'
   action :create
 end
 
-template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
+template "#{hopsworks_user_home}/.pip/pip.conf" do
   source "pip.conf.erb"
   cookbook "conda"
   owner node['glassfish']['user']
@@ -1053,7 +1055,6 @@ template "#{::Dir.home(node['hopsworks']['user'])}/.pip/pip.conf" do
   action :create
 end
 
-homedir = ::Dir.home(node['hopsworks']['user'])
 #
 # Disable glassfish service, if node['services']['enabled'] is not set to true
 #
@@ -1113,13 +1114,13 @@ directory node['hopsworks']['conda_cache'] do
   action :create
 end
 
-kagent_keys "#{homedir}" do
+kagent_keys "#{hopsworks_user_home}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   action :generate
 end
 
-kagent_keys "#{homedir}" do
+kagent_keys "#{hopsworks_user_home}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   cb_name "hopsworks"
@@ -1196,16 +1197,15 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-homedir = node['hopsworks']['user'].eql?("root") ? "/root" : ::Dir.home(node['hopsworks']['user'])
-Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
+Chef::Log.info "Home dir is #{hopsworks_user_home}. Generating ssh keys..."
 
-kagent_keys "#{homedir}" do
+kagent_keys "#{hopsworks_user_home}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   action :generate
 end
 
-kagent_keys "#{homedir}" do
+kagent_keys "#{hopsworks_user_home}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   cb_name "hopsworks"
