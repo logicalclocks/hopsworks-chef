@@ -1,5 +1,0 @@
-UPDATE `hopsworks`.`validation_rule` set predicate=null where predicate="VALUE";
-UPDATE `hopsworks`.`validation_rule` set feature_type="Numerical" where name="IS_POSITIVE";
-UPDATE `hopsworks`.`validation_rule` set feature_type="Numerical" where name="IS_NON_NEGATIVE";
-UPDATE `hopsworks`.`validation_rule` set description="Assert on the unique value ratio of a feature, that is the fraction of unique values over the number of all distinct values." where name="HAS_UNIQUE_VALUE_RATIO";
-UPDATE `hopsworks`.`validation_rule` set description="Assert on the uniqueness of a feature, that is the fraction of unique values over the number of all its values." where name="HAS_UNIQUENESS";
