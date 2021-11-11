@@ -67,7 +67,7 @@ ${operator.id} = HopsworksJobSuccessSensor(dag=dag,
 					   project_name="${operator.projectName}",
                                    	   task_id="${operator.id}",
                                    	   job_name="${operator.jobName}")
-
+  </#if>
  </#items>
 </#list>
 
