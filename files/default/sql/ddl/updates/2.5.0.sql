@@ -9,3 +9,5 @@ SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`serving`
 SET `model_name` = (SELECT REPLACE(SUBSTRING(SUBSTRING_INDEX(`model_path`, '/', 5), LENGTH(SUBSTRING_INDEX(`model_path`, '/', 4)) + 1), '/', ''));
 SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`executions` DROP FOREIGN KEY `FK_347_365`;
