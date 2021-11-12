@@ -1147,6 +1147,7 @@ CREATE TABLE `serving` (
                            `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `artifact_version` int(11) DEFAULT NULL,
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                           `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,
                            `local_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `enable_batching` tinyint(1) DEFAULT '0',
