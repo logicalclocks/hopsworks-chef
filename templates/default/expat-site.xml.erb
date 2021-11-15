@@ -112,8 +112,13 @@
         io.hops.hopsworks.expat.migrations.docker.ServingDockerResourcesMigration
         io.hops.hopsworks.expat.migrations.docker.JobsDockerCommandArgsMigration
     </version-23>
-    <version-30>
-        io.hops.hopsworks.expat.migrations.alertmanager.FixAlertManagerReceiver
+    <version-25>
+        <!-- the steps should be run in order and each rely on the previous one -->
+        io.hops.hopsworks.expat.migrations.elk.BaseIndexTemplateMigrate
+        io.hops.hopsworks.expat.migrations.elk.snapshot.CreateSnapshotRepo
+        io.hops.hopsworks.expat.migrations.elk.snapshot.SnapshotProvenanceIndices
+        io.hops.hopsworks.expat.migrations.featurestore.featuregroup.UpdateProvIndicesFGDescription
         io.hops.hopsworks.expat.migrations.featurestore.featuregroup.UpdateFeatureGroupFeatureDescription
-    </version-30>
+        <!-- -->
+    </version-25>
 </expat>
