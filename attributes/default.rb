@@ -366,9 +366,6 @@ default['remote_auth']['need_consent']               = "true"
 default['hopsworks']['disable_password_login']       = "false"
 default['hopsworks']['disable_registration']         = "false"
 
-default['dtrx']['version']                           = "dtrx-7.1.tar.gz"
-default['dtrx']['download_url']                      = "#{node['download_url']}/#{node['dtrx']['version']}"
-
 default['rstudio']['deb']                            = "rstudio-server-1.1.447-amd64.deb"
 default['rstudio']['rpm']                            = "rstudio-server-rhel-1.1.447-x86_64.rpm"
 default['rstudio']['enabled']                        = "false"
@@ -472,3 +469,6 @@ default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 default['hopsworks']['enable_user_search'] = "true"
 
 default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
+
+default['hopsworks']['reject_remote_user_no_group'] = "false"
+default['hopsworks']['managed_cloud_redirect_uri'] = ""

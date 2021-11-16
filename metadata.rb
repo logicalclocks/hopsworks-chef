@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.0.0"
+version          "2.5.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -865,7 +865,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 3.0.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 2.5.000)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",
@@ -1015,4 +1015,12 @@ attribute "hopsworks/enable_user_search",
       
 attribute "hopsworks/kubernetes/api_max_attempts",
           :description => "Maximum number of Kubernetes client retries before failing the request. Default: 12",
+          :type => 'string'
+
+attribute "hopsworks/reject_remote_user_no_group",
+          :description => "Whether to reject oauth user creation if the user does not map with any group",
+          :type => 'string'
+
+attribute "hopsworks/managed_cloud_redirect_uri",
+          :description => "redirect uri for managed group setup",
           :type => 'string'
