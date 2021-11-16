@@ -27,6 +27,7 @@ CREATE TABLE `cached_feature` (
 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(26000) COLLATE latin1_general_cs DEFAULT NULL;
 
+
 CREATE TABLE `hopsworks`.`oauth_token` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
