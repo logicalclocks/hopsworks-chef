@@ -274,8 +274,7 @@ CREATE TABLE `executions` (
                               KEY `state_idx` (`state`,`job_id`),
                               KEY `finalStatus_idx` (`finalStatus`,`job_id`),
                               KEY `progress_idx` (`progress`,`job_id`),
-                              CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                              CONSTRAINT `FK_347_365` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                              CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=23 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
