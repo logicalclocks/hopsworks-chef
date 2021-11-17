@@ -1009,6 +1009,18 @@ attribute "hopsworks/docker-job/docker_job_uid_strict",
 					:description => "Enable or disable strict mode for uig/gid of docker jobs. In strict mode, users cannot set the uid/gid of the job.",
 					:type => "string"
 
+attribute "hopsworks/job/executions_per_job_limit",
+					:description => "Maximum number of executions allowed per job in a project.",
+					:type => "string"
+
+attribute "hopsworks/job/executions_cleaner_batch_size",
+					:description => "The maximum number of executions to be deleted per job per timer trigger.",
+					:type => "string"
+
+attribute "hopsworks/job/executions_cleaner_interval_ms",
+					:description => "How often the job executions cleaner is triggered.",
+					:type => "string"
+
 attribute "hopsworks/enable_user_search",
           :description => "Whether to enable user search or not",
           :type => 'string'

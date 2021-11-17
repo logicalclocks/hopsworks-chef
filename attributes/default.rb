@@ -461,10 +461,13 @@ default['hopsworks']['azure-ca-cert']['download-url']         = "#{node['downloa
 #livy
 default['hopsworks']['livy_startup_timeout']           = "240"
 
-# Docker job
+# Jobs
 default['hopsworks']['docker-job']['docker_job_mounts_list']    = ""
 default['hopsworks']['docker-job']['docker_job_mounts_allowed'] = "false"
 default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
+default['hopsworks']['job']['executions_per_job_limit'] = "10000"
+default['hopsworks']['job']['executions_cleaner_batch_size'] = "1000"
+default['hopsworks']['job']['executions_cleaner_interval_ms'] = "600000"
 
 default['hopsworks']['enable_user_search'] = "true"
 

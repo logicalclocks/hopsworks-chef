@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from airflow import DAG
 
 from hopsworks_plugin.operators.hopsworks_operator import HopsworksLaunchOperator
-from hopsworks_plugin.operators.hopsworks_operator import HopsworksFeatureValidationResult
 from hopsworks_plugin.sensors.hopsworks_sensor import HopsworksJobSuccessSensor
 
 # Username in Hopsworks
@@ -68,12 +67,6 @@ ${operator.id} = HopsworksJobSuccessSensor(dag=dag,
 					   project_name="${operator.projectName}",
                                    	   task_id="${operator.id}",
                                    	   job_name="${operator.jobName}")
-
- <#elseif instanceOf(operator, AirflowFeatureValidationResultOperator)>
-${operator.id} = HopsworksFeatureValidationResult(dag=dag,
-					          project_name="${operator.projectName}",
-                                   	          task_id="${operator.id}",
-                                   	          feature_group_name="${operator.featureGroupName}")
   </#if>
  </#items>
 </#list>
