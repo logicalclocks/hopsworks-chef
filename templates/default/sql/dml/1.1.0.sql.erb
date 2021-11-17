@@ -1,4 +1,4 @@
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("elastic_opensearch_security_enabled", "<%= node['elastic']['opensearch_security']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("elastic_opendistro_security_enabled", "<%= node['elastic']['opensearch_security']['enabled'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("elastic_https_enabled", "<%= node['elastic']['opensearch_security']['https']['enabled'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("elastic_admin_user", "<%= node['elastic']['opensearch_security']['admin']['username'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("elastic_admin_password", "<%= node['elastic']['opensearch_security']['admin']['password'] %>");
