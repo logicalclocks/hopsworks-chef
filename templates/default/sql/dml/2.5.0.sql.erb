@@ -1,0 +1,3 @@
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_per_job_limit", "<%= node['hopsworks']['job']['executions_per_job_limit'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_cleaner_batch_size", "<%= node['hopsworks']['job']['executions_cleaner_batch_size'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_cleaner_interval_ms", "<%= node['hopsworks']['job']['executions_cleaner_interval_ms'] %>");

@@ -10,6 +10,8 @@ UPDATE `hopsworks`.`serving`
 SET `model_name` = (SELECT REPLACE(SUBSTRING(SUBSTRING_INDEX(`model_path`, '/', 5), LENGTH(SUBSTRING_INDEX(`model_path`, '/', 4)) + 1), '/', ''));
 SET SQL_SAFE_UPDATES = 1;
 
+ALTER TABLE `hopsworks`.`executions` DROP FOREIGN KEY `FK_347_365`;
+
 CREATE TABLE `cached_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
