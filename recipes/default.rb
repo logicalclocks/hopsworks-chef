@@ -527,6 +527,9 @@ glassfish_conf = {
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port' => node['hopsworks']['https']['port'],
+  # Disable X-Powered-By and server headers
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.server-header' => false,
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.xpowered-by' => false,
   # Disable SSL3
   'server.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled' => false,
