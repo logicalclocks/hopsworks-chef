@@ -1,4 +1,4 @@
-homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
+homedir = node['hopsworks']['user'].eql?("root") ? "/root" : conda_helpers.get_user_home(node['hopsworks']['user'])
 
 # Add the master host's public key, so that it can start/stop the glassworks instance on this node using passwordless ssh.
 kagent_keys "#{homedir}" do

@@ -274,8 +274,7 @@ CREATE TABLE `executions` (
                               KEY `state_idx` (`state`,`job_id`),
                               KEY `finalStatus_idx` (`finalStatus`,`job_id`),
                               KEY `progress_idx` (`progress`,`job_id`),
-                              CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                              CONSTRAINT `FK_347_365` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                              CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=23 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1147,6 +1146,7 @@ CREATE TABLE `serving` (
                            `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `artifact_version` int(11) DEFAULT NULL,
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                           `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,
                            `local_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `enable_batching` tinyint(1) DEFAULT '0',
@@ -1749,11 +1749,24 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
                                                       CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
                                                           ON DELETE CASCADE
                                                           ON UPDATE NO ACTION
-)
-    ENGINE = ndbcluster
-    DEFAULT CHARSET = latin1
-    COLLATE = latin1_general_cs;
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+--
+-- Table structure for table `cached_feature`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cached_feature` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cached_feature_group_id` int(11) NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `description` varchar(256) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
                                                          `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
@@ -1936,9 +1949,9 @@ CREATE TABLE IF NOT EXISTS `validation_rule` (
                                                  `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
                                                  `accepted_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
                                                  `feature_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
-                                                 `description` varchar(100) COLLATE latin1_general_cs DEFAULT NULL,
+                                                 `description` varchar(200) COLLATE latin1_general_cs DEFAULT NULL,
                                                  PRIMARY KEY (`id`),
-                                                 UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`accepted_type`)
+                                                 UNIQUE KEY `unique_validation_rule` (`name`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_expectation` (
