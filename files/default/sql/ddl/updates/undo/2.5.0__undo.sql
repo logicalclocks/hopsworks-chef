@@ -5,3 +5,5 @@ ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_name`;
 
 ALTER TABLE `hopsworks`.`executions` ADD CONSTRAINT `FK_347_365`  FOREIGN KEY (`job_id`) REFERENCES `hopsworks`.`jobs` (`id`) ON DELETE CASCADE;
+
+DROP TABLE `hopsworks`.`cached_feature`;
