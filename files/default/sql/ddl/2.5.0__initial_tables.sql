@@ -1749,11 +1749,24 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
                                                       CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
                                                           ON DELETE CASCADE
                                                           ON UPDATE NO ACTION
-)
-    ENGINE = ndbcluster
-    DEFAULT CHARSET = latin1
-    COLLATE = latin1_general_cs;
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+--
+-- Table structure for table `cached_feature`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cached_feature` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cached_feature_group_id` int(11) NULL,
+  `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+  `description` varchar(256) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
                                                          `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
