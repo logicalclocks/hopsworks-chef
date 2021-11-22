@@ -3,6 +3,7 @@ ALTER TABLE `hopsworks`.`validation_rule` DROP INDEX `unique_validation_rule`;
 ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule` UNIQUE KEY (`name`);
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL AFTER `transformer`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `predictor` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`api_key` ADD COLUMN `reserved` tinyint(1) DEFAULT '0';
 
