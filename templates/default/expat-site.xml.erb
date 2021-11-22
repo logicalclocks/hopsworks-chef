@@ -61,6 +61,17 @@
         <pass><%= node['elastic']['opendistro_security']['admin']['password'] %></pass>
         <services-logs-user><%= node['elastic']['opendistro_security']['service_log_viewer']['username'] %></services-logs-user>
         <services-logs-pass><%= node['elastic']['opendistro_security']['service_log_viewer']['password'] %></services-logs-pass>
+        <snapshot>
+            <repo>
+                <name>expat</name>
+                <location><%= node['elastic']['backup_dir'] %>/expat</location>
+            </repo>
+            <name>expat_backup</name>
+            <!-- repeated section for multiple indices -->
+            <indices></indices>
+            <!-- should elastic silently ignore missing indices. when false, a missing index will throw an exception -->
+            <ignoreUnavailable>false</ignoreUnavailable>
+        </snapshot>
     </elastic>
 
     <hops>
@@ -68,6 +79,10 @@
             <user><%= node['hops']['hdfs']['user'] %></user>
         </client>
     </hops>
+
+    <epipe>
+        <path><%= node['epipe']['base_dir'] %></path>
+    </epipe>
     
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
@@ -122,12 +137,10 @@
     </version-24>
     <version-25>
         io.hops.hopsworks.expat.migrations.projects.search.featurestore.UpdateFeaturegroupsForType
-        <!-- the steps should be run in order and each rely on the previous one -->
         io.hops.hopsworks.expat.migrations.elk.BaseIndexTemplateMigrate
         io.hops.hopsworks.expat.migrations.elk.snapshot.CreateSnapshotRepo
         io.hops.hopsworks.expat.migrations.elk.snapshot.SnapshotProvenanceIndices
         io.hops.hopsworks.expat.migrations.featurestore.featuregroup.UpdateProvIndicesFGFeatureDescription
         io.hops.hopsworks.expat.migrations.featurestore.featuregroup.UpdateFeatureGroupFeatureDescription
-        <!-- -->
     </version-25>
 </expat>
