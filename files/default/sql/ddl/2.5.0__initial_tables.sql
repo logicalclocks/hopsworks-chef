@@ -1726,7 +1726,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
                                                          `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
-                                                         `query`                   VARCHAR(11000),
+                                                         `query`                   VARCHAR(26000),
                                                          `connector_id`            INT(11)         NOT NULL,
                                                          `description`             VARCHAR(1000)   NULL,
                                                          `inode_pid`               BIGINT(20)      NOT NULL,
