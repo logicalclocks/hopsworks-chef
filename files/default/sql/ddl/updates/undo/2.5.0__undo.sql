@@ -7,3 +7,5 @@ ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_name`;
 ALTER TABLE `hopsworks`.`executions` ADD CONSTRAINT `FK_347_365`  FOREIGN KEY (`job_id`) REFERENCES `hopsworks`.`jobs` (`id`) ON DELETE CASCADE;
 
 DROP TABLE `hopsworks`.`cached_feature`;
+
+ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL;
