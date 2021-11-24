@@ -21,3 +21,5 @@ CREATE TABLE `cached_feature` (
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
   CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(26000) COLLATE latin1_general_cs DEFAULT NULL;
