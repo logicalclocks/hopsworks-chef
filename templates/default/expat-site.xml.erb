@@ -61,6 +61,17 @@
         <pass><%= node['elastic']['opensearch_security']['admin']['password'] %></pass>
         <services-logs-user><%= node['elastic']['opensearch_security']['service_log_viewer']['username'] %></services-logs-user>
         <services-logs-pass><%= node['elastic']['opensearch_security']['service_log_viewer']['password'] %></services-logs-pass>
+        <snapshot>
+            <repo>
+                <name>expat</name>
+                <location><%= node['elastic']['backup_dir'] %>/expat</location>
+            </repo>
+            <name>expat_backup</name>
+            <!-- repeated section for multiple indices -->
+            <indices></indices>
+            <!-- should elastic silently ignore missing indices. when false, a missing index will throw an exception -->
+            <ignoreUnavailable>false</ignoreUnavailable>
+        </snapshot>
     </elastic>
 
     <hops>
@@ -68,6 +79,10 @@
             <user><%= node['hops']['hdfs']['user'] %></user>
         </client>
     </hops>
+
+    <epipe>
+        <path><%= node['epipe']['base_dir'] %></path>
+    </epipe>
     
     <version-06>
         io.hops.hopsworks.expat.migrations.x509.GenerateProjectCertificates
@@ -120,4 +135,8 @@
         io.hops.hopsworks.expat.migrations.alertmanager.FixAlertManagerReceiver
         io.hops.hopsworks.expat.migrations.elk.ServicesLogs
     </version-24>
+    <version-25>
+        io.hops.hopsworks.expat.migrations.projects.search.featurestore.UpdateFeaturegroupsForType
+        io.hops.hopsworks.expat.migrations.elk.BaseIndexTemplateMigrate
+    </version-25>
 </expat>
