@@ -450,7 +450,7 @@ default['hopsworks']['client_path']           = "COMMUNITY"
 # hdfs storage policy
 # accepted hopsworks storage policy files: CLOUD, DB, HOT
 # Set the DIR_ROOT (/Projects) to have DB storage policy
-default['hopsworks']['hdfs']['storage_policy']['base']        = "DB"
+default['hopsworks']['hdfs']['storage_policy']['base']        = "HOT"
 # To not fill the SSDs with Logs files that nobody access frequently we set the StoragePolicy for the LOGS dir to be default HOT
 default['hopsworks']['hdfs']['storage_policy']['log']         = "HOT"
 
