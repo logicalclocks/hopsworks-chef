@@ -1789,11 +1789,14 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 CREATE TABLE `cached_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
+  `stream_feature_group_id` int(11) NULL,
   `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
   `description` varchar(256) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
-  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `stream_feature_group_fk` (`stream_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `stream_feature_group_fk2` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
