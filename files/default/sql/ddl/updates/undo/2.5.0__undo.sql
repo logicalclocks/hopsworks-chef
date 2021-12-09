@@ -9,3 +9,9 @@ ALTER TABLE `hopsworks`.`executions` ADD CONSTRAINT `FK_347_365`  FOREIGN KEY (`
 DROP TABLE `hopsworks`.`cached_feature`;
 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(11000) COLLATE latin1_general_cs DEFAULT NULL;
+
+DROP TABLE IF EXISTS `hopsworks`.`oauth_token`;
+
+ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `access_token` TO `token`;
+ALTER TABLE `hopsworks`.`oauth_login_state` DROP COLUMN `id_token`;
+ALTER TABLE `hopsworks`.`oauth_login_state` DROP COLUMN `refresh_token`;

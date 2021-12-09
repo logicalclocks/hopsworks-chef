@@ -750,7 +750,6 @@ CREATE TABLE `oauth_token` (
   `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
   `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
   `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
-  `login_count` int NOT NULL DEFAULT 0,
   `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_state_UNIQUE` (`user_id`),
