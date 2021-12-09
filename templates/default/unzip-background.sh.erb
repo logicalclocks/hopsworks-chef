@@ -3,14 +3,15 @@
 set -e
 
 help() {
-  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER"
+  echo "usage: $0 localWorkdir srcFileInHdfs HDFS_USER [destDirectoryInHdfs]"
   exit 1
 }
 
 
-if [ $# -ne 3 ] ; then
+if [ $# -ne 3 && $# -ne 4 ] ; then
   help
 fi
+
 
 DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -32,5 +33,5 @@ if [ $filesize -gt $freespace ] ; then
 fi
 
 
-nohup "${DIR}"/unzip-hdfs-files.sh "$1" "$2" "$3" > "$1/$filename".log &
+nohup "${DIR}"/unzip-hdfs-files.sh "$1" "$2" "$3" "$4" > "$1/$filename".log &
 
