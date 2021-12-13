@@ -1275,7 +1275,7 @@ if node['rstudio']['enabled'].eql? "true"
 end
 
 # Alter table flyway_schema_history to use ndb instead of innodb
-bash 'alter_flyway_schema_histroy_engine' do
+bash 'alter_flyway_schema_history_engine' do
   user "root"
   code <<-EOF
     set -e
