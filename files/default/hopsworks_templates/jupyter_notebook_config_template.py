@@ -59,6 +59,6 @@ os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
 
 os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
-c.GitHandlersConfiguration.api_key = "${conf.apiKey}"
-c.GitHandlersConfiguration.git_backend = "${conf.gitBackend}"
+os.environ['FLINK_CONF_DIR'] = "${conf.flinkConfDirectory}"
+os.environ['FLINK_LIB_DIR'] = "${conf.flinkLibDirectory}"
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"

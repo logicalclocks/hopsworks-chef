@@ -37,3 +37,17 @@ DROP TABLE IF EXISTS `git_repositories`;
 DROP TABLE IF EXISTS `git_commits`;
 
 DROP TABLE IF EXISTS `git_repository_remotes`;
+
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `git_config_id` INT(11) NULL;
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `git_backend` TINYINT(1) DEFAULT 0;
+CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
+                                                    `id` INT NOT NULL AUTO_INCREMENT,
+                                                    `remote_git_url` VARCHAR(255) NOT NULL,
+                                                    `api_key_name` VARCHAR(125) DEFAULT NULL,
+                                                    `base_branch` VARCHAR(125),
+                                                    `head_branch` VARCHAR(125),
+                                                    `startup_auto_pull` TINYINT(1) DEFAULT 1,
+                                                    `shutdown_auto_push` TINYINT(1) DEFAULT 1,
+                                                    `git_backend` VARCHAR(45) DEFAULT 'GITHUB',
+                                                    PRIMARY KEY (`id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

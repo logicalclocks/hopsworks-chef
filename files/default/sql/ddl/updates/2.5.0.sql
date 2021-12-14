@@ -43,6 +43,7 @@ CREATE TABLE `cached_feature` (
 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(26000) COLLATE latin1_general_cs DEFAULT NULL;
 
+<<<<<<< HEAD
 CREATE TABLE `hopsworks`.`oauth_token` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
@@ -60,6 +61,7 @@ ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `id_token` VARCHAR(8000) 
 ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `refresh_token` VARCHAR(8000) COLLATE latin1_general_cs DEFAULT NULL;
 ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `token` TO `access_token`;
 
+<<<<<<< HEAD
 ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `for_transformation` TINYINT(1) DEFAULT '0';
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL;
@@ -149,3 +151,8 @@ CREATE TABLE IF NOT EXISTS `git_repository_remotes` (
                                                         KEY `git_repository_fk` (`repository`),
                                                         CONSTRAINT `git_repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
  ) ENGINE=ndbcluster AUTO_INCREMENT=6164 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`jupyter_settings`
+    DROP COLUMN git_backend,
+    DROP COLUMN git_config_id;
+DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
