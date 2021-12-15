@@ -50,8 +50,8 @@ ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `training_dataset_id` INT(11) NULL,
-    `type` varchar(63) NULL,
-    `path` varchar(63) NULL,
+    `type` VARCHAR(63) NULL,
+    `path` VARCHAR(63) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `tdf_training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -60,9 +60,10 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `training_dataset_filter_id` INT(11) NULL,
     `feature_group_id` INT(11) NULL,
-    `feature` varchar(63) NULL,
-    `filter_condition` varchar(128) NULL,
-    `filter_value` VARCHAR(128) NULL,
+    `feature` VARCHAR(63) NULL,
+    `filter_condition` VARCHAR(128) NULL,
+    `filter_value` VARCHAR(1024) NULL,
+    `filter_value_fg_id` INT(11) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `tdfc_training_dataset_filter_fk` FOREIGN KEY (`training_dataset_filter_id`) REFERENCES `training_dataset_filter` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
