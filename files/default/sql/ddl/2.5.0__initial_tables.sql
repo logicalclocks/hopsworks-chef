@@ -724,7 +724,9 @@ CREATE TABLE `oauth_login_state` (
                                      `session_id` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                      `client_id` varchar(256) COLLATE latin1_general_cs NOT NULL,
                                      `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     `token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+                                     `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+                                     `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+                                     `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
                                      `nonce` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                      `scopes` VARCHAR(2048) COLLATE latin1_general_cs NOT NULL,
                                      `code_challenge` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
@@ -733,6 +735,26 @@ CREATE TABLE `oauth_login_state` (
                                      UNIQUE KEY `login_state_UNIQUE` (`state`),
                                      KEY `fk_oauth_login_state_client` (`client_id`),
                                      CONSTRAINT `fk_oauth_login_state_client` FOREIGN KEY (`client_id`) REFERENCES `oauth_client` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `oauth_token`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oauth_token` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+  `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_state_UNIQUE` (`user_id`),
+  KEY `fk_oauth_token_user` (`user_id`),
+  CONSTRAINT `fk_oauth_token_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
