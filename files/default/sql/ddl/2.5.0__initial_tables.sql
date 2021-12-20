@@ -1320,6 +1320,7 @@ CREATE TABLE `training_dataset` (
                                     `seed` BIGINT(11) NULL,
                                     `query` TINYINT(1) NOT NULL DEFAULT '0',
                                     `coalesce` TINYINT(1) NOT NULL DEFAULT '0',
+                                    `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL,
                                     PRIMARY KEY (`id`),
                                     UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                     KEY `feature_store_id` (`feature_store_id`),
