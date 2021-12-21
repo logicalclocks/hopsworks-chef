@@ -1619,6 +1619,7 @@ CREATE TABLE IF NOT EXISTS `api_key` (
                                          `modified` timestamp NOT NULL,
                                          `name` varchar(45) NOT NULL,
                                          `user_id` int(11) NOT NULL,
+                                         `reserved` tinyint(1) DEFAULT '0',
                                          PRIMARY KEY (`id`),
                                          UNIQUE KEY `prefix_UNIQUE` (`prefix`),
                                          UNIQUE KEY `index4` (`user_id`,`name`),
