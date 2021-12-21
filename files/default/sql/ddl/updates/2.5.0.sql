@@ -4,6 +4,8 @@ ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL AFTER `transformer`;
 
+ALTER TABLE `hopsworks`.`api_key` ADD COLUMN `reserved` tinyint(1) DEFAULT '0';
+
 -- Set model_name column, parse the model path on format /Projects/{project}/Models/{model} and get the model name
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`serving`
