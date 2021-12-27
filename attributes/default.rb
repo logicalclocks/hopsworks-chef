@@ -439,6 +439,8 @@ default['hopsworks']['requests_verify']       = node['hops']['tls']['enabled']
 default['hopsworks']['provenance']['type']                    = "FULL"
 #define how big each archive round is - how many indices get cleaned
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
+#define the maximum number of nodes that can be present in the generated graph
+default['hopsworks']['provenance']['graph']['max_size']   = "10000"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
 #define in seconds the period between two provenance cleaner timeouts - default 1h
