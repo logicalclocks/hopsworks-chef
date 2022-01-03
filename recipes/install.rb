@@ -60,20 +60,6 @@ group node['hops']['hdfs']['group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
-group node['kagent']['userscerts_group'] do
-  gid node['kagent']['userscerts_group_id']
-  action :create
-  not_if "getent group #{node['kagent']['userscerts_group']}"
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
-group node['kagent']['userscerts_group'] do
-  action :modify
-  members node['hopsworks']['user']
-  append true
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
 group node['hops']['group'] do
   gid node['hops']['group_id']
   action :create
@@ -564,14 +550,7 @@ file "#{ca_dir}/encryption_master_password" do
   group node['glassfish']['group']
 end
 
-directory "#{ca_dir}/transient" do
-  owner node['glassfish']['user']
-  group node['kagent']['userscerts_group']
-  mode "750"
-  action :create
-end
-
-dirs = %w{certs crl newcerts private intermediate}
+dirs = %w{certs crl newcerts private intermediate transient}
 
 for d in dirs
   directory "#{ca_dir}/#{d}" do
