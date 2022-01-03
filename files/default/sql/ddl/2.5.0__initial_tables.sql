@@ -1320,13 +1320,21 @@ CREATE TABLE `training_dataset` (
                                     `seed` BIGINT(11) NULL,
                                     `query` TINYINT(1) NOT NULL DEFAULT '0',
                                     `coalesce` TINYINT(1) NOT NULL DEFAULT '0',
+<<<<<<< HEAD
                                     `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL,
+=======
+                                    `model_feature_id` INT(11) NULL,
+                                    `start_time` TIMESTAMP NULL,
+                                    `end_time` TIMESTAMP NULL,
+>>>>>>> 6d6df95 (add modelfeature table)
                                     PRIMARY KEY (`id`),
                                     UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                     KEY `feature_store_id` (`feature_store_id`),
                                     KEY `creator` (`creator`),
                                     KEY `hopsfs_training_dataset_fk` (`hopsfs_training_dataset_id`),
                                     KEY `external_training_dataset_fk` (`external_training_dataset_id`),
+                                    CONSTRAINT `td_model_feature_fk` FOREIGN KEY  (`model_feature_id`) REFERENCES
+                                        `model_feature` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `FK_1012_877` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
                                     CONSTRAINT `FK_656_817` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `hopsfs_training_dataset_fk` FOREIGN KEY (`hopsfs_training_dataset_id`) REFERENCES `hopsfs_training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1350,9 +1358,12 @@ CREATE TABLE `training_dataset_feature` (
                                             `idx` int(11) NULL,
                                             `label` tinyint(1) NOT NULL DEFAULT '0',
                                             `transformation_function`  int(11) NULL,
+                                            `model_feature_id` INT(11) NULL,
                                             PRIMARY KEY (`id`),
                                             KEY `td_key` (`training_dataset`),
                                             KEY `fg_key` (`feature_group`),
+                                            CONSTRAINT `tdf_model_feature_fk` FOREIGN KEY  (`model_feature_id`)
+                                                REFERENCES `model_feature` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                             CONSTRAINT `join_fk_tdf` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                                             CONSTRAINT `td_fk_tdf` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                             CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
@@ -1370,8 +1381,11 @@ CREATE TABLE `training_dataset_join` (
                                          `type` tinyint(5) NOT NULL DEFAULT 0,
                                          `idx` int(11) NOT NULL DEFAULT 0,
                                          `prefix` VARCHAR(63) NULL,
+                                         `model_feature_id` INT(11) NULL,
                                          PRIMARY KEY (`id`),
                                          KEY `fg_key` (`feature_group`),
+                                         CONSTRAINT `tdj_model_feature_fk` FOREIGN KEY  (`model_feature_id`) REFERENCES
+                                             `model_feature` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                          CONSTRAINT `td_fk_tdj` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                          CONSTRAINT `fg_left` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1908,7 +1922,10 @@ CREATE TABLE `feature_store_activity` (
                                           `validation_id`                 INT(11) NULL,
                                           `feature_group_id`              INT(11) NULL,
                                           `training_dataset_id`           INT(11) NULL,
+                                          `model_feature_id`              INT(11) NULL,
                                           PRIMARY KEY (`id`),
+                                          CONSTRAINT `fsa_model_feature_fk` FOREIGN KEY  (`model_feature_id`) REFERENCES
+                                              `model_feature` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_uid_fk` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
