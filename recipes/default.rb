@@ -467,7 +467,8 @@ props =  {
      'two-factor-column' => 'two_factor',
      'user-status-column' => 'status',
      'yubikey-table' => 'hopsworks.yubikey',
-     'variables-table' => 'hopsworks.variables'
+     'variables-table' => 'hopsworks.variables',
+     'user-account-type-column' => 'mode'
  }
 
  glassfish_auth_realm "cauthRealm" do
