@@ -42,3 +42,7 @@ CREATE TABLE `hopsworks`.`oauth_token` (
 ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `id_token` VARCHAR(8000) NULL;
 ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `refresh_token` VARCHAR(8000) NULL;
 ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `token` TO `access_token`;
+
+ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `for_transformation` TINYINT(1) DEFAULT '0';
+
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL;
