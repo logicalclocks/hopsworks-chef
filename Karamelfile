@@ -28,3 +28,8 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
+      - hopsworks::default
+      - epipe::default
+      - elastic::default
+      - kube-hops::node
+      - kube-hops::master
