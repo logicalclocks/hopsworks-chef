@@ -46,3 +46,6 @@ ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `token` TO `access_tok
 ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `for_transformation` TINYINT(1) DEFAULT '0';
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`variables` ADD COLUMN `hide` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `user`;
