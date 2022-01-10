@@ -4,6 +4,8 @@ ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL AFTER `transformer`;
 
+ALTER TABLE `hopsworks`.`api_key` ADD COLUMN `reserved` tinyint(1) DEFAULT '0';
+
 -- Set model_name column, parse the model path on format /Projects/{project}/Models/{model} and get the model name
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`serving`
@@ -23,3 +25,24 @@ CREATE TABLE `cached_feature` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` MODIFY COLUMN `query` VARCHAR(26000) COLLATE latin1_general_cs DEFAULT NULL;
+
+CREATE TABLE `hopsworks`.`oauth_token` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+  `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_state_UNIQUE` (`user_id`),
+  KEY `fk_oauth_token_user` (`user_id`),
+  CONSTRAINT `fk_oauth_token_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `id_token` VARCHAR(8000) NULL;
+ALTER TABLE `hopsworks`.`oauth_login_state` ADD COLUMN `refresh_token` VARCHAR(8000) NULL;
+ALTER TABLE `hopsworks`.`oauth_login_state` RENAME COLUMN `token` TO `access_token`;
+
+ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `for_transformation` TINYINT(1) DEFAULT '0';
+
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL;

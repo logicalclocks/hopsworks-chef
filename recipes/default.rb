@@ -456,7 +456,8 @@ props =  {
      'two-factor-column' => 'two_factor',
      'user-status-column' => 'status',
      'yubikey-table' => 'hopsworks.yubikey',
-     'variables-table' => 'hopsworks.variables'
+     'variables-table' => 'hopsworks.variables',
+     'user-account-type-column' => 'mode'
  }
 
  glassfish_auth_realm "cauthRealm" do
@@ -1272,4 +1273,13 @@ if node['rstudio']['enabled'].eql? "true"
       systemctl disable rstudio-server
     EOF
   end
+end
+
+# Alter table flyway_schema_history to use ndb instead of innodb
+bash 'alter_flyway_schema_history_engine' do
+  user "root"
+  code <<-EOF
+    set -e
+    #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
+  EOF
 end

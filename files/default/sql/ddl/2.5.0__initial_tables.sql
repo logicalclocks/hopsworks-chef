@@ -382,6 +382,7 @@ CREATE TABLE `feature_store_statistic` (
                                            `feature_group_id` INT(11),
                                            `feature_group_commit_id` BIGINT(20),
                                            `training_dataset_id`INT(11),
+                                           `for_transformation` TINYINT(1) DEFAULT '0',
                                            PRIMARY KEY (`id`),
                                            KEY `feature_group_id` (`feature_group_id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
@@ -724,7 +725,9 @@ CREATE TABLE `oauth_login_state` (
                                      `session_id` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                      `client_id` varchar(256) COLLATE latin1_general_cs NOT NULL,
                                      `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     `token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+                                     `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+                                     `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+                                     `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
                                      `nonce` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                      `scopes` VARCHAR(2048) COLLATE latin1_general_cs NOT NULL,
                                      `code_challenge` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
@@ -733,6 +736,26 @@ CREATE TABLE `oauth_login_state` (
                                      UNIQUE KEY `login_state_UNIQUE` (`state`),
                                      KEY `fk_oauth_login_state_client` (`client_id`),
                                      CONSTRAINT `fk_oauth_login_state_client` FOREIGN KEY (`client_id`) REFERENCES `oauth_client` (`client_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `oauth_token`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oauth_token` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+  `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
+  `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_state_UNIQUE` (`user_id`),
+  KEY `fk_oauth_token_user` (`user_id`),
+  CONSTRAINT `fk_oauth_token_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1297,6 +1320,7 @@ CREATE TABLE `training_dataset` (
                                     `seed` BIGINT(11) NULL,
                                     `query` TINYINT(1) NOT NULL DEFAULT '0',
                                     `coalesce` TINYINT(1) NOT NULL DEFAULT '0',
+                                    `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL,
                                     PRIMARY KEY (`id`),
                                     UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                     KEY `feature_store_id` (`feature_store_id`),
@@ -1597,6 +1621,7 @@ CREATE TABLE IF NOT EXISTS `api_key` (
                                          `modified` timestamp NOT NULL,
                                          `name` varchar(45) NOT NULL,
                                          `user_id` int(11) NOT NULL,
+                                         `reserved` tinyint(1) DEFAULT '0',
                                          PRIMARY KEY (`id`),
                                          UNIQUE KEY `prefix_UNIQUE` (`prefix`),
                                          UNIQUE KEY `index4` (`user_id`,`name`),

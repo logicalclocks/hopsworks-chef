@@ -19,16 +19,16 @@
     </services>
 
     <kube>
-        <user></user>
-        <masterUrl></masterUrl>
-        <caPath></caPath>
-        <tstorePath></tstorePath>
-        <tstorePwd></tstorePwd>
-        <kstorePath></kstorePath>
-        <kstorePwd></kstorePwd>
-        <certFile></certFile>
-        <keyFile></keyFile>
-        <keyPwd></keyPwd>
+        <user><%= @kube_hopsworks_user %></user>
+        <masterUrl><%= @kube_master_url %></masterUrl>
+        <caPath><%= node["certs"]["dir"] %>/kube/certs/kube-ca.cert.pem</caPath>
+        <tstorePath><%= node["certs"]["dir"] %>/kube/hopsworks/hopsworks__tstore.jks</tstorePath>
+        <tstorePwd><%= @kube_hopsworks_cert_pwd %></tstorePwd>
+        <kstorePath><%= node["certs"]["dir"] %>/kube/hopsworks/hopsworks__kstore.jks</kstorePath>
+        <kstorePwd><%= @kube_hopsworks_cert_pwd %></kstorePwd>
+        <certFile><%= node["certs"]["dir"] %>/kube/hopsworks/hopsworks.cert.pem</certFile>
+        <keyFile><%= node["certs"]["dir"] %>/kube/hopsworks/hopsworks.key.pem</keyFile>
+        <keyPwd><%= @kube_hopsworks_cert_pwd %></keyPwd>
     </kube>
 
     <hopsworks>
@@ -138,5 +138,6 @@
     <version-25>
         io.hops.hopsworks.expat.migrations.projects.search.featurestore.UpdateFeaturegroupsForType
         io.hops.hopsworks.expat.migrations.elk.BaseIndexTemplateMigrate
+        io.hops.hopsworks.expat.migrations.serving.ServingApiKeysMigration
     </version-25>
 </expat>

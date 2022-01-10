@@ -82,7 +82,7 @@ default['hopsworks']['config_dir']               = "#{node['hopsworks']['domains
 default['glassfish']['reschedule_failed_timer']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_version']            = "otp-auth-0.4.0.jar"
+default['hopsworks']['cauth_version']            = "otp-auth-0.5.0.jar"
 default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
 
 default['hopsworks']['download_url']             = "#{node['install']['enterprise']['install'].casecmp?("true") ? node['install']['enterprise']['download_url'] : node['download_url']}/hopsworks/#{node['hopsworks']['version']}"
@@ -439,6 +439,8 @@ default['hopsworks']['requests_verify']       = node['hops']['tls']['enabled']
 default['hopsworks']['provenance']['type']                    = "FULL"
 #define how big each archive round is - how many indices get cleaned
 default['hopsworks']['provenance']['archive']['batch_size']   = "10"
+#define the maximum number of nodes that can be present in the generated graph
+default['hopsworks']['provenance']['graph']['max_size']   = "10000"
 #define how long to keep deleted items before archiving them - default 24h
 default['hopsworks']['provenance']['archive']['delay']        = "86400"
 #define in seconds the period between two provenance cleaner timeouts - default 1h
