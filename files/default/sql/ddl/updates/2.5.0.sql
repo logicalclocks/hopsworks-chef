@@ -47,6 +47,7 @@ ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `for_transformation
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `train_split` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL;
 
+-- training dataset filter table
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `training_dataset_id` INT(11) NULL,
