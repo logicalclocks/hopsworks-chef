@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `training_dataset_filter_id` INT(11) NULL,
     `feature_group_id` INT(11) NULL,
-    `feature` VARCHAR(63) NULL,
+    `feature_name` VARCHAR(63) NULL,
     `filter_condition` VARCHAR(128) NULL,
     `filter_value` VARCHAR(1024) NULL,
     `filter_value_fg_id` INT(11) NULL,
