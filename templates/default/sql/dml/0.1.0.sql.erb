@@ -227,7 +227,7 @@ REPLACE INTO variables(`id`, `value`) VALUES ("hive_superuser", "<%= node['hive2
 -- First-time Login
 --
 
-REPLACE INTO variables VALUES ("first_time_login", "1", 2);
+REPLACE INTO variables(`id`, `value`, `visibility`) VALUES ("first_time_login", "1", 2);
 
 
 --

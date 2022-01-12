@@ -10,7 +10,7 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("preinstalled_python
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsworks_rest_log_level", "<%= node['hopsworks']['hopsworks_rest_log_level'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("hopsworks_endpoint" , "<%= node['fqdn'] %>:<%= node['hopsworks']['https']['port'] %>", 1);
 
 -- Create the user who will be responsibile to log the inference requests to kafka
 -- This user should not be able to login. The password doesn't make any sense.

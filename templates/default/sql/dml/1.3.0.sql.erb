@@ -8,11 +8,11 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='rm_port';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='spark_history_server_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ext_hostname';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='hiveserver_ssl_hostname';
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_enterprise", "<%= node['install']['enterprise']['install']%>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("kubernetes_installed", "<%= node['install']['kubernetes'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("hopsworks_enterprise", "<%= node['install']['enterprise']['install']%>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kubernetes_installed", "<%= node['install']['kubernetes'] %>", 1);
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_tf_serving';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_sklearn_serving';
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("enable_metadata_designer", "<%= node['hopsworks']['enable_metadata_designer'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_metadata_designer", "<%= node['hopsworks']['enable_metadata_designer'] %>", 1);
