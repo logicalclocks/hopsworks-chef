@@ -303,6 +303,17 @@ for version in versions do
     mode 0750
     action :create
   end
+
+  if Gem::Version.new(version) >= Gem::Version.new('2.4.0')
+    cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__initial_tables.sql" do
+      source "sql/ddl/#{version}__initial_tables.sql"
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+      mode 0750
+      action :create
+    end
+  end 
+  
 end
 
 if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
