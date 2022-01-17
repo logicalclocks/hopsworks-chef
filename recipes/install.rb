@@ -712,7 +712,7 @@ end
 end
 
 template "#{theDomain}/bin/git-container-launch.sh" do
-  source "#{script}.erb"
+  source "git-container-launch.sh.erb"
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode "500"
