@@ -386,7 +386,8 @@ directory node['hopsworks']['data_volume']['domain1_logs'] do
   mode '0750'
 end
 
-package 'openssl'
+
+package ["openssl", "zip"]
 
 if !::File.directory?("#{theDomain}/lib")
   include_recipe 'glassfish::attribute_driven_domain'
