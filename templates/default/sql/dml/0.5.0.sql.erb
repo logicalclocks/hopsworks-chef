@@ -5,20 +5,20 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("support_email_addr"
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
-REPLACE INTO `hopsworks`.`variables` VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("grafana_version", "<%= node['grafana']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("logstash_version", "<%= node['logstash']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("kibana_version", "<%= node['kibana']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("filebeat_version", "<%= node['filebeat']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("ndb_version", "<%= node['ndb']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("livy_version", "<%= node['livy']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("hive2_version", "<%= node['hive2']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("tez_version", "<%= node['tez']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("spark_version", "<%= node['hadoop_spark']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("flink_version", "<%= node['flink']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("epipe_version", "<%= node['epipe']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("dela_version", "<%= node['dela']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("kafka_version", "<%= node['kkafka']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("elastic_version", "<%= node['elastic']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>", 1);
-REPLACE INTO `hopsworks`.`variables` VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("grafana_version", "<%= node['grafana']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("logstash_version", "<%= node['logstash']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kibana_version", "<%= node['kibana']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("filebeat_version", "<%= node['filebeat']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("ndb_version", "<%= node['ndb']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("livy_version", "<%= node['livy']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("hive2_version", "<%= node['hive2']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("tez_version", "<%= node['tez']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("spark_version", "<%= node['hadoop_spark']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("flink_version", "<%= node['flink']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("epipe_version", "<%= node['epipe']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("dela_version", "<%= node['dela']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kafka_version", "<%= node['kkafka']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("elastic_version", "<%= node['elastic']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("tensorflow_version", "<%= node['tensorflow']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("hopsworks_version", "<%= node['hopsworks']['version'] %>", 1);
