@@ -2,3 +2,13 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_per_job_
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_cleaner_batch_size", "<%= node['hopsworks']['job']['executions_cleaner_batch_size'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("executions_cleaner_interval_ms", "<%= node['hopsworks']['job']['executions_cleaner_interval_ms'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("provenance_graph_max_size", "<%= node['hopsworks']['provenance']['graph']['max_size'] %>");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='JAVA_HOME';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsworks_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='jhs_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='jupyter_user';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='airflow_user';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_user';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='alert_email_addrs';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='py4j_archive';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_beam_jobserver_local';

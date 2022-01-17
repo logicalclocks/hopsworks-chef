@@ -124,7 +124,7 @@ REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_partitions", "<%= node[
 
 REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_replicas", "<%= node['hopsworks']['kafka_num_replicas'] %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>");
+REPLACE INTO variables(`id`, `value`, `hide`) VALUES ("hopsworks_master_password", "<%= node['hopsworks']['master']['password'] %>", 1);
 
 REPLACE INTO variables(`id`, `value`) VALUES ("glassfish_cert", "false");
 
@@ -227,7 +227,7 @@ REPLACE INTO variables(`id`, `value`) VALUES ("hive_superuser", "<%= node['hive2
 -- First-time Login
 --
 
-REPLACE INTO variables VALUES ("first_time_login", "1", 2);
+REPLACE INTO variables(`id`, `value`, `visibility`) VALUES ("first_time_login", "1", 2);
 
 
 --
