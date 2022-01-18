@@ -122,7 +122,6 @@ CREATE TABLE `cluster_cert` (
 CREATE TABLE `conda_commands` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `project_id` int(11) NOT NULL,
-                                  `user` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `op` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `channel_url` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `arg` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
@@ -1567,6 +1566,7 @@ CREATE TABLE `variables` (
                              `id` varchar(255) COLLATE latin1_general_cs NOT NULL,
                              `value` varchar(1024) COLLATE latin1_general_cs NOT NULL,
                              `visibility` TINYINT NOT NULL DEFAULT 0,
+                             `hide` TINYINT NOT NULL DEFAULT 0,
                              PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2089,3 +2089,25 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `training_dataset_id` INT(11) NULL,
+    `type` VARCHAR(63) NULL,
+    `path` VARCHAR(63) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `tdf_training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `training_dataset_filter_id` INT(11) NULL,
+    `feature_group_id` INT(11) NULL,
+    `feature_name` VARCHAR(63) NULL,
+    `filter_condition` VARCHAR(128) NULL,
+    `filter_value` VARCHAR(1024) NULL,
+    `filter_value_fg_id` INT(11) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `tdfc_training_dataset_filter_fk` FOREIGN KEY (`training_dataset_filter_id`) REFERENCES `training_dataset_filter` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
