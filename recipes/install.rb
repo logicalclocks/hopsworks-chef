@@ -6,7 +6,7 @@ domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 password_file = "#{theDomain}_admin_passwd"
-namenonde_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
+namenode_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
 glassfish_fdqn = consul_helper.get_service_fqdn("glassfish")
 
 bash "systemd_reload_for_glassfish_failures" do
@@ -719,7 +719,7 @@ template "#{theDomain}/bin/git-container-launch.sh" do
   action :create
   variables({
               :glassfish_fdqn => glassfish_fdqn,
-              :namenonde_fdqn => namenonde_fdqn,
+              :namenode_fdqn => namenode_fdqn,
               :namenode_port => node['hops']['nn']['port'],
               :glassfish_port => node['hopsworks']['https']['port']
             })
