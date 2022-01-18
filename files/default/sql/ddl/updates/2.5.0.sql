@@ -69,3 +69,6 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     CONSTRAINT `tdfc_training_dataset_filter_fk` FOREIGN KEY (`training_dataset_filter_id`) REFERENCES `training_dataset_filter` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`variables` ADD COLUMN `hide` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `user`;

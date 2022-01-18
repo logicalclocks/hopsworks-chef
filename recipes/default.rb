@@ -33,20 +33,6 @@ rescue
 end
 
 begin
-  hopsworks_ip = private_recipe_ip("hopsworks","default")
-rescue
-  hopsworks_ip = ""
-  Chef::Log.warn "could not find the hopsworks server ip for HopsWorks!"
-end
-
-begin
-  jhs_ip = private_recipe_ip("hops","jhs")
-rescue
-  jhs_ip = node['hostname']
-  Chef::Log.warn "could not find the MR job history server ip!"
-end
-
-begin
   dela_ip = private_recipe_ip("dela","default")
 rescue
   dela_ip = node['hostname']
@@ -66,7 +52,6 @@ rescue
   python_kernel = "true"
   Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
 end
-
 
 
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
@@ -247,8 +232,6 @@ for version in versions do
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
          :hosts => hosts,
-         :jhs_ip => jhs_ip,
-         :hopsworks_ip => hopsworks_ip,
          :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
          :hdfs_ui_ip => public_recipe_ip("hops","nn"),
@@ -292,6 +275,17 @@ for version in versions do
     mode 0750
     action :create
   end
+
+  if Gem::Version.new(version) >= Gem::Version.new('2.4.0')
+    cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__initial_tables.sql" do
+      source "sql/ddl/#{version}__initial_tables.sql"
+      owner node['glassfish']['user']
+      group node['glassfish']['group']
+      mode 0750
+      action :create
+    end
+  end 
+  
 end
 
 if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
@@ -1149,7 +1143,7 @@ end
 ruby_block "generate_service_jwt" do
   block do
     master_token, renew_tokens = get_service_jwt()
-    sql_command_template = "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value) VALUE ('%s', '%s');\""
+    sql_command_template = "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, hide) VALUE ('%s', '%s', 1);\""
     master_token_command = sql_command_template % ['service_master_jwt', master_token]
     execute_shell_command master_token_command
 

@@ -24,3 +24,7 @@ ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `train_split`;
 -- training dataset filter table
 DROP TABLE IF EXISTS `hopsworks`.`training_dataset_filter`;
 DROP TABLE IF EXISTS `hopsworks`.`training_dataset_filter_condition`;
+
+ALTER TABLE `hopsworks`.`variables` DROP COLUMN `hide`;
+
+ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `user` varchar(52) COLLATE latin1_general_cs NOT NULL;
