@@ -724,7 +724,7 @@ CREATE TABLE `oauth_login_state` (
                                      `session_id` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                      `client_id` varchar(256) COLLATE latin1_general_cs NOT NULL,
                                      `login_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     `id_token` varchar(8000) COLLATE latin1_general_cs NOT NULL,
+                                     `id_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
                                      `access_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
                                      `refresh_token` varchar(8000) COLLATE latin1_general_cs DEFAULT NULL,
                                      `nonce` varchar(128) COLLATE latin1_general_cs NOT NULL,
