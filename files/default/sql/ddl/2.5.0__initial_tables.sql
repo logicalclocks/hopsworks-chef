@@ -2120,6 +2120,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+
 CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     `id` int NOT NULL AUTO_INCREMENT,
                                                     `inode_pid` bigint NOT NULL,
