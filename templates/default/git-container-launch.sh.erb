@@ -89,7 +89,6 @@ docker run --rm -d --privileged --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "GLASSFISH_IP=${GLASSFISH_IP}" \
        -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
        -v $GIT_HOME:$GIT_HOME:rw\
-       -u="yarnapp" \
        -w="$GIT_HOME" \
        $DOCKER_IMAGE &
 
