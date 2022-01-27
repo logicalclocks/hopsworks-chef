@@ -6,6 +6,8 @@ domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
 password_file = "#{theDomain}_admin_passwd"
+namenode_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
+glassfish_fdqn = consul_helper.get_service_fqdn("glassfish")
 
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
@@ -670,6 +672,14 @@ kagent_sudoers "airflowSymlink" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+kagent_sudoers "git" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "git.sh"
+  template      "git.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -699,7 +709,7 @@ end
 
 ["zip-hdfs-files.sh", "zip-background.sh", "unzip-background.sh",  "tensorboard-launch.sh",
  "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
- "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh"].each do |script|
+ "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
@@ -709,6 +719,19 @@ end
   end
 end
 
+template "#{theDomain}/bin/git-container-launch.sh" do
+  source "git-container-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "500"
+  action :create
+  variables({
+              :glassfish_fdqn => glassfish_fdqn,
+              :namenode_fdqn => namenode_fdqn,
+              :namenode_port => node['hops']['nn']['port'],
+              :glassfish_port => node['hopsworks']['internal']['port']
+            })
+end
 
 ["sklearn_flask_server.py"].each do |script|
   template "#{theDomain}/bin/#{script}" do

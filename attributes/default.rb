@@ -477,3 +477,6 @@ default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
 
 default['hopsworks']['reject_remote_user_no_group'] = "false"
 default['hopsworks']['managed_cloud_redirect_uri'] = ""
+
+#git
+default['hopsworks']['git_command_timeout_minutes']  = "60"
