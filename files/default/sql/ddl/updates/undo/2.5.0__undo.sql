@@ -3,6 +3,7 @@ ALTER TABLE `hopsworks`.`validation_rule` DROP INDEX `unique_validation_rule`;
 ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule` UNIQUE KEY (`name`,`predicate`,`accepted_type`);
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_name`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `predictor`;
 
 ALTER TABLE `hopsworks`.`api_key` DROP COLUMN `reserved`;
 

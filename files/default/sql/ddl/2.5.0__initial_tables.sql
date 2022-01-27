@@ -1167,6 +1167,7 @@ CREATE TABLE `serving` (
                            `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `artifact_version` int(11) DEFAULT NULL,
+                           `predictor` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,

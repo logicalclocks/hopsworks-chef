@@ -14,3 +14,4 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='py4j_archive';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_beam_jobserver_local';
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("git_command_timeout_minutes", "<%= node['hopsworks']['git_command_timeout_minutes'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("scikit-learn_version", "<%= node['scikit-learn']['version'] %>");
