@@ -12,3 +12,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_user';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='alert_email_addrs';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='py4j_archive';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='logstash_port_beam_jobserver_local';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("scikit-learn_version", "<%= node['scikit-learn']['version'] %>");
