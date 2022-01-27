@@ -76,6 +76,6 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE \
        -u="yarnapp" \
        -w="$SECRET_DIR" \
        $IMAGE \
-       /usr/local/bin/sklearn_serving-launcher.sh &
+       /usr/local/bin/python-server-launcher.sh &
 
 exit $?
