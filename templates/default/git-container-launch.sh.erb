@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+ARGUMENT_FILE=$1
+
+help() {
+    echo ""
+    echo "usage: $0 ARGUMENTS_FILE"
+    echo ""
+    exit 1
+}
+
+if [ $# -ne 1 ]; then
+  help
+fi
+
+if [ ! -f "$ARGUMENT_FILE" ]; then
+    echo "Argument file: $ARGUMENT_FILE  does not exist"
+    exit 2
+fi
+
+while read ARGUMENT
+do
+  eval $ARGUMENT
+  if [ $? -ne 0 ] ; then
+echo "Invalid command: $ARGUMENT"
+exit 3
+  fi
+done < $ARGUMENT_FILE
+
+NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_PORT=<%= @namenode_port %>
+GLASSFISH_IP=<%= @glassfish_fdqn %>
+GLASSFISH_PORT=<%= @glassfish_port %>
+CONTAINER_NAME=${HADOOP_USERNAME}__git__${GIT_COMMAND}__${EXECUTION_ID}
+PID_FILE=${GIT_HOME}/run/git.pid
+NOT_FOUND=127
+CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
+ROOT_CA_BUNDLE=${HADOOP_USERNAME}_root_ca.pem
+CLIENT_KEY=${HADOOP_USERNAME}_private_key.pem
+
+function kill_named {
+    CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+        docker rm -f "$CID" > /dev/null 2>&1
+        res=$?
+    else
+        res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+
+cd "$GIT_HOME"
+if [ $? -ne 0 ] ; then
+   echo "Invalid GIT HOME directory: $GIT_HOME"
+   exit 4
+fi
+
+kill_named
+
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
+fi
+
+docker run --rm -d --privileged --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "GIT_PATH=$GIT_HOME" \
+       -e "GIT_DATA_DIR=$GIT_HOME" \
+       -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
+       -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
+       -e "NAMENODE_IP=${NAMENODE_IP}" \
+       -e "NAMENODE_PORT=${NAMENODE_PORT}" \
+       -e "PROJECT_NAME=${PROJECT_NAME}" \
+       -e "GIT_COMMAND=${GIT_COMMAND}" \
+       -e "GIT_COMMAND_CONFIG=${GIT_COMMAND_CONFIG}" \
+       -e "COMMAND_LOGFILE=${COMMAND_LOGFILE}" \
+       -e "HOPSFS_LOGFILE=${HOPSFS_LOGFILE}" \
+       -e "CLIENT_CERTIFICATES_BUNDLE=${CLIENT_CERTIFICATES_BUNDLE}" \
+       -e "ROOT_CA_BUNDLE=${ROOT_CA_BUNDLE}" \
+       -e "CLIENT_KEY=${CLIENT_KEY}" \
+       -e "JWT_TOKEN_FILE=${JWT_TOKEN_FILE}" \
+       -e "EXECUTION_ID=${EXECUTION_ID}" \
+       -e "PROJECT_ID=${PROJECT_ID}" \
+       -e "GIT_USERNAME=${GIT_USERNAME}" \
+       -e "GIT_TOKEN=${GIT_TOKEN}" \
+       -e "HADOOP_GROUP=${HADOOP_GROUP}" \
+       -e "REPOSITORY_ID=${REPOSITORY_ID}" \
+       -e "GLASSFISH_IP=${GLASSFISH_IP}" \
+       -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
+       -v $GIT_HOME:$GIT_HOME:rw\
+       -w="$GIT_HOME" \
+       $DOCKER_IMAGE &
+
+exit $?

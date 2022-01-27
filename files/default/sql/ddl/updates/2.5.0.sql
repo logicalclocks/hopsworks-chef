@@ -73,3 +73,63 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
 
 ALTER TABLE `hopsworks`.`variables` ADD COLUMN `hide` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `hopsworks`.`conda_commands` DROP COLUMN `user`;
+
+CREATE TABLE IF NOT EXISTS `git_repositories` (
+                                                `id` int NOT NULL AUTO_INCREMENT,
+                                                `inode_pid` bigint NOT NULL,
+                                                `inode_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                `partition_id` bigint NOT NULL,
+                                                `project` int NOT NULL,
+                                                `provider` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                `current_branch` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                                `current_commit` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                                `cid` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                                `creator` int NOT NULL,
+                                                PRIMARY KEY (`id`),
+                                                UNIQUE KEY `repository_inode_constraint_unique` (`inode_pid`,`inode_name`,`partition_id`),
+                                                KEY `project_fk` (`project`),
+                                                CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE,
+                                                CONSTRAINT `repository_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE
+) ENGINE=ndbcluster AUTO_INCREMENT=2061 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `git_executions` (
+                                                `id` int NOT NULL AUTO_INCREMENT,
+                                                `submission_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                                `user` int NOT NULL,
+                                                `repository` int NOT NULL,
+                                                `execution_start` bigint DEFAULT NULL,
+                                                `execution_stop` bigint DEFAULT NULL,
+                                                `command_config` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                                `state` varchar(128) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                `final_result_message` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                                `config_secret` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                PRIMARY KEY (`id`),
+                                                KEY `user` (`user`),
+                                                KEY `git_exec_repo_fkc` (`repository`),
+                                                CONSTRAINT `git_exec_repo_fkc` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE,
+                                                CONSTRAINT `git_exec_usr_fkc` FOREIGN KEY (`user`) REFERENCES `users` (`uid`) ON DELETE CASCADE
+) ENGINE=ndbcluster AUTO_INCREMENT=8251 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `git_commits` (
+                                            `id` int NOT NULL AUTO_INCREMENT,
+                                            `repository` int NOT NULL,
+                                            `branch` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                                            `hash` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                            `message` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                            `committer_name` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                            `committer_email` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                            `date` TIMESTAMP NULL DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            KEY `repository_fk` (`repository`),
+                                            CONSTRAINT `repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster AUTO_INCREMENT=4119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `git_repository_remotes` (
+                                                        `id` int NOT NULL AUTO_INCREMENT,
+                                                        `repository` int NOT NULL,
+                                                        `remote_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                        `remote_url` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                        PRIMARY KEY (`id`),
+                                                        KEY `git_repository_fk` (`repository`),
+                                                        CONSTRAINT `git_repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
+ ) ENGINE=ndbcluster AUTO_INCREMENT=6164 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
