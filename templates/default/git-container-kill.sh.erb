@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+help() {
+    echo ""
+    echo "usage: $0 CONTAINER_ID PROJECT_USER_NAME"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 2 ]; then
+  help
+fi
+
+echo "Killing input container_id: $1"
+docker rm -f "$1" > /dev/null 2>&1
+exit $?

@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# This script allows Hopsworks to start/kill container for performing a git operation .
+# This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
+#
+
+help() {
+    echo ""
+    echo "usage: $0 [start arguments_file] | [kill git_home container_id project_user_name] | [list]"
+    echo ""
+    exit 1
+}
+
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+GIT_USER=<%= node['hops']['yarnapp']['user'] %>
+GIT_GROUP=<%= node['hops']['group'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
+
+
+if [ "$1" == "kill" ] ; then
+
+    if [ $# -ne 4 ]; then
+	help
+    fi
+
+    # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'git'
+    sudo ${DOMAINS_DIR}/domain1/bin/git-container-kill.sh $3 $4
+
+    # Remove all the directories in the home git folder for this execution.
+    if [ "$2" != "" ] ; then
+	    rm -rf "${2}"
+    fi
+
+elif [ "$1" == "start" ] ; then
+
+    if [ $# -ne 2 ]; then
+	help
+    fi
+
+    INPUT_FILE=$2
+
+    if [ ! -f "$INPUT_FILE" ]; then
+  echo "Argument file: $INPUT_FILE  does not exist"
+  exit 2
+    fi
+
+    while read ARGUMENT
+    do
+       eval $ARGUMENT
+       if [ $? -ne 0 ] ; then
+      echo "Invalid command: $ARGUMENT"
+      exit 3
+       fi
+    done < $INPUT_FILE
+
+
+    if [ ! -d $GIT_HOME ] ; then
+	echo "Invalid GIT_HOME directory: $2"
+	exit 4
+    fi
+
+    if [ ! -d "${CERTS_DIR}" ] ; then
+	echo "Invalid certificates directory: $9"
+	exit 5
+    fi
+
+    if [ ! -f "${JWT_TOKEN_FILE}" ] ; then
+        echo "Invalid token file: ${JWT_TOKEN_FILE}"
+        exit 6
+    fi
+
+    if ! [[ ${DOCKER_IMAGE} =~ $VALID_IMAGE_NAME ]] ; then
+	echo "error: Not an image name ${IMAGE}" >&2
+	exit 7
+    fi
+
+    # Make the group of the files, the jupyter group so that they can write to the files
+    chown -R "${HOPSWORKS_USER}":"${GIT_GROUP}" "$GIT_HOME/"..
+    if [ $? -ne 0 ] ; then
+	echo "Error: could not change ownership of config_dir for git: $GIT_HOME"
+	exit 8
+    fi
+    chmod 0730 "$GIT_HOME/"..
+    chown -R "${GIT_USER}":"${GIT_GROUP}" "$GIT_HOME"
+    chmod -R 770 "$GIT_HOME"
+
+    # Run script to launch git container
+    ${DOMAINS_DIR}/domain1/bin/git-container-launch.sh "${INPUT_FILE}"
+
+# list
+elif [ "$1" == "list" ] ; then
+    # This command will output line-separated PIDs for all running git containers into the tmp file, from where it is
+    # read by Hopsworks
+    docker container list -a | grep "__git" |  grep -v 'grep' | awk '{print $1}' > /tmp/gitConatainers.pids
+else
+  help
+fi
+
+exit $?

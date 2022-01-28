@@ -3,6 +3,7 @@ ALTER TABLE `hopsworks`.`validation_rule` DROP INDEX `unique_validation_rule`;
 ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule` UNIQUE KEY (`name`,`predicate`,`accepted_type`);
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_name`;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `predictor`;
 
 ALTER TABLE `hopsworks`.`api_key` DROP COLUMN `reserved`;
 
@@ -28,3 +29,11 @@ DROP TABLE IF EXISTS `hopsworks`.`training_dataset_filter_condition`;
 ALTER TABLE `hopsworks`.`variables` DROP COLUMN `hide`;
 
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `user` varchar(52) COLLATE latin1_general_cs NOT NULL;
+
+DROP TABLE IF EXISTS `git_executions`;
+
+DROP TABLE IF EXISTS `git_repositories`;
+
+DROP TABLE IF EXISTS `git_commits`;
+
+DROP TABLE IF EXISTS `git_repository_remotes`;
