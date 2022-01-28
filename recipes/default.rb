@@ -2,6 +2,7 @@ require 'digest'
 require 'securerandom'
 
 include_recipe "java"
+include_recipe "hops::default"
 
 Chef::Recipe.send(:include, Hops::Helpers)
 Chef::Resource.send(:include, Hops::Helpers)
