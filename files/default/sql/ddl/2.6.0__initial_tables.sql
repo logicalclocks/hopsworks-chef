@@ -293,6 +293,7 @@ CREATE TABLE `feature_group` (
                                  `feature_group_type` INT(11) NOT NULL DEFAULT '0',
                                  `on_demand_feature_group_id` INT(11) NULL,
                                  `cached_feature_group_id` INT(11) NULL,
+                                 `stream_feature_group_id` INT(11) NULL,
                                  `validation_type` INT(11) NOT NULL DEFAULT '4',
                                  `event_time` VARCHAR(63) DEFAULT NULL,
                                  PRIMARY KEY (`id`),
@@ -301,10 +302,12 @@ CREATE TABLE `feature_group` (
                                  KEY `creator` (`creator`),
                                  KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
                                  KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+                                 KEY `stream_feature_group_fk` (`stream_feature_group_id`),
                                  CONSTRAINT `FK_1012_790` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `FK_656_740` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                  CONSTRAINT `on_demand_feature_group_fk2` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                 CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                 CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                 CONSTRAINT `stream_feature_group_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1786,11 +1789,14 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 CREATE TABLE `cached_feature` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cached_feature_group_id` int(11) NULL,
+  `stream_feature_group_id` int(11) NULL,
   `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
   `description` varchar(256) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `cached_feature_group_fk` (`cached_feature_group_id`),
-  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `stream_feature_group_fk` (`stream_feature_group_id`),
+  CONSTRAINT `cached_feature_group_fk2` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `stream_feature_group_fk2` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1961,6 +1967,7 @@ CREATE TABLE `databricks_instance` (
 CREATE TABLE `cached_feature_extra_constraints` (
                                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                                     `cached_feature_group_id` int(11) NULL,
+                                                    `stream_feature_group_id` int(11) NULL,
                                                     `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
                                                     `primary_column` tinyint(1) NOT NULL DEFAULT '0',
                                                     `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
@@ -2172,3 +2179,12 @@ CREATE TABLE IF NOT EXISTS `git_repository_remotes` (
                                           KEY `git_repository_fk` (`repository`),
                                           CONSTRAINT `git_repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster AUTO_INCREMENT=6164 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `stream_feature_group` (
+                                                      `id`                             INT(11) NOT NULL AUTO_INCREMENT,
+                                                      `offline_feature_group`           BIGINT(20) NOT NULL,
+                                                      PRIMARY KEY (`id`),
+                                                      CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
+                                                      ON DELETE CASCADE ON UPDATE NO ACTION
+)
+ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
