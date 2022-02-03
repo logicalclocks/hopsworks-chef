@@ -257,7 +257,7 @@ for version in versions do
          :public_ip => public_ip,
          :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
-         :hops_version => get_hops_version(node['hops']['version']),
+         :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt
     })
