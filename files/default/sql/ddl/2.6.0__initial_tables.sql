@@ -1829,7 +1829,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                         constraint 'feature_store_connector_gcs_fk' foreign key ('gcs_id') references `hopsworks`.'feature_store_gcs_connector' ('id') ON DELETE CASCADE ON UPDATE NO ACTION
+                                                         CONSTRAINT `fs_store_connector_gcs_fk` foreign key (`gcs_id`) references `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
