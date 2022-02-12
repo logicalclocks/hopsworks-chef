@@ -44,7 +44,7 @@ default['hopsworks']['db']                       = "hopsworks"
 default['hopsworks']['mysql']['user']            = "hopsworks"
 default['hopsworks']['mysql']['password']        = "hopsworks"
 
-default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
+default['glassfish']['version']                  = '5.2021.10' #'4.1.2.181' 
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
