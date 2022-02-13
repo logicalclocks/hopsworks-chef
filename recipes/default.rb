@@ -492,6 +492,23 @@ glassfish_asadmin "set server.monitoring-service.module-monitoring-levels.jvm=HI
    secure false
 end
 
+glassfish_asadmin "set configs.config.server-config.cdi-service.enable-concurrent-deployment=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "set configs.config.server-config.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+
 # add new network listener for Hopsworks to listen on an internal port
 glassfish_asadmin "create-protocol --securityenabled=true --target server https-internal" do
   domain_name domain_name
