@@ -469,22 +469,7 @@ props =  {
 
 # Enable JMX metrics
 # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
-# glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amx true --logfrequency 15 --logfrequencyunit SECONDS" do
-glassfish_asadmin "set server.monitoring-service.module-monitoring-levels.http-service=HIGH" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-glassfish_asadmin "set server.monitoring-service.module-monitoring-levels.ejb-container=HIGH" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-end
-glassfish_asadmin "set server.monitoring-service.module-monitoring-levels.jvm=HIGH" do
+ glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS --restmonitoringenabled" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -507,7 +492,6 @@ glassfish_asadmin "set configs.config.server-config.cdi-service.pre-loader-threa
   admin_port admin_port
   secure false
 end
-
 
 # add new network listener for Hopsworks to listen on an internal port
 glassfish_asadmin "create-protocol --securityenabled=true --target server https-internal" do
@@ -556,6 +540,8 @@ glassfish_conf = {
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port' => node['hopsworks']['https']['port'],
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.http2-enabled' => false,
+  'configs.config.server-config.network-config.protocols.protocol.https-internal.http.http2-enabled' => false,
   # Disable X-Powered-By and server headers
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.server-header' => false,
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.xpowered-by' => false,
@@ -566,6 +552,8 @@ glassfish_conf = {
   'server.admin-service.jmx-connector.system.ssl.ssl3-enabled' => false,
   'server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled' => false,
   'server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled' => false,
+  # HTTP-2
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.http2-push-enabled' => true,
   # Disable TLS 1.0
   'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled' => false,
