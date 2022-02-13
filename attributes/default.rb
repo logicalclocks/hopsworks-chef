@@ -412,6 +412,7 @@ default['hopsworks']['featurestore_online']                   = "false"
 
 # Number of seconds to keep an inactive connection alive
 default['glassfish']['http']['keep_alive_timeout']   = "30"
+default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 
 #
 # kagent liveness monitor configuration
