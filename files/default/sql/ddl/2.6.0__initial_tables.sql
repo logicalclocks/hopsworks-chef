@@ -295,6 +295,8 @@ CREATE TABLE `feature_group` (
                                  `cached_feature_group_id` INT(11) NULL,
                                  `validation_type` INT(11) NOT NULL DEFAULT '4',
                                  `event_time` VARCHAR(63) DEFAULT NULL,
+                                 `git_repository_id` INT(11),
+                                 `git_commit` VARCHAR(40),
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -304,7 +306,10 @@ CREATE TABLE `feature_group` (
                                  CONSTRAINT `FK_1012_790` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `FK_656_740` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                  CONSTRAINT `on_demand_feature_group_fk2` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                 CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                 CONSTRAINT `cached_feature_group_fk` FOREIGN KEY (`cached_feature_group_id`)
+                                     REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                 CONSTRAINT `fk_fg_gr` FOREIGN KEY (`git_repository_id`) REFERENCES
+                                     `git_repositories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1886,6 +1891,7 @@ CREATE TABLE `feature_group_commit` (
                                         `inode_name`                        VARCHAR(255)    NOT NULL,
                                         `partition_id`                      BIGINT(20)      NOT NULL,
                                         `validation_id` int(11),
+                                        `git_commit` VARCHAR(40),
                                         PRIMARY KEY (`feature_group_id`, `commit_id`),
                                         KEY `commit_id_idx` (`commit_id`),
                                         KEY `commit_date_idx` (`committed_on`),
