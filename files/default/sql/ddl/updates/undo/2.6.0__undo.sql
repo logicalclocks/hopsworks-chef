@@ -1,1 +1,1 @@
-ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `train_type`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `split_type `;
