@@ -896,7 +896,7 @@ end
 remote_file "#{theDomain}/docroot/#{node['opensearch-dashboards']['logo']}" do
   user node['glassfish']['user']
   group node['glassfish']['group']
-  source node['opensearch-dashboards']['logo']
+  path node['opensearch-dashboards']['logo']
   mode 0755
   action :create
 end
