@@ -1792,15 +1792,13 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
-create table feature_store_gcs_connector
-(
-    id                  int auto_increment
-        primary key,
-    key_path            varchar(500) not null,
-    algorithm           varchar(10)  null,
-    encryption_key      varchar(100) null,
-    encryption_key_hash varchar(100) null
-) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+CREATE TABLE feature_store_gcs_connector (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    key_path VARCHAR(500) NOT NULL,
+    algorithm VARCHAR(10) NULL,
+    encryption_key VARCHAR(100) NULL,
+    encryption_key_hash VARCHAR(100) NULL
+)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
    
 
 
@@ -1829,7 +1827,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                         CONSTRAINT `fs_store_connector_gcs_fk` foreign key (`gcs_id`) references `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                                         CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (

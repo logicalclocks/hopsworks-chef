@@ -94,3 +94,14 @@ ALTER TABLE `hopsworks`.`cached_feature` ADD CONSTRAINT `stream_feature_group_fk
 ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` ADD COLUMN `stream_feature_group_id` INT(11) NULL;
 
 ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP(6) NOT NULL;
+CREATE TABLE hopsworks.feature_store_gcs_connector (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    key_path VARCHAR(500) NOT NULL,
+    algorithm VARCHAR(10) NULL,
+    encryption_key VARCHAR(100) NULL,
+    encryption_key_hash VARCHAR(100) NULL
+)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
+
+
+ALTER TABLE hopsworks.feature_store_connector ADD COLUMN gcs_id INT(11) ;
+ALTER TABLE hopspworks.feature_store_connector ADD CONSTRAINT fs_connector_gcs_fk FOREIGN KEY (gcs_id) REFERENCES hopsworks.feature_store_gcs_connector (id) ON DELETE CASCADE;
