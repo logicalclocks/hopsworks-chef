@@ -893,10 +893,10 @@ directory "#{theDomain}/flyway/all/undo" do
 end
 
 # Add logo for opensearch-dashboards
-remote_file "#{theDomain}/docroot/search-400x70.png" do
+remote_file "#{theDomain}/docroot/#{node['opensearch-dashboards']['logo']}" do
   user node['glassfish']['user']
   group node['glassfish']['group']
-  source "search-400x70.png"
+  source node['opensearch-dashboards']['logo']
   mode 0755
   action :create
 end
