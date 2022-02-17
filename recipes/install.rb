@@ -891,3 +891,13 @@ directory "#{theDomain}/flyway/all/undo" do
   mode "770"
   action :create
 end
+
+# Add logo for opensearch-dashboards
+remote_file "#{theDomain}/docroot/search-400x70.png" do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source "search-400x70.png"
+  mode 0755
+  action :create
+end
+

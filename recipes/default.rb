@@ -1278,3 +1278,5 @@ bash 'alter_flyway_schema_history_engine' do
     #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
   EOF
 end
+
+
