@@ -893,11 +893,11 @@ directory "#{theDomain}/flyway/all/undo" do
 end
 
 # Add logo for opensearch-dashboards
-remote_file "#{theDomain}/docroot/#{node['opensearch-dashboards']['logo']}" do
-  user node['glassfish']['user']
-  group node['glassfish']['group']
-  path node['opensearch-dashboards']['logo']
-  mode 0755
-  action :create
-end
+# remote_file "#{theDomain}/docroot/#{node['opensearch-dashboards']['logo']}" do
+#   user node['glassfish']['user']
+#   group node['glassfish']['group']
+#   path node['opensearch-dashboards']['logo']
+#   mode 0755
+#   action :create
+# end
 
