@@ -103,5 +103,5 @@ CREATE TABLE hopsworks.feature_store_gcs_connector (
 )  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
 
 
-ALTER TABLE hopsworks.feature_store_connector ADD COLUMN gcs_id INT(11) ;
-ALTER TABLE hopspworks.feature_store_connector ADD CONSTRAINT fs_connector_gcs_fk FOREIGN KEY (gcs_id) REFERENCES hopsworks.feature_store_gcs_connector (id) ON DELETE CASCADE;
+ALTER TABLE hopsworks.feature_store_connector ADD COLUMN gcs_id INT;
+ALTER TABLE hopsworks.feature_store_connector ADD CONSTRAINT fs_connector_gcs_fk FOREIGN KEY (gcs_id) REFERENCES hopsworks.feature_store_gcs_connector (id) ON DELETE CASCADE;
