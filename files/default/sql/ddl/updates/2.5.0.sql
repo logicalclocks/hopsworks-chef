@@ -1,3 +1,19 @@
+UPDATE 
+  `hopsworks`.`feature_store_expectation_rule` fs_expt_rule,
+
+  (SELECT `feature_store_expectation_id`, `validation_rule_id`, `temp_val_rule`.`id`
+   FROM `hopsworks`.`feature_store_expectation_rule` fs_expt_rule_inn
+   JOIN `hopsworks`.`validation_rule` val_rule ON val_rule.id = fs_expt_rule_inn.validation_rule_id 
+   JOIN (SELECT MAX(id) AS id, name FROM `hopsworks`.`validation_rule` GROUP BY name) temp_val_rule ON temp_val_rule.name = val_rule.name) max_rules_id
+
+SET `fs_expt_rule`.`validation_rule_id` = `max_rules_id`.`id`
+
+WHERE 
+      `fs_expt_rule`.`feature_store_expectation_id` = `max_rules_id`.feature_store_expectation_id AND 
+      `fs_expt_rule`.validation_rule_id = `max_rules_id`.`validation_rule_id`;
+
+DELETE FROM `hopsworks`.`validation_rule` WHERE `id` NOT IN (SELECT DISTINCT(validation_rule_id) FROM `hopsworks`.`feature_store_expectation_rule`);
+
 ALTER TABLE `hopsworks`.`validation_rule` MODIFY COLUMN description VARCHAR(200) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL;
 ALTER TABLE `hopsworks`.`validation_rule` DROP INDEX `unique_validation_rule`;
 ALTER TABLE `hopsworks`.`validation_rule` ADD CONSTRAINT `unique_validation_rule` UNIQUE KEY (`name`);
