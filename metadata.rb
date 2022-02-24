@@ -1036,3 +1036,7 @@ attribute "hopsworks/reject_remote_user_no_group",
 attribute "hopsworks/managed_cloud_redirect_uri",
           :description => "redirect uri for managed group setup",
           :type => 'string'
+
+attribute "hopsworks/current_version",
+          :description => "Enter this value if you are upgrading a cluster",
+          :type => 'string'
