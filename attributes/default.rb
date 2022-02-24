@@ -17,7 +17,7 @@ include_attribute "onlinefs"
 include_attribute "hopslog"
 
 default['hopsworks']['version']                  = node['install']['version']
-default['hopsworks']['current_version']          = "2.5"
+default['hopsworks']['current_version']          = node['install']['current_version']
 
 # Flyway needs to know the previous versions of Hopsworks to generate the .sql files.
 # comma-separated string of previous versions hopsworks (not including the current version)
