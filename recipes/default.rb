@@ -276,7 +276,7 @@ for version in versions do
     action :create
   end
 
-  if Gem::Version.new(version) >= Gem::Version.new('2.4.0')
+  if Gem::Version.new(version) >= Gem::Version.new('2.0.0')
     cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__initial_tables.sql" do
       source "sql/ddl/#{version}__initial_tables.sql"
       owner node['glassfish']['user']
