@@ -33,3 +33,9 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fsa_feature_vie
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `start_time` TIMESTAMP NULL;
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `end_time` TIMESTAMP NULL;
+
+ALTER TABLE `hopsworks`.`external_training_dataset`
+    ADD COLUMN `inode_pid`  BIGINT(20) NOT NULL,
+    ADD COLUMN `inode_name` VARCHAR(255) NOT NULL,
+    ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
+    ADD CONSTRAINT `ext_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
