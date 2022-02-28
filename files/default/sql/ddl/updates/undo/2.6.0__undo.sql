@@ -16,3 +16,5 @@ ALTER TABLE `hopsworks`.`external_training_dataset`
     DROP COLUMN `inode_pid`,
     DROP COLUMN `inode_name`,
     DROP COLUMN `partition_id`;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `description`;
