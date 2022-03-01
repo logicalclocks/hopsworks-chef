@@ -6,6 +6,7 @@ ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fsa_feature_v
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `start_time`, DROP COLUMN `end_time`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_view`;
 
+-- StreamFeatureGroup
 ALTER TABLE `hopsworks`.`cached_feature` DROP FOREIGN KEY `stream_feature_group_fk2`;
 ALTER TABLE `hopsworks`.`cached_feature` DROP COLUMN `stream_feature_group_id`;
 ALTER TABLE `hopsworks`.`feature_group` DROP FOREIGN KEY `stream_feature_group_fk`;
