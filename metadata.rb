@@ -1036,3 +1036,7 @@ attribute "hopsworks/reject_remote_user_no_group",
 attribute "hopsworks/managed_cloud_redirect_uri",
           :description => "redirect uri for managed group setup",
           :type => 'string'
+
+attribute "hopsworks/debug",
+          :description => "Start glassfish server in debug mode. Default 'false'",
+          :type => 'string'

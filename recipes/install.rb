@@ -181,6 +181,7 @@ node.override = {
     'jdk_version' => node['java']['jdk_version']
   },
   'glassfish' => {
+    'debug' => node['hopsworks']['debug'],    
     'version' => node['glassfish']['version'],
     'domains_dir' => node['hopsworks']['domains_dir'],
     'domains' => {
