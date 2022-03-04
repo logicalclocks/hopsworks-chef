@@ -181,12 +181,12 @@ node.override = {
     'jdk_version' => node['java']['jdk_version']
   },
   'glassfish' => {
-    'debug' => node['hopsworks']['debug'],    
     'version' => node['glassfish']['version'],
     'domains_dir' => node['hopsworks']['domains_dir'],
     'domains' => {
       domain_name => {
         'config' => {
+          'debug' => node['hopsworks']['debug'],    
           'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
