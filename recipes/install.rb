@@ -728,8 +728,6 @@ template "#{theDomain}/bin/git-container-launch.sh" do
   variables({
               :glassfish_fdqn => glassfish_fdqn,
               :namenode_fdqn => namenode_fdqn,
-              :namenode_port => node['hops']['nn']['port'],
-              :glassfish_port => node['hopsworks']['internal']['port']
             })
 end
 
