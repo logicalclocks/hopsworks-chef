@@ -384,7 +384,7 @@ default['hopsworks']['audit_log_file_type']          = "java.util.logging.Simple
 #
 
 default['hopsworks']['jwt']['signature_algorithm']        = 'HS512'
-default['hopsworks']['jwt']['lifetime_ms']                = '1800000'
+default['hopsworks']['jwt']['lifetime_ms']                = '86400000'
 default['hopsworks']['jwt']['exp_leeway_sec']             = '900'
 default['hopsworks']['jwt']['signing_key_name']           = 'apiKey'
 
