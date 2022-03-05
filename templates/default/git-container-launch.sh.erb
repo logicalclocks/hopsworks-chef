@@ -27,11 +27,11 @@ exit 3
   fi
 done < $ARGUMENT_FILE
 
-IS_TLS=<%= @tls_enabled %>
+IS_TLS=<%= node['hops']['tls']['enabled'] %>
 NAMENODE_IP=<%= @namenode_fdqn %>
-NAMENODE_PORT=<%= @namenode_port %>
+NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
 GLASSFISH_IP=<%= @glassfish_fdqn %>
-GLASSFISH_PORT=<%= @glassfish_port %>
+GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 CONTAINER_NAME=${HADOOP_USERNAME}__git__${GIT_COMMAND}__${EXECUTION_ID}
 PID_FILE=${GIT_HOME}/run/git.pid
 NOT_FOUND=127
