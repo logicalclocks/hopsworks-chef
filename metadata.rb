@@ -865,7 +865,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 2.6.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 86400000ms - 24h)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",
