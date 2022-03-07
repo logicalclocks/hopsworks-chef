@@ -72,4 +72,4 @@ ALTER TABLE `hopsworks`.`external_training_dataset`
     ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
     ADD CONSTRAINT `ext_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE `hopsworks`.`serving` ADD COLUMN `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `description` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;

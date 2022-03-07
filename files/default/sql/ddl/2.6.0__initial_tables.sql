@@ -1165,7 +1165,7 @@ CREATE TABLE `serving` (
                            `project_id` int(11) NOT NULL,
                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                           `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
+                           `description` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                            `model_path` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `artifact_version` int(11) DEFAULT NULL,
                            `predictor` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
