@@ -65,3 +65,9 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
 
 ALTER TABLE `hopsworks`.`feature_store_connector` ADD COLUMN `kafka_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`feature_store_connector` ADD CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`external_training_dataset`
+    ADD COLUMN `inode_pid`  BIGINT(20) NOT NULL,
+    ADD COLUMN `inode_name` VARCHAR(255) NOT NULL,
+    ADD COLUMN `partition_id` BIGINT(20) NOT NULL,
+    ADD CONSTRAINT `ext_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
