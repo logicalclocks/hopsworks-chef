@@ -10,3 +10,9 @@ ALTER TABLE `hopsworks`.`feature_store_connector` DROP FOREIGN KEY `fs_connector
 ALTER TABLE `hopsworks`.`feature_store_connector` DROP COLUMN `kafka_id`;
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_kafka_connector`;
+
+ALTER TABLE `hopsworks`.`external_training_dataset`
+    DROP FOREIGN KEY `ext_td_inode_fk`,
+    DROP COLUMN `inode_pid`,
+    DROP COLUMN `inode_name`,
+    DROP COLUMN `partition_id`;

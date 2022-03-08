@@ -1868,11 +1868,15 @@ CREATE TABLE IF NOT EXISTS `hopsfs_training_dataset` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `external_training_dataset` (
-                                                           `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-                                                           `connector_id`                      INT(11)         NOT NULL,
-                                                           `path`                              VARCHAR(10000),
-                                                           PRIMARY KEY (`id`),
-                                                           CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `connector_id` INT(11) NOT NULL,
+    `path` VARCHAR(10000),
+    `inode_pid` BIGINT(20) NOT NULL,
+    `inode_name` VARCHAR(255) NOT NULL,
+    `partition_id` BIGINT(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    constraint `ext_td_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `ext_td_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE `feature_store_job` (
