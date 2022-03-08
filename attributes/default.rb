@@ -480,3 +480,5 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 
 #git
 default['hopsworks']['git_command_timeout_minutes']  = "60"
+
+default['hopsworks']['debug']  = "false"

@@ -186,6 +186,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'debug' => node['hopsworks']['debug'],    
           'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
