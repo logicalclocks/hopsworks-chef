@@ -135,7 +135,37 @@ SET `predictor_resources` = JSON_SET(`predictor_resources`, '$.requests', CAST(`
     `transformer_resources` = (CASE WHEN `transformer` IS NOT NULL then `predictor_resources` else NULL end);
 SET SQL_SAFE_UPDATES = 1;
 
+<<<<<<< HEAD
 ALTER TABLE `hopsworks`.`jupyter_settings`
     DROP COLUMN git_backend,
     DROP COLUMN git_config_id;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
+=======
+-- Data Validation Great Expectation
+CREATE TABLE IF NOT EXISTS `expectation_suite` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_group_id` INT(11) NOT NULL,
+    `name` VARCHAR(63) NOT NULL,
+    `meta` VARCHAR(1000) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `feature_group_suite_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `expectation` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `expectation_suite_id` INT(11) NOT NULL,
+    `great_expectation_id` INT(11) NOT NULL,
+    `kwargs` VARCHAR(1000) NOT NULL,
+    `meta` VARCHAR(1000) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `suite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `great_expectation` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `kwargs_template` VARCHAR(1000) NOT NULL,
+    `expectation_type` VARCHAR(63) NOT NULL,
+    UNIQUE KEY `unique_great_expectation` (`expectation_type`),
+    PRIMARY KEY (`id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+>>>>>>> f3a107a (add first table definitions)
