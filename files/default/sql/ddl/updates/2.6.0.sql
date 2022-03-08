@@ -24,6 +24,9 @@ ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `td_feature_view_fk` F
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD CONSTRAINT `tdj_feature_view_fk` FOREIGN KEY (`feature_view_id`) REFERENCES
     `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`training_dataset_filter` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`training_dataset_filter` ADD CONSTRAINT `tdf_feature_view_fk` FOREIGN KEY (`feature_view_id`) REFERENCES
+    `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD CONSTRAINT `tdf_feature_view_fk` FOREIGN KEY (`feature_view_id`)
     REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
