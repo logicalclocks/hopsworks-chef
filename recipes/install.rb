@@ -186,6 +186,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
+          'debug' => node['hopsworks']['debug'],    
           'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
@@ -720,8 +721,6 @@ template "#{theDomain}/bin/git-container-launch.sh" do
   variables({
               :glassfish_fdqn => glassfish_fdqn,
               :namenode_fdqn => namenode_fdqn,
-              :namenode_port => node['hops']['nn']['port'],
-              :glassfish_port => node['hopsworks']['internal']['port']
             })
 end
 

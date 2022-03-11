@@ -865,7 +865,7 @@ attribute "hopsworks/jwt/signature_algorithm",
           :type => 'string'
 
 attribute "hopsworks/jwt/lifetime_ms",
-          :description => "Default lifetime in ms for jwt expiration. (default 2.6.000)",
+          :description => "Default lifetime in ms for jwt expiration. (default 86400000ms - 24h)",
           :type => 'string'
 
 attribute "hopsworks/jwt/exp_leeway_sec",
@@ -1037,6 +1037,6 @@ attribute "hopsworks/managed_cloud_redirect_uri",
           :description => "redirect uri for managed group setup",
           :type => 'string'
 
-attribute "hopsworks/current_version",
-          :description => "Enter this value if you are upgrading a cluster",
+attribute "hopsworks/debug",
+          :description => "Start glassfish server in debug mode. Default 'false'",
           :type => 'string'
