@@ -1309,6 +1309,9 @@ CREATE TABLE `feature_view` (
                                  `version` int(11) NOT NULL,
                                  `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
                                  `label` VARCHAR(255) NULL,
+                                 `inode_pid` BIGINT(20) NOT NULL,
+                                 `inode_name` VARCHAR(255) NOT NULL,
+                                 `partition_id` BIGINT(20) NOT NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -1316,7 +1319,9 @@ CREATE TABLE `feature_view` (
                                  CONSTRAINT `fv_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON
                                      DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_feature_store_id_fk` FOREIGN KEY (`feature_store_id`) REFERENCES
-                                     `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                     `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                 CONSTRAINT `fv_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES
+                                     `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
