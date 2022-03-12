@@ -880,6 +880,67 @@ if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cl
   end
 end
 
+
+if current_version.eql?("") == false
+
+  glassfish_deployable "hopsworks-ear" do
+    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+    target "server"
+    auth_username node['install']['enterprise']['username']
+    auth_password node['install']['enterprise']['password']
+    version current_version
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true
+  end
+
+  glassfish_deployable "hopsworks" do
+    component_name "hopsworks-web:#{node['hopsworks']['version']}"
+    target "server"
+    version current_version
+    context_root "/hopsworks"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true  
+  end
+
+  glassfish_deployable "hopsworks-ca" do
+    component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+    target "server"
+    version current_version
+    context_root "/hopsworks-ca"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true
+  end
+
+end  
+
+
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
