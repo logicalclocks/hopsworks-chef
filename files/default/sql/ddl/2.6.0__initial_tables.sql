@@ -1844,6 +1844,17 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 --
+-- Table structure for table `stream_feature_group`
+--
+CREATE TABLE IF NOT EXISTS `stream_feature_group` (
+                                                      `id`                             INT(11) NOT NULL AUTO_INCREMENT,
+                                                      `offline_feature_group`          BIGINT(20) NOT NULL,
+                                                      PRIMARY KEY (`id`),
+                                                      CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+)
+ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
 -- Table structure for table `cached_feature`
 --
 
@@ -1951,7 +1962,7 @@ CREATE TABLE  IF NOT EXISTS `feature_group_validation` (
 CREATE TABLE `feature_group_commit` (
                                         `feature_group_id` int(11) NOT NULL, -- from hudi dataset name -> lookup feature_group
                                         `commit_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-                                        `committed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                        `committed_on` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                         `num_rows_updated` int(11) DEFAULT '0',
                                         `num_rows_inserted` int(11) DEFAULT '0',
                                         `num_rows_deleted` int(11) DEFAULT '0',
@@ -2249,11 +2260,3 @@ CREATE TABLE IF NOT EXISTS `git_repository_remotes` (
                                           KEY `git_repository_fk` (`repository`),
                                           CONSTRAINT `git_repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster AUTO_INCREMENT=6164 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `stream_feature_group` (
-                                                      `id`                             INT(11) NOT NULL AUTO_INCREMENT,
-                                                      `offline_feature_group`          BIGINT(20) NOT NULL,
-                                                      PRIMARY KEY (`id`),
-                                                      CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
-)
-ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
