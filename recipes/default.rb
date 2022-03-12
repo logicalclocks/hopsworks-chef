@@ -882,23 +882,23 @@ end
 
 
 if current_version.eql?("") == false
+#
+# undeploy previous version
+#
 
   glassfish_deployable "hopsworks-ear" do
     component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
     target "server"
-    auth_username node['install']['enterprise']['username']
-    auth_password node['install']['enterprise']['password']
     version current_version
     domain_name domain_name
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
     username username
     admin_port admin_port
-    secure false
     action :undeploy
-    async_replication false
     retries 1
     keep_state true
     enabled true
+    secure true
     ignore_failure true
   end
 
@@ -911,7 +911,7 @@ if current_version.eql?("") == false
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
     username username
     admin_port admin_port
-    secure false
+    secure true
     action :undeploy
     async_replication false
     retries 1
@@ -929,7 +929,7 @@ if current_version.eql?("") == false
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
     username username
     admin_port admin_port
-    secure false
+    secure true
     action :undeploy
     async_replication false
     retries 1
@@ -1031,43 +1031,6 @@ bash "extract_frontend" do
   code <<-EOH
     tar xf #{Chef::Config['file_cache_path']}/frontend.tgz -C #{theDomain}/docroot
   EOH
-end
-
-#
-# If deployment of the new version succeeds, then undeploy the previous version
-#
-
-glassfish_deployable "undeploy_hopsworks-ear" do
-  component_name "hopsworks-ear:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
-end
-
-glassfish_deployable "undeploy_hopsworks-war" do
-  component_name "hopsworks-web:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
-end
-
-glassfish_deployable "undeploy_hopsworks-ca" do
-  component_name "hopsworks-ca:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
 end
 
 hopsworks_certs "generate-certs" do
