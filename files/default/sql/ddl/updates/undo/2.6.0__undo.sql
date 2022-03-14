@@ -18,3 +18,12 @@ ALTER TABLE `hopsworks`.`external_training_dataset`
     DROP COLUMN `partition_id`;
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `description`;
+
+-- StreamFeatureGroup
+ALTER TABLE `hopsworks`.`cached_feature` DROP FOREIGN KEY `stream_feature_group_fk2`;
+ALTER TABLE `hopsworks`.`cached_feature` DROP COLUMN `stream_feature_group_id`;
+ALTER TABLE `hopsworks`.`feature_group` DROP FOREIGN KEY `stream_feature_group_fk`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `stream_feature_group_id`;
+ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` DROP COLUMN `stream_feature_group_id`;
+DROP TABLE IF EXISTS `hopsworks`.`stream_feature_group`;
+ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP NOT NULL;
