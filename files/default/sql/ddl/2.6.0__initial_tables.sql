@@ -1791,19 +1791,15 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
     ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-
-CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
-    `id`                      int AUTO_INCREMENT
+CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector`
+(
+    `id`                  int AUTO_INCREMENT
         PRIMARY KEY,
-    `key_path`                varchar(500) NOT NULL,
-    `parent_project`          varchar(200) NOT NULL,
-    `dataset`                 varchar(200) NULL,
-    `query_table`             varchar(200) NULL,
-    `query_project`           varchar(200) NULL,
-    `materialization_dataset` varchar(200) NULL
-)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
-   
-
+    `key_path`            varchar(500) NOT NULL,
+    `algorithm`           varchar(10)  NULL,
+    `encryption_key`      varchar(100) NULL,
+    `encryption_key_hash` varchar(100) NULL
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
@@ -1818,7 +1814,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `adls_id`                 INT(11),
                                                          `snowflake_id`            INT(11),
                                                          `kafka_id`                INT(11),
-                                                         `gcs_id`                   INT(11),                                                         
+                                                         `gcs_id`                   INT(11),
 
                                                          PRIMARY KEY (`id`),
                                                          UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
