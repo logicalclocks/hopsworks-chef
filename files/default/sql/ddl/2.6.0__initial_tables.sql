@@ -1792,12 +1792,15 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
-CREATE TABLE `feature_store_gcs_connector` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    key_path VARCHAR(500) NOT NULL,
-    algorithm VARCHAR(10) NULL,
-    encryption_key VARCHAR(100) NULL,
-    encryption_key_hash VARCHAR(100) NULL
+CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
+    `id`                      int AUTO_INCREMENT
+        PRIMARY KEY,
+    `key_path`                varchar(500) NOT NULL,
+    `parent_project`          varchar(200) NOT NULL,
+    `dataset`                 varchar(200) NULL,
+    `query_table`             varchar(200) NULL,
+    `query_project`           varchar(200) NULL,
+    `materialization_dataset` varchar(200) NULL
 )  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
    
 
