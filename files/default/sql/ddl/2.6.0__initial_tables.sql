@@ -1810,6 +1810,26 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
+-- Add bigquery connector
+CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
+(
+    `id`                      int AUTO_INCREMENT,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    `parent_project`          varchar(200) NOT NULL,
+    `dataset`                 varchar(200) NULL,
+    `query_table`             varchar(200) NULL,
+    `query_project`           varchar(200) NULL,
+    `materialization_dataset` varchar(200) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
                                                          `feature_store_id`        INT(11)          NOT NULL,
@@ -1824,6 +1844,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `snowflake_id`            INT(11),
                                                          `kafka_id`                INT(11),
                                                          `gcs_id`                  INT(11),
+                                                          `bigquery_id`            INT(11),
                                                          PRIMARY KEY (`id`),
                                                          UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
                                                          CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1834,7 +1855,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                         CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                                         CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                                        CONSTRAINT `fs_connector_bigquery_fk` FOREIGN KEY (`bigquery_id`) REFERENCES `hopsworks`.`feature_store_bigquery_connector` (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (

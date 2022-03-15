@@ -139,3 +139,29 @@ ALTER TABLE `hopsworks`.`jupyter_settings`
     DROP COLUMN git_backend,
     DROP COLUMN git_config_id;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
+
+-- Add bigquery connector
+CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
+(
+    `id`                      int AUTO_INCREMENT,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    `parent_project`          varchar(200) NOT NULL,
+    `dataset`                 varchar(200) NULL,
+    `query_table`             varchar(200) NULL,
+    `query_project`           varchar(200) NULL,
+    `materialization_dataset` varchar(200) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    ADD COLUMN `bigquery_id` INT,
+    ADD CONSTRAINT `fs_connector_bigquery_fk` FOREIGN KEY (`bigquery_id`) REFERENCES `hopsworks`.`feature_store_bigquery_connector` (`id`) ON DELETE CASCADE;
+
+
