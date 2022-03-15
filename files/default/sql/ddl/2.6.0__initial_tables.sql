@@ -1815,7 +1815,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `adls_id`                 INT(11),
                                                          `snowflake_id`            INT(11),
                                                          `kafka_id`                INT(11),
-                                                          `gcs_id`                   INT(11),                                                         
+                                                         `gcs_id`                   INT(11),                                                         
 
                                                          PRIMARY KEY (`id`),
                                                          UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
