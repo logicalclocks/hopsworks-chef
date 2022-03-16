@@ -97,13 +97,23 @@ ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIME
 
 -- add gcs connector
 CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `key_path` VARCHAR(500) NOT NULL,
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
     `algorithm` VARCHAR(10) NULL,
-    `encryption_key` VARCHAR(100) NULL,
-    `encryption_key_hash` VARCHAR(100) NULL
-)  ENGINE=NDBCLUSTER DEFAULT CHARSET=LATIN1 COLLATE = LATIN1_GENERAL_CS;
+    `encryption_secret_uid` INT NULL,
+    `encryption_secret_name` VARCHAR(200) NULL,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_fs_storage_connector_gcs_idx` (`encryption_secret_uid`, `encryption_secret_name`),
+    CONSTRAINT `fk_fs_storage_connector_gcs` FOREIGN KEY (`encryption_secret_uid`, `encryption_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_fs_storage_connector_gcs_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-
-ALTER TABLE `hopsworks`.`feature_store_connector` ADD COLUMN `gcs_id` INT;
-ALTER TABLE `hopsworks`.`feature_store_connector` ADD CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE;
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    ADD COLUMN `gcs_id` INT(11),
+    ADD CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
