@@ -1795,6 +1795,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
 CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `algorithm` VARCHAR(10) NULL,
+    `bucket` VARCHAR(1000) NOT NULL,
     `encryption_secret_uid` INT NULL,
     `encryption_secret_name` VARCHAR(200) NULL,
     `key_inode_pid` BIGINT(20) NULL,
