@@ -2275,7 +2275,7 @@ CREATE TABLE IF NOT EXISTS `expectation_suite` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_group_id` INT(11) NOT NULL,
     `name` VARCHAR(63) NOT NULL,
-    `meta` VARCHAR(1000) NULL,
+    `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
     CONSTRAINT `feature_group_suite_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -2284,8 +2284,9 @@ CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
     `great_expectation_id` INT(11) NOT NULL,
+    `expectation_type` VARCHAR(150) NOT NULL, 
     `kwargs` VARCHAR(1000) NOT NULL,
-    `meta` VARCHAR(1000) NULL,
+    `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
     CONSTRAINT `suite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2297,3 +2298,32 @@ CREATE TABLE IF NOT EXISTS `great_expectation` (
     UNIQUE KEY `unique_great_expectation` (`expectation_type`),
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `validation_report` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_group_id` INT(11) NOT NULL,
+    `success` BOOLEAN NOT NULL,
+    `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
+    `meta` VARCHAR(1000) NULL DEFAULT "{}",
+    `statistics` VARCHAR(1000) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `validation_result` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `validation_report_id` INT(11) NOT NULL,
+    `expectation_id` INT(11) NOT NULL,
+    `success` BOOLEAN NOT NULL,
+    `result` VARCHAR(1000) NOT NULL,
+    `observed_value` VARCHAR(250) NOT NULL,
+    `meta` VARCHAR(1000) DEFAULT "{}",
+    `expectation_config` VARCHAR(2000) NOT NULL,
+    `exception_info` VARCHAR(2000) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `expectation_fk_validation_result` FOREIGN KEY (`expectation_id`) REFERENCES `expectation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+

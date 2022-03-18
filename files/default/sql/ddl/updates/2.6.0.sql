@@ -135,12 +135,11 @@ SET `predictor_resources` = JSON_SET(`predictor_resources`, '$.requests', CAST(`
     `transformer_resources` = (CASE WHEN `transformer` IS NOT NULL then `predictor_resources` else NULL end);
 SET SQL_SAFE_UPDATES = 1;
 
-<<<<<<< HEAD
 ALTER TABLE `hopsworks`.`jupyter_settings`
     DROP COLUMN git_backend,
     DROP COLUMN git_config_id;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
-=======
+
 -- Data Validation Great Expectation
 CREATE TABLE IF NOT EXISTS `expectation_suite` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -168,4 +167,3 @@ CREATE TABLE IF NOT EXISTS `great_expectation` (
     UNIQUE KEY `unique_great_expectation` (`expectation_type`),
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
->>>>>>> f3a107a (add first table definitions)
