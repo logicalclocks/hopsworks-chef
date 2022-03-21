@@ -2182,11 +2182,15 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `training_dataset_id` INT(11) NULL,
+    `feature_view_id` INT(11) NULL,
     `type` VARCHAR(63) NULL,
     `path` VARCHAR(63) NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `tdf_training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+    CONSTRAINT `tdf_training_dataset_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON
+        DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tdfilter_feature_view_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`)
+        ON DELETE CASCADE ON UPDATE NO ACTION
+    ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
