@@ -17,7 +17,6 @@ IS_GIT=${13}
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
-FLINK_CONF_DIR=<%= node['flink']['conf_dir'] %>
 NOT_FOUND=127
 
 help() {
@@ -76,7 +75,6 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -v $SECRET_DIR:$SECRET_DIR:rw\
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
        -v ${SPARK_CONF_DIR}:${SPARK_CONF_DIR}:ro \
-       -v ${FLINK_CONF_DIR}:${FLINK_CONF_DIR}:ro \
        -u="yarnapp" \
        -w="$SECRET_DIR" \
        $IMAGE \
