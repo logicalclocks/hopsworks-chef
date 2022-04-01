@@ -2303,7 +2303,7 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_group_id` INT(11) NOT NULL,
     `success` BOOLEAN NOT NULL,
-    `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
     `meta` VARCHAR(1000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,

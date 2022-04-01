@@ -19,6 +19,13 @@ ALTER TABLE `hopsworks`.`external_training_dataset`
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `description`;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9c0a7ad (created->validation_time)
+>>>>>>> 0d9f14d (created->validation_time)
 -- StreamFeatureGroup
 ALTER TABLE `hopsworks`.`cached_feature` DROP FOREIGN KEY `stream_feature_group_fk2`;
 ALTER TABLE `hopsworks`.`cached_feature` DROP COLUMN `stream_feature_group_id`;
@@ -27,6 +34,7 @@ ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `stream_feature_group_id`;
 ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` DROP COLUMN `stream_feature_group_id`;
 DROP TABLE IF EXISTS `hopsworks`.`stream_feature_group`;
 ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP NOT NULL;
+<<<<<<< HEAD
 
 ALTER TABLE `hopsworks`.`users` ADD COLUMN `orcid` varchar(20) COLLATE latin1_general_cs DEFAULT '-';
 
