@@ -2307,8 +2307,12 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
     `meta` VARCHAR(1000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
+    `inode_pid` BIGINT(20) NOT NULL,
+    `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+    `partition_id` BIGINT(20) NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `inode_result_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `validation_result` (
@@ -2316,7 +2320,6 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `validation_report_id` INT(11) NOT NULL,
     `expectation_id` INT(11) NOT NULL,
     `success` BOOLEAN NOT NULL,
-    `result` VARCHAR(1000) NOT NULL,
     `observed_value` VARCHAR(250) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     `expectation_config` VARCHAR(2000) NOT NULL,
@@ -2325,5 +2328,3 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     CONSTRAINT `expectation_fk_validation_result` FOREIGN KEY (`expectation_id`) REFERENCES `expectation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-
