@@ -186,7 +186,7 @@ node.override = {
     'domains' => {
       domain_name => {
         'config' => {
-          'debug' => node['hopsworks']['debug'],    
+          'debug' => node['hopsworks']['debug'],
           'systemd_enabled' => true,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
@@ -395,10 +395,10 @@ package ["openssl", "zip"]
 if !::File.directory?("#{theDomain}/lib")
   include_recipe 'glassfish::attribute_driven_domain'
 else
-  # For older installations (Hopsworks <= 1.0.0) the paths referring to glassfish contain the glassfish version 
-  # this is problematic during upgrades. We replace them here with sed. 
+  # For older installations (Hopsworks <= 1.0.0) the paths referring to glassfish contain the glassfish version
+  # this is problematic during upgrades. We replace them here with sed.
   ["glassfish-4.1.2.174", "glassfish-4.1.2.181"].each do |version|
-    bash "remove_glassfish_versions" do 
+    bash "remove_glassfish_versions" do
       user "root"
       group "root"
       code <<-EOL
@@ -408,7 +408,7 @@ else
       EOL
     end
   end
-end 
+end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
@@ -503,7 +503,7 @@ ulimit_domain node['hopsworks']['user'] do
   end
 end
 
-kagent_config "glassfish-domain1" do 
+kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
@@ -596,50 +596,59 @@ template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
   action :create
 end
 
-kagent_sudoers "jupyter" do 
+kagent_sudoers "jupyter" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "jupyter.sh"
   template      "jupyter.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
+  run_as        "ALL" # run this as root - inside we change to different users
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "convert-ipython-notebook" do 
+kagent_sudoers "dbt" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "dbt.sh"
+  template      "dbt.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
+
+kagent_sudoers "convert-ipython-notebook" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "convert-ipython-notebook.sh"
   template      "convert-ipython-notebook.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
+  run_as        "ALL" # run this as root - inside we change to different users
 end
 
-kagent_sudoers "tensorboard" do 
+kagent_sudoers "tensorboard" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "tensorboard.sh"
   template      "tensorboard.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
+  run_as        "ALL" # run this as root - inside we change to different users
 end
 
-kagent_sudoers "tfserving" do 
+kagent_sudoers "tfserving" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "tfserving.sh"
   template      "tfserving.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
+  run_as        "ALL" # run this as root - inside we change to different users
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "sklearn_serving" do 
+kagent_sudoers "sklearn_serving" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "sklearn_serving.sh"
   template      "sklearn_serving.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
+  run_as        "ALL" # run this as root - inside we change to different users
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "jupyter-project-cleanup" do 
+kagent_sudoers "jupyter-project-cleanup" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "jupyter-project-cleanup.sh"
@@ -648,7 +657,7 @@ kagent_sudoers "jupyter-project-cleanup" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "global-ca-sign-csr" do 
+kagent_sudoers "global-ca-sign-csr" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "global-ca-sign-csr.sh"
@@ -656,7 +665,7 @@ kagent_sudoers "global-ca-sign-csr" do
   run_as        "ALL"
 end
 
-kagent_sudoers "ca-keystore" do 
+kagent_sudoers "ca-keystore" do
   user          node['glassfish']['user']
   group         "root"
   script_name   "ca-keystore.sh"
@@ -723,6 +732,20 @@ template "#{theDomain}/bin/git-container-launch.sh" do
               :namenode_fdqn => namenode_fdqn,
             })
 end
+
+
+template "#{theDomain}/bin/dbt-container-launch.sh" do
+  source "dbt-container-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "500"
+  action :create
+  variables({
+              :glassfish_fdqn => glassfish_fdqn,
+              :namenode_fdqn => namenode_fdqn,
+            })
+end
+
 
 ["sklearn_flask_server.py"].each do |script|
   template "#{theDomain}/bin/#{script}" do
