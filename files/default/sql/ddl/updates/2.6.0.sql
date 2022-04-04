@@ -96,6 +96,10 @@ ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` ADD COLUMN `stream_fe
 
 ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP(6) NOT NULL;
 
+ALTER TABLE `hopsworks`.`users` DROP COLUMN `orcid`;
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `fname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL;
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `lname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL;
+
 -- add gcs connector
 CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,

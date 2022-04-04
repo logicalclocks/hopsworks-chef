@@ -28,6 +28,11 @@ ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` DROP COLUMN `stream_f
 DROP TABLE IF EXISTS `hopsworks`.`stream_feature_group`;
 ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP NOT NULL;
 
+ALTER TABLE `hopsworks`.`users` ADD COLUMN `orcid` varchar(20) COLLATE latin1_general_cs DEFAULT '-';
+
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `fname` varchar(30) COLLATE latin1_general_cs DEFAULT NULL;
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `lname` varchar(30) COLLATE latin1_general_cs DEFAULT NULL;
+
 ALTER TABLE `hopsworks`.`feature_store_connector`
     DROP FOREIGN KEY `fs_connector_gcs_fk`,
     DROP COLUMN `gcs_id`;
