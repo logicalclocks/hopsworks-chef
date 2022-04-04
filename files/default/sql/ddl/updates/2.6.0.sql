@@ -78,6 +78,7 @@ ALTER TABLE `hopsworks`.`serving` ADD COLUMN `description` varchar(1000) COLLATE
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20) NOT NULL,
+                                                      `online_enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
