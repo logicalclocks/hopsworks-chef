@@ -26,7 +26,8 @@ find /tmp/$1 -name "default.rb" -type f | xargs grep "\['version'\]" >> $VERSION
 # make all the versions have same format as chef attr: ['version']
 sed -i "s/\"version\"/'version'/g" $VERSIONS
 
-grep -o "\['.*'\]\['version'\].*=.*[0-9]" $VERSIONS | sed -e "s/\[//g" | sed -e "s/\]//g" | sed -e "s/'//" |  sed -e "s/'//" |  sed -e "s/'/\//" |  sed -e "s/'//" |  sed -e "s/\"//" | sed -e "s/'/\//g" | sed -e "s/version'/version/" | sed -e "s/version\//version/" | sed -e "s/= \//= /" | sed -e "s/#.*//" | sed -e "s/version.*=/,/g" | sed -e "s/\/,//" > .versions.txt
+grep -o "\['.*'\]\['version'\].*=.*[0-9]" $VERSIONS | sed -e "s/\[//g" | sed -e "s/\]//g" | sed -e "s/'//" |  sed -e "s/'//" |  sed -e "s/'/\//" |  sed -e "s/'//" |  sed -e "s/\"//" | sed -e "s/'/\//g" | sed -e "s/version'/version/" | sed -e "s/version\//version/" | sed -e "s/= \//= /" | sed -e "s/#.*//" | sed -e "s/version.*=/,/g" | sed -e "s/\/,//" | sed -e n\;d | sort > .versions.txt
+
 mv -f .versions.txt $VERSIONS
 
 echo "Done."
