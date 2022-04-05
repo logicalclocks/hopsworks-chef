@@ -66,7 +66,9 @@ GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 #    rm $PID_FILE
 #fi
 
-docker run --rm -d --privileged hello-world
+docker run --rm --privileged registry.service.consul:4443/dbt
+
+
 
 #docker run --rm -d --privileged --name $CONTAINER_NAME --cidfile=$PID_FILE\
 #       --network=host \
