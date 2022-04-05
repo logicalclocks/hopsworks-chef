@@ -1551,11 +1551,10 @@ CREATE TABLE `users` (
                          `username` varchar(10) COLLATE latin1_general_cs NOT NULL,
                          `password` varchar(128) COLLATE latin1_general_cs NOT NULL,
                          `email` varchar(150) COLLATE latin1_general_cs DEFAULT NULL,
-                         `fname` varchar(30) COLLATE latin1_general_cs DEFAULT NULL,
-                         `lname` varchar(30) COLLATE latin1_general_cs DEFAULT NULL,
+                         `fname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                         `lname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                          `activated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          `title` varchar(10) COLLATE latin1_general_cs DEFAULT '-',
-                         `orcid` varchar(20) COLLATE latin1_general_cs DEFAULT '-',
                          `false_login` int(11) NOT NULL DEFAULT '-1',
                          `status` int(11) NOT NULL DEFAULT '-1',
                          `isonline` int(11) NOT NULL DEFAULT '-1',
@@ -1791,6 +1790,27 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
     ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+
+CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `algorithm` VARCHAR(10) NULL,
+    `bucket` VARCHAR(1000) NOT NULL,
+    `encryption_secret_uid` INT NULL,
+    `encryption_secret_name` VARCHAR(200) NULL,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_fs_storage_connector_gcs_idx` (`encryption_secret_uid`, `encryption_secret_name`),
+    CONSTRAINT `fk_fs_storage_connector_gcs` FOREIGN KEY (`encryption_secret_uid`, `encryption_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_fs_storage_connector_gcs_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
                                                          `feature_store_id`        INT(11)          NOT NULL,
@@ -1804,6 +1824,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          `adls_id`                 INT(11),
                                                          `snowflake_id`            INT(11),
                                                          `kafka_id`                INT(11),
+                                                         `gcs_id`                  INT(11),
                                                          PRIMARY KEY (`id`),
                                                          UNIQUE KEY `fs_conn_name` (`name`, `feature_store_id`),
                                                          CONSTRAINT `fs_connector_featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `hopsworks`.`feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1813,7 +1834,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
                                                          CONSTRAINT `fs_connector_redshift_fk` FOREIGN KEY (`redshift_id`) REFERENCES `hopsworks`.`feature_store_redshift_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_adls_fk` FOREIGN KEY (`adls_id`) REFERENCES `hopsworks`.`feature_store_adls_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `fs_connector_snowflake_fk` FOREIGN KEY (`snowflake_id`) REFERENCES `hopsworks`.`feature_store_snowflake_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                         CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                                         CONSTRAINT `fs_connector_kafka_fk` FOREIGN KEY (`kafka_id`) REFERENCES `hopsworks`.`feature_store_kafka_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                                         CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
@@ -1849,6 +1871,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20) NOT NULL,
+                                                      `online_enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
