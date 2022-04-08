@@ -1040,3 +1040,7 @@ attribute "hopsworks/managed_cloud_redirect_uri",
 attribute "hopsworks/debug",
           :description => "Start glassfish server in debug mode. Default 'false'",
           :type => 'string'
+
+attribute "hopsworks/kubernetes/skip_namespace_creation",
+          :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kuberenetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
+          :type => 'string'
