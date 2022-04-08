@@ -67,7 +67,7 @@ GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 #fi
 
 
-docker run --rm --privileged registry.service.consul:4443/dbt
+docker run --rm --privileged registry.service.consul:4443/dbt /bin/bash launcher.sh
 
 
 

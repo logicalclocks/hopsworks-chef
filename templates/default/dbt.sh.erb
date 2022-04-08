@@ -38,8 +38,8 @@ VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 
 
 if [ "$1" == "start" ] ; then
-  echo "run git-container-launch.sh"
-  ${DOMAINS_DIR}/domain1/bin/git-container-launch.sh
+  echo "run dbt-container-launch.sh"
+  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh
 fi
 
 # start dbt container
@@ -110,6 +110,7 @@ fi
 #    # read by Hopsworks
 #    # docker container list -a | grep "__git" |  grep -v 'grep' | awk '{print $1}' > /tmp/gitConatainers.pids
 #else
+#  help
 #  help
 #fi
 
