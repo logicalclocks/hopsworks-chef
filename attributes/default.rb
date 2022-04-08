@@ -482,3 +482,5 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 default['hopsworks']['git_command_timeout_minutes']  = "60"
 
 default['hopsworks']['debug']  = "false"
+
+default['hopsworks']['kubernetes']['skip_namespace_creation']        = "false"
