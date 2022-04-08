@@ -325,6 +325,21 @@ for version in versions do
   end
 end
 
+# Load the demo data
+cookbook_file "#{Chef::Config['file_cache_path']}/demo_data.sql" do
+  source "demo_data.sql"
+  owner node['glassfish']['user']
+  mode 0750
+  action :create
+end
+
+bash "insert_demo_data" do
+  user "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh < #{Chef::Config['file_cache_path']}/demo_data.sql
+  EOH
+end
+
 # Check if Kafka is to be installed and create user with grants
 begin
   valid_recipe("kkafka", "default")
