@@ -123,3 +123,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
 ALTER TABLE `hopsworks`.`feature_store_connector`
     ADD COLUMN `gcs_id` INT(11),
     ADD CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Split serving resource config
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `docker_resource_config` TO `predictor_resources`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `predictor_resources` = JSON_SET(`predictor_resources`, '$.requests', CAST(`predictor_resources` as JSON), '$.limits', CAST(`predictor_resources` as JSON)),
+    `predictor_resources` = JSON_REMOVE(`predictor_resources`, '$.cores', '$.memory', '$.gpus'),
+    `transformer_resources` = (CASE WHEN `transformer` IS NOT NULL then `predictor_resources` else NULL end);
+SET SQL_SAFE_UPDATES = 1;
