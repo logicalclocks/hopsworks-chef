@@ -37,3 +37,12 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
     DROP FOREIGN KEY `fs_connector_gcs_fk`,
     DROP COLUMN `gcs_id`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_gcs_connector`;
+
+-- Unify serving resources config
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `predictor_resources` = JSON_EXTRACT(`predictor_resources`, "$.requests");
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `transformer_resources`;
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `predictor_resources` TO `docker_resource_config`;
