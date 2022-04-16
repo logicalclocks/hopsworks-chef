@@ -14,6 +14,7 @@ include_attribute "hops"
 include_attribute "hops_airflow"
 include_attribute "kube-hops"
 include_attribute "onlinefs"
+include_attribute "hopslog"
 
 default['hopsworks']['version']                  = node['install']['version']
 default['hopsworks']['current_version']          = node['install']['current_version']
@@ -482,3 +483,5 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 default['hopsworks']['git_command_timeout_minutes']  = "60"
 
 default['hopsworks']['debug']  = "false"
+
+default['hopsworks']['kubernetes']['skip_namespace_creation']        = "false"
