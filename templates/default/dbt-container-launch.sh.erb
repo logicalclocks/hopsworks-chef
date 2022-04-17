@@ -35,7 +35,7 @@ GLASSFISH_IP=<%= @glassfish_fdqn %>
 GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 
 #CONTAINER_NAME=${HADOOP_USERNAME}__dbt__${GIT_COMMAND}__${EXECUTION_ID}
-#PID_FILE=${DBT_HOME}/run/dbt.pid
+
 
 #NOT_FOUND=127
 #CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
@@ -67,7 +67,10 @@ GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 #fi
 
 
-docker run --rm --privileged registry.service.consul:4443/dbt /bin/bash launcher.sh
+docker run --rm --privileged registry.service.consul:4443/dbt \
+      -v $DBT_HOME:$DBT_HOME:rw\
+      -w="$DBT_HOME" \
+      /bin/bash launcher.sh
 
 
 
