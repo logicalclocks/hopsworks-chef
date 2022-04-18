@@ -4,10 +4,10 @@
 # This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
 #
 
+# $0 is the file name
 help() {
     echo ""
-    echo "test dbt.sh.erb"
-    #echo "usage: $0 [start arguments_file] | [kill git_home container_id project_user_name] | [list]"
+    echo "usage: $0 [start dbt_home_directory]"
     echo ""
     echo ""
     exit 1
@@ -20,21 +20,21 @@ HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 
 
+if [ $# -ne 2 ]; then
+  help
+fi
+
 if [ "$1" == "start" ] ; then
-
-  if [ $# -ne 2 ]; then
-    help
-  fi
-  DBT_HOME = $2
-
-  if [! -d "$DBT_HOME"]; then
-    echo "Invalid DBT_HOME directory: $DBT_HOME"
-	  exit 2
+  DBT_HOME=$2
+#  echo "DBT_HOME dir: ${DBT_HOME}"
+  if [! -d "${DBT_HOME}"]; then
+    echo "Invalid DBT_HOME directory: ${DBT_HOME}"
+          exit 2
   fi
 
 #  chmod 0730 "$DBT_HOME"
-  chown -R "${DBT_USER}":"${DBT_GROUP}" "$DBT_HOME"
-  chmod -R 770 "$DBT_HOME"
+  chown -R "${DBT_USER}":"${DBT_GROUP}" "${DBT_HOME}"
+  chmod -R 770 "${DBT_HOME}"
 
   echo "run dbt-container-launch.sh"
   ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}"
