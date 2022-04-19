@@ -1,22 +1,51 @@
 #!/usr/bin/env bash
 
 
-DBT_HOME=$1
 
 help() {
     echo ""
-    echo "usage: $0 DBT_HOME"
+    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID"
     echo ""
     exit 1
 }
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 5 ]; then
   help
 fi
+
+DBT_HOME=$1
+CERTS_DIR=$2
+HADOOP_USERNAME=$3
+
+
+LOG_PATH=${DBT_HOME}/logs
+OUT_LOG=${LOG_PATH}/stdout.log
+ERR_LOG=${LOG_PATH}/stderr.log
+
+HOPSFS_LOGFILE=${LOG_PATH}/hopsfs.log
+
+touch OUT_LOG
+touch ERR_LOG
+touch HOPSFS_LOGFILE
+
+CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
+ROOT_CA_BUNDLE=${HADOOP_USERNAME}_root_ca.pem
+CLIENT_KEY=${HADOOP_USERNAME}_private_key.pem
+
+EXECUTION_ID=$4
+PROJECT_ID=$5
+HADOOP_GROUP='hadoop'
+
+
 
 if [ ! -d "$DBT_HOME" ]; then
     echo "DBT_HOME is not a valid directory: ${DBT_HOME}"
     exit 2
+fi
+
+if [ ! -d "$CERTS_DIR" ]; then
+    echo "CERTS_DIR is not a valid directory: ${CERTS_DIR}"
+    exit 3
 fi
 
 
@@ -31,42 +60,26 @@ GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 
 
 docker run --rm --privileged \
+      -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
+      -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
+      -e "NAMENODE_IP=${NAMENODE_IP}" \
+      -e "NAMENODE_PORT=${NAMENODE_PORT}" \
+      -e "OUT_LOG=${OUT_LOG}" \
+      -e "ERR_LOG=${ERR_LOG}" \
+      -e "CLIENT_CERTIFICATES_BUNDLE=${CLIENT_CERTIFICATES_BUNDLE}" \
+      -e "ROOT_CA_BUNDLE=${ROOT_CA_BUNDLE}" \
+      -e "CLIENT_KEY=${CLIENT_KEY}" \
+      -e "EXECUTION_ID=${EXECUTION_ID}" \
+      -e "PROJECT_ID=${PROJECT_ID}" \
+      -e "HADOOP_GROUP=${HADOOP_GROUP}" \
+      -e "GLASSFISH_IP=${GLASSFISH_IP}" \
+      -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
+      -e "IS_TLS=${IS_TLS}" \
+      -e "HOPSFS_LOGFILE=${HOPSFS_LOGFILE}" \
       -v $DBT_HOME:$DBT_HOME:rw\
       -w="$DBT_HOME" \
       registry.service.consul:4443/dbt \
       /bin/bash launcher.sh
 
-
-
-#docker run --rm -d --privileged --name $CONTAINER_NAME --cidfile=$PID_FILE\
-#       --network=host \
-#       --init \
-#       -e "GIT_PATH=$GIT_HOME" \
-#       -e "GIT_DATA_DIR=$GIT_HOME" \
-#       -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
-#       -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
-#       -e "NAMENODE_IP=${NAMENODE_IP}" \
-#       -e "NAMENODE_PORT=${NAMENODE_PORT}" \
-#       -e "PROJECT_NAME=${PROJECT_NAME}" \
-#       -e "GIT_COMMAND=${GIT_COMMAND}" \
-#       -e "GIT_COMMAND_CONFIG=${GIT_COMMAND_CONFIG}" \
-#       -e "COMMAND_LOGFILE=${COMMAND_LOGFILE}" \
-#       -e "HOPSFS_LOGFILE=${HOPSFS_LOGFILE}" \
-#       -e "CLIENT_CERTIFICATES_BUNDLE=${CLIENT_CERTIFICATES_BUNDLE}" \
-#       -e "ROOT_CA_BUNDLE=${ROOT_CA_BUNDLE}" \
-#       -e "CLIENT_KEY=${CLIENT_KEY}" \
-#       -e "JWT_TOKEN_FILE=${JWT_TOKEN_FILE}" \
-#       -e "EXECUTION_ID=${EXECUTION_ID}" \
-#       -e "PROJECT_ID=${PROJECT_ID}" \
-#       -e "GIT_USERNAME=${GIT_USERNAME}" \
-#       -e "GIT_TOKEN=${GIT_TOKEN}" \
-#       -e "HADOOP_GROUP=${HADOOP_GROUP}" \
-#       -e "REPOSITORY_ID=${REPOSITORY_ID}" \
-#       -e "GLASSFISH_IP=${GLASSFISH_IP}" \
-#       -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
-#       -e "IS_TLS=${IS_TLS}" \
-#       -v $GIT_HOME:$GIT_HOME:rw\
-#       -w="$GIT_HOME" \
-#       $DOCKER_IMAGE &
 
 exit $?
