@@ -10,7 +10,8 @@ help() {
     exit 1
 }
 
-DOMAINS_DIR=/srv/hops/domains
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+#DOMAINS_DIR=/srv/hops/domains
 #DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 #DBT_USER=<%= node['hops']['yarnapp']['user'] %>
 #DBT_GROUP=<%= node['hops']['group'] %>
