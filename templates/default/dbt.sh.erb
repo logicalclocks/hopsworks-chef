@@ -5,22 +5,26 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID]"
+    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH]"
     echo ""
     exit 1
 }
 
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
-#DOMAINS_DIR=/srv/hops/domains
-#DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
-#DBT_USER=<%= node['hops']['yarnapp']['user'] %>
-#DBT_GROUP=<%= node['hops']['group'] %>
-#HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
+
+#DOMAINS_DIR=/srv/hops/domains
+#DOMAINS_DIR=/srv/hops/domains
+#DOMAINS_DIR=/srv/hops/domains
+#DBT_USER=yarnapp
+#DBT_GROUP=hadoop
+#HOPSWORKS_USER=glassfish
+#VALID_IMAGE_NAME='^([a-z0-9]+(-[a-z0-9]+)*.)*[a-z0-9]+(:[0-9]*)?(/([a-zA-Z0-9-]*))?/([-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$)'
 
 
 if [ "$1" == "start" ] ; then
- if [ $# -ne 6 ]; then
+ if [ $# -ne 8 ]; then
    help
  fi
 
@@ -29,6 +33,8 @@ if [ "$1" == "start" ] ; then
   HADOOP_USERNAME=$4
   EXECUTION_ID=$5
   PROJECT_ID=$6
+  HADOOP_GROUP=$7
+  LOG_PATH=$8
 
   if [ ! -d "${DBT_HOME}" ]; then
     echo "Invalid DBT_HOME directory: ${DBT_HOME}"
@@ -39,13 +45,16 @@ if [ "$1" == "start" ] ; then
     echo "Invalid CERTS_DIR directory: ${CERTS_DIR}"
           exit 3
   fi
-
+  if [ ! -d "${LOG_PATH}" ]; then
+    echo "Invalid LOG_PATH directory: ${LOG_PATH}"
+          exit 4
+  fi
 #  chmod 0730 "$DBT_HOME"
 #  chown -R "${DBT_USER}":"${DBT_GROUP}" "${DBT_HOME}"
   chmod -R 770 "${DBT_HOME}"
 
   echo "run dbt-container-launch.sh"
-  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}"
+  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" "${LOG_PATH}"
 fi
 
 
