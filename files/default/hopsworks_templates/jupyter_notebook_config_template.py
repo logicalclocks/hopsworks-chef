@@ -59,6 +59,4 @@ os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
 
 os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
-os.environ['FLINK_CONF_DIR'] = "${conf.flinkConfDirectory}"
-os.environ['FLINK_LIB_DIR'] = "${conf.flinkLibDirectory}"
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
