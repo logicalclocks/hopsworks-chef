@@ -22,7 +22,7 @@ HADOOP_GROUP='demo_fs_meb10000__Logs'
 LOG_PATH=$7
 
 
-
+CONTAINER_NAME=${HADOOP_USERNAME}_${PROJECT_ID}_${EXECUTION_ID}
 
 CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
 ROOT_CA_BUNDLE=${HADOOP_USERNAME}_root_ca.pem
@@ -57,7 +57,7 @@ GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 #GLASSFISH_PORT=8182
 
 
-docker run --rm --privileged \
+docker run --rm --privileged --name $CONTAINER_NAME \
       -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
       -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
       -e "NAMENODE_IP=${NAMENODE_IP}" \

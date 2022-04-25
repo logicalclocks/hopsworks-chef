@@ -5,7 +5,7 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH]"
+    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH] | [kill DBT_HOME HADOOP_USERNAME PROJECT_ID EXECUTION_ID PROJECT_USER_NAME]"
     echo ""
     exit 1
 }
@@ -55,8 +55,23 @@ if [ "$1" == "start" ] ; then
 
   echo "run dbt-container-launch.sh"
   ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" "${LOG_PATH}"
+
+
+elif [ "$1" == "kill" ] ; then
+  if [ $# -ne 6 ]; then
+	  help
+  fi
+  sudo ${DOMAINS_DIR}/domain1/bin/dbt-container-kill.sh $3 $4 $5 $6
+
+  # Remove all the directories in the home dbt folder for this execution.
+  if [ "$2" != "" ] ; then
+    rm -rf "${2}"
+  fi
+
+elif [ "$1" == "list" ] ; then
+  echo "docker list test"
+else
+  help
 fi
-
-
 
 exit $?
