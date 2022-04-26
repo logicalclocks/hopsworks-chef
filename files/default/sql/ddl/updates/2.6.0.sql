@@ -134,3 +134,8 @@ SET `predictor_resources` = JSON_SET(`predictor_resources`, '$.requests', CAST(`
     `predictor_resources` = JSON_REMOVE(`predictor_resources`, '$.cores', '$.memory', '$.gpus'),
     `transformer_resources` = (CASE WHEN `transformer` IS NOT NULL then `predictor_resources` else NULL end);
 SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`jupyter_settings`
+    DROP COLUMN git_backend,
+    DROP COLUMN git_config_id;
+DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
