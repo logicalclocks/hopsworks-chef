@@ -49,7 +49,7 @@ ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `predictor_resources` TO `docker
 
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `git_config_id` INT(11) NULL;
 ALTER TABLE `hopsworks`.`jupyter_settings` ADD COLUMN `git_backend` TINYINT(1) DEFAULT 0;
-CREATE TABLE IF NOT EXISTS `jupyter_git_config` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`jupyter_git_config` (
                                                     `id` INT NOT NULL AUTO_INCREMENT,
                                                     `remote_git_url` VARCHAR(255) NOT NULL,
                                                     `api_key_name` VARCHAR(125) DEFAULT NULL,
