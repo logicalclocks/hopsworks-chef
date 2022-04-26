@@ -4,12 +4,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH"
+    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME"
     echo ""
     exit 1
 }
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 8 ]; then
   help
 fi
 
@@ -18,11 +18,18 @@ CERTS_DIR=$2
 HADOOP_USERNAME=$3
 EXECUTION_ID=$4
 PROJECT_ID=$5
-HADOOP_GROUP='demo_fs_meb10000__Logs'
+HADOOP_GROUP=$6
 LOG_PATH=$7
+PROJECT_NAME=$8
 
+
+echo "dbt-container-launcher.sh"
+#echo $HADOOP_GROUP
+#echo 'demo_fs_meb10000__Logs'
 
 CONTAINER_NAME=${HADOOP_USERNAME}_${PROJECT_ID}_${EXECUTION_ID}
+
+echo $CONTAINER_NAME
 
 CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
 ROOT_CA_BUNDLE=${HADOOP_USERNAME}_root_ca.pem
@@ -67,6 +74,7 @@ docker run --rm --privileged --name $CONTAINER_NAME \
       -e "CLIENT_KEY=${CLIENT_KEY}" \
       -e "EXECUTION_ID=${EXECUTION_ID}" \
       -e "PROJECT_ID=${PROJECT_ID}" \
+      -e "PROJECT_NAME=${PROJECT_NAME}" \
       -e "HADOOP_GROUP=${HADOOP_GROUP}" \
       -e "GLASSFISH_IP=${GLASSFISH_IP}" \
       -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
