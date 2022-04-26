@@ -2279,7 +2279,8 @@ CREATE TABLE IF NOT EXISTS `expectation_suite` (
     `data_asset_type` VARCHAR(50),
     `ge_cloud_id` VARCHAR(200),
     `run_validation` BOOLEAN DEFAULT TRUE,
-    `validation_ingestion` VARCHAR(25),
+    `validation_ingestion_policy` VARCHAR(25),
+    `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `feature_group_suite_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -2287,7 +2288,6 @@ CREATE TABLE IF NOT EXISTS `expectation_suite` (
 CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
-    `great_expectation_id` INT(11) NOT NULL,
     `expectation_type` VARCHAR(150) NOT NULL, 
     `kwargs` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
@@ -2298,7 +2298,7 @@ CREATE TABLE IF NOT EXISTS `expectation` (
 CREATE TABLE IF NOT EXISTS `great_expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `kwargs_template` VARCHAR(1000) NOT NULL,
-    `expectation_type` VARCHAR(63) NOT NULL,
+    `expectation_type` VARCHAR(150) NOT NULL,
     UNIQUE KEY `unique_great_expectation` (`expectation_type`),
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2326,9 +2326,9 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `success` BOOLEAN NOT NULL,
     `observed_value` VARCHAR(250) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
-    `expectation_config` VARCHAR(2000) NOT NULL,
+    `expectation_config` VARCHAR(2150) NOT NULL,
     `exception_info` VARCHAR(2000) NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `expectation_fk_validation_result` FOREIGN KEY (`expectation_id`) REFERENCES `expectation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    KEY (`expectation_id`),
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
