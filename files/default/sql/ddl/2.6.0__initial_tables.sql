@@ -1822,6 +1822,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
     `query_table`             varchar(1000) NULL,
     `query_project`           varchar(1000) NULL,
     `materialization_dataset` varchar(1000) NULL,
+    `arguments`               varchar(2000) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
         `key_inode_pid`,
