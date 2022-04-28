@@ -2324,10 +2324,10 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `validation_report_id` INT(11) NOT NULL,
     `expectation_id` INT(11) NOT NULL,
     `success` BOOLEAN NOT NULL,
-    `observed_value` VARCHAR(250) NOT NULL,
+    `result` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     `expectation_config` VARCHAR(2150) NOT NULL,
-    `exception_info` VARCHAR(2000) NOT NULL,
+    `exception_info` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
     KEY (`expectation_id`),
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
