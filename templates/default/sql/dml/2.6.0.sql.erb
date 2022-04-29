@@ -7,3 +7,6 @@ DELETE FROM `hopsworks`.`host_services` WHERE `name`='elasticsearch';
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='kibana';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_knative_domain_name", "<%= node['kube-hops']['knative']['domain_name'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kserve_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kfserving_installed';
