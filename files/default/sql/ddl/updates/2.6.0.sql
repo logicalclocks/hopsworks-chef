@@ -172,11 +172,6 @@ CREATE TABLE IF NOT EXISTS `great_expectation` (
     UNIQUE KEY `unique_great_expectation` (`expectation_type`),
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> f3a107a (add first table definitions)
-=======
 
 CREATE TABLE IF NOT EXISTS `validation_report` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -207,5 +202,3 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     CONSTRAINT `expectation_fk_validation_result` FOREIGN KEY (`expectation_id`) REFERENCES `expectation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
->>>>>>> ab98885 (Undo + Update)
->>>>>>> 18ac4a7 (Undo + Update)
