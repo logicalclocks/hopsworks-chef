@@ -535,7 +535,7 @@ glassfish_conf = {
   # Jobs in Hopsworks use the Timer service
   'server-config.ejb-container.ejb-timer-service.timer-datasource' => 'jdbc/hopsworksTimers',
   'server.ejb-container.ejb-timer-service.property.reschedule-failed-timer' => node['glassfish']['reschedule_failed_timer'],
-  'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
+  #'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
   # Enable/Disable HTTP listener
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
@@ -1323,5 +1323,3 @@ bash 'alter_flyway_schema_history_engine' do
     #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
   EOF
 end
-
-
