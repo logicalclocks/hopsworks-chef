@@ -93,3 +93,16 @@ DROP TABLE IF EXISTS `hopsworks`.`validation_report`;
 DROP TABLE IF EXISTS `hopsworks`.`great_expectation`;
 DROP TABLE IF EXISTS `hopsworks`.`expectation`;
 DROP TABLE IF EXISTS `hopsworks`.`expectation_suite`;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `enable_batching` tinyint(1) DEFAULT '0';
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `enable_batching` =  (CASE WHEN `batching_configuration` = '{"batchingEnabled":false}'
+    OR batching_configuration IS NULL
+    then
+    '0'
+    else
+    '1'
+end);
+SET SQL_SAFE_UPDATES = 1;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `batching_configuration`;
