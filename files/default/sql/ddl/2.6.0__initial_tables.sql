@@ -1312,7 +1312,6 @@ CREATE TABLE `feature_view` (
                                  `creator` int(11) NOT NULL,
                                  `version` int(11) NOT NULL,
                                  `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
-                                 `label` VARCHAR(255) NULL,
                                  `inode_pid` BIGINT(20) NOT NULL,
                                  `inode_name` VARCHAR(255) NOT NULL,
                                  `partition_id` BIGINT(20) NOT NULL,
