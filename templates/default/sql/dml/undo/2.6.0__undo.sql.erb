@@ -2,3 +2,8 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='fs_py_job_util';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='fs_java_job_util';
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs_utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.py");
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_skip_namespace_creation';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_knative_domain_name';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kserve_installed';
