@@ -5,8 +5,8 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME] | [kill DBT_HOME HADOOP_USERNAME $    echo ""
-    exit 1
+    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS] | [kill DBT_HOME HADOOP_USERNAME PROJECT_ID EXECUTION_ID PROJECT_USER_NAME]"
+   exit 1
 }
 
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
@@ -24,7 +24,7 @@ VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 
 if [ "$1" == "start" ] ; then
 
- if [ $# -ne 9 ]; then
+ if [ $# -ne 10 ]; then
    help
  fi
 
@@ -36,6 +36,7 @@ if [ "$1" == "start" ] ; then
   HADOOP_GROUP=$7
   LOG_PATH=$8
   PROJECT_NAME=$9
+  COMMANDS=${10}
 
    if [ ! -d "${DBT_HOME}" ]; then
     echo "Invalid DBT_HOME directory: ${DBT_HOME}"
@@ -55,7 +56,7 @@ if [ "$1" == "start" ] ; then
   chmod -R 770 "${DBT_HOME}"
 
   echo "run dbt-container-launch.sh"
-  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" $
+  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" "${COMMANDS}"
 
 
 elif [ "$1" == "kill" ] ; then

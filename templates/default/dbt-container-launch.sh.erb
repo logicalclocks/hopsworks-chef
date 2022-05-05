@@ -4,12 +4,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME"
+    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS"
     echo ""
     exit 1
 }
 
-if [ $# -ne 8 ]; then
+if [ $# -ne 9 ]; then
   help
 fi
 
@@ -21,11 +21,10 @@ PROJECT_ID=$5
 HADOOP_GROUP=$6
 LOG_PATH=$7
 PROJECT_NAME=$8
-
+COMMANDS=$9
 
 echo "dbt-container-launcher.sh"
-#echo $HADOOP_GROUP
-#echo 'demo_fs_meb10000__Logs'
+echo "commands: $COMMANDS"
 
 CONTAINER_NAME=${HADOOP_USERNAME}_${PROJECT_ID}_${EXECUTION_ID}
 
@@ -80,7 +79,8 @@ docker run --rm --privileged --name $CONTAINER_NAME \
       -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
       -e "IS_TLS=${IS_TLS}" \
       -e "LOG_PATH=${LOG_PATH}" \
-      -v $DBT_HOME:$DBT_HOME:rw\
+      -e "COMMANDS=${COMMANDS}" \
+      -v $DBT_HOME:$DBT_HOME:rw \
       -w="$DBT_HOME" \
       registry.service.consul:4443/dbt \
       /bin/bash launcher.sh
