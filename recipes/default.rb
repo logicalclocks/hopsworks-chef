@@ -455,18 +455,6 @@ props =  {
      'user-account-type-column' => 'mode'
  }
 
- glassfish_auth_realm "cauthRealm" do
-   realm_name "cauthRealm"
-   jaas_context "cauthRealm"
-   properties cProps
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-   classname "io.hops.crealm.CustomAuthRealm"
- end
-
 # Enable JMX metrics
 # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
  glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS --restmonitoringenabled" do
@@ -531,11 +519,11 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
 end
 
 glassfish_conf = {
-  'server-config.security-service.default-realm' => 'cauthRealm',
+  'server-config.security-service.default-realm' => 'kthfsrealm',
   # Jobs in Hopsworks use the Timer service
   'server-config.ejb-container.ejb-timer-service.timer-datasource' => 'jdbc/hopsworksTimers',
   'server.ejb-container.ejb-timer-service.property.reschedule-failed-timer' => node['glassfish']['reschedule_failed_timer'],
-  'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
+  #'server.http-service.virtual-server.server.property.send-error_1' => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
   # Enable/Disable HTTP listener
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
@@ -612,6 +600,15 @@ glassfish_conf.each do |property, value|
    admin_port admin_port
    secure false
   end
+end
+
+#Should not be set if not properly configured 
+glassfish_asadmin "set-metrics-configuration --enabled=false" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
 end
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
@@ -1323,5 +1320,3 @@ bash 'alter_flyway_schema_history_engine' do
     #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
   EOF
 end
-
-

@@ -455,16 +455,6 @@ remote_file "#{theDomain}/lib/#{mysql_connector}"  do
   action :create_if_missing
 end
 
-cauth = File.basename(node['hopsworks']['cauth_url'])
-
-remote_file "#{theDomain}/lib/#{cauth}"  do
-  user node['glassfish']['user']
-  group node['glassfish']['group']
-  source node['hopsworks']['cauth_url']
-  mode 0755
-  action :create_if_missing
-end
-
 remote_directory "#{theDomain}/templates" do
   source 'hopsworks_templates'
   owner node["glassfish"]["user"]

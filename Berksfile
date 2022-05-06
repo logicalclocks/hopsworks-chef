@@ -24,7 +24,6 @@ cookbook 'consul', github: "logicalclocks/consul-chef", branch: "master"
 cookbook 'kube-hops', github: "logicalclocks/kube-hops-chef", branch: "master"
 cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "master"
 cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", branch: "master"
-
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "glassfish5"
 cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"

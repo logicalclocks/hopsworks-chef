@@ -83,8 +83,6 @@ default['hopsworks']['config_dir']               = "#{node['hopsworks']['domains
 default['glassfish']['reschedule_failed_timer']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_version']            = "otp-auth-0.6.0.jar"
-default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
 
 default['hopsworks']['download_url']             = "#{node['install']['enterprise']['install'].casecmp?("true") ? node['install']['enterprise']['download_url'] : node['download_url']}/hopsworks/#{node['hopsworks']['version']}"
 default['hopsworks']['war_url']                  = "#{node['hopsworks']['download_url']}/hopsworks-web.war"
