@@ -60,3 +60,9 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`jupyter_git_config` (
                                                     `git_backend` VARCHAR(45) DEFAULT 'GITHUB',
                                                     PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- bigquery connector
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    DROP FOREIGN KEY `fs_connector_bigquery_fk`,
+    DROP COLUMN `bigquery_id`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_bigquery_connector`;
