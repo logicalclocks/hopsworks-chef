@@ -62,10 +62,6 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`jupyter_git_config` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- Data Validation
-ALTER TABLE `hopsworks`.`feature_group`
-    DROP FOREIGN KEY `expectation_suite_fk`,
-    DROP COLUMN `expectation_suite_id`;
-
 DROP TABLE IF EXISTS `hopsworks`.`validation_result`;
 DROP TABLE IF EXISTS `hopsworks`.`validation_report`;
 DROP TABLE IF EXISTS `hopsworks`.`expectation`;

@@ -2288,7 +2288,7 @@ CREATE TABLE IF NOT EXISTS `expectation_suite` (
 CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
-    `expectation_type` VARCHAR(150) NOT NULL, 
+    `expectation_type` VARCHAR(150) NOT NULL,
     `kwargs` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),

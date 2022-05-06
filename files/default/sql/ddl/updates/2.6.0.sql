@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `expectation_suite` (
     `data_asset_type` VARCHAR(50),
     `ge_cloud_id` VARCHAR(200),
     `run_validation` BOOLEAN DEFAULT TRUE,
-    `validation_ingestion` VARCHAR(25),
+    `validation_ingestion_policy` VARCHAR(25),
     PRIMARY KEY (`id`),
     CONSTRAINT `feature_group_suite_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
     `great_expectation_id` INT(11) NOT NULL,
-    `expectation_type` VARCHAR(150) NOT NULL, 
+    `expectation_type` VARCHAR(150) NOT NULL,
     `kwargs` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `validation_report_id` INT(11) NOT NULL,
     `expectation_id` INT(11) NOT NULL,
     `success` BOOLEAN NOT NULL,
+    `result` VARCHAR(1000) NOT NULL,
     `observed_value` VARCHAR(250) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     `expectation_config` VARCHAR(2000) NOT NULL,
