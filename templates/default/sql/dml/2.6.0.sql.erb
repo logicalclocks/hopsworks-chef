@@ -78,3 +78,15 @@ REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template)
 REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ('expect_table_row_count_to_equal_other_table', '{"include_config": true, "catch_exceptions": false, "result_format": "BASIC", "other_table_name": null}');
 
 REPLACE INTO `hopsworks`.`bbc_group` (`group_name`, `group_desc`, `gid`) VALUES ('HOPS_SERVICE_USER', 'Hopsworks as a service user', 1008);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_tainted_nodes', "<%= node['kube-hops']['taints'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_node_taints_monitor_interval', "<%= node['hopsworks']['kube']['kube_taints_monitor_interval'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_enabled', "<%= node['hops']['docker']['cgroup']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_memory_limit_gb', "<%= node['hops']['docker']['cgroup']['memory']['hard-limit'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_soft_limit_memory_gb', "<%= node['hops']['docker']['cgroup']['memory']['soft-limit']  %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_cpu_quota_percentage', "<%= node['hops']['docker']['cgroup']['cpu']['quota']['percentage'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_cpu_period', "<%= node['hops']['docker']['cgroup']['cpu']['period'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_monitor_interval', "<%= node['hopsworks']['docker']['cgroup_monitor_interval'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('prometheus_port', "<%= node['prometheus']['port']  %>");
