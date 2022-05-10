@@ -4,12 +4,12 @@
 
 help() {
     echo ""
-    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS DBT_PROJECT_PATH DBT_PROJECT_PROFILE"
+    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS DBT_PROJECT_PATH DBT_PROJECT_PROFILE RESOURCE_GROUP"
     echo ""
     exit 1
 }
 
-if [ $# -ne 11 ]; then
+if [ $# -ne 12 ]; then
   help
 fi
 
@@ -24,6 +24,7 @@ PROJECT_NAME=$8
 COMMANDS=$9
 DBT_PROJECT_PATH=${10}
 DBT_PROJECT_PROFILE=${11}
+RESOURCE_GROUP=${12}
 
 echo "dbt-container-launcher.sh"
 echo "commands: $COMMANDS"
@@ -88,6 +89,7 @@ docker run --rm --privileged --name $CONTAINER_NAME \
       -e "COMMANDS=${COMMANDS}" \
       -e "DBT_PROJECT_PATH=${DBT_PROJECT_PATH}" \
       -e "DBT_PROJECT_PROFILE=${DBT_PROJECT_PROFILE}" \
+      -e "RESOURCE_GROUP=${RESOURCE_GROUP}" \
       -v $DBT_HOME:$DBT_HOME:rw \
       -w="$DBT_HOME" \
       registry.service.consul:4443/dbt \
