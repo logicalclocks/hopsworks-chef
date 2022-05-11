@@ -98,6 +98,7 @@ ALTER TABLE `hopsworks`.`serving` ADD COLUMN `description` varchar(1000) COLLATE
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20) NOT NULL,
+                                                      `online_enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
@@ -114,3 +115,74 @@ ALTER TABLE `hopsworks`.`cached_feature` ADD CONSTRAINT `stream_feature_group_fk
 ALTER TABLE `hopsworks`.`cached_feature_extra_constraints` ADD COLUMN `stream_feature_group_id` INT(11) NULL;
 
 ALTER TABLE `hopsworks`.`feature_group_commit` MODIFY COLUMN `committed_on` TIMESTAMP(6) NOT NULL;
+
+ALTER TABLE `hopsworks`.`users` DROP COLUMN `orcid`;
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `fname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL;
+ALTER TABLE `hopsworks`.`users` MODIFY COLUMN `lname` varchar(30) CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL;
+
+-- add gcs connector
+CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `algorithm` VARCHAR(10) NULL,
+    `bucket` VARCHAR(1000) NOT NULL,
+    `encryption_secret_uid` INT NULL,
+    `encryption_secret_name` VARCHAR(200) NULL,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_fs_storage_connector_gcs_idx` (`encryption_secret_uid`, `encryption_secret_name`),
+    CONSTRAINT `fk_fs_storage_connector_gcs` FOREIGN KEY (`encryption_secret_uid`, `encryption_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
+    CONSTRAINT `fk_fs_storage_connector_gcs_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    ADD COLUMN `gcs_id` INT(11),
+    ADD CONSTRAINT `fs_connector_gcs_fk` FOREIGN KEY (`gcs_id`) REFERENCES `hopsworks`.`feature_store_gcs_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Split serving resource config
+ALTER TABLE `hopsworks`.`serving` RENAME COLUMN `docker_resource_config` TO `predictor_resources`;
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `transformer_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `predictor_resources` = JSON_SET(`predictor_resources`, '$.requests', CAST(`predictor_resources` as JSON), '$.limits', CAST(`predictor_resources` as JSON)),
+    `predictor_resources` = JSON_REMOVE(`predictor_resources`, '$.cores', '$.memory', '$.gpus'),
+    `transformer_resources` = (CASE WHEN `transformer` IS NOT NULL then `predictor_resources` else NULL end);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`jupyter_settings`
+    DROP COLUMN git_backend,
+    DROP COLUMN git_config_id;
+DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
+
+-- Add bigquery connector
+CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
+(
+    `id`                      int AUTO_INCREMENT,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    `parent_project`          varchar(1000) NOT NULL,
+    `dataset`                 varchar(1000) NULL,
+    `query_table`             varchar(1000) NULL,
+    `query_project`           varchar(1000) NULL,
+    `materialization_dataset` varchar(1000) NULL,
+    `arguments`               varchar(2000) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    ADD COLUMN `bigquery_id` INT,
+    ADD CONSTRAINT `fs_connector_bigquery_fk` FOREIGN KEY (`bigquery_id`) REFERENCES `hopsworks`.`feature_store_bigquery_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+

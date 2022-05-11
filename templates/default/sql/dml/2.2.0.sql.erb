@@ -39,8 +39,8 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_indexer_timer_
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("pypi_simple_endpoint", "<%= node['hopsworks']['pypi_simple_endpoint'] %>");
 
 INSERT INTO `hopsworks`.`users`
-(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `orcid`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
-('<%= node['onlinefs']['user'] %>', '<%= @onlinefs_password %>', '<%= node['onlinefs']['hopsworks']['email'] %>', 'OnlineFS', 'Server', '2021-03-16 16:17:00', 'Mr', '1234-5678-1234-5678', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2021-03-16 16:17:00', NULL, 2, 30, 0, 3, '<%= @onlinefs_salt %>')
+(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+('<%= node['onlinefs']['user'] %>', '<%= @onlinefs_password %>', '<%= node['onlinefs']['hopsworks']['email'] %>', 'OnlineFS', 'Server', '2021-03-16 16:17:00', 'Mr', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2021-03-16 16:17:00', NULL, 2, 30, 0, 3, '<%= @onlinefs_salt %>')
 ON DUPLICATE KEY UPDATE `username`="onlinefs";
 
 INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='<%= node['onlinefs']['user'] %>';
@@ -52,4 +52,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_mounts_l
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_mounts_allowed", "<%= node['hopsworks']['docker-job']['docker_job_mounts_allowed'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("docker_job_uid_strict", "<%= node['hopsworks']['docker-job']['docker_job_uid_strict'] %>");
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kfserving']['enabled'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);

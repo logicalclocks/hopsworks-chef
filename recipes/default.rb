@@ -880,6 +880,67 @@ if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cl
   end
 end
 
+
+if current_version.eql?("") == false
+#
+# undeploy previous version
+#
+
+  glassfish_deployable "hopsworks-ear" do
+    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+    target "server"
+    version current_version
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    action :undeploy
+    retries 1
+    keep_state true
+    enabled true
+    secure true
+    ignore_failure true
+  end
+
+  glassfish_deployable "hopsworks" do
+    component_name "hopsworks-web:#{node['hopsworks']['version']}"
+    target "server"
+    version current_version
+    context_root "/hopsworks"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true  
+  end
+
+  glassfish_deployable "hopsworks-ca" do
+    component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+    target "server"
+    version current_version
+    context_root "/hopsworks-ca"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true
+  end
+
+end  
+
+
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
@@ -970,43 +1031,6 @@ bash "extract_frontend" do
   code <<-EOH
     tar xf #{Chef::Config['file_cache_path']}/frontend.tgz -C #{theDomain}/docroot
   EOH
-end
-
-#
-# If deployment of the new version succeeds, then undeploy the previous version
-#
-
-glassfish_deployable "undeploy_hopsworks-ear" do
-  component_name "hopsworks-ear:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
-end
-
-glassfish_deployable "undeploy_hopsworks-war" do
-  component_name "hopsworks-web:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
-end
-
-glassfish_deployable "undeploy_hopsworks-ca" do
-  component_name "hopsworks-ca:#{previous_version}"
-  target "server"
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure true
-  action :undeploy
 end
 
 hopsworks_certs "generate-certs" do
@@ -1278,3 +1302,5 @@ bash 'alter_flyway_schema_history_engine' do
     #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
   EOF
 end
+
+
