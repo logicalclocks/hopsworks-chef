@@ -485,3 +485,12 @@ default['hopsworks']['git_command_timeout_minutes']  = "60"
 default['hopsworks']['debug']  = "false"
 
 default['hopsworks']['kubernetes']['skip_namespace_creation']        = "false"
+
+##
+## Quotas
+##
+default['hopsworks']['quotas']['online_enabled_featuregroups']        = "-1"
+default['hopsworks']['quotas']['online_disabled_featuregroups']       = "-1"
+default['hopsworks']['quotas']['training_datasets']                   = "-1"
+default['hopsworks']['quotas']['total_model_deployments']             = "-1"
+default['hopsworks']['quotas']['running_model_deployments']           = "-1"
