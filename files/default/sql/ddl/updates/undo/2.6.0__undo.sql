@@ -11,7 +11,8 @@ DROP TABLE IF EXISTS `hopsworks`.`feature_view`;
 ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
 ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `hopsfs_training_dataset_fk`
     FOREIGN KEY (`hopsfs_training_dataset_id`) REFERENCES `hopsfs_training_dataset` (`id`)
-        ON DELETE SET NULL ON UPDATE NO ACTION;
+        ON DELETE CASCADE ON UPDATE NO ACTION;
+
 
 ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `FK_656_817`;
 ALTER TABLE `hopsworks`.`training_dataset` DROP INDEX `name_version`;
