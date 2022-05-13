@@ -15,3 +15,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_total
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_running';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('aws_instance_role','false');
+
+DELETE FROM `hopsworks`.`bbc_group` WHERE `gid`=10008;
