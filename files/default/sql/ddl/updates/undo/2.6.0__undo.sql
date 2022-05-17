@@ -1,10 +1,24 @@
 -- Feature view table
 ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `td_feature_view_fk`, DROP COLUMN `feature_view_id`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `sample_ratio`;
 ALTER TABLE `hopsworks`.`training_dataset_join` DROP FOREIGN KEY `tdj_feature_view_fk`, DROP COLUMN feature_view_id;
+ALTER TABLE `hopsworks`.`training_dataset_filter` DROP FOREIGN KEY `tdfilter_feature_view_fk`, DROP COLUMN feature_view_id;
 ALTER TABLE `hopsworks`.`training_dataset_feature` DROP FOREIGN KEY `tdf_feature_view_fk`, DROP COLUMN feature_view_id;
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fsa_feature_view_fk`, DROP COLUMN feature_view_id;
 ALTER TABLE `hopsworks`.`training_dataset` DROP COLUMN `start_time`, DROP COLUMN `end_time`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_view`;
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `hopsfs_training_dataset_fk`
+    FOREIGN KEY (`hopsfs_training_dataset_id`) REFERENCES `hopsfs_training_dataset` (`id`)
+        ON DELETE CASCADE ON UPDATE NO ACTION;
+
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `FK_656_817`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP INDEX `name_version`;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `FK_656_817` FOREIGN KEY (`feature_store_id`) REFERENCES
+    `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `name_version` UNIQUE (`feature_store_id`, `name`, `version`);
 
 ALTER TABLE `hopsworks`.`feature_store_connector` DROP FOREIGN KEY `fs_connector_kafka_fk`;
 ALTER TABLE `hopsworks`.`feature_store_connector` DROP COLUMN `kafka_id`;
