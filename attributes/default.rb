@@ -174,6 +174,9 @@ default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verif
 # Master encryption password
 default['hopsworks']['encryption_password']      = "adminpw"
 
+# hostname
+default['hopsworks']['hopsworks_public_host'] = node['fqdn']
+
 #
 # Dela  - please do not change without consulting dela code
 #

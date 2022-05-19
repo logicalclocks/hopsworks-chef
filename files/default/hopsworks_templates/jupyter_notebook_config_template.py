@@ -52,6 +52,8 @@ os.environ['REQUESTS_VERIFY'] = "${conf.requestsVerify?c}"
 os.environ['DOMAIN_CA_TRUSTSTORE'] = "${conf.domainCATruststore}"
 os.environ['HADOOP_HOME'] = "${conf.hadoopHome}"
 os.environ['SERVICE_DISCOVERY_DOMAIN'] = "${conf.serviceDiscoveryDomain}"
+# hopsworks hostname
+os.environ['HOPSWORKS_PUBLIC_DNS'] = "{conf.hopsworksPublicDns}"
 
 <#if conf.kafkaBrokers?has_content>
 os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
