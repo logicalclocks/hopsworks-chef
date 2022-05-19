@@ -318,6 +318,10 @@ attribute "hopsworks/version",
           :description => "The version of ear/web/ca to download",
           :type => 'string'
 
+attribute "hopsworks/hopsworks_public_host",
+					:description => "The public DNS of hopsworks host",
+					:type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
