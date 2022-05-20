@@ -275,7 +275,7 @@ attribute "hopsworks/featurestore_default_quota_mbs",
           :type => 'string'
 
 attribute "hopsworks/featurestore_online",
-          :description => "Enable the creation of NDB databases for the online featurestore. Default 'false'",
+          :description => "Enable the creation of NDB databases for the online featurestore. (Default: true)",
           :type => 'string'
 
 attribute "hopsworks/max_num_proj_per_user",
