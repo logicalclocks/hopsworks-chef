@@ -13,3 +13,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_featuregroups_online_en
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_training_datasets';
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_total';
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_running';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('aws_instance_role','false');
