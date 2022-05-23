@@ -7,3 +7,9 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_knative_domain_name';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kfserving_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kserve_installed';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_featuregroups_online_disabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_featuregroups_online_enabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_training_datasets';
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_total';
+DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_model_deployments_running';
