@@ -319,7 +319,7 @@ attribute "hopsworks/version",
           :type => 'string'
 
 attribute "hopsworks/hopsworks_public_host",
-					:description => "The public DNS of hopsworks host",
+					:description => "Hopsworks public hostname",
 					:type => 'string'
 
 attribute "vagrant",
