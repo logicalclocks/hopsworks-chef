@@ -18,4 +18,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deploy
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_running", <%= node['hopsworks']['quotas']['running_model_deployments'] %>);
 
 -- HOPSWORKS-3158
-INSERT INTO `hopsworks`.`variables` (`ID`, `VALUE`, `VISIBILITY`, `HIDE`) VALUES ('hopsworks_public_host', '', DEFAULT, DEFAULT);
+INSERT INTO `hopsworks`.`variables` (`ID`, `VALUE`) VALUES ('hopsworks_public_host', "<%= node['hopsworks']['hopsworks_public_host'] %>");
