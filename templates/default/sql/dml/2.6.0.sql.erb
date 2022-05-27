@@ -10,3 +10,9 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_knative_domain
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kserve_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kfserving_installed';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_featuregroups_online_disabled", <%= node['hopsworks']['quotas']['online_disabled_featuregroups'] %>);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_featuregroups_online_enabled", <%= node['hopsworks']['quotas']['online_enabled_featuregroups'] %>);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_training_datasets", <%= node['hopsworks']['quotas']['training_datasets'] %>);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_total", <%= node['hopsworks']['quotas']['total_model_deployments'] %>);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_running", <%= node['hopsworks']['quotas']['running_model_deployments'] %>);
