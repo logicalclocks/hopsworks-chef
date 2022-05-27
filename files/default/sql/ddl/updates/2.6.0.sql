@@ -185,7 +185,9 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
     ADD COLUMN `bigquery_id` INT,
     ADD CONSTRAINT `fs_connector_bigquery_fk` FOREIGN KEY (`bigquery_id`) REFERENCES `hopsworks`.`feature_store_bigquery_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
+SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON_LIBRARIES' WHERE `scope` = 'PYTHON';
+SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`project_topics` ADD COLUMN `num_partitions` INT(11) DEFAULT NULL,
     ADD COLUMN `num_replicas` INT(11) DEFAULT NULL;
