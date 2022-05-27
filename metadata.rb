@@ -275,7 +275,7 @@ attribute "hopsworks/featurestore_default_quota_mbs",
           :type => 'string'
 
 attribute "hopsworks/featurestore_online",
-          :description => "Enable the creation of NDB databases for the online featurestore. Default 'false'",
+          :description => "Enable the creation of NDB databases for the online featurestore. (Default: true)",
           :type => 'string'
 
 attribute "hopsworks/max_num_proj_per_user",
@@ -1043,4 +1043,24 @@ attribute "hopsworks/debug",
 
 attribute "hopsworks/kubernetes/skip_namespace_creation",
           :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kuberenetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
+          :type => 'string'
+
+attribute "hopsworks/quotas/online_enabled_featuregroups",
+          :description => "Maximum number of online enabled feature groups per project. Default: -1 (disabled)",
+          :type => 'string'
+
+attribute "hopsworks/quotas/online_disabled_featuregroups",
+          :description => "Maximum number of online disabled feature groups per project. Default: -1 (disabled)",
+          :type => 'string'
+
+attribute "hopsworks/quotas/training_datasets",
+          :description => "Maximum number of training datasets per project. Default: -1 (disabled)",
+          :type => 'string'
+
+attribute "hopsworks/quotas/total_model_deployments",
+          :description => "Maximum number of total model deployments per project. Default: -1 (disabled)",
+          :type => 'string'
+
+attribute "hopsworks/quotas/running_model_deployments",
+          :description => "Maximum number of concurrently running model deployments per project. Default: -1 (disabled)",
           :type => 'string'

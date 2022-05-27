@@ -7,7 +7,9 @@ CREATE TABLE `feature_view` (
                                  `creator` int(11) NOT NULL,
                                  `version` int(11) NOT NULL,
                                  `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
-                                 `label` VARCHAR(255) NULL,
+                                 `inode_pid` BIGINT(20) NOT NULL,
+                                 `inode_name` VARCHAR(255) NOT NULL,
+                                 `partition_id` BIGINT(20) NOT NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -15,15 +17,21 @@ CREATE TABLE `feature_view` (
                                  CONSTRAINT `fv_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON
                                      DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_feature_store_id_fk` FOREIGN KEY (`feature_store_id`) REFERENCES
-                                     `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                     `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                 CONSTRAINT `fv_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES
+                                     `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `sample_ratio` FLOAT DEFAULT NULL;
 ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `td_feature_view_fk` FOREIGN KEY
     (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`training_dataset_join` ADD CONSTRAINT `tdj_feature_view_fk` FOREIGN KEY (`feature_view_id`) REFERENCES
     `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`training_dataset_filter` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`training_dataset_filter` ADD CONSTRAINT `tdfilter_feature_view_fk` FOREIGN KEY
+    (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `feature_view_id` INT(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD CONSTRAINT `tdf_feature_view_fk` FOREIGN KEY (`feature_view_id`)
     REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -33,6 +41,18 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fsa_feature_vie
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `start_time` TIMESTAMP NULL;
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `end_time` TIMESTAMP NULL;
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `hopsfs_training_dataset_fk`
+    FOREIGN KEY (`hopsfs_training_dataset_id`) REFERENCES `hopsfs_training_dataset` (`id`)
+        ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `FK_656_817`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP INDEX `name_version`;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `FK_656_817` FOREIGN KEY (`feature_store_id`) REFERENCES
+    `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`training_dataset` ADD CONSTRAINT `name_version` UNIQUE (`feature_store_id`,
+                                                                                 `feature_view_id`, `name`, `version`);
+
 
 CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -139,6 +159,32 @@ ALTER TABLE `hopsworks`.`jupyter_settings`
     DROP COLUMN git_backend,
     DROP COLUMN git_config_id;
 DROP TABLE IF EXISTS `hopsworks`.`jupyter_git_config`;
+
+-- Add bigquery connector
+CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
+(
+    `id`                      int AUTO_INCREMENT,
+    `key_inode_pid` BIGINT(20) NULL,
+    `key_inode_name` VARCHAR(255) NULL,
+    `key_partition_id` BIGINT(20) NULL,
+    `parent_project`          varchar(1000) NOT NULL,
+    `dataset`                 varchar(1000) NULL,
+    `query_table`             varchar(1000) NULL,
+    `query_project`           varchar(1000) NULL,
+    `materialization_dataset` varchar(1000) NULL,
+    `arguments`               varchar(2000) NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
+        `key_inode_pid`,
+        `key_inode_name`,
+        `key_partition_id`
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_store_connector`
+    ADD COLUMN `bigquery_id` INT,
+    ADD CONSTRAINT `fs_connector_bigquery_fk` FOREIGN KEY (`bigquery_id`) REFERENCES `hopsworks`.`feature_store_bigquery_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
 
 -- Data Validation Great Expectation
 CREATE TABLE IF NOT EXISTS `expectation_suite` (
