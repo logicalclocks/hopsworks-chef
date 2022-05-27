@@ -80,3 +80,5 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
     DROP FOREIGN KEY `fs_connector_bigquery_fk`,
     DROP COLUMN `bigquery_id`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_bigquery_connector`;
+
+UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON' WHERE `scope` = 'PYTHON_LIBRARIES';
