@@ -2314,6 +2314,7 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `inode_pid` BIGINT(20) NOT NULL,
     `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `partition_id` BIGINT(20) NOT NULL,
+    `ingestion_result` VARCHAR(8) NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `inode_result_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
