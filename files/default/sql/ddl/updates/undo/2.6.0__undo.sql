@@ -81,6 +81,10 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
     DROP COLUMN `bigquery_id`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_bigquery_connector`;
 
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON' WHERE `scope` = 'PYTHON_LIBRARIES';
+SET SQL_SAFE_UPDATES = 1;
+
 -- Data Validation
 DROP TABLE IF EXISTS `hopsworks`.`validation_result`;
 DROP TABLE IF EXISTS `hopsworks`.`validation_report`;
