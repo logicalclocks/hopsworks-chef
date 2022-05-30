@@ -18,5 +18,4 @@ DELETE FROM `hopsworks`.`variables` where id="kapacitor";
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("logstash_port_beam_jobserver_local", "<%= node['logstash']['beats']['beamjobserverlocal_port'] %>");
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("aws_instance_role", "<%= node['install']['aws']['instance_role'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("requests_verify", "<%= node['hopsworks']['requests_verify'] %>");
