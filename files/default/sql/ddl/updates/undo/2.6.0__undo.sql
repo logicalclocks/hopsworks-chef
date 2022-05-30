@@ -84,3 +84,5 @@ DROP TABLE IF EXISTS `hopsworks`.`feature_store_bigquery_connector`;
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON' WHERE `scope` = 'PYTHON_LIBRARIES';
 SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`project_topics` DROP COLUMN `num_partitions`, DROP COLUMN `num_replicas`;
