@@ -16,3 +16,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_featuregroup
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_training_datasets", <%= node['hopsworks']['quotas']['training_datasets'] %>);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_total", <%= node['hopsworks']['quotas']['total_model_deployments'] %>);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_running", <%= node['hopsworks']['quotas']['running_model_deployments'] %>);
+
+-- HOPSWORKS-3158
+INSERT INTO `hopsworks`.`variables` (`ID`, `VALUE`) VALUES ('hopsworks_public_host', "<%= node['hopsworks']['hopsworks_public_host'] %>");
