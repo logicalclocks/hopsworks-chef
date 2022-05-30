@@ -984,6 +984,8 @@ CREATE TABLE `project_topics` (
                                   `project_id` int(11) NOT NULL,
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `subject_id` int(11) NOT NULL,
+                                  `num_partitions` int(11) DEFAULT NULL,
+                                  `num_replicas` int(11) DEFAULT NULL,
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `topic_project` (`topic_name`,`project_id`),
                                   CONSTRAINT `project_idx_proj_topics` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,

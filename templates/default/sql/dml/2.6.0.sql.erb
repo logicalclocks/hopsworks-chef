@@ -17,6 +17,10 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_training_dat
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_total", <%= node['hopsworks']['quotas']['total_model_deployments'] %>);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deployments_running", <%= node['hopsworks']['quotas']['running_model_deployments'] %>);
 
+-- HOPSWORKS-3158
+INSERT INTO `hopsworks`.`variables` (`ID`, `VALUE`) VALUES ('hopsworks_public_host', "<%= node['hopsworks']['hopsworks_public_host'] %>");
+-- HOPSWORKS-3109
+DELETE FROM `hopsworks`.`variables` WHERE `id`='aws_instance_role';
 
 INSERT INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ("expect_column_max_to_be_between", "{'include_config': True, 'catch_exceptions': False, 'result_format': 'BASIC', 'min_value': None, 'max_value': None, 'strict_min': None, 'strict_max': None, 'parse_strings_as_datetimes': False}");
 INSERT INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ("expect_column_min_to_be_between", "{'include_config': True, 'catch_exceptions': False, 'result_format': 'BASIC', 'min_value': None, 'max_value': None, 'strict_min': None, 'strict_max': None, 'parse_strings_as_datetimes': False}");
