@@ -5,21 +5,13 @@
 
 help() {
     echo ""
-    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS DBT_PROJECT_PATH DBT_PROJECT_PROFILE RESOURCE_GROUP ARTIFACTS_GROUP] | [kill DBT_HOME HADOOP_USERNAME PROJECT_ID EXECUTION_ID PROJECT_USER_NAME]"
+    echo "usage: $0 [start DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS DBT_PROJECT_PATH DBT_PROJECT_PROFILE DBT_RESOURCE_GROUP ARTIFACTS_GROUP] | [kill DBT_HOME HADOOP_USERNAME PROJECT_ID EXECUTION_ID PROJECT_USER_NAME]"
     exit 1
 }
 
-DOMAINS_DIR=/srv/hops/domains
-HOPSWORKS_USER=glassfish
-VALID_IMAGE_NAME='^([a-z0-9]+(-[a-z0-9]+)*.)*[a-z0-9]+(:[0-9]*)?(/([a-zA-Z0-9-]*))?/([-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$)'
-
-#DOMAINS_DIR=/srv/hops/domains
-#DOMAINS_DIR=/srv/hops/domains
-#DOMAINS_DIR=/srv/hops/domains
-#DBT_USER=yarnapp
-#DBT_GROUP=hadoop
-#HOPSWORKS_USER=glassfish
-#VALID_IMAGE_NAME='^([a-z0-9]+(-[a-z0-9]+)*.)*[a-z0-9]+(:[0-9]*)?(/([a-zA-Z0-9-]*))?/([-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$)'
+DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
+HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 
 
 if [ "$1" == "start" ] ; then
@@ -39,7 +31,7 @@ if [ "$1" == "start" ] ; then
   COMMANDS=${10}
   DBT_PROJECT_PATH=${11}
   DBT_PROJECT_PROFILE=${12}
-  RESOURCE_GROUP=${13}
+  DBT_RESOURCE_GROUP=${13}
   ARTIFACTS_GROUP=${14}
 
    if [ ! -d "${DBT_HOME}" ]; then
@@ -60,12 +52,11 @@ if [ "$1" == "start" ] ; then
 
 #  chmod 0730 "$DBT_HOME"
 #  chown -R "${DBT_USER}":"${DBT_GROUP}" "${DBT_HOME}"
-  chmod -R 770 "${DBT_HOME}"
+#  chmod -R 770 "${DBT_HOME}"
 
   echo "run dbt-container-launch.sh"
-  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" "${LOG_PATH}" "${PROJECT_NAME}" "${COMMANDS}" "${DBT_PROJECT_PATH}" "${DBT_PROJECT_PROFILE}" "${RESOURCE_GROUP}" "${ARTIFACTS_GROUP}"
+  ${DOMAINS_DIR}/domain1/bin/dbt-container-launch.sh "${DBT_HOME}" "${CERTS_DIR}" "${HADOOP_USERNAME}" "${EXECUTION_ID}" "${PROJECT_ID}" "${HADOOP_GROUP}" "${LOG_PATH}" "${PROJECT_NAME}" "${COMMANDS}" "${DBT_PROJECT_PATH}" "${DBT_PROJECT_PROFILE}" "${DBT_RESOURCE_GROUP}" "${ARTIFACTS_GROUP}"
 elif [ "$1" == "kill" ] ; then
-  echo "killing dbt job execution $1, $2, $3, $4, $5, $6"
 
   if [ $# -ne 6 ]; then
           help
