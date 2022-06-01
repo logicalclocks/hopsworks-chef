@@ -86,3 +86,10 @@ UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON' WHERE `scope` = 'PYTHO
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`project_topics` DROP COLUMN `num_partitions`, DROP COLUMN `num_replicas`;
+
+-- Data Validation
+DROP TABLE IF EXISTS `hopsworks`.`validation_result`;
+DROP TABLE IF EXISTS `hopsworks`.`validation_report`;
+DROP TABLE IF EXISTS `hopsworks`.`great_expectation`;
+DROP TABLE IF EXISTS `hopsworks`.`expectation`;
+DROP TABLE IF EXISTS `hopsworks`.`expectation_suite`;
