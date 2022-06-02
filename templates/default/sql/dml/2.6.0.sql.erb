@@ -1,7 +1,7 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='fs_job_util';
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_py_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs_utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.py");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_java_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs-utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.jar");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_skip_namespace_creation", <%= node['hopsworks']['kubernetes']['skip_namespace_creation']%>);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_skip_namespace_creation", "<%= node['hopsworks']['kubernetes']['skip_namespace_creation']%>");
 
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='elasticsearch';
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='kibana';
@@ -75,3 +75,5 @@ REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template)
 REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ('expect_table_row_count_to_be_between', '{"include_config": true, "catch_exceptions": false, "result_format": "BASIC", "min_value": null, "max_value": null, "meta": null}');
 REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ('expect_table_row_count_to_equal', '{"include_config": true, "catch_exceptions": false, "result_format": "BASIC", "value": null, "meta": null}');
 REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ('expect_table_row_count_to_equal_other_table', '{"include_config": true, "catch_exceptions": false, "result_format": "BASIC", "other_table_name": null}');
+
+REPLACE INTO `hopsworks`.`bbc_group` (`group_name`, `group_desc`, `gid`) VALUES ('HOPS_SERVICE_USER', 'Hopsworks as a service user', 1008);
