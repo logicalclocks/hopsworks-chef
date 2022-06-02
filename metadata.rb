@@ -1068,3 +1068,7 @@ attribute "hopsworks/quotas/total_model_deployments",
 attribute "hopsworks/quotas/running_model_deployments",
           :description => "Maximum number of concurrently running model deployments per project. Default: -1 (disabled)",
           :type => 'string'
+
+attribute "hopsworks/quotas/max_parallel_executions",
+          :description => "Maximum number of parallel Jobs executions per project. Default: -1 (disabled)",
+          :type => 'string'
