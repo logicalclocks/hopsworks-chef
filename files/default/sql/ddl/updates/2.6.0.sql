@@ -255,3 +255,15 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     KEY (`expectation_id`),
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `batching_configuration` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `batching_configuration` =  (CASE WHEN `enable_batching` = '0' OR enable_batching IS NULL  then
+    '{"batchingEnabled":false}'
+    else
+    '{"batchingEnabled":true}'
+    end);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `enable_batching`;
