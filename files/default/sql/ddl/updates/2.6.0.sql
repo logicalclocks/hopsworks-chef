@@ -267,3 +267,11 @@ SET `batching_configuration` =  (CASE WHEN `enable_batching` = '0' OR enable_bat
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `enable_batching`;
+
+DROP TABLE IF EXISTS `feature_store_expectation_rule`;
+DROP TABLE IF EXISTS `validation_rule`;
+DROP TABLE IF EXISTS `feature_group_rule`;
+ALTER TABLE `hopsworks`.`feature_group_commit` DROP FOREIGN KEY `fgc_fk_fgv`, DROP COLUMN `validation_id`;
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fs_act_val_fk`, DROP COLUMN `validation_id`;
+DROP TABLE IF EXISTS `feature_group_validation`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `validation_type`;
