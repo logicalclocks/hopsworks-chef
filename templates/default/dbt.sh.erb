@@ -61,16 +61,16 @@ elif [ "$1" == "kill" ] ; then
   if [ $# -ne 6 ]; then
           help
   fi
-
+  echo "run dbt-container-kill.sh"
   sudo ${DOMAINS_DIR}/domain1/bin/dbt-container-kill.sh $3 $4 $5 $6
-  echo $2
+  #echo $2
   # Remove all the directories in the home dbt folder for this execution.
 #  if [ "$2" != "" ] ; then
 #    rm -rf "${2}"
 #  fi
 
-elif [ "$1" == "list" ] ; then
-  echo "docker list test"
+#elif [ "$1" == "list" ] ; then
+#  echo "docker list test"
 else
   help
 fi

@@ -51,17 +51,11 @@ if [ ! -d "$LOG_PATH" ]; then
 fi
 
 
-IS_TLS=true
-NAMENODE_IP=rpc.namenode.service.consul
-NAMENODE_PORT=8020
-GLASSFISH_IP=glassfish.service.consul
-GLASSFISH_PORT=8182
-
-#IS_TLS=true
-#NAMENODE_IP=rpc.namenode.service.consul
-#NAMENODE_PORT=8020
-#GLASSFISH_IP=glassfish.service.consul
-#GLASSFISH_PORT=8182
+IS_TLS=<%= node['hops']['tls']['enabled'] %>
+NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
+GLASSFISH_IP=<%= @glassfish_fdqn %>
+GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
 
 
 docker run --rm --privileged --name $CONTAINER_NAME \
