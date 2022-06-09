@@ -80,3 +80,29 @@ ALTER TABLE `hopsworks`.`feature_store_connector`
     DROP FOREIGN KEY `fs_connector_bigquery_fk`,
     DROP COLUMN `bigquery_id`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_bigquery_connector`;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON' WHERE `scope` = 'PYTHON_LIBRARIES';
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`project_topics` DROP COLUMN `num_partitions`, DROP COLUMN `num_replicas`;
+
+-- Data Validation
+DROP TABLE IF EXISTS `hopsworks`.`validation_result`;
+DROP TABLE IF EXISTS `hopsworks`.`validation_report`;
+DROP TABLE IF EXISTS `hopsworks`.`great_expectation`;
+DROP TABLE IF EXISTS `hopsworks`.`expectation`;
+DROP TABLE IF EXISTS `hopsworks`.`expectation_suite`;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `enable_batching` tinyint(1) DEFAULT '0';
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`serving`
+SET `enable_batching` =  (CASE WHEN `batching_configuration` = '{"batchingEnabled":false}'
+    OR batching_configuration IS NULL
+    then
+    '0'
+    else
+    '1'
+end);
+SET SQL_SAFE_UPDATES = 1;
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `batching_configuration`;

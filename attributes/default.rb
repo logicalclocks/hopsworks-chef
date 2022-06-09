@@ -174,6 +174,9 @@ default['hopsworks']['verification_path']        = "hopsworks-api/api/auth/verif
 # Master encryption password
 default['hopsworks']['encryption_password']      = "adminpw"
 
+# hostname
+default['hopsworks']['hopsworks_public_host'] = node['fqdn']
+
 #
 # Dela  - please do not change without consulting dela code
 #
@@ -494,3 +497,4 @@ default['hopsworks']['quotas']['online_disabled_featuregroups']       = "-1"
 default['hopsworks']['quotas']['training_datasets']                   = "-1"
 default['hopsworks']['quotas']['total_model_deployments']             = "-1"
 default['hopsworks']['quotas']['running_model_deployments']           = "-1"
+default['hopsworks']['quotas']['max_parallel_executions']             = "-1"

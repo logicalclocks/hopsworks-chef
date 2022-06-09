@@ -318,6 +318,10 @@ attribute "hopsworks/version",
           :description => "The version of ear/web/ca to download",
           :type => 'string'
 
+attribute "hopsworks/hopsworks_public_host",
+					:description => "Hopsworks public hostname",
+					:type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
@@ -1063,4 +1067,8 @@ attribute "hopsworks/quotas/total_model_deployments",
 
 attribute "hopsworks/quotas/running_model_deployments",
           :description => "Maximum number of concurrently running model deployments per project. Default: -1 (disabled)",
+          :type => 'string'
+
+attribute "hopsworks/quotas/max_parallel_executions",
+          :description => "Maximum number of parallel Jobs executions per project. Default: -1 (disabled)",
           :type => 'string'
