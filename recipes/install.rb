@@ -681,6 +681,15 @@ kagent_sudoers "git" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+docker_cgroup_restart_script="docker-cgroup-rewrite.sh"
+kagent_sudoers "docker-cgroup-rewrite" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "#{docker_cgroup_restart_script}"
+  template      "#{docker_cgroup_restart_script}.erb"
+  run_as        "ALL"
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'

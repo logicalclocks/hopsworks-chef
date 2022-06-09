@@ -1072,3 +1072,11 @@ attribute "hopsworks/quotas/running_model_deployments",
 attribute "hopsworks/quotas/max_parallel_executions",
           :description => "Maximum number of parallel Jobs executions per project. Default: -1 (disabled)",
           :type => 'string'
+
+attribute "hopsworks/docker/cgroup_monitor_interval",
+					:description => "Time to periodically monitor cgroup values if enabled",
+					:type => 'string'
+
+attribute "hopsworks/kube/kube_taints_monitor_interval",
+					:description => "Time to periodically update tainted nodes in the database",
+					:type => 'string'

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# This script allows Hopsworks to modify the docker cgroup configuration.
+
+help() {
+    echo ""
+    echo "usage: memory_hard_limit memory_soft_limit cpu_qouta cpu_period"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 4 ]; then
+    help
+fi
+
+MEMORY_HARD_LIMIT=$1
+MEMORY_SOFT_LIMIT=$2
+CPU_QUOTA=$3
+CPU_PERIOD=$4
+
+if [ -d "/sys/fs/cgroup/memory/docker" ]; then
+  sudo echo $MEMORY_HARD_LIMIT > "/sys/fs/cgroup/memory/docker/memory.limit_in_bytes"
+  sudo echo $MEMORY_SOFT_LIMIT > "/sys/fs/cgroup/memory/docker/memory.soft_limit_in_bytes"
+  sudo echo $CPU_QUOTA > "/sys/fs/cgroup/cpu/docker/cpu.cfs_quota_us"
+  sudo echo $CPU_PERIOD > "/sys/fs/cgroup/cpu/docker/cpu.cfs_period_us"
+else
+  echo "Docker cgroup not yet created"
+  exit 1
+fi
+
+exit $?
