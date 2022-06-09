@@ -497,4 +497,8 @@ default['hopsworks']['quotas']['online_disabled_featuregroups']       = "-1"
 default['hopsworks']['quotas']['training_datasets']                   = "-1"
 default['hopsworks']['quotas']['total_model_deployments']             = "-1"
 default['hopsworks']['quotas']['running_model_deployments']           = "-1"
+
 default['hopsworks']['quotas']['max_parallel_executions']             = "-1"
+
+default['hopsworks']['docker']['cgroup_monitor_interval']             = "10m"
+default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
