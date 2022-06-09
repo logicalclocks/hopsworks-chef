@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+
+
+help() {
+    echo ""
+    echo "usage: $0 DBT_HOME CERTS_DIR HADOOP_USERNAME EXECUTION_ID PROJECT_ID HADOOP_GROUP LOG_PATH PROJECT_NAME ARGS DBT_PROJECT_PATH DBT_PROJECT_PROFILE DBT_RESOURCE_GROUP ARTIFACTS_GROUP"
+    echo ""
+    exit 1
+}
+
+if [ $# -ne 13 ]; then
+  help
+fi
+
+DBT_HOME=$1
+CERTS_DIR=$2
+HADOOP_USERNAME=$3
+EXECUTION_ID=$4
+PROJECT_ID=$5
+HADOOP_GROUP=$6
+LOG_PATH=$7
+PROJECT_NAME=$8
+COMMANDS=$9
+DBT_PROJECT_PATH=${10}
+DBT_PROJECT_PROFILE=${11}
+DBT_RESOURCE_GROUP=${12}
+ARTIFACTS_GROUP=${13}
+
+
+CONTAINER_NAME=${HADOOP_USERNAME}_${PROJECT_ID}_${EXECUTION_ID}
+
+
+CLIENT_CERTIFICATES_BUNDLE=${HADOOP_USERNAME}_certificate_bundle.pem
+ROOT_CA_BUNDLE=${HADOOP_USERNAME}_root_ca.pem
+CLIENT_KEY=${HADOOP_USERNAME}_private_key.pem
+
+if [ ! -d "$DBT_HOME" ]; then
+    echo "DBT_HOME is not a valid directory: ${DBT_HOME}"
+    exit 2
+fi
+
+if [ ! -d "$CERTS_DIR" ]; then
+    echo "CERTS_DIR is not a valid directory: ${CERTS_DIR}"
+    exit 3
+fi
+
+if [ ! -d "$LOG_PATH" ]; then
+    echo "LOG_PATH is not a valid directory: ${LOG_PATH}"
+    exit 4
+fi
+
+
+IS_TLS=<%= node['hops']['tls']['enabled'] %>
+NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
+GLASSFISH_IP=<%= @glassfish_fdqn %>
+GLASSFISH_PORT=<%= node['hopsworks']['internal']['port'] %>
+
+
+docker run --rm --privileged --name $CONTAINER_NAME \
+      -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
+      -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
+      -e "NAMENODE_IP=${NAMENODE_IP}" \
+      -e "NAMENODE_PORT=${NAMENODE_PORT}" \
+      -e "CLIENT_CERTIFICATES_BUNDLE=${CLIENT_CERTIFICATES_BUNDLE}" \
+      -e "ROOT_CA_BUNDLE=${ROOT_CA_BUNDLE}" \
+      -e "CLIENT_KEY=${CLIENT_KEY}" \
+      -e "EXECUTION_ID=${EXECUTION_ID}" \
+      -e "PROJECT_ID=${PROJECT_ID}" \
+      -e "PROJECT_NAME=${PROJECT_NAME}" \
+      -e "HADOOP_GROUP=${HADOOP_GROUP}" \
+      -e "GLASSFISH_IP=${GLASSFISH_IP}" \
+      -e "GLASSFISH_PORT=${GLASSFISH_PORT}" \
+      -e "IS_TLS=${IS_TLS}" \
+      -e "LOG_PATH=${LOG_PATH}" \
+      -e "COMMANDS=${COMMANDS}" \
+      -e "DBT_PROJECT_PATH=${DBT_PROJECT_PATH}" \
+      -e "DBT_PROJECT_PROFILE=${DBT_PROJECT_PROFILE}" \
+      -e "DBT_RESOURCE_GROUP=${DBT_RESOURCE_GROUP}" \
+      -e "ARTIFACTS_GROUP=${ARTIFACTS_GROUP}" \
+      -v $DBT_HOME:$DBT_HOME:rw \
+      -w="$DBT_HOME" \
+      registry.service.consul:4443/dbt \
+      /bin/bash launcher.sh
+
+
+exit $?

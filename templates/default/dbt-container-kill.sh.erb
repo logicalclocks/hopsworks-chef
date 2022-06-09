@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+help() {
+    echo ""
+    echo "usage: $0 HADOOP_USERNAME PROJECT_ID EXECUTION_ID PROJECT_USER_NAME"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 4 ]; then
+  help
+fi
+
+HADOOP_USERNAME=$1
+PROJECT_ID=$2
+EXECUTION_ID=$3
+PROJECT_USER_NAME=$4
+
+CONTAINER_NAME=${HADOOP_USERNAME}_${PROJECT_ID}_${EXECUTION_ID}
+
+echo "Killing input container_name: ${CONTAINER_NAME}"
+docker rm -f "${CONTAINER_NAME}"
+
+
+exit $?
