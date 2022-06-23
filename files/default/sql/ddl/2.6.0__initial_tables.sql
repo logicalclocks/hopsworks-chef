@@ -2345,7 +2345,7 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `success` BOOLEAN NOT NULL,
     `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
-    `meta` VARCHAR(1000) NULL DEFAULT "{}",
+    `meta` VARCHAR(2000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
     `inode_pid` BIGINT(20) NOT NULL,
     `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
