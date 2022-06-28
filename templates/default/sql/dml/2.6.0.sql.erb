@@ -91,4 +91,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_monito
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('prometheus_port', "<%= node['prometheus']['port']  %>");
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kserve_tensorflow_version', "<%= node['kube-hops']['kserve']['tensorflow']['version'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_kserve_tensorflow_version', "<%= node['kube-hops']['kserve']['tensorflow']['version'] %>");
