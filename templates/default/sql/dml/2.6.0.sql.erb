@@ -90,3 +90,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_cpu_pe
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_monitor_interval', "<%= node['hopsworks']['docker']['cgroup_monitor_interval'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('prometheus_port', "<%= node['prometheus']['port']  %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kserve_tensorflow_version', "<%= node['kube-hops']['kserve']['tensorflow']['version'] %>");
