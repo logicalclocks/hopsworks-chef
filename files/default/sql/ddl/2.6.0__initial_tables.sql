@@ -1678,7 +1678,7 @@ CREATE TABLE IF NOT EXISTS `api_key_scope` (
                                                `scope` varchar(45) NOT NULL,
                                                PRIMARY KEY (`id`),
                                                UNIQUE KEY `index2` (`api_key`,`scope`),
-                                               CONSTRAINT `fk_api_key_scope_1` FOREIGN KEY (`api_key`) REFERENCES `api_key` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)
+                                               CONSTRAINT `fk_api_key_scope_1` FOREIGN KEY (`api_key`) REFERENCES `api_key` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION)
     ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
@@ -2287,7 +2287,7 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `success` BOOLEAN NOT NULL,
     `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
-    `meta` VARCHAR(1000) NULL DEFAULT "{}",
+    `meta` VARCHAR(2000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
     `inode_pid` BIGINT(20) NOT NULL,
     `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,

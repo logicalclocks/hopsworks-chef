@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `success` BOOLEAN NOT NULL,
     `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
-    `meta` VARCHAR(1000) NULL DEFAULT "{}",
+    `meta` VARCHAR(2000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
     `inode_pid` BIGINT(20) NOT NULL,
     `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
@@ -267,6 +267,13 @@ SET `batching_configuration` =  (CASE WHEN `enable_batching` = '0' OR enable_bat
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `enable_batching`;
+
+ALTER TABLE `hopsworks`.`api_key_scope` DROP FOREIGN KEY `fk_api_key_scope_1`;
+ALTER TABLE `hopsworks`.`api_key_scope` ADD CONSTRAINT `fk_api_key_scope_1`
+  FOREIGN KEY (`api_key`)
+  REFERENCES `hopsworks`.`api_key` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
 
 DROP TABLE IF EXISTS `feature_store_expectation_rule`;
 DROP TABLE IF EXISTS `validation_rule`;

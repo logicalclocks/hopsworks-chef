@@ -18,3 +18,17 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'quotas_max_parallel_executions
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ('aws_instance_role','false');
 
 DELETE FROM `hopsworks`.`bbc_group` WHERE `gid`=1008;
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_tainted_nodes';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_node_taints_monitor_interval';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_enabled';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_memory_limit_gb';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_soft_limit_memory_gb';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_cpu_quota_percentage';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_cpu_period';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_monitor_interval';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='prometheus_port';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kserve_tensorflow_version';

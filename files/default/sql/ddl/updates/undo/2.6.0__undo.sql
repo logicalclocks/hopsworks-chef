@@ -107,6 +107,13 @@ end);
 SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsworks`.`serving` DROP COLUMN `batching_configuration`;
 
+ALTER TABLE `hopsworks`.`api_key_scope` DROP FOREIGN KEY `fk_api_key_scope_1`;
+ALTER TABLE `hopsworks`.`api_key_scope` ADD CONSTRAINT `fk_api_key_scope_1`
+  FOREIGN KEY (`api_key`)
+  REFERENCES `hopsworks`.`api_key` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
 CREATE TABLE  IF NOT EXISTS `feature_group_validation` (
                                                            `id` int(11) NOT NULL AUTO_INCREMENT,
                                                            `validation_time` TIMESTAMP(3),

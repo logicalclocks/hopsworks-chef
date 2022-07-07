@@ -6,7 +6,7 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_skip_namespace
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='elasticsearch';
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='kibana';
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_knative_domain_name", "<%= node['kube-hops']['knative']['domain_name'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_knative_domain_name", "<%= node['kube-hops']['knative']['domain_name'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("kube_kserve_installed", "<%= node['kube-hops']['kserve']['enabled'] %>", 1);
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kfserving_installed';
@@ -78,3 +78,17 @@ REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template)
 REPLACE INTO `hopsworks`.`great_expectation` (expectation_type, kwargs_template) VALUES ('expect_table_row_count_to_equal_other_table', '{"include_config": true, "catch_exceptions": false, "result_format": "BASIC", "other_table_name": null}');
 
 REPLACE INTO `hopsworks`.`bbc_group` (`group_name`, `group_desc`, `gid`) VALUES ('HOPS_SERVICE_USER', 'Hopsworks as a service user', 1008);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_tainted_nodes', "<%= node['kube-hops']['taints'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_node_taints_monitor_interval', "<%= node['hopsworks']['kube']['kube_taints_monitor_interval'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_enabled', "<%= node['hops']['docker']['cgroup']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_memory_limit_gb', "<%= node['hops']['docker']['cgroup']['memory']['hard-limit'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_soft_limit_memory_gb', "<%= node['hops']['docker']['cgroup']['memory']['soft-limit']  %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_cpu_quota_percentage', "<%= node['hops']['docker']['cgroup']['cpu']['quota']['percentage'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_cpu_period', "<%= node['hops']['docker']['cgroup']['cpu']['period'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_monitor_interval', "<%= node['hopsworks']['docker']['cgroup_monitor_interval'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('prometheus_port', "<%= node['prometheus']['port']  %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_kserve_tensorflow_version', "<%= node['kube-hops']['kserve']['tensorflow']['version'] %>");
