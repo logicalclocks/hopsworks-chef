@@ -2313,3 +2313,34 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_certificate` (
+  `ca` TINYINT NOT NULL,
+  `serial_number` BIGINT NOT NULL,
+  `status` TINYINT NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `certificate` VARBINARY(10000),
+  `not_before` DATETIME NOT NULL,
+  `not_after` DATETIME NOT NULL,
+  PRIMARY KEY(`status`, `subject`) USING HASH,
+  KEY `sn_index` (`serial_number`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_crl` (
+  `type` VARCHAR(20) NOT NULL,
+  `crl` VARBINARY(10000) NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_key` (
+	`owner` VARCHAR(100) NOT NULL,
+	`type` TINYINT NOT NULL,
+	`key` VARBINARY(8192) NOT NULL,
+	PRIMARY KEY (`owner`, `type`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_serial_number` (
+  `type` VARCHAR(20) NOT NULL,
+  `number` BIGINT NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

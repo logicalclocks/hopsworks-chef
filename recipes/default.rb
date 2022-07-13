@@ -219,6 +219,47 @@ unless node['install']['cloud'].strip.empty?
   node.override['hopsworks']['reserved_project_names'] = "#{node['hopsworks']['reserved_project_names']},cloud"
 end
 
+# Hopsworks CA configuration
+caConf = {}
+rootConf = {}
+if !node['hopsworks']['pki']['root']['name'].empty?
+  rootConf[:x509Name] = node['hopsworks']['pki']['root']['name']
+  rootConf[:validityDuration] = node['hopsworks']['pki']['root']['duration']
+end
+
+intermediateConf = {}
+if !node['hopsworks']['pki']['intermediate']['name'].empty?
+  intermediateConf[:x509Name] = node['hopsworks']['pki']['intermediate']['name']
+  intermediateConf[:validityDuration] = node['hopsworks']['pki']['intermediate']['duration']
+end
+
+kubernetesConf = {}
+if !node['hopsworks']['pki']['kubernetes']['name'].empty?
+  kubernetesConf[:x509Name] = node['hopsworks']['pki']['kubernetes']['name']
+  kubernetesConf[:validityDuration] = node['hopsworks']['pki']['kubernetes']['duration']
+end
+
+if node['install']['kubernetes'].casecmp?('true')
+  kubernetesConf[:subjectAlternativeName] = {
+    :dns => [node['fqdn'], node['kube-hops']['cluster_name'],
+              "#{node['kube-hops']['cluster_name']}.default",
+              "#{node['kube-hops']['cluster_name']}.default.svc",
+              "#{node['kube-hops']['cluster_name']}.default.svc.cluster",
+              "#{node['kube-hops']['cluster_name']}.default.svc.cluster.local",
+              "*.hops-system.svc"
+            ],
+    :ip => [node['kube-hops']['cidr'].split('/')[0].reverse.sub('0', '1').reverse,
+              private_recipe_ip('kube-hops', 'master'),
+              "127.0.0.1",
+              node['kube-hops']['dns_ip'],
+              "10.96.0.1"]
+  }
+end
+
+caConf[:rootCA] = rootConf
+caConf[:intermediateCA] = intermediateConf
+caConf[:kubernetesCA] = kubernetesConf
+
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
@@ -248,7 +289,8 @@ for version in versions do
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
-         :onlinefs_salt => onlinefs_salt
+         :onlinefs_salt => onlinefs_salt,
+         :pki_ca_configuration => caConf.to_json()
     })
     action :create
   end
@@ -1031,10 +1073,6 @@ bash "extract_frontend" do
   code <<-EOH
     tar xf #{Chef::Config['file_cache_path']}/frontend.tgz -C #{theDomain}/docroot
   EOH
-end
-
-hopsworks_certs "generate-certs" do
-  action :generate
 end
 
 hopsworks_user_home = conda_helpers.get_user_home(node['hopsworks']['user'])
