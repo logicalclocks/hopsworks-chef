@@ -170,3 +170,5 @@ CREATE TABLE IF NOT EXISTS `feature_store_expectation_rule` (
                                                                 CONSTRAINT `fk_fs_expectation_rule_id` FOREIGN KEY (`feature_store_expectation_id`) REFERENCES `feature_store_expectation` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                                 CONSTRAINT `fk_validation_rule_id` FOREIGN KEY (`validation_rule_id`) REFERENCES `validation_rule` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `validation_type` INT(11) NOT NULL DEFAULT '4';
