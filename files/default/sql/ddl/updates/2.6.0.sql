@@ -274,3 +274,11 @@ ALTER TABLE `hopsworks`.`api_key_scope` ADD CONSTRAINT `fk_api_key_scope_1`
   REFERENCES `hopsworks`.`api_key` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+
+DROP TABLE IF EXISTS `feature_store_expectation_rule`;
+DROP TABLE IF EXISTS `validation_rule`;
+DROP TABLE IF EXISTS `feature_group_rule`;
+ALTER TABLE `hopsworks`.`feature_group_commit` DROP FOREIGN KEY `fgc_fk_fgv`, DROP COLUMN `validation_id`;
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fs_act_val_fk`, DROP COLUMN `validation_id`;
+DROP TABLE IF EXISTS `feature_group_validation`;
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `validation_type`;
