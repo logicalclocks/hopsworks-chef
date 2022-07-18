@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "2.6.0"
+version          "3.1.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -964,7 +964,7 @@ attribute "hopsworks/audit_log_file_format",
           :description => "Audit log file format. 'server_audit_log%g.log' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_size_limit",
-          :description => "Audit log size per file. '256000000' (default)",
+          :description => "Audit log size per file. '3.1.00000' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_count",
           :description => "Audit file count. '10' (default)",
