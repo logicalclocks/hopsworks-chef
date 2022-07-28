@@ -24,3 +24,5 @@ ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`depend
 
 -- add tutorial endpoint
 DROP TABLE IF EXISTS `hopsworks`.`tutorial`;
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_framework`;
