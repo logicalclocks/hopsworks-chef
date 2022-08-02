@@ -61,20 +61,6 @@ CREATE TABLE `activity` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `anaconda_repo`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `anaconda_repo` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `url` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 UNIQUE KEY `url` (`url`)
-) ENGINE=ndbcluster AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `bbc_group`
 --
 
@@ -887,7 +873,7 @@ CREATE TABLE `project_pythondeps` (
                                       KEY `dep_id` (`dep_id`),
                                       CONSTRAINT `FK_284_513` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                       CONSTRAINT `FK_505_514` FOREIGN KEY (`dep_id`) REFERENCES `python_dep` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
     /*!50100 PARTITION BY KEY (project_id) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1002,14 +988,12 @@ CREATE TABLE `python_dep` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `dependency` varchar(128) COLLATE latin1_general_cs NOT NULL,
                               `version` varchar(128) COLLATE latin1_general_cs NOT NULL,
-                              `repo_id` int(11) NOT NULL,
+                              `repo_url` varchar(800) NOT NULL,
                               `preinstalled` tinyint(1) DEFAULT '0',
                               `install_type` int(11) NOT NULL,
                               PRIMARY KEY (`id`),
-                              UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`),
-                              KEY `repo_id` (`repo_id`),
-                              CONSTRAINT `FK_501_510` FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+                              UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_url`)
+) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
