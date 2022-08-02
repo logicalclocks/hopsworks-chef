@@ -92,3 +92,11 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('docker_cgroup_monito
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('prometheus_port', "<%= node['prometheus']['port']  %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('kube_kserve_tensorflow_version', "<%= node['kube-hops']['kserve']['tensorflow']['version'] %>");
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_docker_cores_fraction';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_memory_allocation', "<%= node['kube-hops']['serving_max_memory_allocation'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_cores_allocation', "<%= node['kube-hops']['serving_max_cores_allocation'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_gpus_allocation', "<%= node['kube-hops']['serving_max_gpus_allocation'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_num_instances', "<%= node['kube-hops']['serving_max_num_instances'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_min_num_instances', "<%= node['kube-hops']['serving_min_num_instances'] %>", 1);
