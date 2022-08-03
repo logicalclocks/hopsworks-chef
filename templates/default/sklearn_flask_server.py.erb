@@ -9,6 +9,8 @@ import importlib
 import sys
 
 INPUTS = "inputs"
+INSTANCES = "instances"
+
 global prediction_service
 
 def parse_args():
@@ -29,8 +31,11 @@ def validate_input(request):
     try:
         json_request = request.get_json()
         print("Received prediction request: {}".format(json_request), file=sys.stderr)
-        inputs = json_request[INPUTS]
-        return inputs
+        if INPUTS in json_request:
+            return json_request[INPUTS]
+        if INSTANCES in json_request:
+            return json_request[INSTANCES]
+        abort(400, "Inference requests must contain either 'inputs' or 'instances'")
     except Exception as e:
         abort(400, "There was an error parsing the user request: {}".format(str(e)))
 
