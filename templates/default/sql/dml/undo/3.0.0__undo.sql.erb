@@ -32,3 +32,11 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='docker_cgroup_monitor_interval';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='prometheus_port';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_kserve_tensorflow_version';
+
+REPLACE INTO `hopsworks`.`variables` VALUES ('kube_docker_cores_fraction', '1.0', 1, 0);
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_max_memory_allocation';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_max_cores_allocation';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_max_gpus_allocation';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_max_num_instances';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kube_serving_min_num_instances';
