@@ -873,7 +873,7 @@ CREATE TABLE `project_pythondeps` (
                                       KEY `dep_id` (`dep_id`),
                                       CONSTRAINT `FK_284_513` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                       CONSTRAINT `FK_505_514` FOREIGN KEY (`dep_id`) REFERENCES `python_dep` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
     /*!50100 PARTITION BY KEY (project_id) */;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -993,7 +993,7 @@ CREATE TABLE `python_dep` (
                               `install_type` int(11) NOT NULL,
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_url`)
-) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
+) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
