@@ -322,6 +322,10 @@ attribute "hopsworks/hopsworks_public_host",
 					:description => "Hopsworks public hostname",
 					:type => 'string'
 
+attribute "hopsworks/hopsworks_rest_log_level",
+					:description => "Default 'TEST' set to 'PROD' to only get user error messages. Hopsworks rest log level",
+					:type => 'string'
+
 attribute "vagrant",
           :description => "'true' to rewrite /etc/hosts, 'false' to disable vagrant /etc/hosts",
           :type => 'string'
