@@ -878,7 +878,7 @@ kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
-node.override['glassfish']['asadmin']['timeout'] = 400
+node.override['glassfish']['asadmin']['timeout'] = 600
 
 if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
   unmanaged = false
