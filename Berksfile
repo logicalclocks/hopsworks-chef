@@ -26,5 +26,5 @@ cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "master"
 cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", branch: "master"
 
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
-cookbook 'glassfish', github: "ErmiasG/chef-glassfish", branch: "glassfish5.2021.10"
+cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "master"
 cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"
