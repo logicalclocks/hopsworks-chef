@@ -15,14 +15,18 @@ JUPYTER_MODE=${11}
 IMAGE=${12}
 ALLOCATED_MEMORY=${13}
 ALLOCATED_CORES=${14}
+BASE_DIR=${15}
+NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
+IS_TLS=<%= node['hops']['tls']['enabled'] %>
 NOT_FOUND=127
 
 help() {
     echo ""
-    echo "usage: $0 JUPYTER_HOME HADOOP_HOME PROJECT_USER_NAME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE IMAGE_NAME"
+    echo "usage: $0 JUPYTER_HOME HADOOP_HOME PROJECT_USER_NAME ANACONDA_ENV PORT LOGFILE SECRET_DIR CERTS_DIR HADOOP_USERNAME TOKEN JUPYTER_MODE IMAGE_NAME ALLOCATED_MEMORY ALLOCATED_CORES BASE_DIR "
     echo ""
     exit 1
 }
@@ -38,7 +42,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 14 ]; then
+if [ $# -ne 15 ]; then
   help
 fi
 
@@ -52,7 +56,13 @@ if [ -f "$PID_FILE" ] ; then
     rm $PID_FILE
 fi
 
-docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
+JUPYTER_HOPSFS_MOUNT=false
+if [ -f ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py ]; then
+  JUPYTER_HOPSFS_MOUNT=true
+  paste ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py >> ${JUPYTER_HOME}/conf/jupyter_notebook_config.py
+fi
+
+docker run --rm -d --device /dev/fuse --security-opt apparmor:unconfined --security-opt seccomp=<%= node['hops']['docker']['fuse-seccomp-file'] %> --name $CONTAINER_NAME --cidfile=$PID_FILE\
        --network=host \
        --init \
        --memory="${ALLOCATED_MEMORY}m" \
@@ -73,6 +83,11 @@ docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "HADOOP_HOME=${HADOOP_HOME}" \
        -e "ANACONDA_ENV=$4" \
        -e "PYTHONHASHSEED=0" \
+       -e "NAMENODE_IP=${NAMENODE_IP}" \
+       -e "NAMENODE_PORT=${NAMENODE_PORT}" \
+       -e "IS_TLS=${IS_TLS}" \
+       -e "BASE_DIR=${BASE_DIR}"
+       -e "JUPYTER_HOPSFS_MOUNT=${JUPYTER_HOPSFS_MOUNT}"
        -v $JUPYTER_HOME:$JUPYTER_HOME:rw\
        -v $SECRET_DIR:$SECRET_DIR:rw\
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
