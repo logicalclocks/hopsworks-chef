@@ -3,9 +3,9 @@ source 'https://supermarket.chef.io'
 
 metadata
 
-cookbook 'conda', github: "logicalclocks/conda-chef", branch: "master"
+cookbook 'conda', github: "logicalclocks/conda-chef", branch: "airflow_fuse"
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "master"
-cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "install_python_version"
+cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "airflow_fuse"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "master"
 cookbook 'hadoop_spark', github: "logicalclocks/spark-chef", branch: "master"
 cookbook 'flink', github: "logicalclocks/flink-chef", branch: "master"
@@ -18,7 +18,7 @@ cookbook 'kkafka', github: "logicalclocks/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
 cookbook 'hopslog', github: "logicalclocks/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "master"
-cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "master"
+cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "airflow_fuse"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
 cookbook 'consul', github: "logicalclocks/consul-chef", branch: "master"
 cookbook 'kube-hops', github: "logicalclocks/kube-hops-chef", branch: "master"
