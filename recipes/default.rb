@@ -7,17 +7,6 @@ include_recipe "hops::default"
 Chef::Recipe.send(:include, Hops::Helpers)
 Chef::Resource.send(:include, Hops::Helpers)
 
-#
-# Hopsworks needs to be able to read DAGs using the airflow group role
-#
-group node['airflow']['group'] do
-  action :modify
-  members node['hopsworks']['group']
-  append true
-  not_if { node['install']['external_users'].casecmp("true") == 0 }  
-end
-
-
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['hopsworks']['domains_dir']
 # This is set correctly in hopsworks::install by the chef-glassfish recipe. As each recipe has it's own
