@@ -5,7 +5,7 @@ ALTER TABLE `hopsworks`.`training_dataset_split` ADD COLUMN `end_Time` TIMESTAMP
 ALTER TABLE `hopsworks`.`training_dataset_split` MODIFY COLUMN `percentage` float NULL;
 
 -- remove anaconda_repo
-ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `repo_url` varchar(800) CHARACTER SET latin1 COLLATE
+ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `repo_url` varchar(255) CHARACTER SET latin1 COLLATE
     latin1_general_cs NOT NULL;
 SET SQL_SAFE_UPDATES = 0;
 UPDATE python_dep p SET repo_url=(SELECT url FROM anaconda_repo WHERE id = p.repo_id);

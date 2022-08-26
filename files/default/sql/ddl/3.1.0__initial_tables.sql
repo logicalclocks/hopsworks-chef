@@ -988,7 +988,7 @@ CREATE TABLE `python_dep` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `dependency` varchar(128) COLLATE latin1_general_cs NOT NULL,
                               `version` varchar(128) COLLATE latin1_general_cs NOT NULL,
-                              `repo_url` varchar(800) NOT NULL,
+                              `repo_url` varchar(255) NOT NULL,
                               `preinstalled` tinyint(1) DEFAULT '0',
                               `install_type` int(11) NOT NULL,
                               PRIMARY KEY (`id`),
