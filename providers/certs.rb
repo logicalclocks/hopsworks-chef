@@ -31,6 +31,7 @@ action :generate_int_certs do
   kagent_pki 'sign-internal-key' do
     csr_file "#{node['hopsworks']['config_dir']}/internal.csr"
     output_dir node['hopsworks']['config_dir']
+    http_port   node['hopsworks']['https']['port']
     action :sign_csr
   end
 
