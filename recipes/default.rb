@@ -1186,9 +1186,11 @@ if node['kagent']['enabled'].casecmp? "true"
   end
 end
 
+# We can't use the internal port yet as the certificate has not been generated yet
 hopsworks_certs "generate-int-certs" do
   subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
+  http_port   node['hopsworks']['https']['port']
   not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
 end
 
