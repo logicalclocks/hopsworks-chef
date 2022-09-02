@@ -21,3 +21,6 @@ ALTER TABLE `hopsworks`.`python_dep` DROP INDEX `dependency`;
 ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `repo_url`;
 ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`dependency`,`version`,`install_type`,
                                                                          `repo_id`);
+
+-- add tutorial endpoint
+DROP TABLE IF EXISTS `hopsworks`.`tutorial`;
