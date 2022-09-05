@@ -15,3 +15,19 @@ alter table `hopsworks`.`python_dep` drop index `dependency`;
 DROP TABLE `anaconda_repo`;
 ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`dependency`,`version`,`install_type`,
                                                                          `repo_url`);
+
+-- add tutorial endpoint
+CREATE TABLE IF NOT EXISTS `tutorial` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `idx` INT(5) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `github_path` VARCHAR(200) NOT NULL,
+    `image_url` VARCHAR(200) NOT NULL,
+    `single_notebook` TINYINT(1) NOT NULL,
+    `description` VARCHAR(200) NOT NULL,
+    `duration` VARCHAR(20) NOT NULL,
+    `tags` VARCHAR(100) NOT NULL,
+    `category` VARCHAR(50) NOT NULL,
+    `style` VARCHAR(200) NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
