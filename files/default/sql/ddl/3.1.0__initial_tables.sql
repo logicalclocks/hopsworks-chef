@@ -2336,7 +2336,7 @@ CREATE TABLE IF NOT EXISTS `pki_key` (
 	`owner` VARCHAR(100) NOT NULL,
 	`type` TINYINT NOT NULL,
 	`key` VARBINARY(8192) NOT NULL,
-	PRIMARY KEY (`owner`, `type`)
+	PRIMARY KEY (`owner`, `type`) USING HASH
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `pki_serial_number` (
