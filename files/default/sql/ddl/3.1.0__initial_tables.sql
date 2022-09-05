@@ -2300,6 +2300,7 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
 
 CREATE TABLE IF NOT EXISTS `tutorial` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `idx` INT(5) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     `github_path` VARCHAR(200) NOT NULL,
     `image_url` VARCHAR(200) NOT NULL,
@@ -2308,5 +2309,6 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `duration` VARCHAR(20) NOT NULL,
     `tags` VARCHAR(100) NOT NULL,
     `category` VARCHAR(50) NOT NULL,
+    `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
