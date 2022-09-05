@@ -2297,3 +2297,16 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     KEY (`expectation_id`),
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `tutorial` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL,
+    `github_path` VARCHAR(200) NOT NULL,
+    `image_url` VARCHAR(200) NOT NULL,
+    `single_notebook` TINYINT(1) NOT NULL,
+    `description` VARCHAR(200) NOT NULL,
+    `duration` VARCHAR(20) NOT NULL,
+    `tags` VARCHAR(100) NOT NULL,
+    `category` VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;

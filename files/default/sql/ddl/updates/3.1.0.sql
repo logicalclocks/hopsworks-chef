@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `github_path` VARCHAR(200) NOT NULL,
+    `image_url` VARCHAR(200) NOT NULL,
     `single_notebook` TINYINT(1) NOT NULL,
     `description` VARCHAR(200) NOT NULL,
     `duration` VARCHAR(20) NOT NULL,
