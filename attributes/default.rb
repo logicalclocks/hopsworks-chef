@@ -108,7 +108,7 @@ default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## d: days
 default['hopsworks']['cert_mater_delay']                            = "3m"
 default['hopsworks']['service_key_rotation_interval']               = "2d"
-default['hopsworks']['application_certificate_validity_period']     = "3d"
+default['hopsworks']['application_certificate_validity_period']     = "3650d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
 default['hopsworks']['tensorboard_max_last_accessed'] = "1140000"
