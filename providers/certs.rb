@@ -85,25 +85,6 @@ end
 
 end
 
-
-action :sign_hopssite do
-
-  signed = "#{node['hopsworks']['domains_dir']}/.hops_site_keystore_signed"
-
-  bash "sign-global-csr-key" do
-    user node['hopsworks']['user']
-    group node['hopsworks']['group']
-    code <<-EOF
-      set -eo pipefail
-      export PYTHON_EGG_CACHE=/tmp
-      #{node['conda']['base_dir']}/envs/hops-system/bin/python #{node['hopsworks']['domains_dir']}/domain1/bin/csr-ca.py
-      touch #{signed}
-  EOF
-    not_if { ::File.exists?( "#{signed}" ) }
-  end
-end
-
-
 action :generate_int_certs do 
 
   bash 'generate-key' do

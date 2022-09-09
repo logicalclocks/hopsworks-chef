@@ -24,3 +24,38 @@ ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`depend
 
 -- add tutorial endpoint
 DROP TABLE IF EXISTS `hopsworks`.`tutorial`;
+
+--
+-- Table structure for table `dela`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dela` (
+                        `id` varchar(200) COLLATE latin1_general_cs NOT NULL,
+                        `did` int(11) NOT NULL,
+                        `pid` int(11) NOT NULL,
+                        `name` varchar(200) COLLATE latin1_general_cs NOT NULL,
+                        `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
+                        `stream` varchar(200) COLLATE latin1_general_cs DEFAULT NULL,
+                        `partners` varchar(200) COLLATE latin1_general_cs DEFAULT NULL,
+                        PRIMARY KEY (`id`),
+                        KEY `did` (`did`),
+                        CONSTRAINT `FK_429_542` FOREIGN KEY (`did`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `hopssite_cluster_certs`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hopssite_cluster_certs` (
+                                          `cluster_name` varchar(129) COLLATE latin1_general_cs NOT NULL,
+                                          `cluster_key` varbinary(7000) DEFAULT NULL,
+                                          `cluster_cert` varbinary(3000) DEFAULT NULL,
+                                          `cert_password` varchar(200) COLLATE latin1_general_cs NOT NULL DEFAULT '',
+                                          PRIMARY KEY (`cluster_name`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;

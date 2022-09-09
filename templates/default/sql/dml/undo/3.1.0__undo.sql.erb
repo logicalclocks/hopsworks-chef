@@ -1,0 +1,8 @@
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("dela_cluster_ip","<%= @dela_ip %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("dela_client_type", "<%= node['hopsworks']['dela']['client'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("dela_version", "<%= node['dela']['version'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("dela_cluster_http_port","<%= node['hopsworks']['dela']['cluster_http_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("dela_hopsworks_public_port","<%= node['hopsworks']['dela']['public_hopsworks_port'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hops_site_host","<%= node['hopsworks']['hopssite']['domain'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopssite_heartbeat_interval","<%= node['hopsworks']['hopssite']['heartbeat'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hops_site_endpoint","<%= node['hopsworks']['hopssite']['base_uri'] %>");

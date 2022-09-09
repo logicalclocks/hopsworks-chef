@@ -8,7 +8,6 @@ include_attribute "elastic"
 include_attribute "glassfish"
 include_attribute "kkafka"
 include_attribute "kzookeeper"
-include_attribute "dela"
 include_attribute "hive2"
 include_attribute "hops"
 include_attribute "hops_airflow"
@@ -177,76 +176,6 @@ default['hopsworks']['encryption_password']      = "adminpw"
 # hostname
 default['hopsworks']['hopsworks_public_host'] = node['fqdn']
 
-#
-# Dela  - please do not change without consulting dela code
-#
-default['hopsworks']['public_https_port']              = node['hopsworks']['https']['port']
-default['hopsworks']['dela']['enabled']                = "false"
-default['hopsworks']['dela']['public_hopsworks_port']  = node['hopsworks']['https']['port']
-default['hopsworks']['dela']['cluster_http_port']      = 42000 #TODO - fix to read from dela recipe
-# Dela - hopssite settings
-default['hopsworks']['hopssite']['version']            = "none" # default for {hops, bbc5}
-if(node['hopsworks']['hopssite']['version'].eql? "none")
-  default['hopsworks']['dela']['enabled']              = "false"
-  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
-  default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = 51081
-  default['hopsworks']['hopssite']['register_port']    = 443
-  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
-end
-if(node['hopsworks']['hopssite']['version'].eql? "hops")
-  default['hopsworks']['dela']['enabled']              = "true"
-  default['hopsworks']['dela']['client']               = "FULL_CLIENT"
-  default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = 51081
-  default['hopsworks']['hopssite']['register_port']    = 443
-  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
-end
-if(node['hopsworks']['hopssite']['version'].eql? "hops-demo")
-  default['hopsworks']['dela']['enabled']              = "true"
-  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
-  default['hopsworks']['hopssite']['domain']           = "hops.site"
-  default['hopsworks']['hopssite']['port']             = 51081
-  default['hopsworks']['hopssite']['register_port']    = 443
-  default['hopssite']['url']                           = "https://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
-end
-if(node['hopsworks']['hopssite']['version'].eql? "bbc5")
-  default['hopsworks']['dela']['enabled']              = "true"
-  default['hopsworks']['dela']['client']               = "BASE_CLIENT"
-  default['hopsworks']['hopssite']['domain']           = "bbc5.sics.se"
-  default['hopsworks']['hopssite']['port']             = 43080
-  default['hopsworks']['hopssite']['register_port']    = 8080
-  default['hopssite']['url']                           = "http://"+ node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['register_port'].to_s
-end
-default['hopsworks']['hopssite']['base_uri']  = "https://" + node['hopsworks']['hopssite']['domain'] + ":" + node['hopsworks']['hopssite']['port'].to_s  + "/hops-site/api"
-default['hopsworks']['hopssite']['heartbeat']          = "600000"
-#
-# hops.site settings for cert signing
-#
-default['hopssite']['download_url']                    = "#{node['download_url']}/hopssite/hops-site.war"
-default['hopssite']['manual_register']                 = "false"
-default['hopssite']['dela']['version']                 = "0.1.0"
-default['hopssite']['dir']                             = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
-default['hopssite']['home']                            = node['hopssite']['dir'] + "/hopssite"
-default['hopssite']['user']                            = node['hopsworks']['email']
-default['hopssite']['password']                        = "admin"
-default['hopssite']['base_dir']                        = node['hopsworks']['domains_dir'] + "/" + node['hopsworks']['domain_name']
-default['hopssite']['certs_dir']                       = "#{node['hopsworks']['dir']}/certs-dir/hops-site-certs"
-default['hopssite']['keystore_dir']                    = "#{node['hopssite']['certs_dir']}/keystores"
-default['hopssite']['retry_interval']                  = 60
-default['hopssite']['max_retries']                     = 5
-default['hopssite']['admin']['password']               = "adminpw"
-#
-# Hopssite cert
-#
-default['hopssite']['cert']['email']                   = node['hopssite']['user']
-default['hopssite']['cert']['o']                       = node['hopssite']['cert']['email'].split("@")[0]
-default['hopssite']['cert']['ou']                      = node['hopssite']['cert']['email'].split("@")[1]
-default['hopssite']['cert']['cn']                      = node['hopssite']['cert']['o'] + "_" + node['hopssite']['cert']['ou']
-default['hopssite']['cert']['l']                       = node['hopsworks']['cert']['l']
-default['hopssite']['cert']['s']                       = node['hopsworks']['cert']['s']
-default['hopssite']['cert']['c']                       = node['hopsworks']['cert']['c']
-# Dela end
 
 default['hopsworks']['max_gpu_request_size']           = 1
 default['hopsworks']['max_cpu_request_size']           = 1
