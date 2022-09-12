@@ -1,0 +1,16 @@
+service {
+    id = "cadvisor/healthz"
+    name = "cadvisor"
+    tags = [
+        "cadvisor"
+    ]
+    port = <%= node['hops']['cadvisor']['port'] %>
+    check = {
+        id = "cadvisor-check"
+        name = "Health check for cAdvisor"
+        http = "http://localhost:<%= node['hops']['cadvisor']['port'] %>/healthz"
+        interval = "20s"
+        timeout = "20s"
+        status = "passing"
+    }
+}

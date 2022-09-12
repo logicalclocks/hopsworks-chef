@@ -502,3 +502,7 @@ default['hopsworks']['quotas']['max_parallel_executions']             = "-1"
 
 default['hopsworks']['docker']['cgroup_monitor_interval']             = "10m"
 default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
+
+default['hops']['cadvisor']['dir']                                    = "#{node['hops']['dir']}/cadvisor"
+default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
+default['hops']['cadvisor']['port']                                   = "4194"

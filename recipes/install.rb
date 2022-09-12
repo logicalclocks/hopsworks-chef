@@ -899,3 +899,8 @@ directory "#{theDomain}/flyway/all/undo" do
   mode "770"
   action :create
 end
+
+#install cadvisor only on the headnode and no kubernetes
+if (exists_local("hopsworks", "default")) && (node['install']['kubernetes'].casecmp?("false"))
+  include_recipe "hopsworks::cadvisor"
+end
