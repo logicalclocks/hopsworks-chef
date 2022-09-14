@@ -1971,6 +1971,8 @@ CREATE TABLE `feature_store_activity` (
                                           `feature_group_id`              INT(11) NULL,
                                           `training_dataset_id`           INT(11) NULL,
                                           `feature_view_id`              INT(11) NULL,
+                                          `expectation_suite_id`          INT(11) NULL,
+                                          `validation_report_id`          INT(11) NULL,
                                           PRIMARY KEY (`id`),
                                           CONSTRAINT `fsa_feature_view_fk` FOREIGN KEY  (`feature_view_id`) REFERENCES
                                               `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -1979,7 +1981,9 @@ CREATE TABLE `feature_store_activity` (
                                           CONSTRAINT `fs_act_uid_fk` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_exec_fk` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_stat_fk` FOREIGN KEY (`statistics_id`) REFERENCES `feature_store_statistic` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                          CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                          CONSTRAINT `fs_act_commit_fk` FOREIGN KEY (`feature_group_id`, `commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                          CONSTRAINT `fs_act_validationreport_fk` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                          CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 
