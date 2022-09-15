@@ -125,3 +125,6 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_expectat
 
 
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `creation_status` TINYINT(1) NOT NULL DEFAULT '0';
+
+-- Validation Result history FSTORE-341
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
