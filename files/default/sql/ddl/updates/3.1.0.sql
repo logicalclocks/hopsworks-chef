@@ -31,3 +31,6 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+-- Validation Result history
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
