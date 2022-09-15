@@ -34,3 +34,4 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
 
 -- Validation Result history
 ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `ingestion_result` VARCHAR(8) NOT NULL;
