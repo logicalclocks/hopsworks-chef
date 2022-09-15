@@ -2234,6 +2234,7 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `result` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `ingestion_result` VARCHAR(8) NOT NULL,
     `expectation_config` VARCHAR(2150) NOT NULL,
     `exception_info` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
