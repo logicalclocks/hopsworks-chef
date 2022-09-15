@@ -1158,6 +1158,7 @@ CREATE TABLE `serving` (
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,
+                           `model_framework` int(11) NOT NULL,
                            `local_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `batching_configuration` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `optimized` tinyint(4) NOT NULL DEFAULT '0',
