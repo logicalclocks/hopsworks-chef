@@ -40,7 +40,7 @@
         <masterPwdFile><%= node['certs']['dir'] %>/encryption_master_password</masterPwdFile>
         <intermediateCA><%= node['certs']['dir'] %>/intermediate</intermediateCA>
         <validityDays>3650</validityDays>
-        <caPassword>password</caPassword>
+        <caPassword><%= node['hopsworks']['master']['password'] %></caPassword>
     </x509>
 
     <conda>
@@ -148,5 +148,6 @@
     </version-30>
     <version-31>
         io.hops.hopsworks.expat.migrations.serving.ServingModelFrameworkMigration
+        io.hops.hopsworks.expat.migrations.x509.MigrateToBouncyCastle
     </version-31>
 </expat>

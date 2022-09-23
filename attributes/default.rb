@@ -120,6 +120,13 @@ default['hopsworks']['hopsworks_rest_log_level'] = "TEST"
 
 default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-8.0.21-bin.jar"
 
+default['hopsworks']['pki']['root']['name']             = ""
+default['hopsworks']['pki']['root']['duration']         = "3650d"
+default['hopsworks']['pki']['intermediate']['name']     = ""
+default['hopsworks']['pki']['intermediate']['duration'] = "3650d"
+default['hopsworks']['pki']['kubernetes']['name']       = ""
+default['hopsworks']['pki']['kubernetes']['duration']   = "3650d"
+
 default['hopsworks']['cert']['cn']                  = "logicalclocks.com"
 default['hopsworks']['cert']['o']                   = "Logical Clocks AB"
 default['hopsworks']['cert']['ou']                  = "Logical Clocks AB"
