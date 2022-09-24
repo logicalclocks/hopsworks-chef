@@ -623,14 +623,6 @@ kagent_sudoers "jupyter-project-cleanup" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "global-ca-sign-csr" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "global-ca-sign-csr.sh"
-  template      "global-ca-sign-csr.sh.erb"
-  run_as        "ALL"
-end
-
 kagent_sudoers "ca-keystore" do 
   user          node['glassfish']['user']
   group         "root"
