@@ -100,3 +100,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_s
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_gpus_allocation', "<%= node['kube-hops']['serving_max_gpus_allocation'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_num_instances', "<%= node['kube-hops']['serving_max_num_instances'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_min_num_instances', "<%= node['kube-hops']['serving_min_num_instances'] %>", 1);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('fs_storage_connector_session_duration', "3600", 1);
