@@ -239,7 +239,7 @@ if !node['hopsworks']['pki']['kubernetes']['name'].empty?
   kubernetesConf[:validityDuration] = node['hopsworks']['pki']['kubernetes']['duration']
 end
 
-if node['install']['kubernetes'].casecmp?('true')
+if node['install']['kubernetes'].casecmp?('true') && node['install']['managed_kubernetes'].casecmp?('false')
   kubernetesConf[:subjectAlternativeName] = {
     :dns => [node['fqdn'], node['kube-hops']['cluster_name'],
               "#{node['kube-hops']['cluster_name']}.default",
