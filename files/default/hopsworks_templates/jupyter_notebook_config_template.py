@@ -26,6 +26,13 @@ c.JupyterConsoleApp.kernel_name="PySpark"
 c.KernelSpecManager.whitelist = {${conf.whiteListedKernels}}
 c.KernelSpecManager.ensure_native_kernel=False
 
+# memory
+c.ResourceUseDisplay.mem_limit = ${conf.allocatedNotebookMBs?c}*1024*1024
+
+# cpu
+c.ResourceUseDisplay.track_cpu_percent = True
+c.ResourceUseDisplay.cpu_limit = ${conf.allocatedNotebookCores?c}
+
 #Available kernels:
 #  sparkkernel                   /usr/local/share/jupyter/kernels/sparkkernel
 #  pysparkkernel                 /usr/local/share/jupyter/kernels/pysparkkernel
