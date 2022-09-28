@@ -45,7 +45,7 @@ default['hopsworks']['db']                       = "hopsworks"
 default['hopsworks']['mysql']['user']            = "hopsworks"
 default['hopsworks']['mysql']['password']        = "hopsworks"
 
-default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
+default['glassfish']['version']                  = '5.2022.3' 
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
@@ -83,8 +83,6 @@ default['hopsworks']['config_dir']               = "#{node['hopsworks']['domains
 default['glassfish']['reschedule_failed_timer']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_version']            = "otp-auth-0.5.0.jar"
-default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
 
 default['hopsworks']['download_url']             = "#{node['install']['enterprise']['install'].casecmp?("true") ? node['install']['enterprise']['download_url'] : node['download_url']}/hopsworks/#{node['hopsworks']['version']}"
 default['hopsworks']['war_url']                  = "#{node['hopsworks']['download_url']}/hopsworks-web.war"
@@ -423,6 +421,7 @@ default['hopsworks']['featurestore_online']                   = "true"
 
 # Number of seconds to keep an inactive connection alive
 default['glassfish']['http']['keep_alive_timeout']   = "30"
+default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 
 #
 # kagent liveness monitor configuration

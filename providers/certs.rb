@@ -71,5 +71,6 @@ action :download_azure_ca_cert do
       # Import into the keystore
       keytool -import -noprompt -alias digicertglobalrootg2 -file DigiCertGlobalRootG2.crt -keystore $GFDOMAIN/config/cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
+    only_if "keytool -list -keystore $GFDOMAIN/config/cacerts.jks -alias digicertglobalrootg2 -storepass #{node['hopsworks']['master']['password']}"
   end
 end
