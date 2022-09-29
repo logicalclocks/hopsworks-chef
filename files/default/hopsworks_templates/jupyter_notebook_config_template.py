@@ -69,3 +69,5 @@ os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
 os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
+
+c.FileCheckpoints.checkpoint_dir="$JUPYTER_CHECKPOINTING_DIR"
