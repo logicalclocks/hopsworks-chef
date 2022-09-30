@@ -19,7 +19,7 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_model_deploy
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("quotas_max_parallel_executions", <%= node['hopsworks']['quotas']['max_parallel_executions'] %>);
 
 -- HOPSWORKS-3158
-INSERT INTO `hopsworks`.`variables` (`ID`, `VALUE`) VALUES ('hopsworks_public_host', "<%= node['hopsworks']['hopsworks_public_host'] %>");
+REPLACE INTO `hopsworks`.`variables` (`ID`, `VALUE`) VALUES ('hopsworks_public_host', "<%= node['hopsworks']['hopsworks_public_host'] %>");
 -- HOPSWORKS-3109
 DELETE FROM `hopsworks`.`variables` WHERE `id`='aws_instance_role';
 

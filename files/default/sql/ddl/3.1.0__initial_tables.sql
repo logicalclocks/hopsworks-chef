@@ -61,20 +61,6 @@ CREATE TABLE `activity` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `anaconda_repo`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `anaconda_repo` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `url` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                                 PRIMARY KEY (`id`),
-                                 UNIQUE KEY `url` (`url`)
-) ENGINE=ndbcluster AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `bbc_group`
 --
 
@@ -1002,13 +988,11 @@ CREATE TABLE `python_dep` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `dependency` varchar(128) COLLATE latin1_general_cs NOT NULL,
                               `version` varchar(128) COLLATE latin1_general_cs NOT NULL,
-                              `repo_id` int(11) NOT NULL,
+                              `repo_url` varchar(255) NOT NULL,
                               `preinstalled` tinyint(1) DEFAULT '0',
                               `install_type` int(11) NOT NULL,
                               PRIMARY KEY (`id`),
-                              UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_id`),
-                              KEY `repo_id` (`repo_id`),
-                              CONSTRAINT `FK_501_510` FOREIGN KEY (`repo_id`) REFERENCES `anaconda_repo` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                              UNIQUE KEY `dependency` (`dependency`,`version`,`install_type`,`repo_url`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=31 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1174,6 +1158,7 @@ CREATE TABLE `serving` (
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,
+                           `model_framework` int(11) NOT NULL,
                            `local_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `batching_configuration` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `optimized` tinyint(4) NOT NULL DEFAULT '0',
@@ -2312,6 +2297,52 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     PRIMARY KEY (`id`),
     KEY (`expectation_id`),
     CONSTRAINT `report_fk_validation_result` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `tutorial` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `idx` INT(5) NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `github_path` VARCHAR(200) NOT NULL,
+    `image_url` VARCHAR(200) NOT NULL,
+    `single_notebook` TINYINT(1) NOT NULL,
+    `description` VARCHAR(200) NOT NULL,
+    `duration` VARCHAR(20) NOT NULL,
+    `tags` VARCHAR(100) NOT NULL,
+    `category` VARCHAR(50) NOT NULL,
+    `style` VARCHAR(200) NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_certificate` (
+  `ca` TINYINT NOT NULL,
+  `serial_number` BIGINT NOT NULL,
+  `status` TINYINT NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `certificate` VARBINARY(10000),
+  `not_before` DATETIME NOT NULL,
+  `not_after` DATETIME NOT NULL,
+  PRIMARY KEY(`status`, `subject`) USING HASH,
+  KEY `sn_index` (`serial_number`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_crl` (
+  `type` VARCHAR(20) NOT NULL,
+  `crl` MEDIUMBLOB NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
+) /*!50100 TABLESPACE `ts_1` STORAGE DISK */ ENGINE=ndbcluster COMMENT='NDB_TABLE=READ_BACKUP=1' DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_key` (
+	`owner` VARCHAR(100) NOT NULL,
+	`type` TINYINT NOT NULL,
+	`key` VARBINARY(8192) NOT NULL,
+	PRIMARY KEY (`owner`, `type`) USING HASH
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_serial_number` (
+  `type` VARCHAR(20) NOT NULL,
+  `number` BIGINT NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_group_link` (

@@ -170,6 +170,30 @@ attribute "hopsworks/cert/password",
            :description => "password to glassfish certs",
            :type => 'string'
 
+attribute "hopsworks/pki/root/name",
+          :description => "X.509 Subject name for Root CA",
+          :type => 'string'
+
+attribute "hopsworks/pki/root/duration",
+          :description => "Validity period for Root CA. Valid suffixes: s, m, h, d",
+          :type => 'string'
+
+attribute "hopsworks/pki/intermediate/name",
+          :description => "X.509 Subject name for Intermediate CA",
+          :type => 'string'
+
+attribute "hopsworks/pki/intermediate/duration",
+          :description => "Validity period for Intermediate CA. Valid suffixes: s, m, h, d",
+          :type => 'string'
+
+attribute "hopsworks/pki/kubernetes/name",
+          :description => "X.509 Subject name for Kubernetes CA",
+          :type => 'string'
+
+attribute "hopsworks/pki/kubernetes/duration",
+          :description => "Validity period for Kubernetes CA. Valid suffixes: s, m, h, d",
+          :type => 'string'
+
 attribute "hopsworks/cert/cn",
           :description => "Certificate Name",
           :type => 'string'

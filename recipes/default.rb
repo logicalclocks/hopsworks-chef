@@ -219,6 +219,47 @@ unless node['install']['cloud'].strip.empty?
   node.override['hopsworks']['reserved_project_names'] = "#{node['hopsworks']['reserved_project_names']},cloud"
 end
 
+# Hopsworks CA configuration
+caConf = {}
+rootConf = {}
+if !node['hopsworks']['pki']['root']['name'].empty?
+  rootConf[:x509Name] = node['hopsworks']['pki']['root']['name']
+  rootConf[:validityDuration] = node['hopsworks']['pki']['root']['duration']
+end
+
+intermediateConf = {}
+if !node['hopsworks']['pki']['intermediate']['name'].empty?
+  intermediateConf[:x509Name] = node['hopsworks']['pki']['intermediate']['name']
+  intermediateConf[:validityDuration] = node['hopsworks']['pki']['intermediate']['duration']
+end
+
+kubernetesConf = {}
+if !node['hopsworks']['pki']['kubernetes']['name'].empty?
+  kubernetesConf[:x509Name] = node['hopsworks']['pki']['kubernetes']['name']
+  kubernetesConf[:validityDuration] = node['hopsworks']['pki']['kubernetes']['duration']
+end
+
+if node['install']['kubernetes'].casecmp?('true') && node['install']['managed_kubernetes'].casecmp?('false')
+  kubernetesConf[:subjectAlternativeName] = {
+    :dns => [node['fqdn'], node['kube-hops']['cluster_name'],
+              "#{node['kube-hops']['cluster_name']}.default",
+              "#{node['kube-hops']['cluster_name']}.default.svc",
+              "#{node['kube-hops']['cluster_name']}.default.svc.cluster",
+              "#{node['kube-hops']['cluster_name']}.default.svc.cluster.local",
+              "*.hops-system.svc"
+            ],
+    :ip => [node['kube-hops']['cidr'].split('/')[0].reverse.sub('0', '1').reverse,
+              private_recipe_ip('kube-hops', 'master'),
+              "127.0.0.1",
+              node['kube-hops']['dns_ip'],
+              "10.96.0.1"]
+  }
+end
+
+caConf[:rootCA] = rootConf
+caConf[:intermediateCA] = intermediateConf
+caConf[:kubernetesCA] = kubernetesConf
+
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
@@ -248,7 +289,8 @@ for version in versions do
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
-         :onlinefs_salt => onlinefs_salt
+         :onlinefs_salt => onlinefs_salt,
+         :pki_ca_configuration => caConf.to_json()
     })
     action :create
   end
@@ -455,25 +497,30 @@ props =  {
      'user-account-type-column' => 'mode'
  }
 
- glassfish_auth_realm "cauthRealm" do
-   realm_name "cauthRealm"
-   jaas_context "cauthRealm"
-   properties cProps
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-   classname "io.hops.crealm.CustomAuthRealm"
- end
-
 # Enable JMX metrics
-glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amx true --logfrequency 15 --logfrequencyunit SECONDS" do
+# https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
+ glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS --restmonitoringenabled" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
    admin_port admin_port
    secure false
+end
+
+glassfish_asadmin "set configs.config.server-config.cdi-service.enable-concurrent-deployment=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "set configs.config.server-config.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
 end
 
 # add new network listener for Hopsworks to listen on an internal port
@@ -492,7 +539,7 @@ glassfish_asadmin "create-http --default-virtual-server server https-internal" d
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get server.network-config.protocols.protocol.https-internal.* | grep 'http.version'"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get server.network-config.protocols.protocol.https-internal.* | grep 'http.uri-encoding'"
 end
 
 glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target server --protocol https-internal https-int-list" do
@@ -514,7 +561,7 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
 end
 
 glassfish_conf = {
-  'server-config.security-service.default-realm' => 'cauthRealm',
+  'server-config.security-service.default-realm' => 'kthfsrealm',
   # Jobs in Hopsworks use the Timer service
   'server-config.ejb-container.ejb-timer-service.timer-datasource' => 'jdbc/hopsworksTimers',
   'server.ejb-container.ejb-timer-service.property.reschedule-failed-timer' => node['glassfish']['reschedule_failed_timer'],
@@ -523,6 +570,8 @@ glassfish_conf = {
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.enabled' => false,
   # Make sure the https listener is listening on the requested port
   'configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.port' => node['hopsworks']['https']['port'],
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.http2-enabled' => false,
+  'configs.config.server-config.network-config.protocols.protocol.https-internal.http.http2-enabled' => false,
   # Disable X-Powered-By and server headers
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.server-header' => false,
   'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.xpowered-by' => false,
@@ -533,6 +582,8 @@ glassfish_conf = {
   'server.admin-service.jmx-connector.system.ssl.ssl3-enabled' => false,
   'server.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled' => false,
   'server.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled' => false,
+  # HTTP-2
+  'configs.config.server-config.network-config.protocols.protocol.http-listener-2.http.http2-push-enabled' => true,
   # Disable TLS 1.0
   'server.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled' => false,
   'server.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled' => false,
@@ -591,6 +642,15 @@ glassfish_conf.each do |property, value|
    admin_port admin_port
    secure false
   end
+end
+
+#Should not be set if not properly configured 
+glassfish_asadmin "set-metrics-configuration --enabled=false" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
 end
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
@@ -1033,10 +1093,6 @@ bash "extract_frontend" do
   EOH
 end
 
-hopsworks_certs "generate-certs" do
-  action :generate
-end
-
 hopsworks_user_home = conda_helpers.get_user_home(node['hopsworks']['user'])
 
 template "#{hopsworks_user_home}/.condarc" do
@@ -1148,6 +1204,7 @@ if node['kagent']['enabled'].casecmp? "true"
   end
 end
 
+# We can't use the internal port yet as the certificate has not been generated yet
 hopsworks_certs "generate-int-certs" do
   subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
@@ -1302,5 +1359,3 @@ bash 'alter_flyway_schema_history_engine' do
     #{exec} -e \"ALTER TABLE #{node['hopsworks']['db']}.flyway_schema_history engine = 'ndb';\"
   EOF
 end
-
-
