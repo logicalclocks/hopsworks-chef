@@ -137,6 +137,12 @@ include_recipe "hive2::db"
 
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
+# Ignore patch versions starting from version 3.0.0
+if Gem::Version.new(target_version) >= Gem::Version.new('3.0.0')
+  target_version_ignore_patch_arr = target_version.split(".")
+  target_version_ignore_patch_arr[2] = "0"
+  target_version = target_version_ignore_patch_arr.join(".")
+end
 versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
