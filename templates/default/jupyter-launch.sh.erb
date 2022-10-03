@@ -13,6 +13,8 @@ CERTS_DIR=$8
 TOKEN=${10}
 JUPYTER_MODE=${11}
 IMAGE=${12}
+ALLOCATED_MEMORY=${13}
+ALLOCATED_CORES=${14}
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
@@ -36,7 +38,7 @@ function kill_named {
     return "$res"
 }
 
-if [ $# -ne 12 ]; then
+if [ $# -ne 14 ]; then
   help
 fi
 
@@ -53,6 +55,8 @@ fi
 docker run --rm -d --name $CONTAINER_NAME --cidfile=$PID_FILE\
        --network=host \
        --init \
+       --memory="${ALLOCATED_MEMORY}m" \
+       --cpus="${ALLOCATED_CORES}" \
        -e "JUPYTER_PATH=$JUPYTER_HOME" \
        -e "JUPYTER_DATA_DIR=$JUPYTER_HOME" \
        -e "PDIR=$SECRET_DIR" \
