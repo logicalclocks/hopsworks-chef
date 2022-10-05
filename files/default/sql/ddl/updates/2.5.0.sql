@@ -149,3 +149,7 @@ CREATE TABLE IF NOT EXISTS `git_repository_remotes` (
                                                         KEY `git_repository_fk` (`repository`),
                                                         CONSTRAINT `git_repository_fk` FOREIGN KEY (`repository`) REFERENCES `git_repositories` (`id`) ON DELETE CASCADE
  ) ENGINE=ndbcluster AUTO_INCREMENT=6164 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`api_key_scope` SET `scope` = 'PYTHON_LIBRARIES' WHERE `scope` = 'PYTHON';
+SET SQL_SAFE_UPDATES = 1;
