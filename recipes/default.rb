@@ -505,7 +505,7 @@ props =  {
 
 # Enable JMX metrics
 # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
- glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS --restmonitoringenabled" do
+ glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -650,8 +650,8 @@ glassfish_conf.each do |property, value|
   end
 end
 
-#Should not be set if not properly configured 
-glassfish_asadmin "set-metrics-configuration --enabled=false" do
+# --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
+glassfish_asadmin "set-metrics-configuration --enabled=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
