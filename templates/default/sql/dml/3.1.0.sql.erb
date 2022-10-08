@@ -1,3 +1,5 @@
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('pki_ca_configuration', '<%= @pki_ca_configuration %>');
+
 DELETE FROM `hopsworks`.`variables` WHERE `id`='dela_cluster_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='dela_client_type';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='dela_version';

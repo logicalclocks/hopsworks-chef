@@ -1125,6 +1125,7 @@ CREATE TABLE `serving` (
                            `transformer` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `model_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                            `model_version` int(11) NOT NULL,
+                           `model_framework` int(11) NOT NULL,
                            `local_dir` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `batching_configuration` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `optimized` tinyint(4) NOT NULL DEFAULT '0',
@@ -2279,3 +2280,34 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_certificate` (
+  `ca` TINYINT NOT NULL,
+  `serial_number` BIGINT NOT NULL,
+  `status` TINYINT NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `certificate` VARBINARY(10000),
+  `not_before` DATETIME NOT NULL,
+  `not_after` DATETIME NOT NULL,
+  PRIMARY KEY(`status`, `subject`) USING HASH,
+  KEY `sn_index` (`serial_number`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_crl` (
+  `type` VARCHAR(20) NOT NULL,
+  `crl` MEDIUMBLOB NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
+) /*!50100 TABLESPACE `ts_1` STORAGE DISK */ ENGINE=ndbcluster COMMENT='NDB_TABLE=READ_BACKUP=1' DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_key` (
+	`owner` VARCHAR(100) NOT NULL,
+	`type` TINYINT NOT NULL,
+	`key` VARBINARY(8192) NOT NULL,
+	PRIMARY KEY (`owner`, `type`) USING HASH
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `pki_serial_number` (
+  `type` VARCHAR(20) NOT NULL,
+  `number` BIGINT NOT NULL,
+  PRIMARY KEY(`type`) USING HASH
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

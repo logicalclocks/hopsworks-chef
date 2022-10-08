@@ -1,0 +1,23 @@
+[Unit]
+Description = cadvisor
+StartLimitIntervalSec=30
+StartLimitBurst=20
+
+[Service]
+ExecStart = <%= @cadvisor_bin %> \
+--logtostderr=true \
+--allow_dynamic_housekeeping=false \
+--global_housekeeping_interval=35s \
+--housekeeping_interval=1s \
+--max_housekeeping_interval=10s \
+--application_metrics_count_limit=1000 \
+--port=<%= node['hops']['cadvisor']['port'] %> \
+--max_procs=2
+
+LimitNOFILE = 20000
+Restart=on-failure
+
+Type = simple
+
+[Install]
+WantedBy = multi-user.target

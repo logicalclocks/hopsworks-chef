@@ -25,6 +25,13 @@ ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`depend
 -- add tutorial endpoint
 DROP TABLE IF EXISTS `hopsworks`.`tutorial`;
 
+
+ALTER TABLE `hopsworks`.`serving` DROP COLUMN `model_framework`;
+DROP TABLE IF EXISTS `hopsworks`.`pki_certificate`;
+DROP TABLE IF EXISTS `hopsworks`.`pki_crl`;
+DROP TABLE IF EXISTS `hopsworks`.`pki_key`;
+DROP TABLE IF EXISTS `hopsworks`.`pki_serial_number`;
+
 --
 -- Table structure for table `dela`
 --

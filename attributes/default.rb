@@ -44,7 +44,7 @@ default['hopsworks']['db']                       = "hopsworks"
 default['hopsworks']['mysql']['user']            = "hopsworks"
 default['hopsworks']['mysql']['password']        = "hopsworks"
 
-default['glassfish']['version']                  = '4.1.2.181'  # '5.182'
+default['glassfish']['version']                  = '5.2022.3' 
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
@@ -82,8 +82,6 @@ default['hopsworks']['config_dir']               = "#{node['hopsworks']['domains
 default['glassfish']['reschedule_failed_timer']     = "true"
 
 default['glassfish']['package_url']              = node['download_url'] + "/payara-#{node['glassfish']['version']}.zip"
-default['hopsworks']['cauth_version']            = "otp-auth-0.5.0.jar"
-default['hopsworks']['cauth_url']                = "#{node['download_url']}/#{node['hopsworks']['cauth_version']}"
 
 default['hopsworks']['download_url']             = "#{node['install']['enterprise']['install'].casecmp?("true") ? node['install']['enterprise']['download_url'] : node['download_url']}/hopsworks/#{node['hopsworks']['version']}"
 default['hopsworks']['war_url']                  = "#{node['hopsworks']['download_url']}/hopsworks-web.war"
@@ -118,6 +116,13 @@ default['hopsworks']['spark_ui_logs_offset'] = "512000"
 default['hopsworks']['hopsworks_rest_log_level'] = "TEST"
 
 default['hopsworks']['mysql_connector_url']         = "#{node['download_url']}/mysql-connector-java-8.0.21-bin.jar"
+
+default['hopsworks']['pki']['root']['name']             = ""
+default['hopsworks']['pki']['root']['duration']         = "3650d"
+default['hopsworks']['pki']['intermediate']['name']     = ""
+default['hopsworks']['pki']['intermediate']['duration'] = "3650d"
+default['hopsworks']['pki']['kubernetes']['name']       = ""
+default['hopsworks']['pki']['kubernetes']['duration']   = "3650d"
 
 default['hopsworks']['cert']['cn']                  = "logicalclocks.com"
 default['hopsworks']['cert']['o']                   = "Logical Clocks AB"
@@ -345,6 +350,7 @@ default['hopsworks']['featurestore_online']                   = "true"
 
 # Number of seconds to keep an inactive connection alive
 default['glassfish']['http']['keep_alive_timeout']   = "30"
+default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 
 #
 # kagent liveness monitor configuration
@@ -431,3 +437,7 @@ default['hopsworks']['quotas']['max_parallel_executions']             = "-1"
 
 default['hopsworks']['docker']['cgroup_monitor_interval']             = "10m"
 default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
+
+default['hops']['cadvisor']['dir']                                    = "#{node['hops']['dir']}/cadvisor"
+default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
+default['hops']['cadvisor']['port']                                   = "4194"

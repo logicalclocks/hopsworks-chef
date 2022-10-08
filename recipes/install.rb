@@ -2,6 +2,16 @@ require 'json'
 require 'base64'
 require 'digest'
 
+# When we upgrade to version 3.1.0 make sure we have set the subjects
+# of CAs
+if conda_helpers.is_upgrade
+  if node['install']['current_version'] < '3.1.0' && node['install']['version'] >= '3.1.0'
+    if node['hopsworks']['pki']['root']['name'].empty? || node['hopsworks']['pki']['intermediate']['name'].empty?
+      raise "It is an upgrade and Hopsworks CA subject name are not set. You have to set it to what was the previous names"
+    end
+  end
+end
+
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -455,16 +465,6 @@ remote_file "#{theDomain}/lib/#{mysql_connector}"  do
   action :create_if_missing
 end
 
-cauth = File.basename(node['hopsworks']['cauth_url'])
-
-remote_file "#{theDomain}/lib/#{cauth}"  do
-  user node['glassfish']['user']
-  group node['glassfish']['group']
-  source node['hopsworks']['cauth_url']
-  mode 0755
-  action :create_if_missing
-end
-
 remote_directory "#{theDomain}/templates" do
   source 'hopsworks_templates'
   owner node["glassfish"]["user"]
@@ -554,45 +554,10 @@ file "#{ca_dir}/encryption_master_password" do
   group node['glassfish']['group']
 end
 
-dirs = %w{certs crl newcerts private intermediate transient}
-
-for d in dirs
-  directory "#{ca_dir}/#{d}" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "700"
-    action :create
-  end
-end
-
-int_dirs = %w{certs crl csr newcerts private}
-
-for d in int_dirs
-  directory "#{ca_dir}/intermediate/#{d}" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "700"
-    action :create
-  end
-end
-
-template "#{ca_dir}/openssl-ca.cnf" do
-  source "caopenssl.cnf.erb"
+directory "#{ca_dir}/transient" do
   owner node['glassfish']['user']
-  mode "600"
-  variables({
-              :ca_dir =>  "#{ca_dir}"
-            })
-  action :create
-end
-
-template "#{ca_dir}/intermediate/openssl-intermediate.cnf" do
-  source "intermediateopenssl.cnf.erb"
-  owner node['glassfish']['user']
-  mode "600"
-  variables({
-              :int_ca_dir =>  "#{ca_dir}/intermediate"
-            })
+  group node['glassfish']['group']
+  mode "700"
   action :create
 end
 
@@ -646,14 +611,6 @@ kagent_sudoers "jupyter-project-cleanup" do
   template      "jupyter-project-cleanup.sh.erb"
   run_as        "ALL"
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
-end
-
-kagent_sudoers "global-ca-sign-csr" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "global-ca-sign-csr.sh"
-  template      "global-ca-sign-csr.sh.erb"
-  run_as        "ALL"
 end
 
 kagent_sudoers "git" do
@@ -862,4 +819,9 @@ directory "#{theDomain}/flyway/all/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
+end
+
+#install cadvisor only on the headnode and no kubernetes
+if (exists_local("hopsworks", "default")) && (node['install']['kubernetes'].casecmp?("false"))
+  include_recipe "hopsworks::cadvisor"
 end

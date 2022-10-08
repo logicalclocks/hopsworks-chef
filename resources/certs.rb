@@ -1,3 +1,3 @@
-actions :generate, :generate_int_certs, :download_azure_ca_cert
+actions :generate_int_certs, :download_azure_ca_cert
 
-attribute :subject, :kind_of => String 
+attribute :subject, :kind_of => String
