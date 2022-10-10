@@ -624,16 +624,6 @@ glassfish_conf = {
   'server.network-config.protocols.protocol.https-internal.ssl.cert-nickname' => 'internal'
 }
 
-glassfish_conf.each do |property, value|
-  glassfish_asadmin "set #{property}=#{value}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-end
-
 # --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
 glassfish_asadmin "set-metrics-configuration --enabled=true" do
   domain_name domain_name
@@ -650,6 +640,16 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
    admin_port admin_port
    secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
+end
+
+glassfish_conf.each do |property, value|
+  glassfish_asadmin "set #{property}=#{value}" do
+   domain_name domain_name
+   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   username username
+   admin_port admin_port
+   secure false
+  end
 end
 
 airflow_exists = false
