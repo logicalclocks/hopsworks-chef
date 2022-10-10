@@ -497,6 +497,16 @@ props =  {
    secure false
 end
 
+# Enable Rest metrics
+# --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
+glassfish_asadmin "set-metrics-configuration --enabled=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
 glassfish_asadmin "set configs.config.server-config.cdi-service.enable-concurrent-deployment=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -624,24 +634,6 @@ glassfish_conf = {
   'server.network-config.protocols.protocol.https-internal.ssl.cert-nickname' => 'internal'
 }
 
-# --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
-glassfish_asadmin "set-metrics-configuration --enabled=true" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
-end
-
 glassfish_conf.each do |property, value|
   glassfish_asadmin "set #{property}=#{value}" do
    domain_name domain_name
@@ -650,6 +642,15 @@ glassfish_conf.each do |property, value|
    admin_port admin_port
    secure false
   end
+end
+
+glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+ not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services | grep 'kagent'"
 end
 
 airflow_exists = false
