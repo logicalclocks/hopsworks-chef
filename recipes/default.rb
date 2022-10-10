@@ -507,6 +507,14 @@ glassfish_asadmin "set-metrics-configuration --enabled=true" do
   secure false
 end
 
+glassfish_asadmin "set-monitoring-level --module=jvm,connector-service,connector-connection-pool,jdbc-connection-pool,web-services-container,thread-pool,http-service,security,jersey,transaction-service,jpa,web-container --level=HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
 glassfish_asadmin "set configs.config.server-config.cdi-service.enable-concurrent-deployment=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -607,19 +615,6 @@ glassfish_conf = {
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
   # Allow following symlinks from docroot
   'server-config.http-service.virtual-server.server.property.allowLinking' => true,
-  # Configure metrics and JMX
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.jvm' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.connector-service' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.connector-connection-pool' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.jdbc-connection-pool' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-services-container' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.thread-pool' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.http-service' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.security' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.jersey' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.transaction-service' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.jpa' => 'HIGH',
-  'configs.config.server-config.monitoring-service.module-monitoring-levels.web-container' => 'HIGH',
   'server.network-config.protocols.protocol.http-listener-2.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'server.network-config.protocols.protocol.http-listener-1.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
   'server.network-config.protocols.protocol.https-internal.http.timeout-seconds' => node['glassfish']['http']['keep_alive_timeout'],
@@ -643,6 +638,8 @@ glassfish_conf.each do |property, value|
    secure false
   end
 end
+
+
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
   domain_name domain_name
