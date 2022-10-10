@@ -15,14 +15,6 @@ domains_dir = node['hopsworks']['domains_dir']
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 theDomain="#{domains_dir}/#{domain_name}"
 
-if node['hopsworks']['dela']['enabled'] == "true"
-  if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
-    hopsworks_certs "sign-ca-with-root-hopssite-ca" do
-      action :sign_hopssite
-    end
-  end
-end
-
 public_ip=my_public_ip()
 realmname = "kthfsrealm"
 
@@ -31,13 +23,6 @@ begin
 rescue
   elastic_ips = ""
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
-end
-
-begin
-  dela_ip = private_recipe_ip("dela","default")
-rescue
-  dela_ip = node['hostname']
-  Chef::Log.warn "could not find the dela server ip!"
 end
 
 begin
@@ -291,7 +276,6 @@ for version in versions do
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
          :public_ip => public_ip,
-         :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,

@@ -613,15 +613,6 @@ kagent_sudoers "jupyter-project-cleanup" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
-kagent_sudoers "ca-keystore" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "ca-keystore.sh"
-  template      "ca-keystore.sh.erb"
-  run_as        "ALL"
-  only_if       { node['hopsworks']['dela']['enabled'].casecmp("true") == 0 }
-end
-
 kagent_sudoers "git" do
   user          node['glassfish']['user']
   group         "root"
@@ -748,33 +739,6 @@ directory node["jupyter"]["base_dir"]  do
   owner node["jupyter"]["user"]
   group node["jupyter"]["group"]
   mode "770"
-  action :create
-end
-
-directory node["hopssite"]["certs_dir"] do
-  owner node["glassfish"]["user"]
-  group node['kagent']['certs_group']
-  mode "750"
-  action :create
-end
-
-directory node["hopssite"]["keystore_dir"] do
-  owner node["glassfish"]["user"]
-  mode "750"
-  action :create
-end
-
-template "#{theDomain}/config/ca.ini" do
-  source "ca.ini.erb"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-end
-
-template "#{theDomain}/bin/csr-ca.py" do
-  source "csr-ca.py.erb"
-  owner node['glassfish']['user']
-  mode 0750
   action :create
 end
 

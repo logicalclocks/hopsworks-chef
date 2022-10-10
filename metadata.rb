@@ -27,7 +27,6 @@ depends 'flink'
 depends 'livy'
 depends 'epipe'
 depends 'tensorflow'
-depends 'dela'
 depends 'kzookeeper'
 depends 'kkafka'
 depends 'elastic'
@@ -54,8 +53,6 @@ recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
-recipe  "hopsworks::hopssite", "Install hopssite on current vm"
-recipe  "hopsworks::delaregister", "Register dela on current vm - mainly for demos"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -448,51 +445,6 @@ attribute "jupyter/ws_ping_interval",
           :type => 'string'
 
 
-#
-# Dela
-#
-
-attribute "dela/default/private_ips",
-          :description => "ip addrs",
-          :type => 'array'
-
-attribute "dela/user",
-          :description => "Username for the dela services",
-          :type => 'string'
-
-attribute "dela/group",
-          :description => "Groupname for the dela services",
-          :type => 'string'
-
-attribute "dela/dir",
-          :description => "dela Installation directory.",
-          :type => 'string'
-
-# Hopsworks Dela
-attribute "hopsworks/public_https_port",
-          :description => "Hopsworks public https port",
-          :type => 'string'
-
-attribute "hopsworks/hopssite/version",
-          :description => "Enable hopssite default versions: hops, hops-demo or bbc5",
-          :type => 'string'
-
-attribute "hopsworks/dela/enabled",
-          :description => "'true' to enable dela services, otherwise 'false' (default)",
-          :type => 'string'
-
-attribute "hopsworks/dela/client",
-          :description => "'BASE_CLIENT' to disable upload services, otherwise 'FULL_CLIENT' (default)",
-          :type => 'string'
-
-attribute "hopsworks/dela/cluster_http_port",
-          :description => "Dela cluster accessible http port",
-          :type => 'string'
-
-attribute "hopsworks/dela/public_hopsworks_port",
-          :description => "Hopsworks public http port",
-          :type => 'string'
-
 attribute "hopsworks/org_name",
           :description => "Organization name for this hopsworks cluster",
           :type => 'string'
@@ -510,153 +462,9 @@ attribute "hopsworks/org_country_code",
           :type => 'string'
 # Hops site
 
-attribute "hopsworks/hopssite/domain",
-          :description => "Dela hops site public domain",
-          :type => 'string'
-
-attribute "hopsworks/hopssite/port",
-          :description => "Dela hops site port",
-          :type => 'string'
-
-attribute "hopsworks/hopssite/register_port",
-          :description => "Dela hops site port used for cert registration",
-          :type => 'string'
-
 attribute "hopsworks/support_email_addr",
           :description => "Email address to contact for email registration problems",
           :type => 'string'
-
-attribute "hopsworks/hopssite/heartbeat",
-          :description => "Dela hops site heartbeat",
-          :type => 'string'
-
-attribute "hopssite/dela/version",
-       :description => "The hopssite tracker imposed version of dela",
-       :type => 'string'
-
-attribute "hopssite/cert/cn",
-	  :description => "hopssite Organization Common Name (default: hopsworks/cert)",
-	  :type => 'string'
-
-attribute "hopssite/cert/o",
-	  :description => "hopssite Organization Name (default: hopsworks/cert)",
-	  :type => 'string'
-
-attribute "hopssite/cert/ou",
-	  :description => "hopssite Organizational Unit Name (default: hopsworks/cert)",
-	  :type => 'string'
-
-attribute "hopssite/cert/l",
-	  :description => "hopssite Locality Name (eg, city) (default: hopsworks/cert)",
-	  :type => 'string'
-
-attribute "hopssite/cert/s",
-	  :description => "hopssite State or Province Name (default: hopsworks/cert)",
-	  :type => 'string'
-
-attribute "hopssite/cert/c",
-	  :description => "hopssite Country Name (default: hopsworks/cert)",
-	  :type => 'string'
-
-#
-# hops.site settings
-#
-attribute "hopssite/manual_register",
-          :description => "Manually register with www.hops.site if set true. 'false' (default)",
-          :type => 'string'
-
-attribute "hopssite/url",
-          :description => "Url to the global Hops Certificate Authority.",
-          :type => 'string'
-
-attribute "hopssite/user",
-          :description => "To register your Hopsworks Cluster, you need to register a username at www.hops.site. This is the username for hops.site.",
-          :type => 'string'
-
-attribute "hopssite/password",
-          :description => "Password for the registered username at www.hops.site.",
-          :type => 'string'
-
-attribute "hopssite/retry_interval",
-          :description => "Certificate signing request retry interval for hops.site.",
-          :type => 'string'
-
-attribute "hopssite/max_retries",
-          :description => "Certificate signing request maximum number of retries for hops.site.",
-          :type => 'string'
-#
-# hops.site admin
-#
-attribute "hopssite/admin/password",
-          :description => "Password for domain2 - running the hopssite tracker",
-          :type => 'string'
-
-# Dela Transfer specific
-
-
-attribute "dela/log_level",
-          :description => "Default: WARN. Can be INFO or DEBUG or TRACE or ERROR.",
-          :type => "string"
-
-attribute "dela/id",
-          :description => "id for the dela instance. Randomly generated, but can be ovverriden here.",
-          :type => "string"
-
-attribute "dela/seed",
-          :description => "seed for the dela instance. Randomly generated, but can be ovverriden here.",
-          :type => "string"
-
-attribute "dela/stun_port1",
-          :description => "1st Client port used by stun client in Dela.",
-          :type => "string"
-
-attribute "dela/stun_port2",
-          :description => "2nd Client port used by stun client in Dela.",
-          :type => "string"
-
-attribute "dela/port",
-	    :description => "Dela Client application port.",
-	    :type => "string"
-
-attribute "dela/stun_client_port2",
-          :description => "2nd Client port used by stun client in Dela.",
-          :type => "string"
-
-attribute "dela/port",
-          :description => "Dela Client application port.",
-          :type => "string"
-
-attribute "dela/http_port",
-          :description => "Dela Client http port.",
-	     :type => "string"
-
-attribute "dela/stun_servers_ip",
-          :description => "Dela Client stun connections(ips).",
-          :type => "array"
-
-attribute "dela/stun_servers_id",
-          :description => "Dela Client stun connections(ids).",
-          :type => "array"
-
-attribute "dela/hops/storage/type",
-          :description => "Dela Client storage type(HDFS/DISK).",
-          :type => "string"
-
-attribute "dela/hops/library/type",
-          :description => "Dela Client library type(MYSQL/DISK).",
-          :type => "string"
-
-##### Dela
-attribute "dela/mysql/ip",
-          :description => "Mysql server ip",
-          :type => 'string',
-          :required => "required"
-
-attribute "dela/mysql/port",
-          :description => "MySql server port",
-          :type => 'string',
-          :required => "required"
-
 
 #
 # LDAP
