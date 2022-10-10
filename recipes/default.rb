@@ -15,14 +15,6 @@ domains_dir = node['hopsworks']['domains_dir']
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 theDomain="#{domains_dir}/#{domain_name}"
 
-if node['hopsworks']['dela']['enabled'] == "true"
-  if node['hopssite']['manual_register'].empty? || node['hopssite']['manual_register'] == "false"
-    hopsworks_certs "sign-ca-with-root-hopssite-ca" do
-      action :sign_hopssite
-    end
-  end
-end
-
 public_ip=my_public_ip()
 realmname = "kthfsrealm"
 
@@ -31,13 +23,6 @@ begin
 rescue
   elastic_ips = ""
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
-end
-
-begin
-  dela_ip = private_recipe_ip("dela","default")
-rescue
-  dela_ip = node['hostname']
-  Chef::Log.warn "could not find the dela server ip!"
 end
 
 begin
@@ -137,6 +122,12 @@ include_recipe "hive2::db"
 
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
+# Ignore patch versions starting from version 3.0.0
+if Gem::Version.new(target_version) >= Gem::Version.new('3.0.0')
+  target_version_ignore_patch_arr = target_version.split(".")
+  target_version_ignore_patch_arr[2] = "0"
+  target_version = target_version_ignore_patch_arr.join(".")
+end
 versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
@@ -285,7 +276,6 @@ for version in versions do
          :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
          :public_ip => public_ip,
-         :dela_ip => dela_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
@@ -499,7 +489,7 @@ props =  {
 
 # Enable JMX metrics
 # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
- glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS --restmonitoringenabled" do
+ glassfish_asadmin "set-monitoring-configuration --dynamic true --enabled true --amxenabled --jmxlogfrequency 15 --jmxlogfrequencyunit SECONDS" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
    username username
@@ -644,8 +634,8 @@ glassfish_conf.each do |property, value|
   end
 end
 
-#Should not be set if not properly configured 
-glassfish_asadmin "set-metrics-configuration --enabled=false" do
+# --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
+glassfish_asadmin "set-metrics-configuration --enabled=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username

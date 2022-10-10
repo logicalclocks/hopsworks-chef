@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `model_framework` INT(11) NOT NULL;
+
 CREATE TABLE IF NOT EXISTS `pki_certificate` (
   `ca` TINYINT NOT NULL,
   `serial_number` BIGINT NOT NULL,
@@ -63,6 +64,9 @@ CREATE TABLE IF NOT EXISTS `pki_serial_number` (
   `number` BIGINT NOT NULL,
   PRIMARY KEY(`type`) USING HASH
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+DROP TABLE `dela`;
+DROP TABLE `hopssite_cluster_certs`;
 
 CREATE TABLE IF NOT EXISTS `feature_group_link` (
   `id` int NOT NULL AUTO_INCREMENT,
