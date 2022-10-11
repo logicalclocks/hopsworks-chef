@@ -779,7 +779,7 @@ glassfish_asadmin "set-monitoring-configuration --enabled=true --mbeansenabled=t
   secure false
 end
 
-glassfish_asadmin "monitoring-log-notifier-configure --enabled=false --dynamic=true" do
+glassfish_asadmin "notification-configure --enabled=false --dynamic=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
