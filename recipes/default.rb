@@ -789,6 +789,14 @@ glassfish_asadmin "set-metrics-configuration --enabled=true --dynamic=true" do
   secure false
 end
 
+glassfish_asadmin "set-monitoring-level --module=jvm,connector-service,connector-connection-pool,jdbc-connection-pool,web-services-container,thread-pool,http-service,security,jersey,transaction-service,jpa,web-container --level=HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
   ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
