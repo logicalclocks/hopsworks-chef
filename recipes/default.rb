@@ -797,36 +797,6 @@ glassfish_asadmin "set-monitoring-level --module=jvm,connector-service,connector
   secure false
 end
 
-#Ping connection pools for metrics to add them to Resource Monitoring. If not 'Failed to retrieve metric:' will spam the log 
-glassfish_asadmin "ping-connection-pool hopsworksPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-glassfish_asadmin "ping-connection-pool ejbTimerPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-glassfish_asadmin "ping-connection-pool featureStorePool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-glassfish_asadmin "ping-connection-pool airflowPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
   ldap_jndilookupname= node['ldap']['jndilookupname']
   ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
