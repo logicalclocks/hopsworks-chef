@@ -137,3 +137,32 @@ SET SQL_SAFE_UPDATES = 1;
 
 -- FSTORE-442
 ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN `kwargs` VARCHAR(5000) NOT NULL;
+
+-- BEGIN CHANGES FSTORE-326
+-- bigquery
+ALTER TABLE `feature_store_bigquery_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_bigq_keyfile`;
+ALTER TABLE `feature_store_bigquery_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_bigq_keyfile`
+        FOREIGN KEY (`key_inode_pid`, `key_inode_name`, `key_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL;
+-- gcs
+ALTER TABLE `feature_store_gcs_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_gcs_keyfile`;
+ALTER TABLE `feature_store_gcs_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_gcs_keyfile`
+        FOREIGN KEY (`key_inode_pid`, `key_inode_name`, `key_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL;
+-- kafka
+ALTER TABLE `feature_store_kafka_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_kafka_keystore`,
+    DROP FOREIGN KEY `fk_fs_storage_connector_kafka_truststore`;
+ALTER TABLE `feature_store_kafka_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_kafka_keystore`
+        FOREIGN KEY (`keystore_inode_pid`, `keystore_inode_name`, `keystore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL,
+    ADD CONSTRAINT `fk_fs_storage_connector_kafka_truststore`
+        FOREIGN KEY (`truststore_inode_pid`, `truststore_inode_name`,
+                     `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL;
+-- END CHANGES FSTORE-326

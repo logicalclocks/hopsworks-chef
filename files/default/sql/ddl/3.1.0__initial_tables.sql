@@ -1745,12 +1745,12 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
         `truststore_inode_pid`,
         `truststore_inode_name`,
         `truststore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
     CONSTRAINT `fk_fs_storage_connector_kafka_keystore` FOREIGN KEY (
         `keystore_inode_pid`,
         `keystore_inode_name`,
         `keystore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1770,7 +1770,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
         `key_inode_pid`,
         `key_inode_name`,
         `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1792,7 +1792,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
         `key_inode_pid`,
         `key_inode_name`,
         `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
