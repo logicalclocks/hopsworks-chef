@@ -771,7 +771,7 @@ end
 
 # Enable JMX metrics
 # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
-glassfish_asadmin "set-monitoring-configuration --enabled=true --mbeansenabled=true --amxenabled=true --jmxlogfrequency=15 --jmxlogfrequencyunit=SECONDS --dynamic=true" do
+glassfish_asadmin "set-monitoring-configuration --enabled=true --mbeansenabled=true --amxenabled=true --jmxlogfrequency=15 --jmxlogfrequencyunit=MINUTES --dynamic=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
