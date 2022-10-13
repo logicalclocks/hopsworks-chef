@@ -66,3 +66,49 @@ CREATE TABLE `hopssite_cluster_certs` (
                                           PRIMARY KEY (`cluster_name`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
+-- rename transformation functions output types
+UPDATE transformation_function
+SET output_type = 'StringType()'
+WHERE output_type = 'STRING';
+
+UPDATE transformation_function
+SET output_type = 'BinaryType()'
+WHERE output_type = 'BINARY';
+
+UPDATE transformation_function
+SET output_type = 'ByteType()'
+WHERE output_type = 'BYTE';
+
+UPDATE transformation_function
+SET output_type = 'ShortType()
+WHERE output_type = 'SHORT'';
+
+UPDATE transformation_function
+SET output_type = 'IntegerType()'
+WHERE output_type = 'INT';
+
+UPDATE transformation_function
+SET output_type = 'LongType()'
+WHERE output_type = 'LONG';
+
+UPDATE transformation_function
+SET output_type = 'FloatType()'
+WHERE output_type = 'FLOAT';
+
+UPDATE transformation_function
+SET output_type = 'DoubleType()'
+WHERE output_type = 'DOUBLE';
+
+UPDATE transformation_function
+SET output_type = 'TimestampType()'
+WHERE output_type = 'TIMESTAMP';
+
+UPDATE transformation_function
+SET output_type = 'DateType()'
+WHERE output_type = 'DATE';
+
+UPDATE transformation_function
+SET output_type = 'BooleanType()'
+WHERE output_type = 'BOOLEAN';
