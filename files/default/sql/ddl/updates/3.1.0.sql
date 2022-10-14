@@ -69,6 +69,7 @@ DROP TABLE `dela`;
 DROP TABLE `hopssite_cluster_certs`;
 
 -- rename transformation functions output types
+SET SQL_SAFE_UPDATES = 0;
 UPDATE transformation_function
 SET output_type = 'STRING'
 WHERE output_type = 'StringType()';
@@ -112,3 +113,4 @@ WHERE output_type = 'DateType()';
 UPDATE transformation_function
 SET output_type = 'BOOLEAN'
 WHERE output_type = 'BooleanType()';
+SET SQL_SAFE_UPDATES = 1;

@@ -69,6 +69,7 @@ CREATE TABLE `hopssite_cluster_certs` (
 
 
 -- rename transformation functions output types
+SET SQL_SAFE_UPDATES = 0;
 UPDATE transformation_function
 SET output_type = 'StringType()'
 WHERE output_type = 'STRING';
@@ -112,3 +113,4 @@ WHERE output_type = 'DATE';
 UPDATE transformation_function
 SET output_type = 'BooleanType()'
 WHERE output_type = 'BOOLEAN';
+SET SQL_SAFE_UPDATES = 1;
