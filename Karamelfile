@@ -2,7 +2,6 @@ dependencies:
   - recipe: hopsworks::install
     local:
       - hops::install
-      - hops_airflow::install
   - recipe: hopsworks::default
     local:
       - conda::default
