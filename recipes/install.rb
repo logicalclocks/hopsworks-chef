@@ -93,6 +93,14 @@ group node['hopsmonitor']['group'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+group node['airflow']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]  
+  append true
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+  only_if "getent group #{node['airflow']['group']}"
+end
+
 group node['logger']['group'] do
   gid node['logger']['group_id']
   action :create
