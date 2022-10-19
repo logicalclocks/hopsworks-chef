@@ -53,24 +53,20 @@ elif [ "$1" == "gc" ] ; then
 
 elif [ "$1" == "delete-acr" ] ; then
   registry=$2
-  image_prefix=$3
-  if [[ -z "$registry" ||  -z "$image_prefix" ]] ; then
+  repository=$3  
+  image_prefix=$4
+  if [[ -z "$registry" ||  -z "$image_prefix" || -z "$repository" ]] ; then
     echo ""
-    echo "usage: delete-acr [registry_name image_prefix]"
-    echo "deletes all images under the specified image_prefix inside the specified regitry"
+    echo "usage: delete-acr [registry_name repository_name image_prefix]"
+    echo "deletes all images under the specified image_prefix inside the specified registry and repository"
     echo ""
     exit 1
   fi
-  repos=`az acr repository list --name $registry --query "[?starts_with(@, '$image_prefix')]" -o tsv`
-
-  for repo in $repos
+  tags=`az acr repository show-tags --name $registry --repository $repository --query "[?starts_with(@, '$image_prefix')]" -o tsv --only-show-errors`
+  for tag in $tags
   do
-      tags=`az acr repository show-tags --name $registry --repository $repo -o tsv`
-      for tag in $tags
-      do
-          az acr repository delete --name $registry -y --image $repo:$tag > /dev/null 2>&1
-          echo $tag
-      done
+      az acr repository untag --name $registry --image $repository:$tag > /dev/null 2>&1
+      echo $tag
   done
 
 elif [ "$1" == "loginaz" ] ; then
