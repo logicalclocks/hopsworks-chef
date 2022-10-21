@@ -172,5 +172,3 @@ CREATE TABLE IF NOT EXISTS `feature_store_expectation_rule` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `validation_type` INT(11) NOT NULL DEFAULT '4';
-
-ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `execution_last_event_time` BIGINT(20) NULL;

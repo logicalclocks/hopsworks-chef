@@ -114,3 +114,5 @@ UPDATE transformation_function
 SET output_type = 'BOOLEAN'
 WHERE output_type = 'BooleanType()';
 SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `execution_last_event_time`;
