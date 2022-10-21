@@ -282,3 +282,5 @@ ALTER TABLE `hopsworks`.`feature_group_commit` DROP FOREIGN KEY `fgc_fk_fgv`, DR
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fs_act_val_fk`, DROP COLUMN `validation_id`;
 DROP TABLE IF EXISTS `feature_group_validation`;
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `validation_type`;
+
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `execution_last_event_time`;
