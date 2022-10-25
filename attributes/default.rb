@@ -33,6 +33,10 @@ default['glassfish']['group']                    = node['hopsworks']['group']
 default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
 
 default['hopsworks']['https']['port']            = 8181
+default['hopsworks']['https']['key_url']         = ""
+default['hopsworks']['https']['cert_url']        = ""
+default['hopsworks']['https']['ca_url']          = ""
+
 default['hopsworks']['internal']['port']         = 8182
 
 default['hopsworks']['admin']['port']            = 4848

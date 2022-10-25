@@ -231,6 +231,18 @@ attribute "hopsworks/https/port",
           :description => "Port that webserver will listen on",
           :type => 'string'
 
+attribute "hopsworks/https/key_url",
+          :description => "Location from where to download the user provided key for the HTTPS listener",
+          :type => 'string'
+
+attribute "hopsworks/https/cert_url",
+          :description => "Location from where to download the user provided certificate for the HTTPS listener",
+          :type => 'string'
+
+attribute "hopsworks/https/ca_url",
+          :description => "Location from where to download the user provided CA the HTTPS listener",
+          :type => 'string'
+
 attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
           :type => 'string'
