@@ -1966,7 +1966,6 @@ CREATE TABLE `feature_store_activity` (
                                           `meta_type`                     INT(11) NULL,
                                           `meta_msg`                      VARCHAR(255) NULL,
                                           `execution_id`                  INT(11) NULL,
-                                          `execution_last_event_time`     BIGINT(20) NULL,
                                           `statistics_id`                 INT(11) NULL,
                                           `commit_id`                     BIGINT(20) NULL,
                                           `feature_group_id`              INT(11) NULL,
