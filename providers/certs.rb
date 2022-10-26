@@ -83,6 +83,25 @@ action :import_certs do
         keytool -import -noprompt -alias s1as -file https_ca.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
   end
+
+  # Enable and disable secure admin to get it to pick up the new certificate
+  # If we don't do this, users won't be able to log in through the admin UI.
+  # We don't need to restart glassfish here as it's one immediately after by the recipes
+  glassfish_asadmin "disable-secure-admin" do
+    domain_name node['hopsworks']['domain_name']
+    password_file "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_admin_passwd"
+    username node['hopsworks']['admin']['user']
+    admin_port node['hopsworks']['admin']['port']
+    secure false
+  end
+
+  glassfish_asadmin "enable-secure-admin" do
+    domain_name node['hopsworks']['domain_name']
+    password_file "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}_admin_passwd"
+    username node['hopsworks']['admin']['user']
+    admin_port node['hopsworks']['admin']['port']
+    secure false
+  end
 end
 
 
