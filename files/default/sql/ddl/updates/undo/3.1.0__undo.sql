@@ -124,3 +124,7 @@ ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `validation_report_
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `expectation_suite_id`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `creation_status`;
+
+-- Validation Result history FSTORE-341
+ALTER TABLE `hopsworks`.`validation_result` DROP COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `hopsworks`.`validation_result` DROP COLUMN `ingestion_result` VARCHAR(8) NOT NULL;
