@@ -116,3 +116,9 @@ WHERE output_type = 'BOOLEAN';
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `execution_last_event_time` BIGINT(20) NULL;
+
+-- activity great expectations data validation
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP CONSTRAINT `fs_act_validationreport_fk` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `validation_report_id` Int(11) NULL;
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `expectation_suite_id` Int(11) NULL;
