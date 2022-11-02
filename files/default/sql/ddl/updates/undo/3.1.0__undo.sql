@@ -122,3 +122,5 @@ ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fs_act_expect
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP FOREIGN KEY `fs_act_validationreport_fk`;
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `validation_report_id`;
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `expectation_suite_id`;
+
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `creation_status`;
