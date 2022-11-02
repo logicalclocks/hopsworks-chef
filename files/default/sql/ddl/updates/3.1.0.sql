@@ -68,6 +68,61 @@ CREATE TABLE IF NOT EXISTS `pki_serial_number` (
 DROP TABLE `dela`;
 DROP TABLE `hopssite_cluster_certs`;
 
+-- rename transformation functions output types
+SET SQL_SAFE_UPDATES = 0;
+UPDATE transformation_function
+SET output_type = 'STRING'
+WHERE output_type = 'StringType()';
+
+UPDATE transformation_function
+SET output_type = 'BINARY'
+WHERE output_type = 'BinaryType()';
+
+UPDATE transformation_function
+SET output_type = 'BYTE'
+WHERE output_type = 'ByteType()';
+
+UPDATE transformation_function
+SET output_type = 'SHORT'
+WHERE output_type = 'ShortType()';
+
+UPDATE transformation_function
+SET output_type = 'INT'
+WHERE output_type = 'IntegerType()';
+
+UPDATE transformation_function
+SET output_type = 'LONG'
+WHERE output_type = 'LongType()';
+
+UPDATE transformation_function
+SET output_type = 'FLOAT'
+WHERE output_type = 'FloatType()';
+
+UPDATE transformation_function
+SET output_type = 'DOUBLE'
+WHERE output_type = 'DoubleType()';
+
+UPDATE transformation_function
+SET output_type = 'TIMESTAMP'
+WHERE output_type = 'TimestampType()';
+
+UPDATE transformation_function
+SET output_type = 'DATE'
+WHERE output_type = 'DateType()';
+
+UPDATE transformation_function
+SET output_type = 'BOOLEAN'
+WHERE output_type = 'BooleanType()';
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `execution_last_event_time`;
+
+-- activity great expectations data validation
+ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `validation_report_id` Int(11) NULL;
+ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_validationreport_fk` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `expectation_suite_id` Int(11) NULL;
+ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
 CREATE TABLE IF NOT EXISTS `feature_group_link` (
   `id` int NOT NULL AUTO_INCREMENT,
   `feature_group_id` int(11) NOT NULL,

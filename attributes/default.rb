@@ -33,6 +33,10 @@ default['glassfish']['group']                    = node['hopsworks']['group']
 default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
 
 default['hopsworks']['https']['port']            = 8181
+default['hopsworks']['https']['key_url']         = ""
+default['hopsworks']['https']['cert_url']        = ""
+default['hopsworks']['https']['ca_url']          = ""
+
 default['hopsworks']['internal']['port']         = 8182
 
 default['hopsworks']['admin']['port']            = 4848
@@ -153,7 +157,9 @@ default['hopsworks']['hdfs_default_quota_mbs']           = "-1"
 default['hopsworks']['hive_default_quota_mbs']           = "-1"
 default['hopsworks']['featurestore_default_quota_mbs']   = "-1"
 default['hopsworks']['max_num_proj_per_user']            = "10"
-default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,filebeat"
+
+# IMPORTANT: This value must be kept in sync with the variable DEFAULT_RESERVED_PROJECT_NAMES in settings.
+default['hopsworks']['reserved_project_names']           = "hops-system,hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver"
 
 # file preview and download
 default['hopsworks']['file_preview_image_size']  = "10000000"
