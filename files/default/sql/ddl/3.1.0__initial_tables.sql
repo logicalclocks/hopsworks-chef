@@ -785,6 +785,7 @@ CREATE TABLE `project` (
                            `kafka_max_num_topics` int(11) NOT NULL DEFAULT '100',
                            `docker_image` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `python_env_id` int(11) DEFAULT NULL,
+                           `creation_status` tinyint(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
                            UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
