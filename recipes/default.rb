@@ -582,6 +582,7 @@ glassfish_conf = {
   'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
   'resources.managed-executor-service.concurrent\/condaExecutorService.thread-priority' => 9,
+  'resources.managed-executor-service.concurrent\/jupyterExecutorService.thread-priority' => 8,
   # Enable Single Sign on
   'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
