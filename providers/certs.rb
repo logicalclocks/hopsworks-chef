@@ -215,6 +215,15 @@ action :import_certs do
     action :create
   end
 
+  remote_file "#{node['hopsworks']['config_dir']}/https_intermediate_ca.pem" do
+    source node['hopsworks']['https']['intermediate_ca_url']
+    user node['hopsworks']['user']
+    group node['hopsworks']['group']
+    mode '0700'
+    action :create
+    not_if { node['hopsworks']['https']['intermediate_ca_url'].empty? }
+  end
+
   remote_file "#{node['hopsworks']['config_dir']}/https_ca.pem" do
     source node['hopsworks']['https']['ca_url']
     user node['hopsworks']['user']
@@ -244,6 +253,21 @@ action :import_certs do
         # Add Root CA into cacerts.jks
         keytool -import -noprompt -alias s1as -file https_ca.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
+  end
+
+  bash "add_intermediate_ca" do
+    user node['hopsworks']['user']
+    group node['hopsworks']['group']
+    cwd node['hopsworks']['config_dir']
+    code <<-EOH
+        # Remove existing certificate
+        keytool -delete -alias s1as-intermediate -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+
+        set -e
+        # Add intermediate Root CA into cacerts.jks
+        keytool -import -noprompt -alias s1as-intermediate -file https_intermediate_ca.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
+    EOH
+    not_if { node['hopsworks']['https']['intermediate_ca_url'].empty? }
   end
 
   # Enable and disable secure admin to get it to pick up the new certificate
