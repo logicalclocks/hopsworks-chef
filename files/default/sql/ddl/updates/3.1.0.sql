@@ -134,3 +134,6 @@ SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`validation_result` SET `validation_time`=(SELECT `validation_time` FROM `hopsworks`.`validation_report` WHERE `hopsworks`.`validation_result`.`validation_report_id` = `hopsworks`.`validation_report`.`id`);
 UPDATE `hopsworks`.`validation_result` SET `ingestion_result`=(SELECT `ingestion_result` FROM `hopsworks`.`validation_report` WHERE `hopsworks`.`validation_result`.`validation_report_id` = `hopsworks`.`validation_report`.`id`);
 SET SQL_SAFE_UPDATES = 1;
+
+-- FSTORE-442
+ALTER TABLE `hopsworks`.`expectation` ALTER COLUMN kwargs VARCHAR (5000) NOT NULL;
