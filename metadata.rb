@@ -239,8 +239,12 @@ attribute "hopsworks/https/cert_url",
           :description => "Location from where to download the user provided certificate for the HTTPS listener",
           :type => 'string'
 
+attribute "hopsworks/https/intermediate_ca_url",
+          :description => "Location from where to download the user provided intermediate CA for the HTTPS listener, can be empty to omit",
+          :type => 'string'
+
 attribute "hopsworks/https/ca_url",
-          :description => "Location from where to download the user provided CA the HTTPS listener",
+          :description => "Location from where to download the user provided CA for the HTTPS listener",
           :type => 'string'
 
 attribute "hopsworks/internal/port",
