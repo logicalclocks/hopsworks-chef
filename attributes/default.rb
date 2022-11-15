@@ -35,6 +35,7 @@ default['glassfish']['user-home']                = "/home/#{node['hopsworks']['u
 default['hopsworks']['https']['port']            = 8181
 default['hopsworks']['https']['key_url']         = ""
 default['hopsworks']['https']['cert_url']        = ""
+default['hopsworks']['https']['intermediate_ca_url'] = ""
 default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
