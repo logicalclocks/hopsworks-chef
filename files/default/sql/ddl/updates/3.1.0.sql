@@ -136,4 +136,4 @@ UPDATE `hopsworks`.`validation_result` SET `ingestion_result`=(SELECT `ingestion
 SET SQL_SAFE_UPDATES = 1;
 
 -- FSTORE-442
-ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN kwargs VARCHAR (5000) NOT NULL;
+ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN `kwargs` VARCHAR(5000) NOT NULL;
