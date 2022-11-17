@@ -718,7 +718,7 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --descri
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworksTimers$'"
 end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority 8 --longrunningtasks=true --corepoolsize 300 --maximumpoolsize 300 --taskqueuecapacity 1000 --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
+glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username

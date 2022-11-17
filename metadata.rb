@@ -1092,3 +1092,20 @@ attribute "hopsworks/docker/cgroup_monitor_interval",
 attribute "hopsworks/kube/kube_taints_monitor_interval",
 					:description => "Time to periodically update tainted nodes in the database",
 					:type => 'string'
+
+# Glassfish managed executor pools
+attribute "hopsworks/managed_executor_pools/jupyter/threadpriority",
+          :description => "Jupyter Managed Executor Pool thread priority",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/corepoolsize",
+          :description => "Jupyter Managed Executor Pool core size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
+          :description => "Jupyter Managed Executor Pool maximum size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
+          :description => "Jupyter Managed Executor Pool queue size",
+          :type => 'string'
