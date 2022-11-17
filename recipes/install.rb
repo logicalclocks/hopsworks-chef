@@ -250,10 +250,11 @@ node.override = {
               'description' => 'Hopsworks Conda Executor Service'
           },
           'concurrent/jupyterExecutorService' => {
-              'threadpriority' => 8,
-              'corepoolsize' => 300,
-              'maximumpoolsize' => 300,
-              'taskqueuecapacity' => 1000,
+              'threadpriority' => node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority'],
+              'corepoolsize' => node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize'],
+              'maximumpoolsize' => node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize'],
+              'taskqueuecapacity' => node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity'],
+              'longrunningtasks' => true,
               'description' => 'Hopsworks Jupyter Executor Service'
           }
         },

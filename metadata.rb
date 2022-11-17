@@ -1036,3 +1036,20 @@ attribute "hopsworks/reject_remote_user_no_group",
 attribute "hopsworks/managed_cloud_redirect_uri",
           :description => "redirect uri for managed group setup",
           :type => 'string'
+
+# Glassfish managed executor pools
+attribute "hopsworks/managed_executor_pools/jupyter/threadpriority",
+          :description => "Jupyter Managed Executor Pool thread priority",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/corepoolsize",
+          :description => "Jupyter Managed Executor Pool core size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
+          :description => "Jupyter Managed Executor Pool maximum size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
+          :description => "Jupyter Managed Executor Pool queue size",
+          :type => 'string'
