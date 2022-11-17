@@ -2195,7 +2195,7 @@ CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
     `expectation_type` VARCHAR(150) NOT NULL,
-    `kwargs` VARCHAR(1000) NOT NULL,
+    `kwargs` VARCHAR(5000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
     CONSTRAINT `suite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -2233,6 +2233,8 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `success` BOOLEAN NOT NULL,
     `result` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
+    `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `ingestion_result` VARCHAR(8) NOT NULL,
     `expectation_config` VARCHAR(2150) NOT NULL,
     `exception_info` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),

@@ -124,3 +124,10 @@ ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `validation_report_
 ALTER TABLE `hopsworks`.`feature_store_activity` DROP COLUMN `expectation_suite_id`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `creation_status`;
+
+-- Validation Result history FSTORE-341
+ALTER TABLE `hopsworks`.`validation_result` DROP COLUMN `validation_time`;
+ALTER TABLE `hopsworks`.`validation_result` DROP COLUMN `ingestion_result`;
+
+-- FSTORE-442
+ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN `kwargs` VARCHAR(1000) NOT NULL;

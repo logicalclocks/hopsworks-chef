@@ -125,3 +125,15 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_expectat
 
 
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `creation_status` TINYINT(1) NOT NULL DEFAULT '0';
+
+-- Validation Result history FSTORE-341
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `ingestion_result` VARCHAR(8) NOT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`validation_result` SET `validation_time`=(SELECT `validation_time` FROM `hopsworks`.`validation_report` WHERE `hopsworks`.`validation_result`.`validation_report_id` = `hopsworks`.`validation_report`.`id`);
+UPDATE `hopsworks`.`validation_result` SET `ingestion_result`=(SELECT `ingestion_result` FROM `hopsworks`.`validation_report` WHERE `hopsworks`.`validation_result`.`validation_report_id` = `hopsworks`.`validation_report`.`id`);
+SET SQL_SAFE_UPDATES = 1;
+
+-- FSTORE-442
+ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN `kwargs` VARCHAR(5000) NOT NULL;
