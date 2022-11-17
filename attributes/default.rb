@@ -480,3 +480,11 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 
 #git
 default['hopsworks']['git_command_timeout_minutes']  = "60"
+
+##
+## Glassfish executors
+##
+default['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']     = 8
+default['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']       = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']    = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']  = 1000
