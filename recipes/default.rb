@@ -736,6 +736,15 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --descri
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworksTimers$'"
 end
 
+glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority 8 --longrunningtasks=true --corepoolsize 300 --maximumpoolsize 300 --taskqueuecapacity 1000 --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services | grep 'concurrent/jupyterExecutorService$'"
+end
+
 logging_conf = {
   'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
   'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
