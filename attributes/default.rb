@@ -506,3 +506,11 @@ default['hopsworks']['quotas']['max_parallel_executions']             = "-1"
 
 default['hopsworks']['docker']['cgroup_monitor_interval']             = "10m"
 default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
+
+##
+## Glassfish executors
+##
+default['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']     = 8
+default['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']       = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']    = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']  = 1000
