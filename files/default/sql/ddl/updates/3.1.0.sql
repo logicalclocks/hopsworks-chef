@@ -22,13 +22,7 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `idx` INT(5) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     `github_path` VARCHAR(200) NOT NULL,
-    `image_url` VARCHAR(200) NOT NULL,
-    `single_notebook` TINYINT(1) NOT NULL,
     `description` VARCHAR(200) NOT NULL,
-    `duration` VARCHAR(20) NOT NULL,
-    `tags` VARCHAR(100) NOT NULL,
-    `category` VARCHAR(50) NOT NULL,
-    `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -122,7 +116,6 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `validation_report_i
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_validationreport_fk` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `expectation_suite_id` Int(11) NULL;
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
 
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `creation_status` TINYINT(1) NOT NULL DEFAULT '0';
 
