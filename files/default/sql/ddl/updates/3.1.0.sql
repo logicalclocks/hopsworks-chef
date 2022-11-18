@@ -22,13 +22,7 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `idx` INT(5) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     `github_path` VARCHAR(200) NOT NULL,
-    `image_url` VARCHAR(200) NOT NULL,
-    `single_notebook` TINYINT(1) NOT NULL,
     `description` VARCHAR(200) NOT NULL,
-    `duration` VARCHAR(20) NOT NULL,
-    `tags` VARCHAR(100) NOT NULL,
-    `category` VARCHAR(50) NOT NULL,
-    `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -123,7 +117,6 @@ ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_validati
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD COLUMN `expectation_suite_id` Int(11) NULL;
 ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
-
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `creation_status` TINYINT(1) NOT NULL DEFAULT '0';
 
 -- Validation Result history FSTORE-341
@@ -137,3 +130,32 @@ SET SQL_SAFE_UPDATES = 1;
 
 -- FSTORE-442
 ALTER TABLE `hopsworks`.`expectation` MODIFY COLUMN `kwargs` VARCHAR(5000) NOT NULL;
+
+-- BEGIN CHANGES FSTORE-326
+-- bigquery
+ALTER TABLE `feature_store_bigquery_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_bigq_keyfile`;
+ALTER TABLE `feature_store_bigquery_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_bigq_keyfile`
+        FOREIGN KEY (`key_inode_pid`, `key_inode_name`, `key_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL ON UPDATE NO ACTION;
+-- gcs
+ALTER TABLE `feature_store_gcs_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_gcs_keyfile`;
+ALTER TABLE `feature_store_gcs_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_gcs_keyfile`
+        FOREIGN KEY (`key_inode_pid`, `key_inode_name`, `key_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL ON UPDATE NO ACTION;
+-- kafka
+ALTER TABLE `feature_store_kafka_connector`
+    DROP FOREIGN KEY `fk_fs_storage_connector_kafka_keystore`,
+    DROP FOREIGN KEY `fk_fs_storage_connector_kafka_truststore`;
+ALTER TABLE `feature_store_kafka_connector`
+    ADD CONSTRAINT `fk_fs_storage_connector_kafka_keystore`
+        FOREIGN KEY (`keystore_inode_pid`, `keystore_inode_name`, `keystore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL ON UPDATE NO ACTION,
+    ADD CONSTRAINT `fk_fs_storage_connector_kafka_truststore`
+        FOREIGN KEY (`truststore_inode_pid`, `truststore_inode_name`,
+                     `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
+            ON DELETE SET NULL ON UPDATE NO ACTION;
+-- END CHANGES FSTORE-326
