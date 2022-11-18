@@ -75,7 +75,20 @@ elif [ "$1" == "loginaz" ] ; then
 	help
     fi
     az acr login --name $2
-    
+
+elif [ "$1" == "list-tags-acr" ] ; then
+  registry=$2
+  repository=$3  
+  image_prefix=$4
+  if [[ -z "$registry" ||  -z "$image_prefix" || -z "$repository" ]] ; then
+    echo ""
+    echo "usage: list-tag-axr [registry_name repository_name image_prefix]"
+    echo "list all image with tags containing the filter string inside the specified regitry"
+    echo ""
+    exit 1
+  fi
+  az acr repository show-tags --name $registry --repository $repository --query "[?contains(@, '$image_prefix')]" -o tsv --only-show-errors
+  
 <% end -%>
 
 elif [ "$1" == "list" ] ; then
@@ -104,7 +117,22 @@ elif [ "$1" == "export" ] ; then
 
     docker pull $2 > /dev/null 2>&1
     docker run --rm $2 conda env export -n theenv
-    
+elif [ "$1" == "tag" ] ; then
+    if [ "$#" -ne 3 ] ; then
+	echo "Illegal number of parameters"
+	help
+    fi
+    if ! [[ $2 =~ $VALID_IMAGE_NAME ]] ; then
+	echo "error: Not an image name $3" >&2
+	help
+    fi
+    if ! [[ $3 =~ $VALID_IMAGE_NAME ]] ; then
+	echo "error: Not an image name $3" >&2
+	help
+    fi
+    docker pull $2
+    docker tag $2 $3
+    docker push $3
 else
     help
 fi
