@@ -159,3 +159,78 @@ ALTER TABLE `feature_store_kafka_connector`
                      `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
             ON DELETE SET NULL ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
+
+-- CHANGES HWORKS-262
+DROP TABLE `hopsworks`.`message_to_user`;
+
+DROP PROCEDURE IF EXISTS REPLACE_EMAIL_FK;
+
+DELIMITER //
+
+CREATE PROCEDURE REPLACE_EMAIL_FK(IN table_name VARCHAR(100), 
+                                  IN old_column_name VARCHAR(100), IN new_column_name VARCHAR(100),
+                                  IN index_name VARCHAR(100), IN fk_name VARCHAR(100))
+BEGIN
+    -- add the new column 
+    SET @s := concat('ALTER TABLE hopsworks.', table_name, ' ADD COLUMN `', new_column_name ,'` INT(11)');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+    
+    -- -- add fk constraint 
+    SET @s := concat('ALTER TABLE hopsworks.', table_name, ' ADD CONSTRAINT `', fk_name
+                    , '` FOREIGN KEY (`', new_column_name 
+                    ,'`) REFERENCES `hopsworks`.`users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+
+    -- update the uid values based on the emails
+    SET SQL_SAFE_UPDATES = 0;
+    SET @s := concat('UPDATE hopsworks.', table_name, ' t JOIN `hopsworks`.`users` u ON t.', old_column_name
+                    , ' = u.email SET t.', new_column_name ,'= u.uid');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+    SET SQL_SAFE_UPDATES = 1;
+
+    -- drop the existing foreign key  
+    SET @fk_name = (SELECT k.CONSTRAINT_NAME 
+	FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE k 
+	WHERE k.TABLE_SCHEMA = "hopsworks" AND k.TABLE_NAME = table_name AND k.COLUMN_NAME = old_column_name AND k.REFERENCED_TABLE_NAME="users");
+
+    SET @s := concat('ALTER TABLE hopsworks.', table_name , ' DROP FOREIGN KEY `', @fk_name, '`');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+
+    -- -- drop the index created by the foreign key
+    SET @s := concat('ALTER TABLE hopsworks.', table_name, ' DROP KEY `', index_name, '`');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+
+    -- -- drop the original column
+    SET @s := concat('ALTER TABLE hopsworks.', table_name, ' DROP COLUMN `', old_column_name, '`');
+    PREPARE stmt1 FROM @s;
+    EXECUTE stmt1;
+    DEALLOCATE PREPARE stmt1;
+
+END //
+
+DELIMITER ;
+
+CALL REPLACE_EMAIL_FK('executions', 'user', 'uid', 'user', 'user_fk_executions');
+CALL REPLACE_EMAIL_FK('topic_acls', 'username', 'uid', 'username', 'user_fk_kafka_acls');
+CALL REPLACE_EMAIL_FK('jupyter_settings', 'team_member', 'uid', 'team_member', 'user_fk_jp_settings');
+CALL REPLACE_EMAIL_FK('message', 'user_from', 'uid_from', 'user_from', 'user_fk_msg_from');
+CALL REPLACE_EMAIL_FK('message', 'user_to', 'uid_to', 'user_to', 'user_fk_msg_to');
+CALL REPLACE_EMAIL_FK('project', 'username', 'uid', 'user_idx', 'user_fk_project');
+
+ALTER TABLE `hopsworks`.`project_team` DROP PRIMARY KEY;
+CALL REPLACE_EMAIL_FK('project_team', 'team_member', 'uid', 'team_member', 'user_fk_team');
+ALTER TABLE `hopsworks`.`project_team` ADD PRIMARY KEY (`project_id`,`uid`);
+
+CALL REPLACE_EMAIL_FK('rstudio_settings', 'team_member', 'uid', 'team_member', 'user_fk_jp_settings');
+
+-- END CHANGES HWORKS-262
