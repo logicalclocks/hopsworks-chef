@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+WAIT_START=60
+RSTUDIO_HOME=$1
+HADOOP_HOME=$2
+HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+HADOOP_USERNAME=$3
+PORT=$4
+SECRET_DIR=$5
+CERTS_DIR=$6
+IMAGE=$7
+LOGFILE=${RSTUDIO_HOME}/logs/$8
+PROJECT_NAME=$9
+LIVY_IP=${10}
+LIVY_PORT=${11}
+HADOOP_BASE_DIR=${12}
+SERVER_PASSWORD=${13}
+HADOOP_VERSION=${14}
+SPARK_VERSION=${15}
+HADOOP_CLIENT_ENV_OPTS='-D fs.permissions.umask-mode=0002'
+CONTAINER_NAME=${HADOOP_USERNAME}__rstudio
+PID_FILE=${RSTUDIO_HOME}/run/rstudio.pid
+SPARK_CONF_DIR=/srv/hops/spark/conf
+FLINK_CONF_DIR=/srv/hops/flink/conf
+NOT_FOUND=127
+SPARKLYR_CONFIG_FILE=${RSTUDIO_HOME}/conf/config.yml
+NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
+CLIENT_CERTIFICATES_BUNDLE=$CERTS_DIR/certificate_bundle.pem
+ROOT_CA_BUNDLE=$CERTS_DIR/root_ca.pem
+CLIENT_KEY=$CERTS_DIR/private_key.pem
+
+
+help() {
+    echo ""
+    echo "usage: $0 RSTUDIO_HOME HADOOP_HOME HADOOP_USERNAME PORT SECRET_DIR CERTS_DIR IMAGE LOGFILE PROJECT_NAME LIVY_IP LIVY_PORT HADOOP_BASE_DIR SERVER_PASSWORD HADOOP_VERSION SPARK_VERSION"
+    echo ""
+    exit 1
+}
+
+function kill_named {
+    CID=$(docker container list -a | grep $CONTAINER_NAME | grep -v grep | awk '{print $1}')
+    if [ "$CID" != "" ] ; then
+        docker rm -f "$CID" > /dev/null 2>&1
+        res=$?
+    else
+        res=$NOT_FOUND
+    fi
+    return "$res"
+}
+
+if [ $# -ne 15 ]; then
+  help
+fi
+
+#check if the folders exist
+cd "$RSTUDIO_HOME" || exit
+cd "$SECRET_DIR" || exit
+
+kill_named
+
+if [ -f "$PID_FILE" ] ; then
+    rm $PID_FILE
+fi
+
+touch $LOGFILE
+if [ $? -ne 0 ] ; then
+  echo "Error: could not create the log file for rstudio server"
+  exit 1
+fi
+chmod 766 $LOGFILE
+
+docker run --rm -d --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined --name $CONTAINER_NAME --cidfile=$PID_FILE\
+       --network=host \
+       --init \
+       -e "RSTUDIO_PATH=$RSTUDIO_HOME" \
+       -e "RSTUDIO_DATA_DIR=$RSTUDIO_HOME" \
+       -e "PDIR=$SECRET_DIR" \
+       -e "RSTUDIO_CONFIG_DIR=${RSTUDIO_HOME}/conf" \
+       -e "RSTUDIO_RUNTIME_DIR=${RSTUDIO_HOME}/run" \
+       -e "HADOOP_HDFS_HOME=${HADOOP_HOME}" \
+       -e "HADOOP_CONF_DIR=${HADOOP_CONF_DIR}" \
+       -e "HADOOP_CLIENT_OPTS='-Dfs.permissions.umask-mode=0002'" \
+       -e "MATERIAL_DIRECTORY=$CERTS_DIR" \
+       -e "HADOOP_USERNAME=$HADOOP_USERNAME" \
+       -e "HADOOP_HOME=${HADOOP_HOME}" \
+       -e "LOGFILE=${LOGFILE}" \
+       -e "RSTUDIO_PORT=${PORT}" \
+       -e "PROJECT_NAME=${PROJECT_NAME}" \
+       -e "LIVY_IP=${LIVY_IP}" \
+       -e "LIVY_PORT=${LIVY_PORT}" \
+       -e "HADOOP_BASE_DIR=${HADOOP_BASE_DIR}" \
+       -e "HADOOP_CLIENT_ENV_OPTS=${HADOOP_CLIENT_ENV_OPTS}" \
+       -e "SPARKLYR_CONFIG_FILE=${SPARKLYR_CONFIG_FILE}" \
+       -e "SERVER_PASSWORD=${SERVER_PASSWORD}" \
+       -e "HADOOP_VERSION=${HADOOP_VERSION}" \
+       -e "NAMENODE_IP=${NAMENODE_IP}" \
+       -e "NAMENODE_PORT=${NAMENODE_PORT}" \
+       -e "SPARK_VERSION=${SPARK_VERSION}" \
+       -e "CLIENT_CERTIFICATES_BUNDLE=${CLIENT_CERTIFICATES_BUNDLE}" \
+       -e "ROOT_CA_BUNDLE=${ROOT_CA_BUNDLE}" \
+       -e "CLIENT_KEY=${CLIENT_KEY}" \
+       -v $RSTUDIO_HOME:$RSTUDIO_HOME:rw\
+       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
+       -v ${SPARK_CONF_DIR}:${SPARK_CONF_DIR}:ro \
+       -v $LOGFILE:"/var/log/rstudio-server/rserver.log":rw\
+       -u="yarnapp" \
+       -w="$SECRET_DIR" \
+       $IMAGE & \
+
+# Wait for rstudio to start
+timeout=0
+while [ $timeout -lt $WAIT_START ] ; do
+  docker logs $(cat $PID_FILE) | grep "...done"
+        if [ $? -eq 0 ] ; then
+          break
+        fi
+  echo -n "."
+  timeout=$((timeout + 1))
+done
+echo ""
+
+# If the timeout was exceeded, kill rstudio
+if [ "$timeout" -eq $WAIT_START ] ; then
+ kill_named
+fi
+
+
+exit $?

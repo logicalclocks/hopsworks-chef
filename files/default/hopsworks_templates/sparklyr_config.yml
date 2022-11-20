@@ -1,0 +1,10 @@
+default:
+  livy.driverCores: ${conf.driverCores}
+  livy.driverMemory: "${conf.driverMemory}"
+  livy.numExecutors: ${conf.numExecutors}
+  livy.executorCores: ${conf.executorCores}
+  livy.executorMemory: "${conf.executorMemory}"
+  livy.proxyUser: "${conf.proxyUser}"
+  livy.queue: "${conf.yarnQueue}"
+  livy.name: "${conf.livyAppName}"
+${conf.sparkConfiguration}

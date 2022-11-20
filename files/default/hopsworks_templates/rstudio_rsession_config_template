@@ -1,0 +1,2 @@
+session-timeout-minutes=${conf.sessionTimeoutMinutes}
+r-cran-repos=${conf.cranRepo}

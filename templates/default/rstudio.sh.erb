@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+
+# This script allows Hopsworks to start/kill RStudio .
+# There will be 1 rstudio-server per ProjectUser.
+# This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
+# it changes user to 'rstudio' to run the command as user 'rstudio'.
+#
+
+help() {
+    echo ""
+    echo "usage: $0 [start rstudio_home hadoop_home hadoop_username port secret_dir certs_dir image_name logfile project_name livy_address livy_port base_dir server_password hadoop_version spark_version] | [kill rstudio_home container_id project_user_name]"
+    echo ""
+    exit 1
+}
+
+
+DOMAINS_DIR=/srv/hops/domains
+RSTUDIO_USER=yarnapp
+RSTUDIO_GROUP=hadoop
+HOPSWORKS_USER=glassfish
+VALID_IMAGE_NAME='^([a-z0-9]+(-[a-z0-9]+)*.)*[a-z0-9]+(:[0-9]*)?(/([a-zA-Z0-9-]*))?/([-:._a-zA-Z0-9]{0,62}[-:.a-zA-Z0-9]$)'
+
+if [ "$1" == "kill" ] ; then
+
+    if [ $# -ne 4 ]; then
+        help
+    fi
+
+    # Don't kill the pid from this script, as it is run with 'sudo' privileges. Only do it as user 'rstudio'
+    sudo ${DOMAINS_DIR}/domain1/bin/rstudio-kill.sh $3 $4
+
+    # Remove all the directories in the home rstudio folder for this project-user.
+    if [ "$2" != "" ] ; then
+        # Try and make sure some silly directory is not deleted, that this
+        if [[ $2 = *"hops/rstudio/Projects"* ]]; then
+            rm -rf "${2}"/../*
+        fi
+    fi
+
+elif [ "$1" == "start" ] ; then
+
+    if [ $# -ne 16 ]; then
+        help
+    fi
+
+    # Sanity checks for injection attacks
+    if [ ! -d "$2" ] ; then
+        echo "Invalid RSTUDIO_HOME directory: $2"
+        exit 1
+    fi
+    if [ ! -d "$3" ] ; then
+        echo "Invalid HADOOP_HOME directory: $3"
+        exit 2
+    fi
+
+    if [ ! -d "${7}" ] ; then
+        echo "Invalid certificates directory: $9"
+        exit 3
+    fi
+
+    re='^[0-9]+$'
+    if ! [[ $5 =~ $re ]] ; then
+      echo "error: Not a number" >&2
+      help
+    fi
+
+    if ! [[ ${8} =~ $VALID_IMAGE_NAME ]] ; then
+       echo "error: Not a valid image name ${8}" >&2
+       help
+    fi
+
+    pid=$(ps -ef | grep -E "rstudio-server" | grep "port=$5" | awk '{print $2}')
+    if [ "$pid" != "" ] ; then
+        echo "There is already an rstudio server using this port"
+        exit 1
+    fi
+
+    mkdir -p "$6"
+    if [ $? -ne 0 ] ; then
+        echo "Error: could not create private_dir: $6"
+        exit 1
+    fi
+    chmod 770 "$6"
+    chown "${RSTUDIO_USER}":"${RSTUDIO_GROUP}" "$6"
+
+    # Make the group of the files, the rstudio group so that they can write to the files
+    chown -R "${HOPSWORKS_USER}":"${RSTUDIO_GROUP}" "$2/"..
+    if [ $? -ne 0 ] ; then
+        echo "Error: could not change ownership of config_dir for RStudio: $2"
+        exit 1
+    fi
+    chmod 0730 "$2/"..
+    chown -R "${RSTUDIO_USER}":"${RSTUDIO_GROUP}" "$2"
+    chmod -R 770 "$2"
+
+    # Launch RStudio server
+    ${DOMAINS_DIR}/domain1/bin/rstudio-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19}
+
+# list
+elif [ "$1" == "list" ] ; then
+    # This command will output line-separated PIDs for all running rstudio server instances into the tmp file, from
+    # where it is read by Hopsworks
+    docker container list -a | grep "__rstudio" |  grep -v 'grep' | awk '{print $1}' > /tmp/rstudioServerPids.pids
+elif [ "$1" == "generate_pems" ]; then
+    if [ $# -ne 3 ]; then
+        help
+    fi
+
+    CERTS_DIR=$2
+    HADOOP_USERNAME=$3
+    TSTORE_FILE=$CERTS_DIR/${HADOOP_USERNAME}__tstore.jks
+    KSTORE_FILE=$CERTS_DIR/${HADOOP_USERNAME}__kstore.jks
+    KEY_FILE=$CERTS_DIR/${HADOOP_USERNAME}__cert.key
+
+
+    PEM_CERTIFICATE_BUNDLE="certificate_bundle.pem"
+    PEM_ROOT_CA="root_ca.pem"
+    PEM_PRIVATE_KEY="private_key.pem"
+
+    KEY=$( cat ${KEY_FILE} )
+
+    #1. generate pem certificates bundle from the keystore.jks file
+    printf "$KEY\n$KEY\n$KEY\n" | keytool -importkeystore -srckeystore $KSTORE_FILE -destkeystore $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12 -deststoretype PKCS12
+    echo $KEY | keytool -deststoretype PKCS12 -keystore $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12 -list
+    echo $KEY | openssl pkcs12 -nokeys -in $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12 -out $CERTS_DIR/$PEM_CERTIFICATE_BUNDLE
+
+    #2. generate root ca pem from the tstore.jks file file
+    printf "$KEY\n$KEY\n$KEY\n" | keytool -importkeystore -srckeystore $TSTORE_FILE -destkeystore $CERTS_DIR/${HADOOP_USERNAME}__tstore.p12 -deststoretype PKCS12
+    echo $KEY | keytool -deststoretype PKCS12 -keystore $CERTS_DIR/${HADOOP_USERNAME}__tstore.p12 -list
+    echo $KEY | openssl pkcs12 -nokeys -in $CERTS_DIR/${HADOOP_USERNAME}__tstore.p12 -out $CERTS_DIR/$PEM_ROOT_CA
+
+    #3 extract private key from the keystore
+    echo $KEY | openssl pkcs12 -info -in $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12 -nodes -nocerts > $CERTS_DIR/$PEM_PRIVATE_KEY
+
+    #4. verify that files have been generated
+    CERTIFICATES_BUNDLE=$CERTS_DIR/$PEM_CERTIFICATE_BUNDLE
+    if [ ! -f ${CERTIFICATES_BUNDLE} ]; then
+      echo "Failed to generate certificates bundle for project"
+      exit 4
+    fi
+    ROOT_CA=$CERTS_DIR/$PEM_ROOT_CA
+    if [ ! -f ${ROOT_CA} ]; then
+      echo "Failed to generate root ca for project"
+      exit 5
+    fi
+    PRIVATE_KEY=$CERTS_DIR/$PEM_PRIVATE_KEY
+    if [ ! -f ${PRIVATE_KEY} ]; then
+      echo "Failed to generate private key for project"
+      exit 6
+    fi
+
+    chmod 644 $ROOT_CA
+    chmod 644 $CERTIFICATES_BUNDLE
+    chmod 644 $PRIVATE_KEY
+
+    chown glassfish:glassfish $ROOT_CA
+    chown glassfish:glassfish $CERTIFICATES_BUNDLE
+    chown glassfish:glassfish $PRIVATE_KEY
+
+    rm $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12
+    rm $CERTS_DIR/${HADOOP_USERNAME}__tstore.p12
+else
+  help
+fi

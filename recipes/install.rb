@@ -125,6 +125,14 @@ group node["hopsworks"]["group"] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+#update permissions of base_dir for rstudio to 770
+directory node['rstudio']['base_dir']  do
+  owner node['hops']['yarnapp']['user']
+  group node['hops']['group']
+  mode "770"
+  action :create
+end
+
 #update permissions of base_dir to 770
 directory node['jupyter']['base_dir']  do
   owner node['hops']['yarnapp']['user']
@@ -578,6 +586,14 @@ kagent_sudoers "jupyter" do
   not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
 end
 
+kagent_sudoers "rstudio" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "rstudio.sh"
+  template      "rstudio.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 kagent_sudoers "convert-ipython-notebook" do 
   user          node['glassfish']['user']
   group         "root"
@@ -665,9 +681,19 @@ template "#{theDomain}/bin/unzip-hdfs-files.sh" do
   action :create
 end
 
+kagent_sudoers "rstudio-project-cleanup" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "rstudio-project-cleanup.sh"
+  template      "rstudio-project-cleanup.sh.erb"
+  run_as        "ALL"
+  not_if       { node['install']['kubernetes'].casecmp("true") == 0 }
+end
+
 ["zip-hdfs-files.sh", "zip-background.sh", "unzip-background.sh",  "tensorboard-launch.sh",
  "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
- "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
+ "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh",  "rstudio-kill.sh",
+ "rstudio-launch.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
@@ -675,6 +701,25 @@ end
     mode "500"
     action :create
   end
+end
+
+#update permissions of base_dir to 770
+directory node["rstudio"]["base_dir"]  do
+  owner node["rstudio"]["user"]
+  group node["rstudio"]["group"]
+  mode "770"
+  action :create
+end
+
+template "#{theDomain}/bin/rstudio-launch.sh" do
+  source "rstudio-launch.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "500"
+  action :create
+  variables({
+              :namenode_fdqn => namenode_fdqn,
+            })
 end
 
 template "#{theDomain}/bin/git-container-launch.sh" do
