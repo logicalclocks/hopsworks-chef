@@ -196,17 +196,16 @@ CREATE TABLE `dataset_request` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `dataset` int(11) NOT NULL,
                                    `projectId` int(11) NOT NULL,
-                                   `user_email` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                   `uid` INT(11) NOT NULL,
                                    `requested` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                    `message` varchar(3000) COLLATE latin1_general_cs DEFAULT NULL,
                                    `message_id` int(11) DEFAULT NULL,
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `index2` (`dataset`,`projectId`),
-                                   KEY `projectId` (`projectId`,`user_email`),
                                    KEY `message_id` (`message_id`),
                                    CONSTRAINT `FK_429_449` FOREIGN KEY (`dataset`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                    CONSTRAINT `FK_438_452` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                                   CONSTRAINT `FK_302_451` FOREIGN KEY (`projectId`,`user_email`) REFERENCES `project_team` (`project_id`,`team_member`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                   CONSTRAINT `project_team_fk_ds` FOREIGN KEY (`projectId`,`uid`) REFERENCES `project_team` (`project_id`,`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
