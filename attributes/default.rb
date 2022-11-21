@@ -448,3 +448,33 @@ default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
 default['hops']['cadvisor']['dir']                                    = "#{node['hops']['dir']}/cadvisor"
 default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
 default['hops']['cadvisor']['port']                                   = "4194"
+
+
+default['hopsworks']['rstudio_dir'] = node['hopsworks']['dir'] + "/rstudio"
+#rstudio configuration variables
+default["hopsworks"]['rstudio_host']                 = "localhost"
+default["hopsworks"]['rstudio_origin_scheme']        = "https"
+default["hopsworks"]["rstudio_www_address"]          = "0.0.0.0"
+default["hopsworks"]["rstudio_session_timeout_minutes"] = 360
+default["hopsworks"]["rstudio_logging_level"]        = "info"
+default["hopsworks"]["rstudio_logger_type"]          = "file"
+default["hopsworks"]["rstudio_log_file_max_size"]    = 512
+default["hopsworks"]["rstudio_default_cran_repo"]    = "https://cloud.r-project.org/"
+
+default['rstudio']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/rstudio" : node['install']['dir'] + "/rstudio"
+default['rstudio']['shutdown_timer_interval']          = "30m"
+
+# CRAN
+default['rstudio']['cran']['mirror'] = 'http://cran.rstudio.com/'
+
+# APT configuration for Ubuntu or Debian installs.
+case node["platform"].downcase
+when "ubuntu"
+  default['rstudio']['apt']['key'] = 'E084DAB9'
+  default['rstudio']['apt']['keyserver'] = 'keyserver.ubuntu.com'
+  default['rstudio']['apt']['uri'] = 'http://cran.stat.ucla.edu/bin/linux/ubuntu'
+when "debian"
+  default['rstudio']['apt']['key'] = '381BA480'
+  default['rstudio']['apt']['keyserver'] = 'subkeys.pgp.net'
+  default['rstudio']['apt']['uri'] = 'http://cran.stat.ucla.edu/bin/linux/debian'
+end

@@ -159,3 +159,26 @@ ALTER TABLE `feature_store_kafka_connector`
                      `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
             ON DELETE SET NULL ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
+
+ALTER TABLE `hopsworks`.`rstudio_settings` DROP `num_tf_ps`, DROP `num_tf_gpus`, DROP `num_mpi_np`,
+DROP `appmaster_cores`, DROP `appmaster_memory`, DROP `num_executors`, DROP `num_executor_cores`,
+    DROP `executor_memory`, DROP `dynamic_initial_executors`,DROP `dynamic_min_executors`, DROP `dynamic_max_executors`,
+    DROP `log_level`, DROP `mode`, DROP `umask`, DROP `archives`, DROP `jars`, DROP `files`,DROP `py_files`, DROP `spark_params`;
+
+ALTER TABLE `hopsworks`.`rstudio_project` DROP `host_ip`, DROP `token`;
+
+ALTER TABLE `hopsworks`.`rstudio_project` ADD COLUMN `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE `hopsworks`.`rstudio_project` ADD COLUMN `login_username` varchar(255) COLLATE latin1_general_cs DEFAULT
+    NULL;
+
+ALTER TABLE `hopsworks`.`rstudio_project` ADD COLUMN `login_password` varchar(255) COLLATE latin1_general_cs DEFAULT
+    NULL;
+
+ALTER TABLE `hopsworks`.`rstudio_project` MODIFY COLUMN `pid`  varchar(255) COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`rstudio_settings` ADD COLUMN `job_config` varchar(11000) COLLATE latin1_general_cs DEFAULT
+    NULL;
+
+ALTER TABLE `hopsworks`.`rstudio_settings` ADD COLUMN `docker_config` varchar(11000) COLLATE latin1_general_cs DEFAULT
+    NULL;
