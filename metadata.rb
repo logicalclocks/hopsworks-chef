@@ -932,3 +932,7 @@ attribute "hopsworks/docker/cgroup_monitor_interval",
 attribute "hopsworks/kube/kube_taints_monitor_interval",
 					:description => "Time to periodically update tainted nodes in the database",
 					:type => 'string'
+
+attribute "hopsworks/hide_data_science_profile",
+          :description => "Flag to hide the data science profile in the UI",
+          :type => 'string'
