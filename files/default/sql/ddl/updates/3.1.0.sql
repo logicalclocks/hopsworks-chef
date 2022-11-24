@@ -159,3 +159,6 @@ ALTER TABLE `feature_store_kafka_connector`
                      `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
             ON DELETE SET NULL ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
+
+-- change schema type order FSTORE-477
+UPDATE `hopsworks`.`schemas` SET `schema` = REGEXP_REPLACE(`schema`, '"type":\\[("null"),(\\{.*?\\}|.*?)\\]', '"type":\\[$2,$1\\]');
