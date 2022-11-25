@@ -449,6 +449,9 @@ default['hops']['cadvisor']['dir']                                    = "#{node[
 default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
 default['hops']['cadvisor']['port']                                   = "4194"
 
+# Data science profile
+default['hopsworks']['enable_data_science_profile'] = "false"
+
 ##
 ## Glassfish executors
 ##
