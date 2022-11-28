@@ -294,7 +294,7 @@ node.override = {
               'description' => 'Hopsworks Jupyter Executor Service'
           },
           'concurrent/asyncCommandExecutorService' => {
-            'threadpriority' => 9,
+            'threadpriority' => 8,
             'corepoolsize' => 30,
             'maximumpoolsize' => 400,
             'taskqueuecapacity' => 20000,
