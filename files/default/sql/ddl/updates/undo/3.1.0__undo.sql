@@ -165,3 +165,5 @@ ALTER TABLE `hopsworks`.`validation_report` MODIFY COLUMN `ingestion_result` VAR
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_group_link`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_view_link`;
+
+DROP TABLE IF EXISTS `hopsworks`.`async_command`;

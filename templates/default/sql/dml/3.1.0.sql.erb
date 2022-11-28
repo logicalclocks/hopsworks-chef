@@ -21,3 +21,7 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enabl
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_bigquery_storage_connectors", "<%= node['hopsworks']['enable_bigquery_storage_connectors'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('enable_read_only_git_repositories', '<%= node['hopsworks']['enable_read_only_git_repositories'] %>', 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_byte_buffer', "<%= node['hopsworks']['compression']['byte_buffer'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_entries', "<%= node['hopsworks']['compression']['threshold_entries'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_size', "<%= node['hopsworks']['compression']['threshold_size'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_ratio', "<%= node['hopsworks']['compression']['threshold_ratio'] %>");

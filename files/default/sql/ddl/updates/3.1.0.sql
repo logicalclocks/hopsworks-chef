@@ -166,6 +166,7 @@ ALTER TABLE `feature_store_kafka_connector`
             ON DELETE SET NULL ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
 
+<<<<<<< HEAD
 -- FSTORE-510
 ALTER TABLE `hopsworks`.`validation_report` MODIFY COLUMN `ingestion_result` VARCHAR(11) NOT NULL;
 
@@ -198,3 +199,31 @@ CREATE TABLE IF NOT EXISTS `feature_view_link` (
   CONSTRAINT `feature_view_id_fkc` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `feature_view_parent_fkc` FOREIGN KEY (`parent_feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+=======
+CREATE TABLE IF NOT EXISTS `async_command` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `projectId` int NOT NULL,
+  `status` varchar(45) NOT NULL,
+  `error` varchar(1000) DEFAULT NULL,
+  `command` varchar(45) NOT NULL,
+  `progress` float DEFAULT '0',
+  `submitted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `src_path` varchar(5100) NOT NULL,
+  `src_inode_pid` bigint DEFAULT NULL,
+  `src_inode_name` varchar(255) DEFAULT NULL,
+  `src_inode_partition_id` bigint DEFAULT NULL,
+  `dest_path` varchar(5100) NOT NULL,
+  `dest_inode_pid` bigint DEFAULT NULL,
+  `dest_inode_name` varchar(255) DEFAULT NULL,
+  `dest_inode_partition_id` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_src_inode` (`src_inode_pid`,`src_inode_name`,`src_inode_partition_id`),
+  UNIQUE KEY `uq_dest_inode` (`dest_inode_pid`,`dest_inode_name`,`dest_inode_partition_id`),
+  KEY `fk_async_command_1_idx` (`projectId`),
+  KEY `fk_async_command_2_idx` (`src_inode_pid`,`src_inode_name`,`src_inode_partition_id`),
+  KEY `fk_async_command_3_idx` (`dest_inode_pid`,`dest_inode_name`,`dest_inode_partition_id`),
+  CONSTRAINT `fk_async_command_1` FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_async_command_2` FOREIGN KEY (`src_inode_pid`,`src_inode_name`,`src_inode_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_async_command_3` FOREIGN KEY (`dest_inode_pid`,`dest_inode_name`,`dest_inode_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE
+) ENGINE=ndbcluster AUTO_INCREMENT=1055 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+>>>>>>> new executor for zip

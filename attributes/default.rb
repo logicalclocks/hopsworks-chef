@@ -481,3 +481,10 @@ default['hopsworks']['enable_bigquery_storage_connectors'] = "false"
 
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
+##
+## Zip/Unzip
+##
+default['hopsworks']['compression']['byte_buffer']                    = "2048"
+default['hopsworks']['compression']['threshold_entries']              = "10000"
+default['hopsworks']['compression']['threshold_size']                 = "10000000000"
+default['hopsworks']['compression']['threshold_ratio']                = "10"

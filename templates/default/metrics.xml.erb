@@ -604,6 +604,36 @@
          <type>gauge</type>
       </metadata>
       <metadata>
+         <name>executorService_concurrent_asyncCommandExecutorService_PoolSize_count</name>
+         <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/asyncCommandExecutorService/PoolSize#count</mbean>
+         <description>The current number of threads in the pool</description>
+         <type>gauge</type>
+      </metadata>
+      <metadata>
+         <name>executorService_concurrent_asyncCommandExecutorService_ActiveCount_count</name>
+         <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/asyncCommandExecutorService/ActiveCount#count</mbean>
+         <description>The approximate number of active threads</description>
+         <type>gauge</type>
+      </metadata>
+      <metadata>
+         <name>executorService_concurrent_asyncCommandExecutorService_CompletedTaskCount_count</name>
+         <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/asyncCommandExecutorService/CompletedTaskCount#count</mbean>
+         <description>Number of tasks completed</description>
+         <type>gauge</type>
+      </metadata>
+      <metadata>
+         <name>executorService_concurrent_asyncCommandExecutorService_LargestPoolSize_count</name>
+         <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/asyncCommandExecutorService/LargestPoolSize#count</mbean>
+         <description>The largest number of threads that have ever simultaneously been in the pool</description>
+         <type>gauge</type>
+      </metadata>
+      <metadata>
+         <name>executorService_concurrent_asyncCommandExecutorService_TaskCount_count</name>
+         <mbean>amx:pp=/mon/server-mon[server],type=managed-executor-service-mon,name=executorService/concurrent/asyncCommandExecutorService/TaskCount#count</mbean>
+         <description>Total number of tasks ever scheduled</description>
+         <type>gauge</type>
+      </metadata>
+      <metadata>
          <name>network_http_listener_2_connection_queue_peakqueued_count</name>
          <mbean>amx:pp=/mon/server-mon[server],type=connection-queue-mon,name=network/http-listener-2/connection-queue/peakqueued#count</mbean>
          <description>Largest number of connections that were in the queue simultaneously</description>
