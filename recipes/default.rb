@@ -812,8 +812,13 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
   ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":java.naming.security.credentials=#{ldap_sec_credentials}"
   ldap_ref=node['ldap']['referral']
   ldap_referral=ldap_ref.to_s.empty? ? "" : ":java.naming.referral=#{ldap_ref}"
-  ldap_props=node['ldap']['additional_props']
-  ldap_properties=ldap_props.to_s.empty? ? "" : ":#{ldap_props}"
+  # This is needed because while ldap_jdilookupname is used as an argument to create-jndi-resource command
+  # the ldap_basedn is used as Java property (key=value) so we need to escape \ again :)
+  ldap_basedn = ldap_jndilookupname.gsub('=', '\=')
+  ldap_properties=":hopsworks.ldap.basedn=#{ldap_basedn}"
+  unless node['ldap']['additional_props'].empty?
+    ldap_properties="#{ldap_properties}:#{node['ldap']['additional_props']}"
+  end
 
   glassfish_asadmin "create-jndi-resource --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral}#{ldap_properties} ldap/LdapResource" do
      domain_name domain_name
@@ -914,18 +919,6 @@ kagent_config "glassfish-domain1" do
 end
 
 node.override['glassfish']['asadmin']['timeout'] = 600
-
-if node['install']['enterprise']['install'].casecmp? "true" and exists_local("cloud", "default")
-  unmanaged = false
-  if node.attribute? 'cloud' and node['cloud'].attribute? 'init' and node['cloud']['init'].attribute? 'config' and node['cloud']['init']['config'].attribute? 'unmanaged'
-    unmanaged = node['cloud']['init']['config']['unmanaged'].casecmp? 'true'
-  end
-  unless unmanaged
-    ear_name = (node['install']['kubernetes'].casecmp?("true") and node['install']['managed_kubernetes'].casecmp?("true")) ? "hopsworks-ear-cloud-kube.ear" : "hopsworks-ear-cloud.ear"
-    node.override['hopsworks']['ear_url'] = "#{node['hopsworks']['download_url']}/#{ear_name}"
-  end
-end
-
 
 if current_version.eql?("") == false
 #

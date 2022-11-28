@@ -785,6 +785,7 @@ CREATE TABLE `project` (
                            `kafka_max_num_topics` int(11) NOT NULL DEFAULT '100',
                            `docker_image` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                            `python_env_id` int(11) DEFAULT NULL,
+                           `creation_status` tinyint(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
                            UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
@@ -1744,12 +1745,12 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
         `truststore_inode_pid`,
         `truststore_inode_name`,
         `truststore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
     CONSTRAINT `fk_fs_storage_connector_kafka_keystore` FOREIGN KEY (
         `keystore_inode_pid`,
         `keystore_inode_name`,
         `keystore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1769,7 +1770,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
         `key_inode_pid`,
         `key_inode_name`,
         `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1791,7 +1792,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
         `key_inode_pid`,
         `key_inode_name`,
         `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
@@ -2194,7 +2195,7 @@ CREATE TABLE IF NOT EXISTS `expectation` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `expectation_suite_id` INT(11) NOT NULL,
     `expectation_type` VARCHAR(150) NOT NULL,
-    `kwargs` VARCHAR(1000) NOT NULL,
+    `kwargs` VARCHAR(5000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
     CONSTRAINT `suite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -2232,6 +2233,8 @@ CREATE TABLE IF NOT EXISTS `validation_result` (
     `success` BOOLEAN NOT NULL,
     `result` VARCHAR(1000) NOT NULL,
     `meta` VARCHAR(1000) DEFAULT "{}",
+    `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `ingestion_result` VARCHAR(8) NOT NULL,
     `expectation_config` VARCHAR(2150) NOT NULL,
     `exception_info` VARCHAR(1000) DEFAULT "{}",
     PRIMARY KEY (`id`),
@@ -2272,13 +2275,7 @@ CREATE TABLE IF NOT EXISTS `tutorial` (
     `idx` INT(5) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
     `github_path` VARCHAR(200) NOT NULL,
-    `image_url` VARCHAR(200) NOT NULL,
-    `single_notebook` TINYINT(1) NOT NULL,
     `description` VARCHAR(200) NOT NULL,
-    `duration` VARCHAR(20) NOT NULL,
-    `tags` VARCHAR(100) NOT NULL,
-    `category` VARCHAR(50) NOT NULL,
-    `style` VARCHAR(200) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
