@@ -486,5 +486,5 @@ default['hopsworks']['max_allowed_long_running_http_requests']                  
 ##
 default['hopsworks']['compression']['byte_buffer']                    = "2048"
 default['hopsworks']['compression']['threshold_entries']              = "10000"
-default['hopsworks']['compression']['threshold_size']                 = "10000000000"
+default['hopsworks']['compression']['threshold_size']                 = "100000000000"
 default['hopsworks']['compression']['threshold_ratio']                = "10"
