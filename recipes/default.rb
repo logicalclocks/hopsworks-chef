@@ -583,6 +583,7 @@ glassfish_conf = {
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
   'resources.managed-executor-service.concurrent\/condaExecutorService.thread-priority' => 9,
   'resources.managed-executor-service.concurrent\/jupyterExecutorService.thread-priority' => 8,
+  'resources.managed-executor-service.concurrent\/asyncCommandExecutorService.thread-priority' => 8,
   # Enable Single Sign on
   'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
@@ -746,6 +747,15 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriori
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services | grep 'concurrent/jupyterExecutorService$'"
+end
+
+glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority 8 --longrunningtasks=true --corepoolsize 30 --maximumpoolsize 400 --taskqueuecapacity 20000 --description \"Hopsworks Async command Executor Service\" concurrent/asyncCommandExecutorService" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services | grep 'concurrent/asyncCommandExecutorService$'"
 end
 
 logging_conf = {
