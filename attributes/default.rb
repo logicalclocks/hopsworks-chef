@@ -462,3 +462,12 @@ default['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']  
 
 default['hopsworks']['enable_jupyter_python_kernel_non_kubernetes']          = "false"
 
+##
+## Storage connectors
+## 
+default['hopsworks']['enable_snowflake_storage_connectors'] = "true"
+default['hopsworks']['enable_redshift_storage_connectors'] = "true"
+default['hopsworks']['enable_adls_storage_connectors'] = "false"
+default['hopsworks']['enable_kafka_storage_connectors'] = "false"
+default['hopsworks']['enable_gcs_storage_connectors'] = "false"
+default['hopsworks']['enable_bigquery_storage_connectors'] = "false"
