@@ -459,3 +459,6 @@ default['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']     
 default['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']       = 300
 default['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']    = 300
 default['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']  = 1000
+
+default['hopsworks']['enable_jupyter_python_kernel_non_kubernetes']          = "false"
+
