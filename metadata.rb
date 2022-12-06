@@ -934,6 +934,10 @@ attribute "hopsworks/kube/kube_taints_monitor_interval",
 					:description => "Time to periodically update tainted nodes in the database",
 					:type => 'string'
 
+attribute "hopsworks/enable_data_science_profile",
+          :description => "Whether to enable the data science profile or not. This profile includes Model Registry and Serving.",
+          :type => 'string'
+
 # Glassfish managed executor pools
 attribute "hopsworks/managed_executor_pools/jupyter/threadpriority",
           :description => "Jupyter Managed Executor Pool thread priority",
