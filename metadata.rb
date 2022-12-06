@@ -899,7 +899,7 @@ attribute "hopsworks/debug",
           :type => 'string'
 
 attribute "hopsworks/kubernetes/skip_namespace_creation",
-          :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kuberenetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
+          :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kubernetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
           :type => 'string'
 
 attribute "hopsworks/quotas/online_enabled_featuregroups",
@@ -953,4 +953,8 @@ attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
 
 attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
           :description => "Jupyter Managed Executor Pool queue size",
+          :type => 'string'
+
+attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
+          :description => "Show the Python kernel in Jupyter configuration page and Jupyter interface. Only takes effect if Kubernetes is not installed. Default: false",
           :type => 'string'
