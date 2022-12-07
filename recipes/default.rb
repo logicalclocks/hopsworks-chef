@@ -1293,7 +1293,10 @@ if node['rstudio']['enabled'].eql? "true"
 
   case node['platform']
   when 'debian', 'ubuntu'
-    package "r-base"
+    package "r-base" do
+      retries 10
+      retry_delay 30
+    end
 
     remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
       user node['glassfish']['user']

@@ -153,9 +153,15 @@ end
 # and Kerberos libraries for SSO
 case node['platform_family']
 when "debian"
-  package ["libkrb5-dev", "authbind"]
+  package ["libkrb5-dev", "authbind"] do
+    retries 10
+    retry_delay 30
+  end
 when "rhel"
-  package ["krb5-libs"]
+  package ["krb5-libs"] do
+    retries 10
+    retry_delay 30
+  end
 
   authbind_rpm = ::File.basename(node['authbind']['download_url'])
 
@@ -169,6 +175,8 @@ when "rhel"
 
   package 'authbind' do
     source "#{Chef::Config['file_cache_path']}/#{authbind_rpm}"
+    retries 10
+    retry_delay 30
   end
 end
 
@@ -416,7 +424,10 @@ directory node['hopsworks']['data_volume']['domain1_logs'] do
 end
 
 
-package ["openssl", "zip"]
+package ["openssl", "zip"] do
+  retries 10
+  retry_delay 30
+end
 
 if !::File.directory?("#{theDomain}/lib")
   include_recipe 'glassfish::attribute_driven_domain'
