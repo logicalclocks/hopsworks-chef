@@ -21,3 +21,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enabl
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_bigquery_storage_connectors", "<%= node['hopsworks']['enable_bigquery_storage_connectors'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('enable_read_only_git_repositories', '<%= node['hopsworks']['enable_read_only_git_repositories'] %>', 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("max_allowed_long_running_http_requests", "<%= node['hopsworks']['max_allowed_long_running_http_requests'] %>", 1);
