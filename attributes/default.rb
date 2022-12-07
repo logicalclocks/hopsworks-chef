@@ -68,6 +68,9 @@ default['hopsworks']['data_volume']['domain1_logs'] = "#{node['hopsworks']['data
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
 default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
 
+# Directories in data volume
+default['hopsworks']['data_volume']['staging_dir'] = "#{node['data']['dir']}/staging"
+
 default['hopsworks']['jupyter_dir']              = node['hopsworks']['dir'] + "/jupyter"
 
 default['hopsworks']['max_mem']                  = "3000"
