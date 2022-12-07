@@ -1135,7 +1135,15 @@ template "#{theDomain}/config/metrics.xml"  do
   })
 end
 
-directory node['hopsworks']['staging_dir']  do
+directory node['data']['dir'] do
+  owner 'root'
+  group 'root'
+  mode '0775'
+  action :create
+  not_if { ::File.directory?(node['data']['dir']) }
+end
+
+directory node['hopsworks']['data_volume']['staging_dir']  do
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "775"
@@ -1143,25 +1151,44 @@ directory node['hopsworks']['staging_dir']  do
   recursive true
 end
 
-directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/private_dirs"  do
   owner node['hops']['yarnapp']['user']
   group node['hopsworks']['group']
   mode "0370"
   action :create
 end
 
-directory node['hopsworks']['staging_dir'] + "/serving"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "0730"
   action :create
 end
 
-directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
   owner node['conda']['user']
   group node['hopsworks']['group']
   mode "0770"
   action :create
+end
+
+bash 'Move staging to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hopsworks']['staging_dir']}/* #{node['hopsworks']['data_volume']['staging_dir']}
+    rm -rf #{node['hopsworks']['staging_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hopsworks']['staging_dir'])}
+  not_if { File.symlink?(node['hopsworks']['staging_dir'])}
+end
+
+link node['hopsworks']['staging_dir'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  to node['hopsworks']['data_volume']['staging_dir']
 end
 
 directory node['hopsworks']['conda_cache'] do
