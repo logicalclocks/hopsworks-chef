@@ -160,3 +160,6 @@ ALTER TABLE `feature_store_kafka_connector`
                      `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
             ON DELETE CASCADE ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
+
+-- FSTORE-510
+ALTER TABLE `hopsworks`.`validation_report` MODIFY COLUMN `ingestion_result` VARCHAR(8) NOT NULL;

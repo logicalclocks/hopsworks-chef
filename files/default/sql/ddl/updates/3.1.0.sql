@@ -121,7 +121,7 @@ ALTER TABLE `hopsworks`.`project` ADD COLUMN `creation_status` TINYINT(1) NOT NU
 
 -- Validation Result history FSTORE-341
 ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `validation_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `ingestion_result` VARCHAR(8) NOT NULL;
+ALTER TABLE `hopsworks`.`validation_result` ADD COLUMN `ingestion_result` VARCHAR(11) NOT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`validation_result` SET `validation_time`=(SELECT `validation_time` FROM `hopsworks`.`validation_report` WHERE `hopsworks`.`validation_result`.`validation_report_id` = `hopsworks`.`validation_report`.`id`);
@@ -159,3 +159,6 @@ ALTER TABLE `feature_store_kafka_connector`
                      `truststore_partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`)
             ON DELETE SET NULL ON UPDATE NO ACTION;
 -- END CHANGES FSTORE-326
+
+-- FSTORE-510
+ALTER TABLE `hopsworks`.`validation_report` MODIFY COLUMN `ingestion_result` VARCHAR(11) NOT NULL;
