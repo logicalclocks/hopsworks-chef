@@ -952,6 +952,31 @@ attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
 
 attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
           :description => "Jupyter Managed Executor Pool queue size",
+
+# Storage connectors
+
+attribute "hopsworks/enable_snowflake_storage_connectors",
+          :description => "Whether to enable Snowflake storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_redshift_storage_connectors",
+          :description => "Whether to enable Redshift storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_adls_storage_connectors",
+          :description => "Whether to enable ADLS storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_kafka_storage_connectors",
+          :description => "Whether to enable Kafka storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_gcs_storage_connectors",
+          :description => "Whether to enable GCS storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_bigquery_storage_connectors",
+          :description => "Whether to enable BigQuery storage connectors or not",
           :type => 'string'
 
 attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
