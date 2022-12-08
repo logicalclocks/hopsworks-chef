@@ -3,9 +3,12 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='pki_ca_configuration';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_data_science_profile';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_jupyter_python_kernel_non_kubernetes';
+
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_snowflake_storage_connectors';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_redshift_storage_connectors';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_adls_storage_connectors';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_kafka_storage_connectors';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_gcs_storage_connectors';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_bigquery_storage_connectors';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_read_only_git_repositories';
