@@ -898,7 +898,7 @@ attribute "hopsworks/debug",
           :type => 'string'
 
 attribute "hopsworks/kubernetes/skip_namespace_creation",
-          :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kuberenetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
+          :description => "Skip creation and deletion of kubernetes namespace(s) in Hopsworks. If enabled, users will have to manage their project namespaces before creating the project. Kubernetes only allow lowercase characters, numbers, and dash (-) as a valid name, so you should map the project name to match this pattern by replacing all non valid characters to a dash (-). Default 'false'",
           :type => 'string'
 
 attribute "hopsworks/quotas/online_enabled_featuregroups",
@@ -932,3 +932,53 @@ attribute "hopsworks/docker/cgroup_monitor_interval",
 attribute "hopsworks/kube/kube_taints_monitor_interval",
 					:description => "Time to periodically update tainted nodes in the database",
 					:type => 'string'
+
+attribute "hopsworks/enable_data_science_profile",
+          :description => "Whether to enable the data science profile or not. This profile includes Model Registry and Serving.",
+          :type => 'string'
+
+# Glassfish managed executor pools
+attribute "hopsworks/managed_executor_pools/jupyter/threadpriority",
+          :description => "Jupyter Managed Executor Pool thread priority",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/corepoolsize",
+          :description => "Jupyter Managed Executor Pool core size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
+          :description => "Jupyter Managed Executor Pool maximum size",
+          :type => 'string'
+
+attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
+          :description => "Jupyter Managed Executor Pool queue size",
+
+# Storage connectors
+
+attribute "hopsworks/enable_snowflake_storage_connectors",
+          :description => "Whether to enable Snowflake storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_redshift_storage_connectors",
+          :description => "Whether to enable Redshift storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_adls_storage_connectors",
+          :description => "Whether to enable ADLS storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_kafka_storage_connectors",
+          :description => "Whether to enable Kafka storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_gcs_storage_connectors",
+          :description => "Whether to enable GCS storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_bigquery_storage_connectors",
+          :description => "Whether to enable BigQuery storage connectors or not",
+          :type => 'string'
+
+attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
+          :description => "Show the Python kernel in Jupyter configuration page and Jupyter interface. Only takes effect if Kubernetes is not installed. Default: false",
+          :type => 'string'

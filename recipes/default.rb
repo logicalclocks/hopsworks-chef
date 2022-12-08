@@ -582,6 +582,7 @@ glassfish_conf = {
   'resources.managed-executor-service.concurrent\/hopsExecutorService.thread-priority' => 10,
   'resources.managed-thread-factory.concurrent\/hopsThreadFactory.thread-priority' => 10,
   'resources.managed-executor-service.concurrent\/condaExecutorService.thread-priority' => 9,
+  'resources.managed-executor-service.concurrent\/jupyterExecutorService.thread-priority' => 8,
   # Enable Single Sign on
   'configs.config.server-config.http-service.virtual-server.server.sso-enabled' => true,
   'configs.config.server-config.http-service.virtual-server.server.sso-cookie-http-only' => true,
@@ -733,6 +734,15 @@ glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --descri
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworksTimers$'"
+end
+
+glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services | grep 'concurrent/jupyterExecutorService$'"
 end
 
 logging_conf = {
@@ -1125,7 +1135,15 @@ template "#{theDomain}/config/metrics.xml"  do
   })
 end
 
-directory node['hopsworks']['staging_dir']  do
+directory node['data']['dir'] do
+  owner 'root'
+  group 'root'
+  mode '0775'
+  action :create
+  not_if { ::File.directory?(node['data']['dir']) }
+end
+
+directory node['hopsworks']['data_volume']['staging_dir']  do
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "775"
@@ -1133,25 +1151,44 @@ directory node['hopsworks']['staging_dir']  do
   recursive true
 end
 
-directory node['hopsworks']['staging_dir'] + "/private_dirs"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/private_dirs"  do
   owner node['hops']['yarnapp']['user']
   group node['hopsworks']['group']
   mode "0370"
   action :create
 end
 
-directory node['hopsworks']['staging_dir'] + "/serving"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "0730"
   action :create
 end
 
-directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
+directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
   owner node['conda']['user']
   group node['hopsworks']['group']
   mode "0770"
   action :create
+end
+
+bash 'Move staging to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hopsworks']['staging_dir']}/* #{node['hopsworks']['data_volume']['staging_dir']}
+    rm -rf #{node['hopsworks']['staging_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hopsworks']['staging_dir'])}
+  not_if { File.symlink?(node['hopsworks']['staging_dir'])}
+end
+
+link node['hopsworks']['staging_dir'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  to node['hopsworks']['data_volume']['staging_dir']
 end
 
 directory node['hopsworks']['conda_cache'] do
@@ -1283,7 +1320,10 @@ if node['rstudio']['enabled'].eql? "true"
 
   case node['platform']
   when 'debian', 'ubuntu'
-    package "r-base"
+    package "r-base" do
+      retries 10
+      retry_delay 30
+    end
 
     remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
       user node['glassfish']['user']

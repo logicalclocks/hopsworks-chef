@@ -68,6 +68,9 @@ default['hopsworks']['data_volume']['domain1_logs'] = "#{node['hopsworks']['data
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
 default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
 
+# Directories in data volume
+default['hopsworks']['data_volume']['staging_dir'] = "#{node['data']['dir']}/staging"
+
 default['hopsworks']['jupyter_dir']              = node['hopsworks']['dir'] + "/jupyter"
 
 default['hopsworks']['max_mem']                  = "3000"
@@ -426,6 +429,7 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 
 #git
 default['hopsworks']['git_command_timeout_minutes']  = "60"
+default['hopsworks']['enable_read_only_git_repositories']  = "true"
 
 default['hopsworks']['debug']  = "false"
 
@@ -448,3 +452,26 @@ default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
 default['hops']['cadvisor']['dir']                                    = "#{node['hops']['dir']}/cadvisor"
 default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
 default['hops']['cadvisor']['port']                                   = "4194"
+
+# Data science profile
+default['hopsworks']['enable_data_science_profile'] = "false"
+
+##
+## Glassfish executors
+##
+default['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']     = 8
+default['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']       = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']    = 300
+default['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']  = 1000
+
+default['hopsworks']['enable_jupyter_python_kernel_non_kubernetes']          = "false"
+
+##
+## Storage connectors
+## 
+default['hopsworks']['enable_snowflake_storage_connectors'] = "true"
+default['hopsworks']['enable_redshift_storage_connectors'] = "true"
+default['hopsworks']['enable_adls_storage_connectors'] = "false"
+default['hopsworks']['enable_kafka_storage_connectors'] = "false"
+default['hopsworks']['enable_gcs_storage_connectors'] = "false"
+default['hopsworks']['enable_bigquery_storage_connectors'] = "false"
