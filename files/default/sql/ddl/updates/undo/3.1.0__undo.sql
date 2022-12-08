@@ -67,7 +67,6 @@ CREATE TABLE `hopssite_cluster_certs` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-
 -- rename transformation functions output types
 SET SQL_SAFE_UPDATES = 0;
 UPDATE transformation_function
@@ -163,3 +162,6 @@ ALTER TABLE `feature_store_kafka_connector`
 
 -- FSTORE-510
 ALTER TABLE `hopsworks`.`validation_report` MODIFY COLUMN `ingestion_result` VARCHAR(8) NOT NULL;
+
+DROP TABLE IF EXISTS `hopsworks`.`feature_group_link`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_view_link`;
