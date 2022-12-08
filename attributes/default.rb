@@ -429,7 +429,7 @@ default['hopsworks']['managed_cloud_redirect_uri'] = ""
 
 #git
 default['hopsworks']['git_command_timeout_minutes']  = "60"
-default['hopsworks']['enable_read_only_git_repositories']  = "false"
+default['hopsworks']['enable_read_only_git_repositories']  = "true"
 
 default['hopsworks']['debug']  = "false"
 
