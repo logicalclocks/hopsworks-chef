@@ -953,6 +953,7 @@ attribute "hopsworks/managed_executor_pools/jupyter/maximumpoolsize",
 
 attribute "hopsworks/managed_executor_pools/jupyter/taskqueuecapacity",
           :description => "Jupyter Managed Executor Pool queue size",
+          :type => 'string'
 
 # Storage connectors
 
