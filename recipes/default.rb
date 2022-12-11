@@ -255,6 +255,11 @@ caConf[:kubernetesCA] = kubernetesConf
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
 
+# encrypt flyingduck user password
+flyingduck_salt = SecureRandom.base64(64)
+encrypted_flyingduck_password = Digest::SHA256.hexdigest node['flyingduck']['hopsworks']['password'] + onlinefs_salt
+
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -280,6 +285,8 @@ for version in versions do
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt,
+         :flyingduck_password => encrypted_flyingduck_password,
+         :flyingduck_salt => flyingduck_salt,
          :pki_ca_configuration => caConf.to_json()
     })
     action :create
