@@ -257,7 +257,7 @@ encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopswor
 
 # encrypt flyingduck user password
 flyingduck_salt = SecureRandom.base64(64)
-encrypted_flyingduck_password = Digest::SHA256.hexdigest node['flyingduck']['hopsworks']['password'] + onlinefs_salt
+encrypted_flyingduck_password = Digest::SHA256.hexdigest node['flyingduck']['hopsworks']['password'] + flyingduck_salt
 
 
 for version in versions do
