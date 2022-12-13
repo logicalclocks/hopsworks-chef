@@ -91,3 +91,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_s
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_gpus_allocation', "<%= node['kube-hops']['serving_max_gpus_allocation'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_max_num_instances', "<%= node['kube-hops']['serving_max_num_instances'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('kube_serving_min_num_instances', "<%= node['kube-hops']['serving_min_num_instances'] %>", 1);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('ldap_group_mapping_sync_enabled', "<%= node['ldap']['group_mapping_sync_enabled'] %>");
