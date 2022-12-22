@@ -69,3 +69,4 @@ os.environ['KAFKA_BROKERS'] = "${conf.kafkaBrokers}"
 os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
+os.environ['HADOOP_LOG_DIR'] = "/tmp"
