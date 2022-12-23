@@ -21,3 +21,11 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enabl
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_bigquery_storage_connectors", "<%= node['hopsworks']['enable_bigquery_storage_connectors'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('enable_read_only_git_repositories', '<%= node['hopsworks']['enable_read_only_git_repositories'] %>', 1);
+
+
+INSERT INTO `hopsworks`.`users`
+(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+('flyingduck', '<%= @flyingduck_password %>', '<%= node['flyingduck']['hopsworks']['email'] %>', 'Flyingduck', 'Server', '2021-03-16 16:17:00', 'Mr', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2021-03-16 16:17:00', NULL, 2, 30, 0, 3, '<%= @flyingduck_salt %>')
+ON DUPLICATE KEY UPDATE `username`="flyingduck";
+
+INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='flyingduck';
