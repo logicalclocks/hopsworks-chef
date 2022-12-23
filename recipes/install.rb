@@ -2,16 +2,6 @@ require 'json'
 require 'base64'
 require 'digest'
 
-# When we upgrade to version 3.1.0 make sure we have set the subjects
-# of CAs
-if conda_helpers.is_upgrade
-  if node['install']['current_version'] < '3.1.0' && node['install']['version'] >= '3.1.0'
-    if node['hopsworks']['pki']['root']['name'].empty? || node['hopsworks']['pki']['intermediate']['name'].empty?
-      raise "It is an upgrade and Hopsworks CA subject name are not set. You have to set it to what was the previous names"
-    end
-  end
-end
-
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -26,6 +16,25 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
     systemctl stop glassfish-#{domain_name}
   EOF
+end
+
+# When we upgrade to version 3.1.0 make sure we have set the subjects
+# of CAs
+if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')
+  if node['hopsworks']['pki']['root']['name'].empty? || node['hopsworks']['pki']['intermediate']['name'].empty?
+    raise "It is an upgrade and Hopsworks CA subject name are not set. You have to set it to what was the previous names"
+  end
+
+  # To support migration from Payara 4 to Payara 5 we need to re-generate the domain.
+  # We can drop the existing domain, but we need to save some files from it
+  bash 'Move old domains dir to domains4 for backup' do
+    user 'root'
+    code <<-EOH
+      set -e
+      mv -f #{node['hopsworks']['domains_dir']} #{node['hopsworks']['domains_dir']}4
+    EOH
+    not_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
+  end
 end
 
 group node['hopsworks']['group'] do
@@ -846,6 +855,24 @@ directory "#{theDomain}/flyway/all/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
+end
+
+if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')
+  # We need to restore the internal certificates and the flyway schemas for the upgrade
+  # To be successfull
+  bash 'Move old certificates and flyway schemas' do
+    user 'root'
+    code <<-EOH
+      set -e
+      cp -p #{node['hopsworks']['domains_dir']}4/domain1/config/internal* #{node['hopsworks']['config_dir']}/
+      cp -p #{node['hopsworks']['config_dir']}/internal_bundle.crt #{node['hopsworks']['config_dir']}/certificate_bundle.pem
+
+      # Hardcoded because the attribute doesn't exists anymore
+      cp #{node['hopsworks']['dir']}/certs-dir/certs/ca.cert.pem #{node['hopsworks']['config_dir']}/root_ca.pem
+
+      cp -p #{node['hopsworks']['domains_dir']}4/flyway/sql/* #{theDomain}/flyway/sql/
+    EOH
+  end
 end
 
 #install cadvisor only on the headnode and no kubernetes
