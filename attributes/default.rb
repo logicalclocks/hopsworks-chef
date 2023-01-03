@@ -363,6 +363,8 @@ default['hopsworks']['featurestore_online']                   = "true"
 # Number of seconds to keep an inactive connection alive
 default['glassfish']['http']['keep_alive_timeout']   = "30"
 default['glassfish']['ejb_loader']['thread_pool_size']   = 8
+# The timeout, in seconds, for requests. A value of -1 will disable it.
+default['glassfish']['http']['request-timeout-seconds']   = "3600"
 
 #
 # kagent liveness monitor configuration
@@ -477,3 +479,6 @@ default['hopsworks']['enable_adls_storage_connectors'] = "false"
 default['hopsworks']['enable_kafka_storage_connectors'] = "false"
 default['hopsworks']['enable_gcs_storage_connectors'] = "false"
 default['hopsworks']['enable_bigquery_storage_connectors'] = "false"
+
+# The maximum number of http threads in the thread pool are 200 by default
+default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
