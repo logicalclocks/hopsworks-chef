@@ -438,23 +438,27 @@ package ["openssl", "zip"] do
   retry_delay 30
 end
 
-if !::File.directory?("#{theDomain}/lib")
-  include_recipe 'glassfish::attribute_driven_domain'
-else
-  # For older installations (Hopsworks <= 1.0.0) the paths referring to glassfish contain the glassfish version 
-  # this is problematic during upgrades. We replace them here with sed. 
-  ["glassfish-4.1.2.174", "glassfish-4.1.2.181"].each do |version|
-    bash "remove_glassfish_versions" do 
-      user "root"
-      group "root"
-      code <<-EOL
-        sed -i 's/#{version}/current/g' /lib/systemd/system/glassfish-#{domain_name}.service
-        sed -i 's/#{version}/current/g' #{theDomain}/config/domain.xml
-        sed -i 's/#{version}/current/g' #{theDomain}/bin/domain1_asadmin
-      EOL
+# In Hopsworks 3.1 we updated glassfish from 4.x to 5.x. As the domains
+# are not compatible, we move the old domains dir to domains4 and
+# expect the recipe to create new domain. The issue is that the if
+# statement is evaluated at compile time while the move happens at runtime
+# so essentially the if statement is always evaluated to true during an
+# upgrade, it doesn't matter if we later move the dir and we want a completely
+# new domain.
+# We also want to make the recipe idempotent. If it fails during an upgrade
+# but the domain has been re-generated already, it should not be generated again.
+# So a fancy if statement that checks if we are doing a 3.1 upgrade is not possible.
+# We cannot wrap the if statement within lazy {} as it's not ruby.
+# So here we are with some ruby dark magic stolen from StackOverflow.
+# The code inside the block is evaluated/executed at runtime, so here we are evaluating
+# only if the new domain exists already.
+ruby_block 'Run glassfish attribute driven domain' do
+  block do
+    if !::File.directory?("#{theDomain}/lib")
+      run_context.include_recipe 'glassfish::attribute_driven_domain'
     end
   end
-end 
+end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
@@ -870,7 +874,7 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       # Hardcoded because the attribute doesn't exists anymore
       cp #{node['hopsworks']['dir']}/certs-dir/certs/ca.cert.pem #{node['hopsworks']['config_dir']}/root_ca.pem
 
-      cp -p #{node['hopsworks']['domains_dir']}4/flyway/sql/* #{theDomain}/flyway/sql/
+      cp -p #{node['hopsworks']['domains_dir']}4/domain1/flyway/sql/* #{theDomain}/flyway/sql/
 
       # Increase privileges on the old CA.certs.pem so that Hopsworks CA can initialize itself.
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
