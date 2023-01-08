@@ -878,6 +878,7 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
 
       # Increase privileges on the old CA.certs.pem so that Hopsworks CA can initialize itself.
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
+      chown #{node['hopsworks']['user']} /srv/hops/certs-dir/private/ca.key.pem
     EOH
   end
 end
