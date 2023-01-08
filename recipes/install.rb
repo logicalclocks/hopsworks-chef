@@ -871,6 +871,9 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       cp #{node['hopsworks']['dir']}/certs-dir/certs/ca.cert.pem #{node['hopsworks']['config_dir']}/root_ca.pem
 
       cp -p #{node['hopsworks']['domains_dir']}4/flyway/sql/* #{theDomain}/flyway/sql/
+
+      # Increase privileges on the old CA.certs.pem so that Hopsworks CA can initialize itself.
+      chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
     EOH
   end
 end
