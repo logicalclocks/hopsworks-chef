@@ -8,6 +8,7 @@ action :generate_int_certs do
       openssl genrsa -out internal.key 2048 
       openssl req -new -key internal.key -subj #{new_resource.subject} -out internal.csr
     EOH
+    not_if { ::File.exist?("#{node['hopsworks']['config_dir']}/internal.key") }
   end
 
   # Sign the certificate
@@ -16,6 +17,7 @@ action :generate_int_certs do
     output_dir node['hopsworks']['config_dir']
     http_port   node['hopsworks']['https']['port'].to_i
     action :sign_csr
+    not_if { ::File.exist?("#{node['hopsworks']['config_dir']}/certificate_bundle.pem") }
   end
 
   # Add the certificate to the keystore.jks
@@ -32,6 +34,7 @@ action :generate_int_certs do
 
         keytool -import -noprompt -alias internal -file root_ca.pem -keystore cacerts.jks -storepass #{node['hopsworks']['master']['password']}
     EOH
+    not_if "keytool -list -keystore #{node['hopsworks']['config_dir']}/cacerts.jks -alias internal -storepass #{node['hopsworks']['master']['password']}"
   end
 end
 
