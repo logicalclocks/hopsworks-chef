@@ -1234,7 +1234,6 @@ end
 hopsworks_certs "generate-int-certs" do
   subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
   action      :generate_int_certs
-  not_if      { ::File.exist?("#{node['hopsworks']['config_dir']}/internal_bundle.crt") }
 end
 
 hopsworks_certs "import-user-certs" do
