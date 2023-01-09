@@ -2,16 +2,6 @@ require 'json'
 require 'base64'
 require 'digest'
 
-# When we upgrade to version 3.1.0 make sure we have set the subjects
-# of CAs
-if conda_helpers.is_upgrade
-  if node['install']['current_version'] < '3.1.0' && node['install']['version'] >= '3.1.0'
-    if node['hopsworks']['pki']['root']['name'].empty? || node['hopsworks']['pki']['intermediate']['name'].empty?
-      raise "It is an upgrade and Hopsworks CA subject name are not set. You have to set it to what was the previous names"
-    end
-  end
-end
-
 domain_name="domain1"
 domains_dir = node['hopsworks']['domains_dir']
 theDomain="#{domains_dir}/#{domain_name}"
@@ -26,6 +16,25 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
     systemctl stop glassfish-#{domain_name}
   EOF
+end
+
+# When we upgrade to version 3.1.0 make sure we have set the subjects
+# of CAs
+if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')
+  if node['hopsworks']['pki']['root']['name'].empty? || node['hopsworks']['pki']['intermediate']['name'].empty?
+    raise "It is an upgrade and Hopsworks CA subject name are not set. You have to set it to what was the previous names"
+  end
+
+  # To support migration from Payara 4 to Payara 5 we need to re-generate the domain.
+  # We can drop the existing domain, but we need to save some files from it
+  bash 'Move old domains dir to domains4 for backup' do
+    user 'root'
+    code <<-EOH
+      set -e
+      mv -f #{node['hopsworks']['domains_dir']} #{node['hopsworks']['domains_dir']}4
+    EOH
+    not_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
+  end
 end
 
 group node['hopsworks']['group'] do
@@ -429,23 +438,27 @@ package ["openssl", "zip"] do
   retry_delay 30
 end
 
-if !::File.directory?("#{theDomain}/lib")
-  include_recipe 'glassfish::attribute_driven_domain'
-else
-  # For older installations (Hopsworks <= 1.0.0) the paths referring to glassfish contain the glassfish version 
-  # this is problematic during upgrades. We replace them here with sed. 
-  ["glassfish-4.1.2.174", "glassfish-4.1.2.181"].each do |version|
-    bash "remove_glassfish_versions" do 
-      user "root"
-      group "root"
-      code <<-EOL
-        sed -i 's/#{version}/current/g' /lib/systemd/system/glassfish-#{domain_name}.service
-        sed -i 's/#{version}/current/g' #{theDomain}/config/domain.xml
-        sed -i 's/#{version}/current/g' #{theDomain}/bin/domain1_asadmin
-      EOL
+# In Hopsworks 3.1 we updated glassfish from 4.x to 5.x. As the domains
+# are not compatible, we move the old domains dir to domains4 and
+# expect the recipe to create new domain. The issue is that the if
+# statement is evaluated at compile time while the move happens at runtime
+# so essentially the if statement is always evaluated to true during an
+# upgrade, it doesn't matter if we later move the dir and we want a completely
+# new domain.
+# We also want to make the recipe idempotent. If it fails during an upgrade
+# but the domain has been re-generated already, it should not be generated again.
+# So a fancy if statement that checks if we are doing a 3.1 upgrade is not possible.
+# We cannot wrap the if statement within lazy {} as it's not ruby.
+# So here we are with some ruby dark magic stolen from StackOverflow.
+# The code inside the block is evaluated/executed at runtime, so here we are evaluating
+# only if the new domain exists already.
+ruby_block 'Run glassfish attribute driven domain' do
+  block do
+    if !::File.directory?("#{theDomain}/lib")
+      run_context.include_recipe 'glassfish::attribute_driven_domain'
     end
   end
-end 
+end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
@@ -846,6 +859,28 @@ directory "#{theDomain}/flyway/all/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
+end
+
+if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')
+  # We need to restore the internal certificates and the flyway schemas for the upgrade
+  # To be successfull
+  bash 'Move old certificates and flyway schemas' do
+    user 'root'
+    code <<-EOH
+      set -e
+      cp -p #{node['hopsworks']['domains_dir']}4/domain1/config/internal* #{node['hopsworks']['config_dir']}/
+      cp -p #{node['hopsworks']['config_dir']}/internal_bundle.crt #{node['hopsworks']['config_dir']}/certificate_bundle.pem
+
+      # Hardcoded because the attribute doesn't exists anymore
+      cp #{node['hopsworks']['dir']}/certs-dir/certs/ca.cert.pem #{node['hopsworks']['config_dir']}/root_ca.pem
+
+      cp -p #{node['hopsworks']['domains_dir']}4/domain1/flyway/sql/* #{theDomain}/flyway/sql/
+
+      # Increase privileges on the old CA.certs.pem so that Hopsworks CA can initialize itself.
+      chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
+      chown #{node['hopsworks']['user']} /srv/hops/certs-dir/private/ca.key.pem
+    EOH
+  end
 end
 
 #install cadvisor only on the headnode and no kubernetes
