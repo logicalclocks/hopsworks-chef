@@ -49,10 +49,10 @@ function finish {
 }
 trap finish EXIT
 
-chown yarnapp "$conversion_dir"
+chown <%= node['hops']['yarnapp']['user'] %> "$conversion_dir"
 
 if [ $? -ne 0 ] ; then
-    echo "Could not chown directory in the staging directory for converting iPython notebook. Problem dir: $staging_dir as user yarnapp"
+    echo "Could not chown directory in the staging directory for converting iPython notebook. Problem dir: $staging_dir as user <%= node['hops']['yarnapp']['user'] %>"
     exit 3
 fi
 
