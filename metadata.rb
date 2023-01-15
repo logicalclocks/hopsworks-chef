@@ -39,6 +39,7 @@ depends 'ulimit'
 depends 'glassfish'
 depends 'kube-hops'
 depends 'onlinefs'
+depends 'flyingduck'
 depends 'java'
 
 
