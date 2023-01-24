@@ -292,14 +292,6 @@ node.override = {
               'taskqueuecapacity' => node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity'],
               'longrunningtasks' => true,
               'description' => 'Hopsworks Jupyter Executor Service'
-          },
-          'concurrent/asyncCommandExecutorService' => {
-            'threadpriority' => 8,
-            'corepoolsize' => 30,
-            'maximumpoolsize' => 400,
-            'taskqueuecapacity' => 20000,
-            'longrunningtasks' => 'true',
-            'description' => 'Hopsworks Async command Executor Service'
           }
         },
         'managed_scheduled_executor_services' => {
