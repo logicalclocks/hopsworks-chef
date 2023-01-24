@@ -1,5 +1,1 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("max_allowed_long_running_http_requests", "<%= node['hopsworks']['max_allowed_long_running_http_requests'] %>", 1);
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_byte_buffer', "<%= node['hopsworks']['compression']['byte_buffer'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_entries', "<%= node['hopsworks']['compression']['threshold_entries'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_size', "<%= node['hopsworks']['compression']['threshold_size'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('compression_threshold_ratio', "<%= node['hopsworks']['compression']['threshold_ratio'] %>");

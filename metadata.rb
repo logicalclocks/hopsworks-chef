@@ -996,15 +996,3 @@ attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
 attribute "hopsworks/max_allowed_long_running_http_requests",
           :description => "Maximum number of long running http requests allowed. Default: 50",
           :type => 'string'
-attribute "hopsworks/compression/byte_buffer",
-					:description => "Unzip/Zip stream byte buffer size. Default: 2048 bytes",
-					:type => 'string'
-attribute "hopsworks/compression/threshold_entries",
-					:description => "Unzip file entries threshold. Set <= 0 to disable. Default: 10000",
-					:type => 'string'
-attribute "hopsworks/compression/threshold_size",
-					:description => "Unzip file size threshold. Set <= 0 to disable. Default: 100000000000 bytes",
-					:type => 'string'
-attribute "hopsworks/compression/threshold_ratio",
-					:description => "Compression ratio threshold. Default: 10",
-					:type => 'string'
