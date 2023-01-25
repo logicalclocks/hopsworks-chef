@@ -689,16 +689,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/unzip-hdfs-files.sh" do
-  source "unzip-hdfs-files.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
-["zip-hdfs-files.sh", "zip-background.sh", "unzip-background.sh",  "tensorboard-launch.sh",
- "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
+["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
  "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
