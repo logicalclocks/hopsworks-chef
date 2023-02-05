@@ -731,33 +731,6 @@ end
   end
 end
 
-template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
-  source "dump_web_logs_to_hdfs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0700
-  action :create
-  variables({
-              :weblogs_dir => "#{theDomain}/logs/access",
-              :hadoop_home => node['hops']['base_dir'],
-              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_logs"
-            })
-end
-
-template "#{theDomain}/bin/dump_audit_logs_to_hdfs.sh" do
-  source "dump_audit_logs_to_hdfs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0700
-  action :create
-  variables({
-              :weblogs_dir => "#{theDomain}/logs/audit",
-              :hadoop_home => node['hops']['base_dir'],
-              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_audit_logs"
-            })
-end
-
-
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
 # Hopsworks will use a sudoer script to launch jupyter as the 'jupyter' user.

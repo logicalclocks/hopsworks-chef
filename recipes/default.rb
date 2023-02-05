@@ -895,34 +895,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
       secure false
     end
   end
-
-  # Setup cron job for HDFS dumper
-  cron 'dump_http_logs_to_hdfs' do
-    if node['hopsworks']['systemd'] == "true"
-      command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh"
-    else #sysv
-      command "#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh >> #{domains_dir}/#{domain_name}/logs/web_dumper.log 2>&1"
-    end
-    user node['glassfish']['user']
-    minute '0'
-    hour '21'
-    day '*'
-    month '*'
-    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_web_logs_to_hdfs.sh") end
-  end
-end
-
-if node['hopsworks']['audit_log_dump_enabled'].eql? "true"
-  # Setup cron job for HDFS dumper
-  cron 'dump_audit_logs_to_hdfs' do
-    command "systemd-cat #{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh"
-    user node['glassfish']['user']
-    minute '0'
-    hour '21'
-    day '*'
-    month '*'
-    only_if do File.exist?("#{domains_dir}/#{domain_name}/bin/dump_audit_logs_to_hdfs.sh") end
-  end
 end
 
 hopsworks_mail "gmail" do
