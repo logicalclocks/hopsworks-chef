@@ -943,6 +943,10 @@ attribute "hopsworks/enable_data_science_profile",
           :description => "Whether to enable the data science profile or not. This profile includes Model Registry and Serving.",
           :type => 'string'
 
+attribute "hopsworks/enable_read_only_git_repositories",
+          :description => "Whether or not to make git repositories read only (Default: true)",
+          :type => 'string'
+
 # Glassfish managed executor pools
 attribute "hopsworks/managed_executor_pools/jupyter/threadpriority",
           :description => "Jupyter Managed Executor Pool thread priority",
