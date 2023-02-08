@@ -472,12 +472,20 @@ default['hopsworks']['enable_jupyter_python_kernel_non_kubernetes']          = "
 ##
 ## Storage connectors
 ## 
-default['hopsworks']['enable_snowflake_storage_connectors'] = "true"
-default['hopsworks']['enable_redshift_storage_connectors'] = "true"
-default['hopsworks']['enable_adls_storage_connectors'] = "false"
-default['hopsworks']['enable_kafka_storage_connectors'] = "false"
-default['hopsworks']['enable_gcs_storage_connectors'] = "true"
-default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
+default['hopsworks']['enable_snowflake_storage_connectors']       = "true"
+default['hopsworks']['enable_redshift_storage_connectors']        = "true"
+default['hopsworks']['enable_adls_storage_connectors']            = "false"
+default['hopsworks']['enable_kafka_storage_connectors']           = "false"
+default['hopsworks']['enable_gcs_storage_connectors']             = "true"
+default['hopsworks']['enable_bigquery_storage_connectors']        = "true"
 
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
+
+
+##
+## Flying Duck
+##
+
+default['hopsworks']['enable_flyingduck']                         = "false"
+

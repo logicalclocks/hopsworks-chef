@@ -9,3 +9,5 @@ ON DUPLICATE KEY UPDATE `username`="flyingduck";
 
 INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='flyingduck';
 
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES('enable_flyingduck', "<%= node['hopsworks']['enable_flyingduck'] %>", 1);
+
