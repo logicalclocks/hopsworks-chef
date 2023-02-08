@@ -815,9 +815,6 @@ attribute "hopsworks/provenance/cleaner/period",
           :type => 'string'
 
 # Audit log
-attribute "hopsworks/audit_log_dump_enabled",
-          :description => "Audit log dump to hdfs enabled. 'false' (default)",
-          :type => 'string'
 attribute "hopsworks/audit_log_dir",
           :description => "Audit log dir. '/srv/hops/domains/domain1/logs/audit' (default)",
           :type => 'string'
@@ -944,6 +941,10 @@ attribute "hopsworks/kube/kube_taints_monitor_interval",
 
 attribute "hopsworks/enable_data_science_profile",
           :description => "Whether to enable the data science profile or not. This profile includes Model Registry and Serving.",
+          :type => 'string'
+
+attribute "hopsworks/enable_read_only_git_repositories",
+          :description => "Whether or not to make git repositories read only (Default: true)",
           :type => 'string'
 
 # Glassfish managed executor pools
