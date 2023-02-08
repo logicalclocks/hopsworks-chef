@@ -998,3 +998,8 @@ attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
 attribute "hopsworks/max_allowed_long_running_http_requests",
           :description => "Maximum number of long running http requests allowed. Default: 50",
           :type => 'string'
+
+attribute "hopsworks/enable_flyingduck",
+          :description => "Whether to enable FlyingDuck for use in the Feature Store or not",
+          :type => 'string'
+
