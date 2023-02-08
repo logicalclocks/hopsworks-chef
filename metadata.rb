@@ -40,6 +40,7 @@ depends 'glassfish'
 depends 'kube-hops'
 depends 'onlinefs'
 depends 'java'
+depends 'flyingduck'
 
 
 recipe  "hopsworks::install", "Installs Glassfish"

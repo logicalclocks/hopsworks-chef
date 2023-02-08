@@ -14,6 +14,7 @@ include_attribute "hops_airflow"
 include_attribute "kube-hops"
 include_attribute "onlinefs"
 include_attribute "hopslog"
+include_attribute "flyingduck"
 
 default['hopsworks']['version']                  = node['install']['version']
 default['hopsworks']['current_version']          = node['install']['current_version']
