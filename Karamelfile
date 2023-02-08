@@ -9,6 +9,7 @@ dependencies:
       - hops::ndb
       - hive2::db
       - airflow::db
+      - ndb::restore_sql
   - recipe: hopsworks::dev
     global:
       - hopsworks::default
