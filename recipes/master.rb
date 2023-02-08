@@ -1,3 +1,6 @@
+include_recipe "hopsworks::install"
+include_recipe "hopsworks::default"
+
 #rows_path = "#{domains_dir}/post.sql"
 
 case node['platform']
@@ -37,10 +40,13 @@ password=node['hopsworks']['admin']['password']
 # docker
 # https://github.com/jelastic-jps/glassfish/
 
-glassfish_asadmin "create-node-ssh --nodehost node['host'] --installdir #{node['glassfish']['base_dir']}/versions/current master" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
+
+node['hopsworks']['nodes'].each_with_index do |val, index|
+  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current worker-#{index}" do
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure false
+  end
 end

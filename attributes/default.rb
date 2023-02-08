@@ -31,6 +31,7 @@ default['hopsworks']['group']                    = node['install']['user'].empty
 default['hopsworks']['group_id']                 = '1517'
 default['glassfish']['group']                    = node['hopsworks']['group']
 default['glassfish']['user-home']                = "/home/#{node['hopsworks']['user']}"
+default['hopsworks']['nodes']                    = ["192.168.56.102"]
 
 default['hopsworks']['https']['port']            = 8181
 default['hopsworks']['https']['key_url']         = ""
