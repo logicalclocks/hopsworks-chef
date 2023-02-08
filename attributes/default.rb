@@ -157,9 +157,9 @@ default['hopsworks']['support_email_addr']       = "support@logicalclocks.com"
 #quotas
 default['hopsworks']['yarn_default_quota_mins']          = "1000000"
 default['hopsworks']['yarn_default_payment_type']        = "NOLIMIT"
-default['hopsworks']['hdfs_default_quota_mbs']           = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
-default['hopsworks']['hive_default_quota_mbs']           = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
-default['hopsworks']['featurestore_default_quota_mbs']   = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
+default['hopsworks']['hdfs_default_quota']           = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
+default['hopsworks']['hive_default_quota']           = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
+default['hopsworks']['featurestore_default_quota']   = "9223372036854775807L" # HdfsConstants.QUOTA_DONT_SET
 default['hopsworks']['max_num_proj_per_user']            = "10"
 
 # IMPORTANT: This value must be kept in sync with the variable DEFAULT_RESERVED_PROJECT_NAMES in settings.
