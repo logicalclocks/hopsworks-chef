@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `hopsworks`.`hdfs_command_execution`;
+
 --
 -- Table structure for table `shared_topics`
 --

@@ -321,7 +321,6 @@ default['rstudio']['enabled']                        = "false"
 
 default['hopsworks']['kafka_max_num_topics']                   = '100'
 
-default['hopsworks']['audit_log_dump_enabled']       = "false"
 default['hopsworks']['audit_log_dir']                = "#{node['hopsworks']['domain1']['logs']}/audit"
 default['hopsworks']['audit_log_file_format']        = "server_audit_log%g.log"
 default['hopsworks']['audit_log_size_limit']         = "256000000"
@@ -476,8 +475,8 @@ default['hopsworks']['enable_snowflake_storage_connectors'] = "true"
 default['hopsworks']['enable_redshift_storage_connectors'] = "true"
 default['hopsworks']['enable_adls_storage_connectors'] = "false"
 default['hopsworks']['enable_kafka_storage_connectors'] = "false"
-default['hopsworks']['enable_gcs_storage_connectors'] = "false"
-default['hopsworks']['enable_bigquery_storage_connectors'] = "false"
+default['hopsworks']['enable_gcs_storage_connectors'] = "true"
+default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50

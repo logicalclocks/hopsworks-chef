@@ -689,16 +689,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
-template "#{theDomain}/bin/unzip-hdfs-files.sh" do
-  source "unzip-hdfs-files.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "550"
-  action :create
-end
-
-["zip-hdfs-files.sh", "zip-background.sh", "unzip-background.sh",  "tensorboard-launch.sh",
- "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
+["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
  "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
@@ -730,33 +721,6 @@ end
     action :create
   end
 end
-
-template "#{theDomain}/bin/dump_web_logs_to_hdfs.sh" do
-  source "dump_web_logs_to_hdfs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0700
-  action :create
-  variables({
-              :weblogs_dir => "#{theDomain}/logs/access",
-              :hadoop_home => node['hops']['base_dir'],
-              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_logs"
-            })
-end
-
-template "#{theDomain}/bin/dump_audit_logs_to_hdfs.sh" do
-  source "dump_audit_logs_to_hdfs.sh.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode 0700
-  action :create
-  variables({
-              :weblogs_dir => "#{theDomain}/logs/audit",
-              :hadoop_home => node['hops']['base_dir'],
-              :remote_weblogs_dir => "#{node['hops']['hdfs']['user_home']}/#{node['glassfish']['user']}/webserver_audit_logs"
-            })
-end
-
 
 # Hopsworks user should own the directory so that hopsworks code
 # can create the template files needed for Jupyter.
