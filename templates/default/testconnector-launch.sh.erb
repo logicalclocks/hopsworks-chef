@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+help() {
+    echo ""
+    echo "usage: $0 [input_json_filepath image_name]"
+    echo ""
+    exit 1
+}
+
+if [ "$#" != "2" ] || [ "$1" == "-h" ] ; then
+  help
+fi
+
+REGISTRY_URL='<%= @registry_addr %>'
+FILENAME=$(basename "$1")
+FOLDER=$(dirname "$1")
+# TODO image name as parameter?
+IMAGE="$2"
+
+if docker run --rm -v $FOLDER:/tmp $REGISTRY_URL/$IMAGE:latest /tmp/$FILENAME; then
+   exit 0
+else
+   exit 9
+fi
+
+
