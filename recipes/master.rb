@@ -56,7 +56,6 @@ when "debian"
   bash "configure load balancer" do
     user node['hopsworks']['user']
     group node['hopsworks']['group']
-    cwd client_dir
     code <<-EOF
       a2ensite loadbalancer.conf
       a2dissite 000-default.conf
@@ -98,7 +97,6 @@ when "rhel"
   bash "configure load balancer" do
     user node['hopsworks']['user']
     group node['hopsworks']['group']
-    cwd client_dir
     code <<-EOF
       echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf 
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
