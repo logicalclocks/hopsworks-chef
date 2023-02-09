@@ -524,7 +524,7 @@ glassfish_asadmin "create-protocol --securityenabled=true --target #{payara_conf
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols | grep 'https-internal'"
 end
 
-glassfish_asadmin "create-http --default-virtual-server #{payara_config} https-internal" do
+glassfish_asadmin "create-http --default-virtual-server #{payara_config} --target #{payara_config} https-internal" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
