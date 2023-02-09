@@ -23,3 +23,10 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
+  - recipe: hopsworks::master
+    global:
+      - hopsworks::default
+      - hopsworks::slave
+  - recipe: hopsworks::slave
+    global:
+      - hopsworks::default
