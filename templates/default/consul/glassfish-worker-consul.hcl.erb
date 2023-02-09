@@ -1,0 +1,10 @@
+services = [
+    {
+        id = "hopsworks/web"
+        name = "glassfish"
+        tags = [
+            "hopsworks"
+        ]
+        port = <%= node['hopsworks']['internal']['port'] %>
+    }
+]

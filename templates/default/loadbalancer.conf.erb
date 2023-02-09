@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/html
+  
+  ErrorLog <%= @load_balancer_log_dir %>/error.log
+  CustomLog <%= @load_balancer_log_dir %>/access.log combined
+  
+  <Proxy balancer://payara>
+      <% @glassfish_nodes.each do |ipaddress| %>
+        BalancerMember <%= "https://#{ipaddress}:8181" %>
+      <% end %>
+  </Proxy>
+
+  ProxyPass         /  balancer://payara/
+  ProxyPassReverse  /  balancer://payara/
+</VirtualHost>
