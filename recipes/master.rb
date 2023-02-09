@@ -43,9 +43,7 @@ when "debian"
   end
   template "/etc/apache2/sites-available/loadbalancer.conf"  do
     source 'loadbalancer.conf.erb'
-    owner node['hopsworks']['user']
-    group node['hopsworks']['group']
-    mode "700"
+    user 'root'
     action :create
     variables({
       :load_balancer_log_dir => "/var/log/apache2",
@@ -54,8 +52,7 @@ when "debian"
   end
 
   bash "configure load balancer" do
-    user node['hopsworks']['user']
-    group node['hopsworks']['group']
+    user 'root'
     code <<-EOF
       a2ensite loadbalancer.conf
       a2dissite 000-default.conf
@@ -68,25 +65,19 @@ when "rhel"
     retry_delay 30
   end
   directory "/etc/httpd/sites-available /etc/httpd/sites-enabled" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode '0700'
+    user 'root'
     action :create
     not_if { ::File.directory?('/etc/httpd/sites-available') }
   end
   directory "/etc/httpd/sites-enabled" do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode '0700'
+    user 'root'
     action :create
     not_if { ::File.directory?('/etc/httpd/sites-enabled') }
   end
 
   template "/etc/httpd/sites-available/loadbalancer.conf"  do
     source 'loadbalancer.conf.erb'
-    owner node['hopsworks']['user']
-    group node['hopsworks']['group']
-    mode "700"
+    user 'root'
     action :create
     variables({
       :load_balancer_log_dir => "/var/log/httpd",
@@ -95,8 +86,7 @@ when "rhel"
   end
 
   bash "configure load balancer" do
-    user node['hopsworks']['user']
-    group node['hopsworks']['group']
+    user 'root'
     code <<-EOF
       echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf 
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
