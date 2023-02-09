@@ -9,7 +9,7 @@ kagent_keys "#{homedir}" do
   action :get_publickey
 end  
 
-consul_service "Registering Glassfish with Consul" do
+consul_service "Registering Glassfish worker with Consul" do
   service_definition "consul/glassfish-worker-consul.hcl.erb"
   reload_consul false
   action :register

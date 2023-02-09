@@ -445,6 +445,15 @@ glassfish_secure_admin domain_name do
   action :enable
 end
 
+# Create a configuration b/c server-config can not be used for HA
+glassfish_asadmin "copy-config default-config #{payara_config}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
 props =  {
   'datasource-jndi' => jndiDB,
   'password-column' => 'password',
@@ -536,6 +545,7 @@ end
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+   target "#{payara_config}"
    username username
    admin_port admin_port
    secure false
@@ -620,6 +630,7 @@ end
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -653,6 +664,7 @@ if exists_local("hops_airflow", "default")
   glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
     domain_name domain_name
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    target "#{payara_config}"
     username username
     admin_port admin_port
     secure false
@@ -681,6 +693,7 @@ end
 glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -708,6 +721,7 @@ end
 glassfish_asadmin "create-jdbc-resource --connectionpoolid hopsworksPool --description \"Resource for Hopsworks Pool\" jdbc/hopsworks" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -735,6 +749,7 @@ end
 glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --description \"Resource for Hopsworks EJB Timers Pool\" jdbc/hopsworksTimers" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -744,6 +759,7 @@ end
 glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
