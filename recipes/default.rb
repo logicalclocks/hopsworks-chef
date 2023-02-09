@@ -542,10 +542,9 @@ glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['i
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners | grep 'https-int-list'"
 end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
+glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
    domain_name domain_name
    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   target "#{payara_config}"
    username username
    admin_port admin_port
    secure false
@@ -627,10 +626,9 @@ glassfish_conf.each do |property, value|
   end
 end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
+glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -661,10 +659,9 @@ if exists_local("hops_airflow", "default")
     secure false
   end
 
-  glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
+  glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
     domain_name domain_name
     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-    target "#{payara_config}"
     username username
     admin_port admin_port
     secure false
@@ -690,10 +687,9 @@ glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --
   secure false
 end
 
-glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
+glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -718,10 +714,9 @@ glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --
   secure false
 end
 
-glassfish_asadmin "create-jdbc-resource --connectionpoolid hopsworksPool --description \"Resource for Hopsworks Pool\" jdbc/hopsworks" do
+glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid hopsworksPool --description \"Resource for Hopsworks Pool\" jdbc/hopsworks" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -746,20 +741,18 @@ glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --
   secure false
 end
 
-glassfish_asadmin "create-jdbc-resource --connectionpoolid ejbTimerPool --description \"Resource for Hopsworks EJB Timers Pool\" jdbc/hopsworksTimers" do
+glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid ejbTimerPool --description \"Resource for Hopsworks EJB Timers Pool\" jdbc/hopsworksTimers" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources | grep 'jdbc/hopsworksTimers$'"
 end
 
-glassfish_asadmin "create-managed-executor-service --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
+glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  target "#{payara_config}"
   username username
   admin_port admin_port
   secure false
@@ -851,7 +844,7 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
     ldap_properties="#{ldap_properties}:#{node['ldap']['additional_props']}"
   end
 
-  glassfish_asadmin "create-jndi-resource --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral}#{ldap_properties} ldap/LdapResource" do
+  glassfish_asadmin "create-jndi-resource --target #{payara_config} --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral}#{ldap_properties} ldap/LdapResource" do
      domain_name domain_name
      password_file "#{domains_dir}/#{domain_name}_admin_passwd"
      username username
