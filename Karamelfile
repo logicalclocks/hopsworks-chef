@@ -24,8 +24,9 @@ dependencies:
       - hops::dn
       - hopslog::default
   - recipe: hopsworks::master
-    global:
+    local:
       - hopsworks::default
+    global:
       - hopsworks::slave
   - recipe: hopsworks::slave
     global:
