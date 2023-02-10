@@ -235,7 +235,8 @@ jdbc_resources = ['jdbc/airflow',
   'jdbc/hopsworksTimers', 
   'concurrent/jupyterExecutorService', 
   'concurrent/kagentExecutorService', 
-  'concurrent/condaExecutorService']
+  'concurrent/condaExecutorService',
+  'mail/BBCMail']
 
 glassfish_nodes.each do |val|
   glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
