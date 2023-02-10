@@ -21,15 +21,6 @@ admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
-# Create a configuration b/c server-config can not be used for HA
-glassfish_asadmin "copy-config default-config #{payara_config}" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
 props =  {
   'datasource-jndi' => jndiDB,
   'password-column' => 'password',
