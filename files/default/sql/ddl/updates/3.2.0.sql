@@ -24,3 +24,57 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
 ALTER TABLE `hopsworks`.`executions` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs NOT NULL;
+
+CREATE TABLE IF NOT EXISTS `feature_monitoring_configuration` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_group_id` INT(11),
+    `feature_view_id` INT(11),
+    `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
+    `enabled` BOOLEAN DEFAULT TRUE,
+    `feature_monitoring_type` tinyint(4) NOT NULL,
+    `alert_config` VARCHAR(63) COLLATE latin1_general_cs NOT NULL, -- dummy this should become ref to another table
+    `scheduler_config` VARCHAR(63) COLLATE latin1_general_cs NOT NULL, -- dummy this should become ref to another table
+    PRIMARY KEY (`id`),
+    KEY (`feature_name`),
+    CONSTRAINT `fg_monitoring_config_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fv_monitoring_config_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `monitoring_window_builder` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_monitoring_config_id` INT(11) NOT NULL,
+    `window_builder_type` INT(11) NOT NULL,
+    `specific_id` INT(11),
+    `time_offset` VARCHAR(63),
+    `window_length` VARCHAR(63),
+    `row_percentage` INT(11),
+    `specific_value` FLOAT,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fm_window_builder_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `descriptive_statistics_monitoring` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_monitoring_config_id` INT(11) NOT NULL,
+    `strict` BOOLEAN DEFAULT FALSE,
+    `relative` BOOLEAN DEFAULT FALSE,
+    `threshold` FLOAT,
+    `compare_on` INT(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fm_descriptive_stats_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `feature_monitoring_config_id` INT(11) NOT NULL,
+    `job_id` INT(11) NOT NULL,
+    `execution_id` INT(11) NOT NULL,
+    `monitoring_time` timestamp DEFAULT CURRENT_TIMESTAMP,
+    `triggered_alert` BOOLEAN DEFAULT FALSE,
+    `result_type` tinyint(1) NOT NULL,
+    `detection_stats_id` INT(11) NOT NULL,
+    `reference_stats_id` INT(11),
+    `difference` FLOAT,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `config_monitoring_result_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
