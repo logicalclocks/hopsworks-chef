@@ -96,6 +96,7 @@ when "rhel"
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
       systemctl restart httpd
     EOF
+    not_if { ::File.exist?('/etc/httpd/sites-enabled/loadbalancer.conf') }
   end
 end
 
