@@ -23,6 +23,7 @@ admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
+node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
@@ -258,6 +259,7 @@ glassfish_nodes.each do |val|
     username username
     admin_port admin_port
     secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-resource-refs #{deployment_group} | grep #{val}"
   end
 end
 
