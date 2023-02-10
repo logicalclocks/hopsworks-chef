@@ -11,7 +11,15 @@ payara_config = "hopsworks-config"
 deployment_group = "hopsworks-dg"
 master_instance = "master-instance"
 
+domain_name= node['hopsworks']['domain_name']
+domains_dir = node['glassfish']['domains_dir']
+admin_port = 4848
+username=node['hopsworks']['admin']['user']
+password=node['hopsworks']['admin']['password']
+glassfish_nodes=node['hopsworks']['nodes']
+
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
+admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
@@ -29,13 +37,6 @@ kagent_keys "#{homedir}" do
   cb_recipe "master"  
   action :return_publickey
 end  
-
-domain_name= node['hopsworks']['domain_name']
-domains_dir = node['glassfish']['domains_dir']
-admin_port = 4848
-username=node['hopsworks']['admin']['user']
-password=node['hopsworks']['admin']['password']
-glassfish_nodes=node['hopsworks']['nodes']
 
 # Install load balancer
 case node['platform_family']
@@ -105,35 +106,42 @@ glassfish_asadmin "copy-config default-config #{payara_config}" do
   username username
   admin_port admin_port
   secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
 end
 
 hopsworks_configure_server "glassfish_configure_network" do
   domain_name domain_name
+  domains_dir domains_dir
   password_file password_file
   username username
   admin_port admin_port
   target "#{payara_config}"
   asadmin asadmin
+  admin_pwd admin_pwd
   action :glassfish_configure_network
 end
 
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
+  domains_dir domains_dir
   password_file password_file
   username username
   admin_port admin_port
   target "#{payara_config}"
   asadmin asadmin
+  admin_pwd admin_pwd
   action :glassfish_configure
 end
 
 hopsworks_configure_server "glassfish_configure_monitoring" do
   domain_name domain_name
+  domains_dir domains_dir
   password_file password_file
   username username
   admin_port admin_port
   target "#{payara_config}"
   asadmin asadmin
+  admin_pwd admin_pwd
   action :glassfish_configure_monitoring
 end
 
@@ -159,6 +167,7 @@ glassfish_asadmin "create-local-instance --config #{payara_config} #{master_inst
   username username
   admin_port admin_port
   secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-instances | grep #{master_instance}"
 end
 
 #
@@ -175,6 +184,7 @@ glassfish_nodes.each_with_index do |val, index|
     username username
     admin_port admin_port
     secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-nodes | grep worker#{index}"
   end
   glassfish_asadmin "create-instance --config #{payara_config} --node worker#{index} instance#{index}" do
     domain_name domain_name
@@ -182,6 +192,7 @@ glassfish_nodes.each_with_index do |val, index|
     username username
     admin_port admin_port
     secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-instances | grep instance#{index}"
   end
 end
 
@@ -191,6 +202,7 @@ glassfish_asadmin "create-deployment-group #{deployment_group}" do
   username username
   admin_port admin_port
   secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-deployment-groups | grep #{deployment_group}"
 end
 
 glassfish_asadmin "add-instance-to-deployment-group --instance #{master_instance} --deploymentgroup #{deployment_group}" do
