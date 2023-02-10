@@ -8,7 +8,7 @@
   
   <Proxy balancer://payara>
       <% @glassfish_nodes.each do |ipaddress| %>
-        BalancerMember <%= "https://#{ipaddress}:8181" %>
+        BalancerMember <%= "https://#{ipaddress}:#{node['hopsworks']['internal']['port']}" %>
       <% end %>
   </Proxy>
 
