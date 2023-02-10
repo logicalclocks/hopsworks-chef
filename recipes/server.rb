@@ -47,23 +47,6 @@ props =  {
    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
  end
 
- cProps = {
-     'datasource-jndi' => jndiDB,
-     'password-column' => 'password',
-     'encoding' => 'Hex',
-     'group-table' => 'hopsworks.users_groups',
-     'user-table' => 'hopsworks.users',
-     'group-name-column' => 'group_name',
-     'user-name-column' => 'email',
-     'group-table-user-name-column' => 'email',
-     'otp-secret-column' => 'secret',
-     'two-factor-column' => 'two_factor',
-     'user-status-column' => 'status',
-     'yubikey-table' => 'hopsworks.yubikey',
-     'variables-table' => 'hopsworks.variables',
-     'user-account-type-column' => 'mode'
- }
-
 glassfish_asadmin "set configs.config.#{payara_config}.cdi-service.enable-concurrent-deployment=true" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"

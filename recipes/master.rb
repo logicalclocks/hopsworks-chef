@@ -64,7 +64,7 @@ when "rhel"
     retries 10
     retry_delay 30
   end
-  directory "/etc/httpd/sites-available /etc/httpd/sites-enabled" do
+  directory "/etc/httpd/sites-available" do
     user 'root'
     action :create
     not_if { ::File.directory?('/etc/httpd/sites-available') }
@@ -97,6 +97,79 @@ end
 
 # Create a configuration b/c server-config can not be used for HA
 glassfish_asadmin "copy-config default-config #{payara_config}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+# configure http listner
+glassfish_asadmin "set configs.config.#{payara_config}.cdi-service.enable-concurrent-deployment=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "set configs.config.#{payara_config}.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+# add new network listener for Hopsworks to listen on an internal port
+glassfish_asadmin "create-protocol --securityenabled=true --target #{payara_config} https-internal" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols #{payara_config} | grep 'https-internal'"
+end
+
+glassfish_asadmin "create-http --default-virtual-server server --target #{payara_config} https-internal" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get #{payara_config}.network-config.protocols.protocol.https-internal.* | grep 'http.uri-encoding'"
+end
+
+glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target #{payara_config} --protocol https-internal https-int-list" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners #{payara_config} | grep 'https-int-list'"
+end
+
+# Enable JMX metrics
+# https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
+glassfish_asadmin "set-monitoring-configuration --target #{payara_config} --enabled=true --mbeansenabled=true --amxenabled=true --jmxlogfrequency=15 --jmxlogfrequencyunit=SECONDS --dynamic=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+# Enable Rest metrics
+# --securityenabled=true Configured file realm com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm is not supported.
+glassfish_asadmin "set-metrics-configuration --target #{payara_config} --enabled=true --dynamic=true" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "set-monitoring-level --target #{payara_config} --module=jvm,connector-service,connector-connection-pool,jdbc-connection-pool,web-services-container,thread-pool,http-service,security,jersey,transaction-service,jpa,web-container --level=HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH,HIGH" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -194,8 +267,15 @@ glassfish_asadmin "start-deployment-group --instancetimeout 120 #{deployment_gro
   secure false
 end
 
-#target in create not working so create a ref to the resource
-jdbc_resources = ['jdbc/airflow', 'jdbc/featurestore', 'jdbc/hopsworks', 'jdbc/hopsworksTimers']
+# Resources created in default, create a reference to the resources in the new config
+# Also target in create does not work
+jdbc_resources = ['jdbc/airflow', 
+  'jdbc/featurestore', 
+  'jdbc/hopsworks', 
+  'jdbc/hopsworksTimers', 
+  'concurrent/jupyterExecutorService', 
+  'concurrent/kagentExecutorService', 
+  'concurrent/condaExecutorService']
 
 glassfish_nodes.each do |val|
   glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
