@@ -1,4 +1,13 @@
 action :glassfish_configure_network do 
+
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+
   glassfish_asadmin "set configs.config.#{target}.cdi-service.enable-concurrent-deployment=true" do
     domain_name domain_name
     password_file password_file
@@ -45,6 +54,15 @@ action :glassfish_configure_network do
 end
 
 action :glassfish_configure_monitoring do 
+
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+
   # Enable JMX metrics
   # https://glassfish.org/docs/5.1.0/administration-guide/monitoring.html
   glassfish_asadmin "set-monitoring-configuration --target #{target} --enabled=true --mbeansenabled=true --amxenabled=true --jmxlogfrequency=15 --jmxlogfrequencyunit=SECONDS --dynamic=true" do
@@ -75,6 +93,15 @@ action :glassfish_configure_monitoring do
 end
 
 action :glassfish_configure_logging do 
+
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+
   http_logging_conf = {
     # Enable http logging
     "#{target}.http-service.access-logging-enabled" => 'true',
@@ -99,6 +126,16 @@ action :glassfish_configure_logging do
 end
 
 action :glassfish_configure do 
+
+  domain_name=new_resource.domain_name
+  domains_dir=new_resource.domains_dir
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+
   glassfish_conf = {
     "#{target}.security-service.default-realm" => 'kthfsrealm',
     # Jobs in Hopsworks use the Timer service
