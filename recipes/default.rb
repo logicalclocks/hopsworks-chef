@@ -458,6 +458,7 @@ props =  {
 }
 
  glassfish_auth_realm "#{realmname}" do
+   target "server-config"
    realm_name "#{realmname}"
    jaas_context "jdbcRealm"
    properties props

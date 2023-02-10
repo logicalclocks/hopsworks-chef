@@ -90,7 +90,7 @@ glassfish_asadmin "create-protocol --securityenabled=true --target #{payara_conf
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols #{payara_config} | grep 'https-internal'"
 end
 
-glassfish_asadmin "create-http --default-virtual-server #{payara_config} --target #{payara_config} https-internal" do
+glassfish_asadmin "create-http --default-virtual-server server --target #{payara_config} https-internal" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -106,15 +106,6 @@ glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['i
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners #{payara_config} | grep 'https-int-list'"
-end
-
-glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services #{payara_config} | grep 'conda'"
 end
 
 glassfish_conf = {
@@ -192,6 +183,15 @@ glassfish_conf.each do |property, value|
   end
 end
 
+glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+ not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services #{payara_config} | grep 'conda'"
+end
+
 glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --longrunningtasks=true --corepoolsize=10 --maximumpoolsize=200 --keepaliveseconds=60 --taskqueuecapacity=10000 concurrent/kagentExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -201,121 +201,6 @@ glassfish_asadmin "create-managed-executor-service --target #{payara_config} --e
  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-managed-executor-services #{payara_config} | grep 'kagent'"
 end
 
-airflow_exists = false
-if exists_local("hops_airflow", "default")
-  airflow_exists = true
-  # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
-  # connection pool for Airflow
-
-  # Drop Existing airflowPool connection pool and recreate it
-  glassfish_asadmin "delete-jdbc-connection-pool --cascade airflowPool" do
-    domain_name domain_name
-    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-    username username
-    admin_port admin_port
-    secure false
-    only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'airflowPool$'"
-  end
-
-  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true airflowPool" do
-    domain_name domain_name
-    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-    username username
-    admin_port admin_port
-    secure false
-  end
-
-  glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
-    domain_name domain_name
-    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-    username username
-    admin_port admin_port
-    secure false
-    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources #{payara_config} | grep 'jdbc/airflow$'"
-  end
-end
-
-# Drop Existing featureStore connection pool and recreate it
-glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'featureStorePool$'"
-end
-
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=\"#{node['featurestore']['hopsworks_url'].gsub(":", "\\:")}\":useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources #{payara_config} | grep 'jdbc/featurestore$'"
-end
-
-# Drop Existing hopsworksPool connection pool and recreate it
-glassfish_asadmin "delete-jdbc-connection-pool --cascade hopsworksPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'hopsworksPool$'"
-end
-
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true hopsworksPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid hopsworksPool --description \"Resource for Hopsworks Pool\" jdbc/hopsworks" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources #{payara_config} | grep 'jdbc/hopsworks$'"
-end
-
-# Drop Existing ejbTimerPool connection pool and recreate it
-glassfish_asadmin "delete-jdbc-connection-pool --cascade ejbTimerPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools #{payara_config} | grep 'ejbTimerPool$'"
-end
-
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks EJB Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/glassfish_timers\":useSSL=false:allowPublicKeyRetrieval=true ejbTimerPool" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-jdbc-resource --target #{payara_config} --connectionpoolid ejbTimerPool --description \"Resource for Hopsworks EJB Timers Pool\" jdbc/hopsworksTimers" do
-  domain_name domain_name
-  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jdbc-resources #{payara_config} | grep 'jdbc/hopsworksTimers$'"
-end
-
 glassfish_asadmin "create-managed-executor-service --target #{payara_config} --enabled=true --threadpriority #{node['hopsworks']['managed_executor_pools']['jupyter']['threadpriority']} --longrunningtasks=true --corepoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['corepoolsize']} --maximumpoolsize #{node['hopsworks']['managed_executor_pools']['jupyter']['maximumpoolsize']} --taskqueuecapacity #{node['hopsworks']['managed_executor_pools']['jupyter']['taskqueuecapacity']} --description \"Hopsworks Jupyter Executor Service\" concurrent/jupyterExecutorService" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -323,40 +208,6 @@ glassfish_asadmin "create-managed-executor-service --target #{payara_config} --e
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-managed-executor-services #{payara_config} | grep 'concurrent/jupyterExecutorService$'"
-end
-
-logging_conf = {
-  'com.sun.enterprise.server.logging.GFFileHandler.logtoFile' => true,
-  'com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes' => node['hopsworks']['logsize'],
-  # the main logger doesn't work either.
-  # These are just some random number, we are not enabling this logger. However if they are not set
-  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationLimitInBytes' => 2000000,
-  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.rotationTimelimitInMinutes' => 0,
-  'fish.payara.enterprise.server.logging.PayaraNotificationFileHandler.maxHistoryFiles' => 3
-}
-
-logging_conf.each do |property, value|
-  glassfish_asadmin "set-log-attributes #{property}=#{value}" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   secure false
-  end
-end
-
-loglevels_conf = {
-  'fish.payara.nucleus.notification.log.LogNotifierService' => 'SEVERE'
-}
-
-loglevels_conf.each do |property, value|
-  glassfish_asadmin "set-log-levels #{property}=#{value}" do
-    domain_name domain_name
-    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-    username username
-    admin_port admin_port
-    secure false
-  end
 end
 
 # Enable JMX metrics
@@ -387,62 +238,6 @@ glassfish_asadmin "set-monitoring-level --target #{payara_config} --module=jvm,c
   secure false
 end
 
-if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
-  ldap_jndilookupname= node['ldap']['jndilookupname']
-  ldap_jndilookupname=ldap_jndilookupname.gsub('=', '\\\\=').gsub(',', '\\\\,')
-  ldap_provider_url=node['ldap']['provider_url']
-  ldap_provider_url=ldap_provider_url.gsub(':', '\\\\\:').gsub('.', '\\\\.')
-  ldap_attr_binary=node['ldap']['attr_binary_val']
-  ldap_sec_auth=node['ldap']['security_auth']
-  ldap_security_auth=ldap_sec_auth.to_s.empty? ? "" : ":java.naming.security.authentication=#{ldap_sec_auth}"
-  ldap_sec_principal=node['ldap']['security_principal']
-  ldap_sec_principal=ldap_sec_principal.gsub('=', '\\\\\=')
-  ldap_security_principal=ldap_sec_principal.to_s.empty? ? "" : ":java.naming.security.principal=#{ldap_sec_principal}"
-  ldap_sec_credentials=node['ldap']['security_credentials']
-  ldap_security_credentials=ldap_sec_credentials.to_s.empty? ? "" : ":java.naming.security.credentials=#{ldap_sec_credentials}"
-  ldap_ref=node['ldap']['referral']
-  ldap_referral=ldap_ref.to_s.empty? ? "" : ":java.naming.referral=#{ldap_ref}"
-  # This is needed because while ldap_jdilookupname is used as an argument to create-jndi-resource command
-  # the ldap_basedn is used as Java property (key=value) so we need to escape \ again :)
-  ldap_basedn = ldap_jndilookupname.gsub('=', '\=')
-  ldap_properties=":hopsworks.ldap.basedn=#{ldap_basedn}"
-  unless node['ldap']['additional_props'].empty?
-    ldap_properties="#{ldap_properties}:#{node['ldap']['additional_props']}"
-  end
-
-  glassfish_asadmin "create-jndi-resource --target #{payara_config} --restype javax.naming.ldap.LdapContext --factoryclass com.sun.jndi.ldap.LdapCtxFactory --jndilookupname #{ldap_jndilookupname} --property java.naming.provider.url=#{ldap_provider_url}:java.naming.ldap.attributes.binary=#{ldap_attr_binary}#{ldap_security_auth}#{ldap_security_principal}#{ldap_security_credentials}#{ldap_referral}#{ldap_properties} ldap/LdapResource" do
-     domain_name domain_name
-     password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-     username username
-     admin_port admin_port
-     secure false
-     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jndi-resources #{payara_config} | grep 'ldap/LdapResource'"
-  end
-end
-
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty?
-  krb_conf_path = node['kerberos']['krb_conf_path']
-  remote_file "#{theDomain}/config/krb5.conf" do
-    source "file:///#{krb_conf_path}"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    action :create
-  end
-end
-
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty?
-  key_tab_path = node['kerberos']['krb_server_key_tab_path']
-  ket_tab_name = node['kerberos']['krb_server_key_tab_name']
-  remote_file "#{theDomain}/config/#{ket_tab_name}" do
-    source "file:///#{key_tab_path}"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    action :create
-  end
-end
-
 if node['hopsworks']['http_logs']['enabled'].eql? "true"
   http_logging_conf = {
     # Enable http logging
@@ -466,21 +261,6 @@ if node['hopsworks']['http_logs']['enabled'].eql? "true"
     end
   end
 end
-
-hopsworks_mail "gmail" do
-   domain_name domain_name
-   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
-   username username
-   admin_port admin_port
-   action :jndi
-end
-
-# Reload glassfish with new configuration 
-kagent_config "glassfish-domain1" do
-  action :systemd_reload
-end
-
-node.override['glassfish']['asadmin']['timeout'] = 600
 
 if current_version.eql?("") == false
 #
