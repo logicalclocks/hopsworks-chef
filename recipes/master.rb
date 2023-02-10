@@ -95,6 +95,14 @@ when "rhel"
   end
 end
 
+# Create a configuration b/c server-config can not be used for HA
+glassfish_asadmin "copy-config default-config #{payara_config}" do
+  domain_name domain_name
+  password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+  username username
+  admin_port admin_port
+  secure false
+end
 
 glassfish_asadmin "set-hazelcast-configuration --publicaddress #{public_ip}" do
   domain_name domain_name
@@ -103,6 +111,7 @@ glassfish_asadmin "set-hazelcast-configuration --publicaddress #{public_ip}" do
   admin_port admin_port
   secure false
 end
+
 glassfish_asadmin "set-hazelcast-configuration --daspublicaddress #{public_ip}" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
@@ -110,6 +119,7 @@ glassfish_asadmin "set-hazelcast-configuration --daspublicaddress #{public_ip}" 
   admin_port admin_port
   secure false
 end
+
 glassfish_asadmin "create-local-instance --config #{payara_config} #{master_instance}" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
