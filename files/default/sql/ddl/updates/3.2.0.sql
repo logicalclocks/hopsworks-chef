@@ -1,3 +1,9 @@
+ALTER TABLE `hopsworks`.`project`
+    DROP COLUMN `retention_period`,
+    DROP COLUMN `archived`,
+    DROP COLUMN `logs`,
+    DROP COLUMN `deleted`;
+
 CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   `id` int NOT NULL AUTO_INCREMENT,
   `execution_id` int NOT NULL,
