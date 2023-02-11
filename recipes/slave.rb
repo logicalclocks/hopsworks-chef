@@ -14,3 +14,6 @@ consul_service "Registering Glassfish worker with Consul" do
   reload_consul false
   action :register
 end
+
+# deploy frontend if <nodes-dir>/nodes/worker0/instance0/docroot/ exists
+# we do not know the id of the worker and instance

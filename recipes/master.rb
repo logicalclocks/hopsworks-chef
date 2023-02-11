@@ -298,10 +298,9 @@ glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ear:#{node['hopsworks']['version']}"
 end
 
-# Frontend will be copied to <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ and <nodes-dir>/nodes/worker0/instance0/docroot/
-# when creating local-instance and node-ssh
-# This will not work for upgrade. How should we handle deployment in general (frontend and backend) when upgrading?
-# Check the version of the deployed and redeploy if different?
+# Check the version of the deployed and redeploy if different
+# Check if <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ exists before creating local-instance and node-ssh
+# and redeploy frontend if it exists.
 
 glassfish_asadmin "restart-domain" do
   domain_name domain_name
