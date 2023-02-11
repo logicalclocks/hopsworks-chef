@@ -213,7 +213,7 @@ end
 
 # Resources created in default, create a reference to the resources in the new config
 # Also target in create does not work
-jdbc_resources = [
+glassfish_resources = [
   'concurrent/hopsThreadFactory',
   'concurrent/condaExecutorService',
   'concurrent/hopsExecutorService',
@@ -227,7 +227,7 @@ jdbc_resources = [
   'jdbc/hopsworksTimers', 
   'mail/BBCMail']
 
-glassfish_nodes.each do |val|
+glassfish_resources.each do |val|
   glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
     domain_name domain_name
     password_file password_file
