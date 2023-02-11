@@ -149,7 +149,7 @@ glassfish_asadmin "set-hazelcast-configuration --daspublicaddress #{public_ip}" 
   secure false
 end
 
-glassfish_asadmin "create-local-instance --config #{payara_config} --nodedir #{domains_dir} #{master_instance}" do
+glassfish_asadmin "create-local-instance --config #{payara_config} --nodedir #{domains_dir}/nodes #{master_instance}" do
   domain_name domain_name
   password_file password_file
   username username
@@ -166,7 +166,7 @@ end
 # https://github.com/jelastic-jps/glassfish/
 
 glassfish_nodes.each_with_index do |val, index|
-  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{domains_dir} worker#{index}" do
+  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{domains_dir}/nodes worker#{index}" do
     domain_name domain_name
     password_file password_file
     username username
@@ -296,9 +296,10 @@ glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ear:#{node['hopsworks']['version']}"
 end
 
-#Front-end will be copied to <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/
-#and <nodes-dir>/nodes/worker0/instance0/docroot/
-#when creating local-instance and node-ssh
+# Frontend will be copied to <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ and <nodes-dir>/nodes/worker0/instance0/docroot/
+# when creating local-instance and node-ssh
+# This will not work for upgrade. How should we handle deployment in general (frontend and backend) when upgrading?
+# Check the version of the deployed and redeploy if different?
 
 glassfish_asadmin "restart-domain" do
   domain_name domain_name
