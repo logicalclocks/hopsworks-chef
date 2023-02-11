@@ -2,10 +2,10 @@ homedir = node['hopsworks']['user'].eql?("root") ? "/root" : conda_helpers.get_u
 
 # Add the master host's public key, so that it can start/stop the glassworks instance on this node using passwordless ssh.
 kagent_keys "#{homedir}" do
-  cb_user "#{node['hopsworks']['user']}"
-  cb_group "#{node['hopsworks']['group']}"
+  cb_user "#{node['glassfish']['user']}"
+  cb_group "#{node['glassfish']['group']}"
   cb_name "hopsworks"
-  cb_recipe "master"  
+  cb_recipe "default"  
   action :get_publickey
 end  
 

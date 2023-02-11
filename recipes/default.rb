@@ -1170,6 +1170,21 @@ kagent_keys "#{hopsworks_user_home}" do
   action :return_publickey
 end
 
+# For HA we need to generate ssh for glassfish user
+kagent_keys "#{hopsworks_user_home}" do
+  cb_user node['glassfish']['user']
+  cb_group node['glassfish']['group']
+  action :generate
+end
+
+kagent_keys "#{hopsworks_user_home}" do
+  cb_user node['glassfish']['user']
+  cb_group node['glassfish']['group']
+  cb_name "hopsworks"
+  cb_recipe "default"
+  action :return_publickey
+end
+
 if node['kagent']['enabled'].casecmp? "true"
   kagent_config "glassfish-domain1" do
     service "glassfish_#{node['hopsworks']['domain_name']}"

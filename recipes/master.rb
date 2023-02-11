@@ -25,20 +25,6 @@ password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
-kagent_keys "#{homedir}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  action :generate  
-end  
-
-kagent_keys "#{homedir}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  cb_name "hopsworks"
-  cb_recipe "master"  
-  action :return_publickey
-end  
-
 # Install load balancer
 case node['platform_family']
 when "debian"
@@ -163,7 +149,7 @@ glassfish_asadmin "set-hazelcast-configuration --daspublicaddress #{public_ip}" 
   secure false
 end
 
-glassfish_asadmin "create-local-instance --config #{payara_config} #{master_instance}" do
+glassfish_asadmin "create-local-instance --config #{payara_config} --nodedir #{domains_dir} #{master_instance}" do
   domain_name domain_name
   password_file password_file
   username username
@@ -180,7 +166,7 @@ end
 # https://github.com/jelastic-jps/glassfish/
 
 glassfish_nodes.each_with_index do |val, index|
-  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current worker#{index}" do
+  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{domains_dir} worker#{index}" do
     domain_name domain_name
     password_file password_file
     username username
@@ -225,31 +211,20 @@ glassfish_nodes.each_with_index do |val, index|
   end
 end
 
-glassfish_asadmin "restart-domain" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "start-deployment-group --instancetimeout 120 #{deployment_group}" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
 # Resources created in default, create a reference to the resources in the new config
 # Also target in create does not work
-jdbc_resources = ['jdbc/airflow', 
+jdbc_resources = [
+  'concurrent/hopsThreadFactory',
+  'concurrent/condaExecutorService',
+  'concurrent/hopsExecutorService',
+  'concurrent/jupyterExecutorService',
+  'concurrent/condaScheduledExecutorService',
+  'concurrent/hopsScheduledExecutorService',
+  'concurrent/kagentExecutorService',
+  'jdbc/airflow', 
   'jdbc/featurestore', 
   'jdbc/hopsworks', 
   'jdbc/hopsworksTimers', 
-  'concurrent/jupyterExecutorService', 
-  'concurrent/kagentExecutorService', 
-  'concurrent/condaExecutorService',
   'mail/BBCMail']
 
 glassfish_nodes.each do |val|
@@ -263,7 +238,77 @@ glassfish_nodes.each do |val|
   end
 end
 
+# delete deployed application referance
+glassfish_asadmin "delete-application-ref --target server hopsworks-ca:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ca:#{node['hopsworks']['version']}"
+end
+
+glassfish_asadmin "delete-application-ref --target server hopsworks-web:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-web:#{node['hopsworks']['version']}"
+end
+
+glassfish_asadmin "delete-application-ref --target server hopsworks-ear:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ear:#{node['hopsworks']['version']}"
+end
+
+# create deployed application referance for the deployment group
+# only checking if the master instance has a referance to the application, b/c list-application-refs does not work for deployment_group
+# this will not work if a new node is added with upgrade
+glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-ca:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ca:#{node['hopsworks']['version']}"
+end
+
+glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-web:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-web:#{node['hopsworks']['version']}"
+end
+
+glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-ear:#{node['hopsworks']['version']}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ear:#{node['hopsworks']['version']}"
+end
+
+#Front-end will be copied to <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/
+#and <nodes-dir>/nodes/worker0/instance0/docroot/
+#when creating local-instance and node-ssh
+
 glassfish_asadmin "restart-domain" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "start-deployment-group --instancetimeout 120 #{deployment_group}" do
   domain_name domain_name
   password_file password_file
   username username
