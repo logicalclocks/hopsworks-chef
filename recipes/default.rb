@@ -1171,13 +1171,14 @@ kagent_keys "#{hopsworks_user_home}" do
 end
 
 # For HA we need to generate ssh for glassfish user
-kagent_keys "#{hopsworks_user_home}" do
+glassfish_user_home = conda_helpers.get_user_home(node['glassfish']['user'])
+kagent_keys "#{glassfish_user_home}" do
   cb_user node['glassfish']['user']
   cb_group node['glassfish']['group']
   action :generate
 end
 
-kagent_keys "#{hopsworks_user_home}" do
+kagent_keys "#{glassfish_user_home}" do
   cb_user node['glassfish']['user']
   cb_group node['glassfish']['group']
   cb_name "hopsworks"
