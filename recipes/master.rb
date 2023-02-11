@@ -45,6 +45,7 @@ when "debian"
   bash "configure load balancer" do
     user 'root'
     code <<-EOF
+      sed -i 's/Listen 80$/Listen 1080/' /etc/apache2/ports.conf 
       a2ensite loadbalancer.conf
       a2dissite 000-default.conf
       systemctl restart apache2
@@ -79,6 +80,7 @@ when "rhel"
   bash "configure load balancer" do
     user 'root'
     code <<-EOF
+      sed -i 's/Listen 80$/Listen 1080/' /etc/httpd/conf/httpd.conf
       echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf 
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
       systemctl restart httpd
@@ -245,7 +247,7 @@ glassfish_asadmin "delete-application-ref --target server hopsworks-ca:#{node['h
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ca:#{node['hopsworks']['version']}"
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ca:#{node['hopsworks']['version']}"
 end
 
 glassfish_asadmin "delete-application-ref --target server hopsworks-web:#{node['hopsworks']['version']}" do
@@ -254,7 +256,7 @@ glassfish_asadmin "delete-application-ref --target server hopsworks-web:#{node['
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-web:#{node['hopsworks']['version']}"
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-web:#{node['hopsworks']['version']}"
 end
 
 glassfish_asadmin "delete-application-ref --target server hopsworks-ear:#{node['hopsworks']['version']}" do
@@ -263,7 +265,7 @@ glassfish_asadmin "delete-application-ref --target server hopsworks-ear:#{node['
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ear:#{node['hopsworks']['version']}"
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ear:#{node['hopsworks']['version']}"
 end
 
 # create deployed application referance for the deployment group
