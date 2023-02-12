@@ -251,6 +251,10 @@ attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
           :type => 'string'
 
+attribute "hopsworks/ha/internal/port",
+          :description => "Port that the webserver will listen on for internal calls in HA mode",
+          :type => 'string'
+
 attribute "hopsworks/max_mem",
           :description => "glassfish/max_mem",
           :type => 'string'

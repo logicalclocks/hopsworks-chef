@@ -7,6 +7,7 @@ action :glassfish_configure_network do
   target=new_resource.target
   asadmin=new_resource.asadmin
   admin_pwd=new_resource.admin_pwd
+  internal_port=new_resource.internal_port
 
   glassfish_asadmin "set configs.config.#{target}.cdi-service.enable-concurrent-deployment=true" do
     domain_name domain_name
@@ -43,7 +44,7 @@ action :glassfish_configure_network do
     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get #{target}.network-config.protocols.protocol.https-internal.* | grep 'http.uri-encoding'"
   end
   
-  glassfish_asadmin "create-network-listener --listenerport #{node['hopsworks']['internal']['port']} --threadpool http-thread-pool --target #{target} --protocol https-internal https-int-list" do
+  glassfish_asadmin "create-network-listener --listenerport #{internal_port} --threadpool http-thread-pool --target #{target} --protocol https-internal https-int-list" do
     domain_name domain_name
     password_file password_file
     username username
@@ -212,7 +213,7 @@ action :glassfish_configure do
   end
 end
 
-action :configure_realm do
+action :glassfish_configure_realm do
   domain_name=new_resource.domain_name
   password_file=new_resource.password_file
   username=new_resource.username

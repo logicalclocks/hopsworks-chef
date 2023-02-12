@@ -101,16 +101,15 @@ glassfish_asadmin "copy-config default-config #{payara_config}" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
 end
 
-hopsworks_configure_server "configure_realm" do
+hopsworks_configure_server "glassfish_configure_realm" do
   domain_name domain_name
-  domains_dir domains_dir
   password_file password_file
   username username
   admin_port admin_port
   target "#{payara_config}"
   asadmin asadmin
   admin_pwd admin_pwd
-  action :configure_realm
+  action :glassfish_configure_realm
 end
 
 hopsworks_configure_server "glassfish_configure_network" do
@@ -122,6 +121,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   target "#{payara_config}"
   asadmin asadmin
   admin_pwd admin_pwd
+  internal_port 28182
   action :glassfish_configure_network
 end
 
