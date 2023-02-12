@@ -125,6 +125,22 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
+glassfish_network_listener_conf = {
+  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
+  "configs.config.#{tapayara_configrget}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
+  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.admin-listener.enabled" => false,
+}
+
+glassfish_network_listener_conf.each do |property, value|
+  glassfish_asadmin "set #{property}=#{value}" do
+   domain_name domain_name
+   password_file password_file
+   username username
+   admin_port admin_port
+   secure false
+  end
+end
+
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
   domains_dir domains_dir
