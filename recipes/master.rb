@@ -38,6 +38,7 @@ when "debian"
     action :create
     variables({
       :load_balancer_log_dir => "/var/log/apache2",
+      :public_ip => public_ip,
       :glassfish_nodes => glassfish_nodes
     })
   end
@@ -73,6 +74,7 @@ when "rhel"
     action :create
     variables({
       :load_balancer_log_dir => "/var/log/httpd",
+      :public_ip => public_ip,
       :glassfish_nodes => glassfish_nodes
     })
   end

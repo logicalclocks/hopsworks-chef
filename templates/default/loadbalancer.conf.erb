@@ -2,18 +2,12 @@
 
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/html
-
-  SSLEngine on
-  
-  SSLCertificateFile /srv/hops/domains/domain1/config/certificate_bundle.pem
-  SSLCertificateKeyFile /srv/hops/domains/domain1/config/certificate_bundle.pem
-
-  SSLProxyEngine on
   
   ErrorLog <%= @load_balancer_log_dir %>/error.log
   CustomLog <%= @load_balancer_log_dir %>/access.log combined
   
   <Proxy balancer://hopsworkscluster>
+        BalancerMember <%= "https://#{public_ip}:#{node['hopsworks']['internal']['port']}" %>
       <% @glassfish_nodes.each do |ipaddress| %>
         BalancerMember <%= "https://#{ipaddress}:#{node['hopsworks']['internal']['port']}" %>
       <% end %>
