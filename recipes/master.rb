@@ -125,10 +125,12 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
+# temp https-internal.security-enabled=false until proxy ssl is fixed
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.admin-listener.enabled" => false,
+  "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false
 }
 
 glassfish_network_listener_conf.each do |property, value|
