@@ -121,7 +121,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   target "#{payara_config}"
   asadmin asadmin
   admin_pwd admin_pwd
-  internal_port 28182
+  internal_port node['hopsworks']['ha']['internal']['port']
   action :glassfish_configure_network
 end
 
