@@ -26,7 +26,8 @@ action :glassfish_configure_network do
   end
   
   # add new network listener for Hopsworks to listen on an internal port
-  glassfish_asadmin "create-protocol --securityenabled=true --target #{target} https-internal" do
+  # https not enabled untill proxy is fixed for ssl
+  glassfish_asadmin "create-protocol --securityenabled=false --target #{target} https-internal" do
     domain_name domain_name
     password_file password_file
     username username
@@ -237,7 +238,7 @@ action :glassfish_configure_realm do
   }
   
    glassfish_auth_realm "#{realmname}" do
-     target "server-config"
+     target target
      realm_name "#{realmname}"
      jaas_context "jdbcRealm"
      properties props
