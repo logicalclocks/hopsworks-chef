@@ -53,7 +53,7 @@ when "debian"
     EOF
   end
 when "rhel"
-  package "httpd" do
+  package ["httpd", "mod_ssl"] do
     retries 10
     retry_delay 30
   end
@@ -82,8 +82,8 @@ when "rhel"
   bash "configure load balancer" do
     user 'root'
     code <<-EOF
-      sed -i 's/Listen 80$/Listen 1080/' /etc/httpd/conf/httpd.conf
-      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf 
+      sed -i 's/Listen 443 https$/Listen 4443 https/' /etc/httpd/conf.d/ssl.conf
+      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf.d/ssl.conf
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
       systemctl restart httpd
     EOF
