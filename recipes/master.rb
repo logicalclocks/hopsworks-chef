@@ -82,8 +82,8 @@ when "rhel"
   bash "configure load balancer" do
     user 'root'
     code <<-EOF
-      sed -i 's/Listen 443 https$/Listen 4443 https/' /etc/httpd/conf.d/ssl.conf
-      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf.d/ssl.conf
+      sed -i 's/Listen 80$/Listen 1080/' /etc/httpd/conf/httpd.conf
+      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf
       ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
       systemctl restart httpd
     EOF
@@ -99,6 +99,18 @@ glassfish_asadmin "copy-config default-config #{payara_config}" do
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
+hopsworks_configure_server "configure_realm" do
+  domain_name domain_name
+  domains_dir domains_dir
+  password_file password_file
+  username username
+  admin_port admin_port
+  target "#{payara_config}"
+  asadmin asadmin
+  admin_pwd admin_pwd
+  action :configure_realm
 end
 
 hopsworks_configure_server "glassfish_configure_network" do
@@ -153,7 +165,9 @@ glassfish_asadmin "set-hazelcast-configuration --daspublicaddress #{public_ip}" 
   secure false
 end
 
-glassfish_asadmin "create-local-instance --config #{payara_config} --nodedir #{domains_dir}/nodes #{master_instance}" do
+# --nodedir #{domains_dir}/nodes will fail to start and need restarting from the node
+# start-local-instance --node localhost-domain1 --nodedir #{domains_dir}/nodes --sync normal --timeout 120 master-instance
+glassfish_asadmin "create-local-instance --config #{payara_config} #{master_instance}" do
   domain_name domain_name
   password_file password_file
   username username
@@ -168,9 +182,9 @@ end
 # https://dzone.com/articles/configure-a-glassfish-cluster-with-automatic-load
 # docker
 # https://github.com/jelastic-jps/glassfish/
-
+# --nodedir #{domains_dir}/nodes will fail to start and need restarting from the node
 glassfish_nodes.each_with_index do |val, index|
-  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{domains_dir}/nodes worker#{index}" do
+  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current worker#{index}" do
     domain_name domain_name
     password_file password_file
     username username

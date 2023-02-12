@@ -211,3 +211,40 @@ action :glassfish_configure do
     end
   end
 end
+
+action :configure_realm do
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+  realmname = "kthfsrealm"
+  jndiDB = "jdbc/hopsworks"
+  props =  {
+    'datasource-jndi' => jndiDB,
+    'password-column' => 'password',
+    'group-table' => 'hopsworks.users_groups',
+    'user-table' => 'hopsworks.users',
+    'group-name-column' => 'group_name',
+    'user-name-column' => 'email',
+    'group-table-user-name-column' => 'email',
+    'encoding' => 'Hex',
+    'digestrealm-password-enc-algorithm' => 'SHA-256',
+    'digest-algorithm' => 'SHA-256'
+  }
+  
+   glassfish_auth_realm "#{realmname}" do
+     target "server-config"
+     realm_name "#{realmname}"
+     jaas_context "jdbcRealm"
+     properties props
+     domain_name domain_name
+     password_file password_file
+     username username
+     admin_port admin_port
+     secure false
+     classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
+   end
+end
