@@ -102,6 +102,51 @@ glassfish_asadmin "copy-config default-config #{payara_config}" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
 end
 
+glassfish_asadmin "delete-jvm-options --target #{deployment_group} -Xmx512m" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
+glassfish_asadmin "delete-jvm-options --target #{deployment_group} -Xms1024m" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
+glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xss1500k" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
+glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xms1024m" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
+glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xmx3000m" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+end
+
 hopsworks_configure_server "glassfish_configure_realm" do
   domain_name domain_name
   password_file password_file
@@ -279,32 +324,59 @@ glassfish_resources.each do |val|
   end
 end
 
-# delete deployed application referance
-glassfish_asadmin "delete-application-ref --target server hopsworks-ca:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks-ear" do
+  component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+  target "server"
+  version current_version
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ca:#{node['hopsworks']['version']}"
+  action :undeploy
+  retries 1
+  keep_state true
+  enabled true
+  secure true
+  ignore_failure true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
-glassfish_asadmin "delete-application-ref --target server hopsworks-web:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks" do
+  component_name "hopsworks-web:#{node['hopsworks']['version']}"
+  target "server"
+  version current_version
+  context_root "/hopsworks"
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-web:#{node['hopsworks']['version']}"
+  secure true
+  action :undeploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  ignore_failure true 
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web server | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\"" 
 end
 
-glassfish_asadmin "delete-application-ref --target server hopsworks-ear:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks-ca" do
+  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+  target "server"
+  version current_version
+  context_root "/hopsworks-ca"
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
-  secure false
-  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ear:#{node['hopsworks']['version']}"
+  secure true
+  action :undeploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  ignore_failure true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 # Check the version of the deployed and redeploy if different
@@ -319,6 +391,26 @@ glassfish_asadmin "restart-domain" do
   secure false
 end
 
+hopsworks_configure_server "change_node_master_password" do
+  username username
+  asadmin asadmin
+  admin_pwd admin_pwd
+  nodedir nodedir
+  node_name "localhost-domain1"
+  current_password "changeit"
+  action :change_node_master_password
+end
+
+#proper way is to run change_node_master_password on each node 
+glassfish_nodes.each_with_index do |val, index|
+  bash "copy master password" do
+    user "#{node['glassfish']['user']}"
+    code <<-EOF
+      scp #{nodedir}/nodes/localhost-domain1/agent/master-password #{val}:#{nodedir}/nodes/worker#{index}/agent/
+    EOF
+  end
+end
+
 glassfish_asadmin "start-deployment-group --instancetimeout 620 #{deployment_group}" do
   domain_name domain_name
   password_file password_file
@@ -327,32 +419,64 @@ glassfish_asadmin "start-deployment-group --instancetimeout 620 #{deployment_gro
   secure false
 end
 
-# create deployed application referance for the deployment group
-# only checking if the master instance has a referance to the application, b/c list-application-refs does not work for deployment_group
-# this will not work if a new node is added with upgrade
-glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-ca:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks-ear" do
+  component_name "hopsworks-ear:#{node['hopsworks']['version']}"
+  target deployment_group
+  url node['hopsworks']['ear_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']
+  version node['hopsworks']['version']
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ca:#{node['hopsworks']['version']}"
+  action :deploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
-glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-web:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks" do
+  component_name "hopsworks-web:#{node['hopsworks']['version']}"
+  target deployment_group
+  url node['hopsworks']['war_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']
+  version node['hopsworks']['version']
+  context_root "/hopsworks"
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-web:#{node['hopsworks']['version']}"
+  action :deploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
 
-glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks-ear:#{node['hopsworks']['version']}" do
+glassfish_deployable "hopsworks-ca" do
+  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+  target deployment_group
+  url node['hopsworks']['ca_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']
+  version node['hopsworks']['version']
+  context_root "/hopsworks-ca"
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ear:#{node['hopsworks']['version']}"
+  action :deploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
