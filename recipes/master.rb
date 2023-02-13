@@ -129,7 +129,6 @@ end
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
-  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.admin-listener.enabled" => false,
   "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false
 }
 
