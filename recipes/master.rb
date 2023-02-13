@@ -21,6 +21,7 @@ glassfish_nodes=node['hopsworks']['nodes']
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
+nodedir= "#{node['glassfish']['install_dir']}/glassfish/versions/current/glassfish"
 
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
@@ -184,7 +185,7 @@ end
 
 # --nodedir #{domains_dir}/nodes will fail to start and need restarting from the node
 # start-local-instance --node localhost-domain1 --nodedir #{domains_dir}/nodes --sync normal --timeout 120 master-instance
-glassfish_asadmin "create-local-instance --config #{payara_config} #{master_instance}" do
+glassfish_asadmin "create-local-instance --config #{payara_config} --nodedir #{nodedir}/nodes #{master_instance}" do
   domain_name domain_name
   password_file password_file
   username username
@@ -201,7 +202,7 @@ end
 # https://github.com/jelastic-jps/glassfish/
 # --nodedir #{domains_dir}/nodes will fail to start and need restarting from the node
 glassfish_nodes.each_with_index do |val, index|
-  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current worker#{index}" do
+  glassfish_asadmin "create-node-ssh --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{nodedir}/nodes worker#{index}" do
     domain_name domain_name
     password_file password_file
     username username
@@ -248,6 +249,7 @@ end
 
 # Resources created in default, create a reference to the resources in the new config
 # Also target in create does not work
+# ldap/resource
 glassfish_resources = [
   'concurrent/hopsThreadFactory',
   'concurrent/condaExecutorService',
@@ -261,6 +263,10 @@ glassfish_resources = [
   'jdbc/hopsworks', 
   'jdbc/hopsworksTimers', 
   'mail/BBCMail']
+
+if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
+  glassfish_resources.push('ldap/LdapResource')
+end
 
 glassfish_resources.each do |val|
   glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
@@ -301,6 +307,26 @@ glassfish_asadmin "delete-application-ref --target server hopsworks-ear:#{node['
   only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs server | grep hopsworks-ear:#{node['hopsworks']['version']}"
 end
 
+# Check the version of the deployed and redeploy if different
+# Check if <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ exists before creating local-instance and node-ssh
+# and redeploy frontend if it exists.
+
+glassfish_asadmin "restart-domain" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+end
+
+glassfish_asadmin "start-deployment-group --instancetimeout 620 #{deployment_group}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+end
+
 # create deployed application referance for the deployment group
 # only checking if the master instance has a referance to the application, b/c list-application-refs does not work for deployment_group
 # this will not work if a new node is added with upgrade
@@ -329,24 +355,4 @@ glassfish_asadmin "create-application-ref --target #{deployment_group} hopsworks
   admin_port admin_port
   secure false
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-application-refs #{master_instance} | grep hopsworks-ear:#{node['hopsworks']['version']}"
-end
-
-# Check the version of the deployed and redeploy if different
-# Check if <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ exists before creating local-instance and node-ssh
-# and redeploy frontend if it exists.
-
-glassfish_asadmin "restart-domain" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "start-deployment-group --instancetimeout 120 #{deployment_group}" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
 end

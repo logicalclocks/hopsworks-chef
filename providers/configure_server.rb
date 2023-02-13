@@ -249,3 +249,25 @@ action :glassfish_configure_realm do
      classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
    end
 end
+
+action :change_node_master_password do
+  username=new_resource.username
+  asadmin=new_resource.asadmin
+  admin_pwd=new_resource.admin_pwd
+  nodedir=new_resource.nodedir
+  node_name=new_resource.node_name
+  current_password=new_resource.current_master_password
+
+  bash "change-master-password" do 
+    user "#{node['glassfish']['user']}"
+    cwd "/tmp"
+    code <<-EOH
+      set -e
+      echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
+      #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --savemasterpassword true --nodedir #{nodedir} #{node_name}
+
+      rm masterpwdfile
+    EOH
+    not_if { ::File.exist?("#{nodedir}/nodes/#{master_instance}/agent/master-password") }
+  end
+end
