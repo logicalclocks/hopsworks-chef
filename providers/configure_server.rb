@@ -260,7 +260,7 @@ action :change_node_master_password do
   nodedir=new_resource.nodedir
   node_name=new_resource.node_name
   current_password=new_resource.current_master_password
-  # Warning: Option "savemasterpassword" is always true for nodes.
+  # Option "savemasterpassword" for change-master-password is always true for nodes.
   bash "change-master-password" do 
     user "#{node['glassfish']['user']}"
     cwd "/tmp"
@@ -268,13 +268,13 @@ action :change_node_master_password do
       set -e
       echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
 
-      /usr/bin/expect <<~EOF
+      /usr/bin/expect <<EOF
       spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --nodedir #{nodedir}/nodes #{node_name}
       expect "Enter the new master password> "
       send "#{node['hopsworks']['master']['password']}\r"
       expect "Enter the new master password again> "
       send "#{node['hopsworks']['master']['password']}\r"
-      expect "$* "
+      expect "$ "
 EOF
 rm masterpwdfile
 EOH

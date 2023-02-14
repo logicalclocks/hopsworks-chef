@@ -465,6 +465,27 @@ if current_version.eql?("") == false
 end    
 
 # change reference of the deployed apps will require restarting instances
+glassfish_deployable "hopsworks-ca" do
+  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+  target deployment_group
+  url node['hopsworks']['ca_url']
+  auth_username node['install']['enterprise']['username']
+  auth_password node['install']['enterprise']['password']
+  version node['hopsworks']['version']
+  context_root "/hopsworks-ca"
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  action :deploy
+  async_replication false
+  retries 1
+  keep_state true
+  enabled true
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+end
+
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target deployment_group
@@ -504,25 +525,4 @@ glassfish_deployable "hopsworks" do
   keep_state true
   enabled true
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
-end
-
-glassfish_deployable "hopsworks-ca" do
-  component_name "hopsworks-ca:#{node['hopsworks']['version']}"
-  target deployment_group
-  url node['hopsworks']['ca_url']
-  auth_username node['install']['enterprise']['username']
-  auth_password node['install']['enterprise']['password']
-  version node['hopsworks']['version']
-  context_root "/hopsworks-ca"
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-  action :deploy
-  async_replication false
-  retries 1
-  keep_state true
-  enabled true
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
