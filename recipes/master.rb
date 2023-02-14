@@ -188,11 +188,38 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
+# http internal for load balancer
+glassfish_asadmin "create-protocol --securityenabled=false --target #{payara_config} http-internal" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-protocols #{payara_config} | grep 'http-internal'"
+end
+
+glassfish_asadmin "create-http --default-virtual-server server --target #{payara_config} http-internal" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} get #{payara_config}.network-config.protocols.protocol.http-internal.* | grep 'http.uri-encoding'"
+end
+
+glassfish_asadmin "create-network-listener --listenerport 28182 --threadpool http-thread-pool --target #{payara_config} --protocol http-internal http-int-list" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-http-listeners #{payara_config} | grep 'http-int-list'"
+end
+
 # temp https-internal.security-enabled=false until proxy ssl is fixed
 # disable server monitoring
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
-  "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false,
   "configs.config.server-config.rest-monitoring-configuration.enabled" => false,
