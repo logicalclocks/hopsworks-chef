@@ -128,13 +128,13 @@ glassfish_asadmin "create-jvm-options --target #{payara_config} -Xss1500k" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xss1500k"
 end
 
-glassfish_asadmin "create-jvm-options --target #{payara_config} -Xmx3000m" do
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xmx4000m" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx3000m"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx4000m"
 end
 
 hopsworks_configure_server "glassfish_configure_realm" do
@@ -310,7 +310,7 @@ glassfish_resources.each do |val|
 end
 
 glassfish_deployable "hopsworks-ear" do
-  component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+  component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target "server"
   version current_version
   domain_name domain_name
@@ -428,7 +428,7 @@ if current_version.eql?("") == false
   end
 
   glassfish_deployable "hopsworks" do
-    component_name "hopsworks-web:#{node['hopsworks']['version']}"
+    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
     target deployment_group
     version current_version
     context_root "/hopsworks"
@@ -446,7 +446,7 @@ if current_version.eql?("") == false
   end
 
   glassfish_deployable "hopsworks-ca" do
-    component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
     target deployment_group
     version current_version
     context_root "/hopsworks-ca"
