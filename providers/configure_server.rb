@@ -8,22 +8,6 @@ action :glassfish_configure_network do
   asadmin=new_resource.asadmin
   admin_pwd=new_resource.admin_pwd
   internal_port=new_resource.internal_port
-
-  glassfish_asadmin "set configs.config.#{target}.cdi-service.enable-concurrent-deployment=true" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-  end
-  
-  glassfish_asadmin "set configs.config.#{target}.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-  end
   
   # add new network listener for Hopsworks to listen on an internal port
   glassfish_asadmin "create-protocol --securityenabled=true --target #{target} https-internal" do
@@ -213,6 +197,22 @@ action :glassfish_configure do
      admin_port admin_port
      secure false
     end
+  end
+
+  glassfish_asadmin "set configs.config.#{target}.cdi-service.enable-concurrent-deployment=true" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure false
+  end
+  
+  glassfish_asadmin "set configs.config.#{target}.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure false
   end
 end
 
