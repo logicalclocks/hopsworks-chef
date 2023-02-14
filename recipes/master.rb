@@ -27,6 +27,11 @@ nodedir= "#{node['glassfish']['install_dir']}/glassfish/versions/current/glassfi
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
+package "expect" do
+  retries 10
+  retry_delay 30
+end
+
 if node['hopsworks']['ha']['loadbalancer'].to_s == "true"
   # Install load balancer
   case node['platform_family']
