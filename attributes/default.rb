@@ -40,7 +40,7 @@ default['hopsworks']['https']['intermediate_ca_url'] = ""
 default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
-default['hopsworks']['ha']['internal']['port']   = 28182
+default['hopsworks']['ha']['loadbalancer']       = "false"
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"

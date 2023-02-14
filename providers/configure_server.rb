@@ -136,6 +136,7 @@ action :glassfish_configure do
   target=new_resource.target
   asadmin=new_resource.asadmin
   admin_pwd=new_resource.admin_pwd
+  override=new_resource.override_props
 
   glassfish_conf = {
     "#{target}.security-service.default-realm" => 'kthfsrealm',
@@ -201,6 +202,8 @@ action :glassfish_configure do
     "#{target}.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds" => node['glassfish']['http']['request-timeout-seconds'],
     "#{target}.network-config.protocols.protocol.http-listener-1.http.request-timeout-seconds" => node['glassfish']['http']['request-timeout-seconds']
   }
+
+  override.each { |k, v| glassfish_conf[k] = v } 
   
   glassfish_conf.each do |property, value|
     glassfish_asadmin "set #{property}=#{value}" do
@@ -264,17 +267,18 @@ action :change_node_master_password do
     code <<-EOH
       set -e
       echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
-      /usr/bin/expect <<EOH1
-        spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --savemasterpassword true --nodedir #{nodedir} #{node_name}
+
+      /usr/bin/expect <<~EOF
+        spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --savemasterpassword true --nodedir #{nodedir}/nodes #{node_name}
         expect "Enter the new master password> "
         send "#{node['hopsworks']['master']['password']}\r"
         expect "Enter the new master password again> "
         send "#{node['hopsworks']['master']['password']}\r"
         expect "$ "
-      EOH1
+      EOF
 
       rm masterpwdfile
     EOH
-    not_if { ::File.exist?("#{nodedir}/nodes/#{master_instance}/agent/master-password") }
+    not_if { ::File.exist?("#{nodedir}/nodes/#{node_name}/agent/master-password") }
   end
 end

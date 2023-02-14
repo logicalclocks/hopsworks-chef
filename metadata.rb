@@ -251,8 +251,8 @@ attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
           :type => 'string'
 
-attribute "hopsworks/ha/internal/port",
-          :description => "Port that the webserver will listen on for internal calls in HA mode",
+attribute "hopsworks/ha/loadbalancer",
+          :description => "Install a load balancer. 'false' (default)",
           :type => 'string'
 
 attribute "hopsworks/max_mem",

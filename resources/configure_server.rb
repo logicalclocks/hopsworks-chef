@@ -13,3 +13,4 @@ attribute :internal_port, :kind_of => Integer, :default => 8182
 attribute :nodedir, :kind_of => String, :default => nil
 attribute :node_name, :kind_of => String, :default => nil
 attribute :current_master_password, :kind_of => String, :default => "changeit"
+attribute :override_props, kind_of => Hash, :default => {}

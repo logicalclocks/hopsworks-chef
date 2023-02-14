@@ -7,9 +7,9 @@
   CustomLog <%= @load_balancer_log_dir %>/access.log combined
   
   <Proxy balancer://hopsworkscluster>
-        BalancerMember <%= "http://#{@public_ip}:#{node['hopsworks']['ha']['internal']['port']}" %>
+        BalancerMember <%= "http://#{@public_ip}:#{node['hopsworks']['internal']['port']}" %>
       <% @glassfish_nodes.each do |ipaddress| %>
-        BalancerMember <%= "http://#{ipaddress}:#{node['hopsworks']['ha']['internal']['port']}" %>
+        BalancerMember <%= "http://#{ipaddress}:#{node['hopsworks']['internal']['port']}" %>
       <% end %>
   </Proxy>
 

@@ -27,69 +27,71 @@ nodedir= "#{node['glassfish']['install_dir']}/glassfish/versions/current/glassfi
 homedir = conda_helpers.get_user_home(node['hopsworks']['user'])
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
-# Install load balancer
-case node['platform_family']
-when "debian"
-  package "apache2" do
-    retries 10
-    retry_delay 30
-  end
-  template "/etc/apache2/sites-available/loadbalancer.conf"  do
-    source 'loadbalancer.conf.erb'
-    user 'root'
-    action :create
-    variables({
-      :load_balancer_log_dir => "/var/log/apache2",
-      :public_ip => public_ip,
-      :glassfish_nodes => glassfish_nodes
-    })
-  end
+if node['hopsworks']['ha']['loadbalancer'].to_s == "true"
+  # Install load balancer
+  case node['platform_family']
+  when "debian"
+    package "apache2" do
+      retries 10
+      retry_delay 30
+    end
+    template "/etc/apache2/sites-available/loadbalancer.conf"  do
+      source 'loadbalancer.conf.erb'
+      user 'root'
+      action :create
+      variables({
+        :load_balancer_log_dir => "/var/log/apache2",
+        :public_ip => public_ip,
+        :glassfish_nodes => glassfish_nodes
+      })
+    end
 
-  bash "configure load balancer" do
-    user 'root'
-    code <<-EOF
-      sed -i 's/Listen 80$/Listen 1080/' /etc/apache2/ports.conf 
-      a2ensite loadbalancer.conf
-      a2dissite 000-default.conf
-      systemctl restart apache2
-    EOF
-  end
-when "rhel"
-  package ["httpd", "mod_ssl"] do
-    retries 10
-    retry_delay 30
-  end
-  directory "/etc/httpd/sites-available" do
-    user 'root'
-    action :create
-    not_if { ::File.directory?('/etc/httpd/sites-available') }
-  end
-  directory "/etc/httpd/sites-enabled" do
-    user 'root'
-    action :create
-    not_if { ::File.directory?('/etc/httpd/sites-enabled') }
-  end
+    bash "configure load balancer" do
+      user 'root'
+      code <<-EOF
+        sed -i 's/Listen 80$/Listen 1080/' /etc/apache2/ports.conf 
+        a2ensite loadbalancer.conf
+        a2dissite 000-default.conf
+        systemctl restart apache2
+      EOF
+    end
+  when "rhel"
+    package ["httpd", "mod_ssl"] do
+      retries 10
+      retry_delay 30
+    end
+    directory "/etc/httpd/sites-available" do
+      user 'root'
+      action :create
+      not_if { ::File.directory?('/etc/httpd/sites-available') }
+    end
+    directory "/etc/httpd/sites-enabled" do
+      user 'root'
+      action :create
+      not_if { ::File.directory?('/etc/httpd/sites-enabled') }
+    end
 
-  template "/etc/httpd/sites-available/loadbalancer.conf"  do
-    source 'loadbalancer.conf.erb'
-    user 'root'
-    action :create
-    variables({
-      :load_balancer_log_dir => "/var/log/httpd",
-      :public_ip => public_ip,
-      :glassfish_nodes => glassfish_nodes
-    })
-  end
+    template "/etc/httpd/sites-available/loadbalancer.conf"  do
+      source 'loadbalancer.conf.erb'
+      user 'root'
+      action :create
+      variables({
+        :load_balancer_log_dir => "/var/log/httpd",
+        :public_ip => public_ip,
+        :glassfish_nodes => glassfish_nodes
+      })
+    end
 
-  bash "configure load balancer" do
-    user 'root'
-    code <<-EOF
-      sed -i 's/Listen 80$/Listen 1080/' /etc/httpd/conf/httpd.conf
-      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf
-      ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
-      systemctl restart httpd
-    EOF
-    not_if { ::File.exist?('/etc/httpd/sites-enabled/loadbalancer.conf') }
+    bash "configure load balancer" do
+      user 'root'
+      code <<-EOF
+        sed -i 's/Listen 80$/Listen 1080/' /etc/httpd/conf/httpd.conf
+        echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf
+        ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
+        systemctl restart httpd
+      EOF
+      not_if { ::File.exist?('/etc/httpd/sites-enabled/loadbalancer.conf') }
+    end
   end
 end
 
@@ -103,31 +105,31 @@ glassfish_asadmin "copy-config default-config #{payara_config}" do
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
 end
 
-glassfish_asadmin "delete-jvm-options --target #{deployment_group} -Xmx512m" do
+glassfish_asadmin "delete-jvm-options --target #{payara_config} -Xmx512m" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xmx512m"
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx512m"
 end
 
-glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xss1500k" do
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xss1500k" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xss1500k"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xss1500k"
 end
 
-glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xmx3000m" do
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xmx3000m" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xmx3000m"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx3000m"
 end
 
 hopsworks_configure_server "glassfish_configure_realm" do
@@ -150,7 +152,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   target "#{payara_config}"
   asadmin asadmin
   admin_pwd admin_pwd
-  internal_port node['hopsworks']['ha']['internal']['port']
+  internal_port node['hopsworks']['internal']['port']
   action :glassfish_configure_network
 end
 
@@ -158,18 +160,11 @@ end
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
-  "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false
+  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.port" => '${HTTP_SSL_LISTENER_PORT}',
+  "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false,
+  "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
+  "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false
 }
-
-glassfish_network_listener_conf.each do |property, value|
-  glassfish_asadmin "set #{property}=#{value}" do
-   domain_name domain_name
-   password_file password_file
-   username username
-   admin_port admin_port
-   secure false
-  end
-end
 
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
@@ -180,6 +175,7 @@ hopsworks_configure_server "glassfish_configure" do
   target "#{payara_config}"
   asadmin asadmin
   admin_pwd admin_pwd
+  override_props glassfish_network_listener_conf
   action :glassfish_configure
 end
 
@@ -275,9 +271,7 @@ glassfish_nodes.each_with_index do |val, index|
   end
 end
 
-# Resources created in default, create a reference to the resources in the new config
-# Also target in create does not work
-# ldap/resource
+# Resources created in default server, so create a reference to the resources in the new config
 glassfish_resources = [
   'concurrent/hopsThreadFactory',
   'concurrent/condaExecutorService',
@@ -289,12 +283,9 @@ glassfish_resources = [
   'jdbc/airflow', 
   'jdbc/featurestore', 
   'jdbc/hopsworks', 
-  'jdbc/hopsworksTimers', 
+  'jdbc/hopsworksTimers',
+  'ldap/LdapResource',
   'mail/BBCMail']
-
-if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
-  glassfish_resources.push('ldap/LdapResource')
-end
 
 glassfish_resources.each do |val|
   glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
@@ -303,6 +294,7 @@ glassfish_resources.each do |val|
     username username
     admin_port admin_port
     secure false
+    only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-resource-refs server | grep #{val}"
     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-resource-refs #{deployment_group} | grep #{val}"
   end
 end
@@ -366,6 +358,7 @@ end
 # Check if <nodes-dir>/nodes/localhost-domain1/master-instance/docroot/ exists before creating local-instance and node-ssh
 # and redeploy frontend if it exists.
 
+#restart only if new
 glassfish_asadmin "restart-domain" do
   domain_name domain_name
   password_file password_file
@@ -380,7 +373,7 @@ hopsworks_configure_server "change_node_master_password" do
   admin_pwd admin_pwd
   nodedir nodedir
   node_name "localhost-domain1"
-  current_password "changeit"
+  current_master_password "changeit"
   action :change_node_master_password
 end
 
@@ -402,6 +395,7 @@ glassfish_asadmin "start-deployment-group --instancetimeout 620 #{deployment_gro
   secure false
 end
 
+# change reference of the deployed apps will require restarting instances
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   target deployment_group
