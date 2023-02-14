@@ -162,13 +162,18 @@ hopsworks_configure_server "glassfish_configure_network" do
 end
 
 # temp https-internal.security-enabled=false until proxy ssl is fixed
+# disable server monitoring
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.port" => '${HTTP_SSL_LISTENER_PORT}',
   "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
-  "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false
+  "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false,
+  "configs.config.server-config.rest-monitoring-configuration.enabled" => false,
+  "configs.config.server-config.monitoring-service.mbean-enabled" => false,
+  "configs.config.server-config.monitoring-service.monitoring-enabled" => false,
+  "configs.config.server-config.microprofile-metrics-configuration.enabled" => false
 }
 
 hopsworks_configure_server "glassfish_configure" do
@@ -318,7 +323,7 @@ glassfish_deployable "hopsworks-ear" do
   enabled true
   secure true
   ignore_failure true
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
 glassfish_deployable "hopsworks" do
@@ -337,7 +342,7 @@ glassfish_deployable "hopsworks" do
   keep_state true
   enabled true
   ignore_failure true 
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web server | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\"" 
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web server | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\"" 
 end
 
 glassfish_deployable "hopsworks-ca" do
@@ -356,7 +361,7 @@ glassfish_deployable "hopsworks-ca" do
   keep_state true
   enabled true
   ignore_failure true
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type ejb server | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 # Check the version of the deployed and redeploy if different
@@ -370,6 +375,7 @@ glassfish_asadmin "restart-domain" do
   username username
   admin_port admin_port
   secure false
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-instances #{deployment_group} | grep -w \"not running\""
 end
 
 hopsworks_configure_server "change_node_master_password" do
@@ -398,7 +404,65 @@ glassfish_asadmin "start-deployment-group --instancetimeout 620 #{deployment_gro
   username username
   admin_port admin_port
   secure false
+  only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-instances #{deployment_group} | grep -w \"not running\""
 end
+
+if current_version.eql?("") == false
+  #
+  # undeploy previous version
+  #
+  glassfish_deployable "hopsworks-ear" do
+    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+    target deployment_group
+    version current_version
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    action :undeploy
+    retries 1
+    keep_state true
+    enabled true
+    secure true
+    ignore_failure true
+  end
+
+  glassfish_deployable "hopsworks" do
+    component_name "hopsworks-web:#{node['hopsworks']['version']}"
+    target deployment_group
+    version current_version
+    context_root "/hopsworks"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true  
+  end
+
+  glassfish_deployable "hopsworks-ca" do
+    component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+    target deployment_group
+    version current_version
+    context_root "/hopsworks-ca"
+    domain_name domain_name
+    password_file "#{domains_dir}/#{domain_name}_admin_passwd"
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true
+  end
+end    
 
 # change reference of the deployed apps will require restarting instances
 glassfish_deployable "hopsworks-ear" do
