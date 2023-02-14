@@ -109,16 +109,7 @@ glassfish_asadmin "delete-jvm-options --target #{deployment_group} -Xmx512m" do
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
-end
-
-glassfish_asadmin "delete-jvm-options --target #{deployment_group} -Xms1024m" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xmx512m"
 end
 
 glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xss1500k" do
@@ -127,16 +118,7 @@ glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xss1500k" do
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
-end
-
-glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xms1024m" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xss1500k"
 end
 
 glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xmx3000m" do
@@ -145,7 +127,7 @@ glassfish_asadmin "create-jvm-options --target #{deployment_group} -Xmx3000m" do
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-configs | grep #{payara_config}"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options | grep -Xmx3000m"
 end
 
 hopsworks_configure_server "glassfish_configure_realm" do
