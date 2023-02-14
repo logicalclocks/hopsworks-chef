@@ -17,6 +17,7 @@ admin_port = 4848
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
 glassfish_nodes=node['hopsworks']['nodes']
+current_version = node['hopsworks']['current_version']
 
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 admin_pwd = "#{domains_dir}/#{domain_name}_admin_passwd"
