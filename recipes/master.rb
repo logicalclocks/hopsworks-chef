@@ -119,22 +119,49 @@ glassfish_asadmin "delete-jvm-options --target #{payara_config} -Xmx512m" do
   only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx512m"
 end
 
-glassfish_asadmin "create-jvm-options --target #{payara_config} -Xss1500k" do
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xss#{node['glassfish']['max_stack_size']}k" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xss1500k"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xss#{node['glassfish']['max_stack_size']}k"
 end
 
-glassfish_asadmin "create-jvm-options --target #{payara_config} -Xmx4000m" do
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xms#{node['glassfish']['min_mem']}m" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx4000m"
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xms#{node['glassfish']['min_mem']}m"
+end
+
+glassfish_asadmin "create-jvm-options --target #{payara_config} -Xmx#{node['glassfish']['max_mem']}m" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep Xmx#{node['glassfish']['max_mem']}m"
+end
+
+glassfish_asadmin "create-jvm-options --target #{payara_config} -DHADOOP_HOME=#{node['hops']['dir']}/hadoop" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep DHADOOP_HOME"
+end
+
+glassfish_asadmin "create-jvm-options --target #{payara_config} -DHADOOP_CONF_DIR=#{node['hops']['dir']}/hadoop/etc/hadoop" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-jvm-options --target #{payara_config} | grep DHADOOP_CONF_DIR="
 end
 
 hopsworks_configure_server "glassfish_configure_realm" do
@@ -165,8 +192,6 @@ end
 # disable server monitoring
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
-  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => true,
-  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.port" => '${HTTP_SSL_LISTENER_PORT}',
   "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false,
