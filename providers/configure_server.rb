@@ -269,12 +269,13 @@ action :change_node_master_password do
       echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
 
       /usr/bin/expect <<~EOF
-        spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --savemasterpassword true --nodedir #{nodedir}/nodes #{node_name}
-        expect "Enter the new master password> "
-        send "#{node['hopsworks']['master']['password']}\r"
-        expect "Enter the new master password again> "
-        send "#{node['hopsworks']['master']['password']}\r"
-        expect "$ "
+      set -e
+      spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --savemasterpassword true --nodedir #{nodedir}/nodes #{node_name}
+      expect "Enter the new master password> "
+      send "#{node['hopsworks']['master']['password']}\r"
+      expect "Enter the new master password again> "
+      end "#{node['hopsworks']['master']['password']}\r"
+      expect "$ "
     EOF
     rm masterpwdfile
     EOH
