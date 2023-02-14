@@ -264,7 +264,7 @@ action :change_node_master_password do
   bash "change-master-password" do 
     user "#{node['glassfish']['user']}"
     cwd "/tmp"
-    code <<-EOH
+    code <<~EOH
       set -e
       echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
 
@@ -275,9 +275,8 @@ action :change_node_master_password do
         expect "Enter the new master password again> "
         send "#{node['hopsworks']['master']['password']}\r"
         expect "$ "
-      EOF
-
-      rm masterpwdfile
+    EOF
+    rm masterpwdfile
     EOH
     not_if { ::File.exist?("#{nodedir}/nodes/#{node_name}/agent/master-password") }
   end
