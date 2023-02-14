@@ -165,7 +165,7 @@ end
 # disable server monitoring
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
-  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
+  "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.enabled" => true,
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-2.port" => '${HTTP_SSL_LISTENER_PORT}',
   "configs.config.#{payara_config}.network-config.protocols.protocol.https-internal.security-enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
