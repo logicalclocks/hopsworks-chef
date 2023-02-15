@@ -219,10 +219,12 @@ glassfish_asadmin "create-network-listener --listenerport 28182 --threadpool htt
 end
 
 # temp https-internal.security-enabled=false until proxy ssl is fixed
-# disable server monitoring
+# disable server monitoring on server
+# temp disable monitoring for payara_config until it is fixed
 glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "#{payara_config}.availability-service.ejb-container-availability.sfsb-ha-persistence-type" => "hazelcast",
+  "configs.config.#{payara_config}.monitoring-service.monitoring-enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false,
   "configs.config.server-config.rest-monitoring-configuration.enabled" => false,
@@ -306,6 +308,16 @@ glassfish_nodes.each_with_index do |val, index|
     admin_port admin_port
     secure false
     not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-instances | grep instance#{index}"
+  end
+
+  #Not sure if this is working. 
+  glassfish_asadmin "create-system-properties --target instance#{index} hazelcast.local.publicAddress=#{val}" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd} list-system-properties instance#{index} | grep hazelcast.local.publicAddress=#{val}"
   end
 end
 

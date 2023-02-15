@@ -15,5 +15,16 @@ consul_service "Registering Glassfish worker with Consul" do
   action :register
 end
 
-# deploy frontend if <nodes-dir>/nodes/worker0/instance0/docroot/ exists
-# we do not know the id of the worker and instance
+#need to grant access to airflow and feature store users
+bash 'create_hopsworks_db' do
+  user "root"
+  code <<-EOF
+      set -e
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
+      #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
+      # Hopsworks needs to the quotas tables
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.yarn_projects_quota TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
+      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.hdfs_directory_with_quota_feature TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
+      #{exec} -e \"GRANT SELECT ON metastore.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"      
+    EOF
+end
