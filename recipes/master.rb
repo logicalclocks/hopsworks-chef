@@ -55,8 +55,10 @@ if node['hopsworks']['ha']['loadbalancer'].to_s == "true"
       user 'root'
       code <<-EOF
         sed -i 's/Listen 80$/Listen 1080/' /etc/apache2/ports.conf 
-        a2ensite loadbalancer.conf
+        a2enmod proxy_http
+        a2enmod proxy_balancer lbmethod_byrequests
         a2dissite 000-default.conf
+        a2ensite loadbalancer.conf
         systemctl restart apache2
       EOF
     end
