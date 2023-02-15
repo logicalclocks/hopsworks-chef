@@ -67,8 +67,8 @@ REPLACE INTO variables(`id`, `value`) VALUES ("elastic_ip", "<%= @elastic_ip %>"
 
 REPLACE INTO variables(`id`, `value`) VALUES
   ("yarn_default_quota", "<%= @yarn_default_quota %>"),
-  ("hdfs_default_quota", "<%= node['hopsworks']['hdfs_default_quota_mbs'] %>"),
-  ("hive_default_quota", "<%= node['hopsworks']['hive_default_quota_mbs'] %>");
+  ("hdfs_default_quota", "<%= node['hopsworks']['hdfs_default_quota'] %>"),
+  ("hive_default_quota", "<%= node['hopsworks']['hive_default_quota'] %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
 

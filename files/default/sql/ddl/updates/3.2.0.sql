@@ -1,3 +1,9 @@
+ALTER TABLE `hopsworks`.`project`
+    DROP COLUMN `retention_period`,
+    DROP COLUMN `archived`,
+    DROP COLUMN `logs`,
+    DROP COLUMN `deleted`;
+
 CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   `id` int NOT NULL AUTO_INCREMENT,
   `execution_id` int NOT NULL,
@@ -14,6 +20,10 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   CONSTRAINT `fk_hdfs_file_command_1` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_hdfs_file_command_2` FOREIGN KEY (`src_inode_partition_id`,`src_inode_pid`,`src_inode_name`) REFERENCES `hops`.`hdfs_inodes` (`partition_id`, `parent_id`, `name`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`executions` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs NOT NULL;
 
 DROP TABLE `shared_topics`;
 DROP TABLE `topic_acls`;
