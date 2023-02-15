@@ -228,7 +228,7 @@ CREATE TABLE `executions` (
                               `stderr_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `args` varchar(10000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
-                              `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL,
+                              `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL,
                               `job_id` int(11) NOT NULL,
                               `finalStatus` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT 'UNDEFINED',
                               `progress` float NOT NULL DEFAULT '0',
@@ -563,7 +563,7 @@ CREATE TABLE `jwt_signing_key` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `maggy_driver` (
                                 `id` mediumint(9) NOT NULL AUTO_INCREMENT,
-                                `app_id` char(30) COLLATE latin1_general_cs NOT NULL,
+                                `app_id` char(45) COLLATE latin1_general_cs NOT NULL,
                                 `host_ip` varchar(128) COLLATE latin1_general_cs NOT NULL,
                                 `port` int(11) NOT NULL,
                                 `secret` varchar(128) COLLATE latin1_general_cs NOT NULL,
