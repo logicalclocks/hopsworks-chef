@@ -127,7 +127,7 @@ action :glassfish_configure do
     # Jobs in Hopsworks use the Timer service
     "#{target}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
     "#{target}.ejb-container.ejb-timer-service.property.reschedule-failed-timer" => node['glassfish']['reschedule_failed_timer'],
-    "#{target}.http-service.virtual-server.server.property.send-error_1" => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
+    #"#{target}.http-service.virtual-server.server.property.send-error_1" => "\"code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found\"",
     # Enable/Disable HTTP listener
     "configs.config.#{target}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
     # Make sure the https listener is listening on the requested port

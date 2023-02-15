@@ -3,7 +3,7 @@ services = [
         id = "hopsworks/web"
         name = "glassfish"
         tags = [
-            "hopsworks"
+            "<%= node['hopsworks']['hopsworks_public_host']%>"
         ]
         port = <%= node['hopsworks']['internal']['port'] %>
     }
