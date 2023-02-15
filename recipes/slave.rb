@@ -15,6 +15,7 @@ consul_service "Registering Glassfish worker with Consul" do
   action :register
 end
 
+exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 #need to grant access to airflow and feature store users
 bash 'create_hopsworks_db' do
   user "root"
