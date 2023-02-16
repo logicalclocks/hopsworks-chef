@@ -5,7 +5,9 @@
   
   ErrorLog <%= @load_balancer_log_dir %>/error.log
   CustomLog <%= @load_balancer_log_dir %>/access.log combined
-  
+
+  AllowEncodedSlashes NoDecode
+
   <Proxy balancer://hopsworkscluster>
         BalancerMember <%= "http://#{@public_ip}:28182" %>
       <% @glassfish_nodes.each do |ipaddress| %>
@@ -14,6 +16,6 @@
   </Proxy>
 
   ProxyPreserveHost On
-  ProxyPass         /  balancer://hopsworkscluster/
+  ProxyPass         /  balancer://hopsworkscluster/ nocanon
   ProxyPassReverse  /  balancer://hopsworkscluster/
 </VirtualHost>
