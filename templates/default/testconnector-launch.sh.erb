@@ -12,13 +12,12 @@ if [ "$#" != "2" ] || [ "$1" == "-h" ] ; then
   help
 fi
 
-REGISTRY_URL='<%= @registry_addr %>'
+
 FILENAME=$(basename "$1")
 FOLDER=$(dirname "$1")
-# TODO image name as parameter?
 IMAGE="$2"
 
-if docker run --rm -v $FOLDER:/tmp $REGISTRY_URL/$IMAGE:latest /tmp/$FILENAME; then
+if docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME; then
    exit 0
 else
    exit 9
