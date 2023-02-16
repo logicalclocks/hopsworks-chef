@@ -225,7 +225,7 @@ glassfish_network_listener_conf = {
   "configs.config.#{payara_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
   "#{payara_config}.availability-service.ejb-container-availability.sfsb-ha-persistence-type" => "hazelcast",
   "configs.config.#{payara_config}.monitoring-service.monitoring-enabled" => false,
-  "#{payara_config}.http-service.virtual-server.server.property.send-error_1" => "code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found"
+  "#{payara_config}.http-service.virtual-server.server.property.send-error_1" => "code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found",
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
   "configs.config.server-config.network-config.network-listeners.network-listener.https-int-list.enabled" => false,
   "configs.config.server-config.rest-monitoring-configuration.enabled" => false,
