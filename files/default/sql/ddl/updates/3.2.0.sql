@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `monitoring_window_configuration` (
     CONSTRAINT `fm_window_monitoring_config_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `descriptive_statistics_monitoring` (
+CREATE TABLE IF NOT EXISTS `descriptive_statistics_comparison` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_monitoring_config_id` INT(11) NOT NULL,
     `strict` BOOLEAN DEFAULT FALSE,
