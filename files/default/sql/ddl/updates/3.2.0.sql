@@ -29,10 +29,13 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_configuration` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_group_id` INT(11),
     `feature_view_id` INT(11),
+    `job_id` INT(11) NOT NULL, -- dummy this should become ref to another table
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
+    `description` VARCHAR(2000) COLLATE latin1_general_cs DEFAULT NULL,
+    `name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
     `feature_monitoring_type` tinyint(4) NOT NULL,
-    `alert_config` VARCHAR(63) COLLATE latin1_general_cs NOT NULL, -- dummy this should become ref to another table
+    `alert_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
     `scheduler_config` VARCHAR(63) COLLATE latin1_general_cs NOT NULL, -- dummy this should become ref to another table
     PRIMARY KEY (`id`),
     KEY (`feature_name`),
@@ -40,10 +43,10 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_configuration` (
     CONSTRAINT `fv_monitoring_config_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `monitoring_window_builder` (
+CREATE TABLE IF NOT EXISTS `monitoring_window_configuration` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_monitoring_config_id` INT(11) NOT NULL,
-    `window_builder_type` INT(11) NOT NULL,
+    `window_configuration_type` INT(11) NOT NULL,
     `detection` BOOLEAN NOT NULL,
     `specific_id` INT(11),
     `time_offset` VARCHAR(63),
@@ -51,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `monitoring_window_builder` (
     `row_percentage` INT(11),
     `specific_value` FLOAT,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fm_window_builder_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `fm_window_monitoring_config_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_configuration` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `descriptive_statistics_monitoring` (
@@ -68,10 +71,9 @@ CREATE TABLE IF NOT EXISTS `descriptive_statistics_monitoring` (
 CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_monitoring_config_id` INT(11) NOT NULL,
-    `job_id` INT(11) NOT NULL, -- dummy this should become ref to another table
-    `execution_id` INT(11) NOT NULL, -- dummy this should become ref to another table
+    `execution_id` INT(11) NOT NULL,  -- dummy this should become ref to another table
     `monitoring_time` timestamp DEFAULT CURRENT_TIMESTAMP,
-    `triggered_alert` BOOLEAN DEFAULT FALSE,
+    `shift_detected` BOOLEAN DEFAULT FALSE,
     `detection_stats_id` INT(11) NOT NULL, -- dummy this should become ref to another table
     `reference_stats_id` INT(11), -- dummy this should become ref to another table
     `difference` FLOAT,
