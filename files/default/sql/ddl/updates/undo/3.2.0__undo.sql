@@ -51,6 +51,8 @@ CREATE TABLE `topic_acls` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+SET SQL_SAFE_UPDATES = 0;
 UPDATE `project_team`
 SET team_role = 'Data scientist'
 WHERE team_member = 'serving@hopsworks.se';
+SET SQL_SAFE_UPDATES = 1;
