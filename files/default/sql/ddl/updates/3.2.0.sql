@@ -28,6 +28,8 @@ ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(45) COLLATE l
 DROP TABLE `shared_topics`;
 DROP TABLE `topic_acls`;
 
+SET SQL_SAFE_UPDATES = 0;
 UPDATE `project_team`
 SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
+SET SQL_SAFE_UPDATES = 1;
