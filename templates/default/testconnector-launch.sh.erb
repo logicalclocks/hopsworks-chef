@@ -17,10 +17,6 @@ FILENAME=$(basename "$1")
 FOLDER=$(dirname "$1")
 IMAGE="$2"
 
-if docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME -v; then
-   exit 0
-else
-   exit 9
-fi
+docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME -v;
 
 
