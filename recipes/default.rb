@@ -1152,7 +1152,7 @@ end
 directory node['hopsworks']['data_volume']['staging_dir'] + "/connectors"  do
   owner node['hopsworks']['user']
   group node['hopsworks']['group']
-  mode "0755"
+  mode "0770"
   action :create
 end
 
