@@ -1149,13 +1149,6 @@ directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
   action :create
 end
 
-directory node['hopsworks']['data_volume']['staging_dir'] + "/connectors"  do
-  owner node['hopsworks']['user']
-  group node['hopsworks']['group']
-  mode "0755"
-  action :create
-end
-
 bash 'Move staging to data volume' do
   user 'root'
   code <<-EOH
