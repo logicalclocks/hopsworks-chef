@@ -2364,7 +2364,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_configuration` (
     `enabled` BOOLEAN DEFAULT TRUE,
     `feature_monitoring_type` tinyint(4) NOT NULL,
     `alert_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
-    `scheduler_config` VARCHAR(63) COLLATE latin1_general_cs NOT NULL, -- dummy this should become ref to another table
+    `scheduler_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
     PRIMARY KEY (`id`),
     KEY (`feature_name`),
     CONSTRAINT `fg_monitoring_config_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
