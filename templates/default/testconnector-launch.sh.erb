@@ -17,6 +17,6 @@ FILENAME=$(basename "$1")
 FOLDER=$(dirname "$1")
 IMAGE="$2"
 
-docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME;
+docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME -v;
 
 
