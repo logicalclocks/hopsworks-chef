@@ -699,7 +699,7 @@ end
 
 ["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
  "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh",
- "git-container-kill.sh", "testconnector-launch.sh"].each do |script|
+ "git-container-kill.sh", "testconnnector-launch.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
