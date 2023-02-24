@@ -670,6 +670,14 @@ kagent_sudoers "docker-cgroup-rewrite" do
   run_as        "ALL"
 end
 
+kagent_sudoers "testconnector-launch" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "testconnector-launch.sh"
+  template      "testconnector-launch.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
