@@ -10,6 +10,6 @@ ALTER TABLE `hopsworks`.`executions` MODIFY COLUMN `app_id` char(30) COLLATE lat
 ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(30) COLLATE latin1_general_cs NOT NULL;
 
 DROP TABLE IF EXISTS `hopsworks`.`feature_monitoring_result`;
-DROP TABLE IF EXISTS `hopsworks`.`descriptive_statistics_comparison`;
-DROP TABLE IF EXISTS `hopsworks`.`monitoring_window_configuration`;
-DROP TABLE IF EXISTS `hopsworks`.`feature_monitoring_configuration`;
+DROP TABLE IF EXISTS `hopsworks`.`statistics_comparison_config`;
+DROP TABLE IF EXISTS `hopsworks`.`monitoring_window_config`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_monitoring_config`;
