@@ -3,3 +3,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("max_a
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hdfs_file_op_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hdfs_file_operations-<%= node['hadoop_spark']['hopsworks_jobs_py']['version'] %>.py");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("git_image_version", "<%= node['hops']['docker']['git']['image']['version'] %>");
+
+  REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("testconnector_image_version", "<%= node['hops']['docker']['testconnector']['image']['version'] %>");
