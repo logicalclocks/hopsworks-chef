@@ -51,6 +51,8 @@ CREATE TABLE `topic_acls` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+ALTER TABLE `hopsworks`.`project_topics` DROP INDEX `topic_name_UNIQUE`;
+
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `project_team`
 SET team_role = 'Data scientist'

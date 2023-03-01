@@ -28,6 +28,8 @@ ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(45) COLLATE l
 DROP TABLE `shared_topics`;
 DROP TABLE `topic_acls`;
 
+ALTER TABLE `hopsworks`.`project_topics` ADD UNIQUE KEY `topic_name_UNIQUE` (`topic_name`);
+
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `project_team`
 SET team_role = 'Data owner'
