@@ -24,3 +24,14 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
 ALTER TABLE `hopsworks`.`executions` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(45) COLLATE latin1_general_cs NOT NULL;
+
+DROP TABLE `shared_topics`;
+DROP TABLE `topic_acls`;
+
+ALTER TABLE `hopsworks`.`project_topics` ADD UNIQUE KEY `topic_name_UNIQUE` (`topic_name`);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `project_team`
+SET team_role = 'Data owner'
+WHERE team_member = 'serving@hopsworks.se';
+SET SQL_SAFE_UPDATES = 1;
