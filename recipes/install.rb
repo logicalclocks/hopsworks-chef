@@ -670,6 +670,14 @@ kagent_sudoers "docker-cgroup-rewrite" do
   run_as        "ALL"
 end
 
+kagent_sudoers "testconnector" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "testconnector-launch.sh"
+  template      "testconnector-launch.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -690,7 +698,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
 end
 
 ["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
- "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh","testconnector-launch.sh"].each do |script|
+ "jupyter-launch.sh", "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']
