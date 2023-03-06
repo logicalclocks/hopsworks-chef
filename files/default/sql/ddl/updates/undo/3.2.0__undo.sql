@@ -5,6 +5,7 @@ ALTER TABLE `hopsworks`.`project` ADD COLUMN `retention_period` date DEFAULT NUL
 
 DROP TABLE IF EXISTS `hopsworks`.`hdfs_command_execution`;
 
+<<<<<<< HEAD
 ALTER TABLE `hopsworks`.`executions` MODIFY COLUMN `app_id` char(30) COLLATE latin1_general_cs DEFAULT NULL;
 
 ALTER TABLE `hopsworks`.`maggy_driver` MODIFY COLUMN `app_id` char(30) COLLATE latin1_general_cs NOT NULL;
@@ -64,3 +65,6 @@ DROP TABLE IF EXISTS `hopsworks`.`feature_monitoring_result`;
 DROP TABLE IF EXISTS `hopsworks`.`statistics_comparison_config`;
 DROP TABLE IF EXISTS `hopsworks`.`monitoring_window_config`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_monitoring_config`;
+
+
+DROP TABLE IF EXISTS `hopsworks`.`job_schedule`;
