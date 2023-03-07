@@ -997,3 +997,8 @@ attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
 attribute "hopsworks/max_allowed_long_running_http_requests",
           :description => "Maximum number of long running http requests allowed. Default: 50",
           :type => 'string'
+
+# Feature monitoring feature flag
+attribute "hopsworks/enable_feature_monitoring",
+          :description => "Whether to enable feature monitoring with scheduling and alerting",
+          :type => 'string'
