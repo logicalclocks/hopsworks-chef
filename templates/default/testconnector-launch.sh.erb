@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+
+help() {
+    echo ""
+    echo "usage: $0 [input_json_filepath image_name]"
+    echo ""
+    exit 1
+}
+
+if [ "$#" != "2" ] || [ "$1" == "-h" ] ; then
+  help
+fi
+
+
+FILENAME=$(basename "$1")
+FOLDER=$(dirname "$1")
+IMAGE="$2"
+
+docker run --rm -v $FOLDER:/home $IMAGE /home/$FILENAME -v;
