@@ -1016,6 +1016,10 @@ attribute "hopsworks/max_allowed_long_running_http_requests",
 
 attribute "hopsworks/enable_flyingduck",
           :description => "Whether to enable flyingduck or not. Default: false",
+          
+# Feature monitoring feature flag
+attribute "hopsworks/enable_feature_monitoring",
+          :description => "Whether to enable feature monitoring with scheduling and alerting",
           :type => 'string'
 
 attribute "hopsworks/loadbalancer_external_domain",
