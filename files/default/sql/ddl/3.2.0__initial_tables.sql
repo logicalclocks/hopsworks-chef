@@ -262,6 +262,7 @@ CREATE TABLE `feature_group` (
                                  `cached_feature_group_id` INT(11) NULL,
                                  `stream_feature_group_id` INT(11) NULL,
                                  `event_time` VARCHAR(63) DEFAULT NULL,
+                                 `online_enabled` TINYINT(1) NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -1798,7 +1799,6 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
                                                       `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20)      NOT NULL,
-                                                      `online_enabled`                 TINYINT(1)      NULL,
                                                       `timetravel_format`              INT NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
@@ -1812,7 +1812,6 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20) NOT NULL,
-                                                      `online_enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
