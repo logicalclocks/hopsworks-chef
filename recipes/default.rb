@@ -343,7 +343,10 @@ bash "flyway_migrate" do
   user "root"
   cwd "#{theDomain}/flyway"
   code <<-EOF
-    #{theDomain}/flyway/flyway migrate
+    # Validation during migrate is very strict for our needs. If we found a bug
+    # on a released branch and we fix it, next time someone upgrades to released branch+1
+    # they will get a validation error because the files checksum do not match
+    #{theDomain}/flyway/flyway -validateOnMigrate=false migrate
   EOF
 end
 
