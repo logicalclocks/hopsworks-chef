@@ -2334,3 +2334,14 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
     PRIMARY KEY (`id`),
     CONSTRAINT `config_monitoring_result_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_config` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `job_schedule` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `job_id` int NOT NULL,
+    `start_datetime` timestamp,
+    `enable` BOOLEAN NOT NULL,
+    `job_frequency` varchar(20) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `job_id` (`job_id`),
+    CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
