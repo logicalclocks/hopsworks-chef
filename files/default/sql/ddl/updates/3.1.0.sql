@@ -10,11 +10,12 @@ ALTER TABLE `hopsworks`.`python_dep` ADD COLUMN `repo_url` varchar(255) CHARACTE
 SET SQL_SAFE_UPDATES = 0;
 UPDATE python_dep p SET repo_url=(SELECT url FROM anaconda_repo WHERE id = p.repo_id);
 SET SQL_SAFE_UPDATES = 1;
-alter table `hopsworks`.`python_dep` drop foreign key `FK_501_510`, drop column `repo_id`;
-alter table `hopsworks`.`python_dep` drop index `dependency`;
-DROP TABLE `anaconda_repo`;
+ALTER TABLE `hopsworks`.`python_dep` DROP FOREIGN KEY `FK_501_510`;
+ALTER TABLE `hopsworks`.`python_dep` DROP INDEX `dependency`;
 ALTER TABLE `hopsworks`.`python_dep` ADD CONSTRAINT `dependency` UNIQUE (`dependency`,`version`,`install_type`,
                                                                          `repo_url`);
+ALTER TABLE `hopsworks`.`python_dep` DROP COLUMN `repo_id`;
+DROP TABLE `anaconda_repo`;
 
 -- add tutorial endpoint
 CREATE TABLE IF NOT EXISTS `tutorial` (
