@@ -480,3 +480,8 @@ default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
+
+##
+## Flyingduck
+##
+default['hopsworks']['enable_flyingduck'] = "false"
