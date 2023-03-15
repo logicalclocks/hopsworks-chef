@@ -200,7 +200,6 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_group_id` INT(11),
     `feature_view_id` INT(11),
-    `job_id` INT(11) NOT NULL, -- dummy this should become ref to another table
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
     `description` VARCHAR(2000) COLLATE latin1_general_cs DEFAULT NULL,
     `name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
@@ -208,13 +207,17 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `feature_monitoring_type` tinyint(4) NOT NULL,
     `alert_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
     `scheduler_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
+    `job_id` INT(11) NOT NULL,
     `detection_window_config_id` INT(11),
     `reference_window_config_id` INT(11),
     `statistics_comparison_config_id` INT(11),
     PRIMARY KEY (`id`),
     KEY (`feature_name`),
+    KEY (`name`),
+    UNIQUE KEY `config_name_UNIQUE` (`name`, `feature_group_id`, `feature_view_id`),
     CONSTRAINT `fg_monitoring_config_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `fv_monitoring_config_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `fv_monitoring_config_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `job_monitoring_config_fk` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
