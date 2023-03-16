@@ -253,6 +253,30 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
     CONSTRAINT `config_monitoring_result_fk` FOREIGN KEY (`feature_monitoring_config_id`) REFERENCES `feature_monitoring_config` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `min` FLOAT NULL, 
+    `max` FLOAT NULL,   
+    `sum` FLOAT NULL,
+    `count` BIGINT NULL,
+    `mean` FLOAT NULL,  
+    `stddev` FLOAT NULL,
+    `completeness` FLOAT NULL,
+    `num_non_null_values` BIGINT NULL,
+    `num_null_values` BIGINT NULL,
+    `percentiles` BLOB,
+    `approx_num_distinct_values` BIGINT NULL,
+    -- with exactUniqueness
+    `distinctness` FLOAT NULL,
+    `entropy` FLOAT NULL,
+    `uniqueness` FLOAT NULL,
+    `exact_num_distinct_values` BIGINT NULL,
+    -- for filtering
+    `start_time` TIMESTAMP NULL,
+    `end_time` TIMESTAMP NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
 CREATE TABLE IF NOT EXISTS `job_schedule` (
     `id` int NOT NULL AUTO_INCREMENT,
     `job_id` int NOT NULL,
