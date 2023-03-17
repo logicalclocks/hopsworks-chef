@@ -255,6 +255,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
 
 CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `feature_type` varchar(20) NOT NULL,
     `min` FLOAT NULL, 
     `max` FLOAT NULL,   
     `sum` FLOAT NULL,
@@ -274,6 +275,7 @@ CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     -- for filtering
     `start_time` TIMESTAMP NULL,
     `end_time` TIMESTAMP NULL,
+    `row_percentage` INT(11) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
