@@ -35,3 +35,18 @@ UPDATE `project_team`
 SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
+
+--
+-- Table structure for table `project_topic_offsets`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `project_topic_offsets` (
+                                  `topic` varchar(255) COLLATE latin1_general_cs NOT NULL,
+                                  `partition` SMALLINT NOT NULL,
+                                  `offset` BIGINT UNSIGNED NOT NULL,
+                                  PRIMARY KEY (`topic`,`partition`),
+                                  CONSTRAINT `project_topics_name` FOREIGN KEY (`topic`) REFERENCES `project_topics` (`topic_name`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;

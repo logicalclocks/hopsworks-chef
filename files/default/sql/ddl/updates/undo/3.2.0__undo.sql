@@ -58,3 +58,5 @@ UPDATE `project_team`
 SET team_role = 'Data scientist'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
+
+DROP TABLE IF EXISTS `hopsworks`.`project_topic_offsets`;
