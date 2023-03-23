@@ -351,6 +351,10 @@ attribute "hopsworks/staging_dir",
           :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
           :type => 'string'
 
+attribute "hopsworks/upload_staging_dir",
+          :description => "Default is a 'Projects'. Override to use a path in hdfs.",
+          :type => 'string'
+
 attribute "hopsworks/version",
           :description => "The version of ear/web/ca to download",
           :type => 'string'

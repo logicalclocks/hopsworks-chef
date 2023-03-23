@@ -5,3 +5,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hdfs_file_op_job_ut
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("git_image_version", "<%= node['hops']['docker']['git']['image']['version'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("testconnector_image_version", "<%= node['hops']['docker']['testconnector']['image']['version'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("upload_staging_dir", "<%= node['hopsworks']['upload_staging_dir'] %>");
