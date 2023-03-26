@@ -35,3 +35,23 @@ UPDATE `project_team`
 SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
+
+
+-- HWORKS-474: Remove hdfs_user FK from jupyter_project
+ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `uid` INT(11);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE jupyter_project jp
+JOIN (SELECT jpu.port AS port, u.uid AS uid
+      FROM users u
+      JOIN (
+                SELECT jp.port AS port, SUBSTRING_INDEX(name, '__', -1) AS username
+                FROM jupyter_project jp join hops.hdfs_users hu on jp.hdfs_user_id = hu.id) jpu on jpu.username = u.username) jpuid ON jp.port = jpuid.port
+SET jp.uid = jpuid.uid
+WHERE jp.port = jpuid.port;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`jupyter_project` ADD UNIQUE KEY `project_user` (`project_id`, `uid`);
+ALTER TABLE `hopsworks`.`jupyter_project` DROP FOREIGN KEY `FK_103_525`;
+ALTER TABLE `hopsworks`.`jupyter_project` DROP KEY `unique_hdfs_user`;
+ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `hdfs_user_id`;
