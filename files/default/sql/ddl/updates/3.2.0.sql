@@ -46,7 +46,7 @@ JOIN (SELECT jpu.port AS port, u.uid AS uid
       FROM users u
       JOIN (
                 SELECT jp.port AS port, SUBSTRING_INDEX(name, '__', -1) AS username
-                FROM jupyter_project jp join hops.hdfs_users hu on jp.hdfs_user_id = hu.id) jpu on jpu.username = u.username) jpuid ON jp.port = jpuid.port
+                FROM `hopsworks`.`jupyter_project` jp join hops.hdfs_users hu on jp.hdfs_user_id = hu.id) jpu on jpu.username = u.username) jpuid ON jp.port = jpuid.port
 SET jp.uid = jpuid.uid
 WHERE jp.port = jpuid.port;
 SET SQL_SAFE_UPDATES = 1;
