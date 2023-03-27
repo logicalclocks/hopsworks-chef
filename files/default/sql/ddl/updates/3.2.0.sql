@@ -41,7 +41,7 @@ SET SQL_SAFE_UPDATES = 1;
 ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `uid` INT(11);
 
 SET SQL_SAFE_UPDATES = 0;
-UPDATE jupyter_project jp
+UPDATE `hopsworks`.`jupyter_project` jp
 JOIN (SELECT jpu.port AS port, u.uid AS uid
       FROM users u
       JOIN (
