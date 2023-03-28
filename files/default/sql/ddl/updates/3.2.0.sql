@@ -35,3 +35,9 @@ UPDATE `project_team`
 SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
+
+
+-- HWORKS-476: Remove hdfs_user_id FK from tensorboard
+ALTER TABLE `hopsworks`.`tensorboard` DROP FOREIGN KEY `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP INDEX `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP COLUMN `hdfs_user_id`;
