@@ -36,7 +36,6 @@ SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
 
-
 -- HWORKS-474: Remove hdfs_user FK from jupyter_project
 ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `uid` INT(11);
 
@@ -55,3 +54,8 @@ ALTER TABLE `hopsworks`.`jupyter_project` ADD UNIQUE KEY `project_user` (`projec
 ALTER TABLE `hopsworks`.`jupyter_project` DROP FOREIGN KEY `FK_103_525`;
 ALTER TABLE `hopsworks`.`jupyter_project` DROP KEY `unique_hdfs_user`;
 ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `hdfs_user_id`;
+
+-- HWORKS-476: Remove hdfs_user_id FK from tensorboard
+ALTER TABLE `hopsworks`.`tensorboard` DROP FOREIGN KEY `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP INDEX `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP COLUMN `hdfs_user_id`;
