@@ -66,3 +66,16 @@ DROP TABLE IF EXISTS `hopsworks`.`monitoring_window_config`;
 DROP TABLE IF EXISTS `hopsworks`.`statistics_comparison_config`;
 
 DROP TABLE IF EXISTS `hopsworks`.`job_schedule`;
+
+-- alert feature monitoring changes
+ALTER TABLE hopsworks.feature_group_alert
+    DROP FOREIGN KEY `fk_feature_group_alert_fv`,
+    DROP CONSTRAINT `unique_feature_view_status`,
+    DROP COLUMN `entity_type`,
+    DROP COLUMN `feature_view_id`,
+    DROP FOREIGN KEY `fk_feature_group_alert_2`,
+    MODIFY COLUMN `feature_group_id` int not null;
+ALTER TABLE hopsworks.feature_group_alert
+    ADD CONSTRAINT `fk_feature_group_alert_2`
+        FOREIGN KEY (`feature_group_id`) REFERENCES `hopsworks`.`feature_group` (`id`)
+            ON DELETE CASCADE;

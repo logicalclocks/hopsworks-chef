@@ -136,3 +136,14 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     UNIQUE KEY `job_id` (`job_id`),
     CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- alert changes for feature monitoring
+ALTER TABLE `feature_group_alert`
+    MODIFY `feature_group_id` int NULL,
+    ADD `feature_view_id` int NULL,
+    ADD `entity_type` int NOT NULL,
+    ADD CONSTRAINT `unique_feature_view_status`
+        UNIQUE (`feature_view_id`, `status`),
+    ADD CONSTRAINT `fk_feature_group_alert_fv`
+        FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`)
+            ON DELETE CASCADE;
