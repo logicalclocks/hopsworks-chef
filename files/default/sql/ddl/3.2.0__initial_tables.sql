@@ -1045,7 +1045,6 @@ CREATE TABLE `rstudio_interpreter` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rstudio_project` (
                                    `port` int(11) NOT NULL,
-                                   `hdfs_user_id` int(11) NOT NULL,
                                    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                    `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                    `host_ip` varchar(255) COLLATE latin1_general_cs NOT NULL,
@@ -1054,9 +1053,7 @@ CREATE TABLE `rstudio_project` (
                                    `pid` bigint(20) NOT NULL,
                                    `project_id` int(11) NOT NULL,
                                    PRIMARY KEY (`port`),
-                                   KEY `hdfs_user_idx` (`hdfs_user_id`),
                                    KEY `project_id` (`project_id`),
-                                   CONSTRAINT `FK_103_577` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                    CONSTRAINT `FK_284_578` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
