@@ -59,3 +59,8 @@ ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `hdfs_user_id`;
 ALTER TABLE `hopsworks`.`tensorboard` DROP FOREIGN KEY `hdfs_user_id_fk`;
 ALTER TABLE `hopsworks`.`tensorboard` DROP INDEX `hdfs_user_id_fk`;
 ALTER TABLE `hopsworks`.`tensorboard` DROP COLUMN `hdfs_user_id`;
+
+-- HWORKS-476: Remove hdfs_user_id FK from rstudio_project
+ALTER TABLE `hopsworks`.`rstudio_project` DROP FOREIGN KEY `FK_103_577`;
+ALTER TABLE `hopsworks`.`rstudio_project` DROP KEY `hdfs_user_idx`;
+ALTER TABLE `hopsworks`.`rstudio_project` DROP COLUMN `hdfs_user_id`;
