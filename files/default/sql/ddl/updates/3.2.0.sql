@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
 ALTER TABLE `feature_group_alert`
     MODIFY `feature_group_id` int NULL,
     ADD `feature_view_id` int NULL,
-    ADD `entity_type` int NOT NULL,
+    ADD `entity_type` int NOT NULL DEFAULT 0,
     ADD CONSTRAINT `unique_feature_view_status`
         UNIQUE (`feature_view_id`, `status`),
     ADD CONSTRAINT `fk_feature_group_alert_fv`
