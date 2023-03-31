@@ -1192,7 +1192,6 @@ CREATE TABLE `system_commands_args` (
 CREATE TABLE `tensorboard` (
                                `project_id` int(11) NOT NULL,
                                `user_id` int(11) NOT NULL,
-                               `hdfs_user_id` int(11) NOT NULL,
                                `endpoint` varchar(100) COLLATE latin1_general_cs NOT NULL,
                                `ml_id` varchar(100) COLLATE latin1_general_cs NOT NULL,
                                `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
@@ -1201,9 +1200,7 @@ CREATE TABLE `tensorboard` (
                                `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
                                PRIMARY KEY (`project_id`,`user_id`),
                                KEY `user_id_fk` (`user_id`),
-                               KEY `hdfs_user_id_fk` (`hdfs_user_id`),
                                CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                               CONSTRAINT `hdfs_user_id_fk` FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                CONSTRAINT `project_id_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
