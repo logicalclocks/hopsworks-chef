@@ -74,7 +74,7 @@ ALTER TABLE hopsworks.feature_group_alert
     DROP COLUMN `entity_type`,
     DROP COLUMN `feature_view_id`,
     DROP FOREIGN KEY `fk_feature_group_alert_2`,
-    MODIFY COLUMN `feature_group_id` int not null;
+    MODIFY COLUMN `feature_group_id` int(11) not null;
 ALTER TABLE hopsworks.feature_group_alert
     ADD CONSTRAINT `fk_feature_group_alert_2`
         FOREIGN KEY (`feature_group_id`) REFERENCES `hopsworks`.`feature_group` (`id`)

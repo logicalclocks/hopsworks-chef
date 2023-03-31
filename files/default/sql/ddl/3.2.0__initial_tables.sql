@@ -1998,14 +1998,14 @@ CREATE TABLE IF NOT EXISTS `job_alert` (
 CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_alert` (
                                                              `id` int AUTO_INCREMENT
                                                                  PRIMARY KEY,
-                                                             `feature_group_id` int NULL,
-                                                             `status` varchar(45) NOT NULL,
-                                                             `type` varchar(45) NOT NULL,
-                                                             `severity` varchar(45) NOT NULL,
-                                                             `receiver` int NOT NULL,
-                                                             `created` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                                                             `feature_view_id` int NULL,
-                                                             `entity_type` int NOT NULL,
+                                                             `feature_group_id` int(11) DEFAULT NULL,
+                                                             `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                             `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                             `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                             `receiver` int(11) NOT NULL,
+                                                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                                             `feature_view_id` int(11) DEFAULT NULL,
+                                                             `entity_type` TINYINT(1) NOT NULL,
                                                              CONSTRAINT `unique_feature_group_alert` UNIQUE (`feature_group_id`, `status`),
                                                              CONSTRAINT `unique_feature_view_status` UNIQUE (`feature_view_id`, `status`),
                                                              CONSTRAINT `fk_feature_group_alert_1`
