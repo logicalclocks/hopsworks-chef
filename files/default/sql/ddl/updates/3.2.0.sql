@@ -36,6 +36,35 @@ SET team_role = 'Data owner'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
 
+-- HWORKS-474: Remove hdfs_user FK from jupyter_project
+ALTER TABLE `hopsworks`.`jupyter_project` ADD COLUMN `uid` INT(11);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`jupyter_project` jp
+JOIN (SELECT jpu.port AS port, u.uid AS uid
+      FROM `hopsworks`.`users` u
+      JOIN (
+                SELECT jp.port AS port, SUBSTRING_INDEX(name, '__', -1) AS username
+                FROM `hopsworks`.`jupyter_project` jp join hops.hdfs_users hu on jp.hdfs_user_id = hu.id) jpu on jpu.username = u.username) jpuid ON jp.port = jpuid.port
+SET jp.uid = jpuid.uid
+WHERE jp.port = jpuid.port;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`jupyter_project` ADD UNIQUE KEY `project_user` (`project_id`, `uid`);
+ALTER TABLE `hopsworks`.`jupyter_project` DROP FOREIGN KEY `FK_103_525`;
+ALTER TABLE `hopsworks`.`jupyter_project` DROP KEY `unique_hdfs_user`;
+ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `hdfs_user_id`;
+
+-- HWORKS-476: Remove hdfs_user_id FK from tensorboard
+ALTER TABLE `hopsworks`.`tensorboard` DROP FOREIGN KEY `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP INDEX `hdfs_user_id_fk`;
+ALTER TABLE `hopsworks`.`tensorboard` DROP COLUMN `hdfs_user_id`;
+
+-- HWORKS-476: Remove hdfs_user_id FK from rstudio_project
+ALTER TABLE `hopsworks`.`rstudio_project` DROP FOREIGN KEY `FK_103_577`;
+ALTER TABLE `hopsworks`.`rstudio_project` DROP KEY `hdfs_user_idx`;
+ALTER TABLE `hopsworks`.`rstudio_project` DROP COLUMN `hdfs_user_id`;
+
 --
 -- Table structure for table `project_topic_offsets`
 --
