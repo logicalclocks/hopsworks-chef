@@ -39,7 +39,7 @@ elif [ "$1" == "start" ] ; then
 
     chown $TENSORBOARD_USER $4
 
-    netstat -tulpn | grep :"$5"
+    ss -tulpn | grep :"$5"
     if [ $? -eq 0 ] ; then
         echo "Port is allocated already"
         exit 1

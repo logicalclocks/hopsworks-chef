@@ -162,12 +162,12 @@ end
 # and Kerberos libraries for SSO
 case node['platform_family']
 when "debian"
-  package ["libkrb5-dev", "authbind"] do
+  package ["libkrb5-dev", "authbind", "iproute2"] do
     retries 10
     retry_delay 30
   end
 when "rhel"
-  package ["krb5-libs"] do
+  package ["krb5-libs", "iproute"] do
     retries 10
     retry_delay 30
   end
