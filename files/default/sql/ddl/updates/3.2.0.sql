@@ -142,8 +142,18 @@ ALTER TABLE `feature_group_alert`
     MODIFY `feature_group_id` int(11) DEFAULT NULL,
     ADD `feature_view_id` int(11) DEFAULT NULL,
     ADD `entity_type` tinyint(1) NOT NULL DEFAULT 0,
+    DROP FOREIGN KEY `fk_feature_group_alert_1`,
+    DROP FOREIGN KEY `fk_feature_group_alert_2`,
+    ADD CONSTRAINT `fk_feature_store_alert_1`
+        FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`)
+            ON DELETE CASCADE,
+    ADD CONSTRAINT `fk_feature_store_alert_2`
+        FOREIGN KEY (`feature_group_id`) REFERENCES `hopsworks`.`feature_group` (`id`)
+            ON DELETE CASCADE,
     ADD CONSTRAINT `unique_feature_view_status`
         UNIQUE (`feature_view_id`, `status`),
-    ADD CONSTRAINT `fk_feature_group_alert_fv`
+    ADD CONSTRAINT `fk_feature_store_alert_3`
         FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`)
             ON DELETE CASCADE;
+ALTER TABLE `feature_group_alert` RENAME TO `feature_store_alert`;
+-- end of alert changes for feature monitoring
