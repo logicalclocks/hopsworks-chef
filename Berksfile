@@ -27,3 +27,4 @@ cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", tag: "v3.1.0"
 cookbook 'ulimit', github: "logicalclocks/chef-ulimit", tag: "v3.1.0"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", tag: "v3.1.0"
 cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"
+cookbook 'packagecloud', '= 1.0.1'
