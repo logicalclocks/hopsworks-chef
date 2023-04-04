@@ -49,7 +49,7 @@ default['hopsworks']['db']                       = "hopsworks"
 default['hopsworks']['mysql']['user']            = "hopsworks"
 default['hopsworks']['mysql']['password']        = "hopsworks"
 
-default['glassfish']['version']                  = '5.2022.3' 
+default['glassfish']['version']                  = '5.2022.5' 
 default['authbind']['download_url']              = "#{node['download_url']}/authbind-2.1.2-0.1.x86_64.rpm"
 
 default['hopsworks']['dir']                      = node['install']['dir'].empty? ? "/usr/local" : node['install']['dir']
@@ -451,8 +451,9 @@ default['hopsworks']['quotas']['max_parallel_executions']             = "-1"
 default['hopsworks']['docker']['cgroup_monitor_interval']             = "10m"
 default['hopsworks']['kube']['kube_taints_monitor_interval']          = "10m"
 
+default['hops']['cadvisor_version']                                   = "v0.47.0"
 default['hops']['cadvisor']['dir']                                    = "#{node['hops']['dir']}/cadvisor"
-default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor"
+default['hops']['cadvisor']['download-url']                           = "#{node['download_url']}/docker/cadvisor-#{node['hops']['cadvisor_version']}"
 default['hops']['cadvisor']['port']                                   = "4194"
 
 # Data science profile
@@ -480,3 +481,8 @@ default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
+
+##
+## Flyingduck
+##
+default['hopsworks']['enable_flyingduck'] = "false"

@@ -343,7 +343,10 @@ bash "flyway_migrate" do
   user "root"
   cwd "#{theDomain}/flyway"
   code <<-EOF
-    #{theDomain}/flyway/flyway migrate
+    # Validation during migrate is very strict for our needs. If we found a bug
+    # on a released branch and we fix it, next time someone upgrades to released branch+1
+    # they will get a validation error because the files checksum do not match
+    #{theDomain}/flyway/flyway -validateOnMigrate=false migrate
   EOF
 end
 
@@ -355,6 +358,14 @@ for version in versions do
       #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
     EOH
   end
+end
+
+# Create the users_groups view if it doesn't exists (see HWORKS-457 for explanation)
+bash "create users_groups view" do
+  user "root"
+  code <<-EOH
+    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e "CREATE OR REPLACE VIEW users_groups AS select u.username AS username, u.password AS password, u.secret AS secret, u.email AS email,g.group_name AS group_name from ((user_group ug join users u on((u.uid = ug.uid))) join bbc_group g on((g.gid = ug.gid)));"
+  EOH
 end
 
 # Check if Kafka is to be installed and create user with grants

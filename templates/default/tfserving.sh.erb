@@ -47,8 +47,9 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(netstat -lntpu | grep ":$4" | awk '{print $7}')
-    if [ "$pid" != "" ] ; then
+    unset -v $_port_used
+    _port_used=$(ss -Hlnptu "sport = :$4")
+    if [ "$_port_used" != "" ] ; then
 	echo "There is already a service using this port $4"
 	exit 1
     fi
@@ -60,8 +61,9 @@ elif [ "$1" == "start" ] ; then
       help
     fi
 
-    pid=$(netstat -lntpu | grep ":$5" | awk '{print $7}')
-    if [ "$pid" != "" ] ; then
+    unset -v $_port_used
+    _port_used=$(ss -Hlnptu "sport = :$5")
+    if [ "$_port_used" != "" ] ; then
 	echo "There is already a service using this port $5"
 	exit 1
     fi

@@ -27,24 +27,24 @@ else
 fi
 
 _apply_cgroup2(){
-  if [ ! -d "$CGROUP_MOUNT/docker" ]; then
+  if [ ! -d "$CGROUP_MOUNT/docker.slice" ]; then
     echo "Docker cgroup not yet created"
     exit 1
   fi
-  sudo echo "$CPU_QUOTA $CPU_PERIOD" > ${CGROUP_MOUNT}/docker/cpu.max
-  sudo echo "$MEMORY_HARD_LIMIT" > ${CGROUP_MOUNT}/docker/memory.max
-  sudo echo "$MEMORY_SOFT_LIMIT" > ${CGROUP_MOUNT}/docker/memory.high
+  sudo echo "$CPU_QUOTA $CPU_PERIOD" > ${CGROUP_MOUNT}/docker.slice/cpu.max
+  sudo echo "$MEMORY_HARD_LIMIT" > ${CGROUP_MOUNT}/docker.slice/memory.max
+  sudo echo "$MEMORY_SOFT_LIMIT" > ${CGROUP_MOUNT}/docker.slice/memory.high
 }
 
 _apply_cgroup1(){
-  if [ ! -d "$CGROUP_MOUNT/memory/docker" ]; then
+  if [ ! -d "$CGROUP_MOUNT/memory/docker.slice" ]; then
     echo "Docker cgroup not yet created"
     exit 1
   fi
-  sudo echo $MEMORY_HARD_LIMIT > ${CGROUP_MOUNT}/memory/docker/memory.limit_in_bytes
-  sudo echo $MEMORY_SOFT_LIMIT > ${CGROUP_MOUNT}/memory/docker/memory.soft_limit_in_bytes
-  sudo echo $CPU_QUOTA > ${CGROUP_MOUNT}/cpu/docker/cpu.cfs_quota_us
-  sudo echo $CPU_PERIOD > ${CGROUP_MOUNT}/cpu/docker/cpu.cfs_period_us
+  sudo echo $MEMORY_HARD_LIMIT > ${CGROUP_MOUNT}/memory/docker.slice/memory.limit_in_bytes
+  sudo echo $MEMORY_SOFT_LIMIT > ${CGROUP_MOUNT}/memory/docker.slice/memory.soft_limit_in_bytes
+  sudo echo $CPU_QUOTA > ${CGROUP_MOUNT}/cpu/docker.slice/cpu.cfs_quota_us
+  sudo echo $CPU_PERIOD > ${CGROUP_MOUNT}/cpu/docker.slice/cpu.cfs_period_us
 }
 
 if [ "$cgroup_version" == "1" ]; then
