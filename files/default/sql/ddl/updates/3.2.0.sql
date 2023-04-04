@@ -64,3 +64,16 @@ ALTER TABLE `hopsworks`.`tensorboard` DROP COLUMN `hdfs_user_id`;
 ALTER TABLE `hopsworks`.`rstudio_project` DROP FOREIGN KEY `FK_103_577`;
 ALTER TABLE `hopsworks`.`rstudio_project` DROP KEY `hdfs_user_idx`;
 ALTER TABLE `hopsworks`.`rstudio_project` DROP COLUMN `hdfs_user_id`;
+
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `online_enabled` TINYINT(1) NULL;
+ALTER TABLE `hopsworks`.`on_demand_feature` ADD COLUMN `default_value` VARCHAR(400) NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`feature_group` `fg` 
+  LEFT JOIN `cached_feature_group` `cfg` ON `fg`.`cached_feature_group_id` = `cfg`.`id`
+  LEFT JOIN `stream_feature_group` `sfg` ON `fg`.`stream_feature_group_id` = `sfg`.`id`
+SET `fg`.`online_enabled` = CASE WHEN `fg`.`cached_feature_group_id` IS NOT NULL THEN `cfg`.`online_enabled` WHEN `fg`.`stream_feature_group_id` IS NOT NULL THEN `sfg`.`online_enabled` ELSE 0 END;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_enabled`;
+ALTER TABLE `hopsworks`.`stream_feature_group` DROP COLUMN `online_enabled`;

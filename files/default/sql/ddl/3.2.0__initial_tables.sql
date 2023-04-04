@@ -262,6 +262,7 @@ CREATE TABLE `feature_group` (
                                  `cached_feature_group_id` INT(11) NULL,
                                  `stream_feature_group_id` INT(11) NULL,
                                  `event_time` VARCHAR(63) DEFAULT NULL,
+                                 `online_enabled` TINYINT(1) NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -1348,6 +1349,7 @@ CREATE TABLE `on_demand_feature` (
                                      `description` varchar(10000) COLLATE latin1_general_cs,
                                      `type` varchar(1000) COLLATE latin1_general_cs NOT NULL,
                                      `idx` int(11) NOT NULL DEFAULT 0,
+                                     `default_value` VARCHAR(400) NULL,
                                      PRIMARY KEY (`id`),
                                      KEY `on_demand_feature_group_fk` (`on_demand_feature_group_id`),
                                      CONSTRAINT `on_demand_feature_group_fk1` FOREIGN KEY (`on_demand_feature_group_id`) REFERENCES `on_demand_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -1792,7 +1794,6 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
                                                       `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20)      NOT NULL,
-                                                      `online_enabled`                 TINYINT(1)      NULL,
                                                       `timetravel_format`              INT NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
@@ -1806,7 +1807,6 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
                                                       `offline_feature_group`          BIGINT(20) NOT NULL,
-                                                      `online_enabled`                 TINYINT(1) NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`),
                                                       CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 )
