@@ -37,6 +37,7 @@ WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `online_enabled` TINYINT(1) NULL;
+ALTER TABLE `hopsworks`.`on_demand_feature` ADD COLUMN `default_value` VARCHAR(400) NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`feature_group` `fg` 

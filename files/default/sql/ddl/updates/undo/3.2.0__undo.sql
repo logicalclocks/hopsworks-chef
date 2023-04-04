@@ -72,3 +72,4 @@ SET `sfg`.`online_enabled` = `fg`.`online_enabled`;
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `online_enabled`;
+ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `default_value`;
