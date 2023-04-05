@@ -2040,9 +2040,8 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
 
 CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     `id` int NOT NULL AUTO_INCREMENT,
-                                                    `inode_pid` bigint NOT NULL,
-                                                    `inode_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-                                                    `partition_id` bigint NOT NULL,
+                                                    `path` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                    `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                                     `project` int NOT NULL,
                                                     `provider` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                                     `current_branch` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
@@ -2050,7 +2049,7 @@ CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     `cid` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
                                                     `creator` int NOT NULL,
                                                     PRIMARY KEY (`id`),
-                                                    UNIQUE KEY `repository_inode_constraint_unique` (`inode_pid`,`inode_name`,`partition_id`),
+                                                    UNIQUE KEY `repository_path_constraint_unique` (`path`),
                                                     KEY `project_fk` (`project`),
                                                     CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE,
                                                     CONSTRAINT `repository_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE
