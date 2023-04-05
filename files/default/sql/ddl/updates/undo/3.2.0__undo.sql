@@ -67,20 +67,5 @@ DROP TABLE IF EXISTS `hopsworks`.`statistics_comparison_config`;
 
 DROP TABLE IF EXISTS `hopsworks`.`job_schedule`;
 -- alert feature monitoring changes
-DROP TABLE IF EXISTS `hopworks`.`feature_store_alert`;
-CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_alert` (
-                                                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                                                     `feature_group_id` int(11) NOT NULL,
-                                                     `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                     `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                     `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                     `receiver` int(11) NOT NULL,
-                                                     `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                                     PRIMARY KEY (`id`),
-                                                     UNIQUE KEY `unique_feature_group_alert` (`feature_group_id`,`status`),
-                                                     KEY `fk_feature_group_alert_2_idx` (`feature_group_id`),
-                                                     KEY `fk_feature_group_alert_1_idx` (`receiver`),
-                                                     CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
-                                                     CONSTRAINT `fk_feature_group_alert_2` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+DROP TABLE IF EXISTS `hopsworks`.`feature_view_alert`;
 -- end of alert for FM

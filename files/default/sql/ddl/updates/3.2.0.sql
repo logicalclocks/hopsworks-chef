@@ -138,22 +138,22 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- alert changes for feature monitoring
-ALTER TABLE `feature_group_alert`
-    MODIFY `feature_group_id` int(11) DEFAULT NULL,
-    ADD `feature_view_id` int(11) DEFAULT NULL,
-    ADD `entity_type` tinyint(1) NOT NULL DEFAULT 0,
-    DROP FOREIGN KEY `fk_feature_group_alert_1`,
-    DROP FOREIGN KEY `fk_feature_group_alert_2`,
-    ADD CONSTRAINT `fk_feature_store_alert_1`
-        FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`)
-            ON DELETE CASCADE,
-    ADD CONSTRAINT `fk_feature_store_alert_2`
-        FOREIGN KEY (`feature_group_id`) REFERENCES `hopsworks`.`feature_group` (`id`)
-            ON DELETE CASCADE,
-    ADD CONSTRAINT `unique_feature_view_status`
-        UNIQUE (`feature_view_id`, `status`),
-    ADD CONSTRAINT `fk_feature_store_alert_3`
-        FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`)
-            ON DELETE CASCADE;
-ALTER TABLE `feature_group_alert` RENAME TO `feature_store_alert`;
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
+                                                `id` int AUTO_INCREMENT
+                                                    PRIMARY KEY,
+                                                `status` varchar(45) NOT NULL,
+                                                `type` varchar(45) NOT NULL,
+                                                `severity` varchar(45) NOT NULL,
+                                                `receiver` int NOT NULL,
+                                                `created` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                                `feature_view_id` int NOT NULL,
+                                                CONSTRAINT `unique_feature_view_status`
+                                                    UNIQUE (`feature_view_id`, `status`),
+                                                CONSTRAINT `fk_fv_alert_1`
+                                                    FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`)
+                                                        ON DELETE CASCADE,
+                                                CONSTRAINT `fk_fv_alert_2`
+                                                    FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`)
+                                                        ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 -- end of alert changes for feature monitoring

@@ -1995,29 +1995,21 @@ CREATE TABLE IF NOT EXISTS `job_alert` (
                                            CONSTRAINT `fk_job_alert_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_store_alert` (
-                                                             `id` int AUTO_INCREMENT
-                                                                 PRIMARY KEY,
-                                                             `feature_group_id` int(11) DEFAULT NULL,
-                                                             `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                             `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                             `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
-                                                             `receiver` int(11) NOT NULL,
-                                                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                                             `feature_view_id` int(11) DEFAULT NULL,
-                                                             `entity_type` TINYINT(1) NOT NULL,
-                                                             CONSTRAINT `unique_feature_group_alert` UNIQUE (`feature_group_id`, `status`),
-                                                             CONSTRAINT `unique_feature_view_status` UNIQUE (`feature_view_id`, `status`),
-                                                             CONSTRAINT `fk_feature_store_alert_1`
-                                                                 FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`)
-                                                                     ON DELETE CASCADE,
-                                                             CONSTRAINT `fk_feature_store_alert_2`
-                                                                 FOREIGN KEY (`feature_group_id`) REFERENCES `hopsworks`.`feature_group` (`id`)
-                                                                     ON DELETE CASCADE,
-                                                             CONSTRAINT `fk_feature_store_alert_3`
-                                                                 FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`)
-                                                                     ON DELETE CASCADE
-) ENGINE = ndbcluster DEFAULT CHARSET = `latin1` COLLATE = `latin1_general_cs`;
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_alert` (
+                                                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                     `feature_group_id` int(11) NOT NULL,
+                                                     `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                     `type` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                     `severity` varchar(45) COLLATE latin1_general_cs NOT NULL,
+                                                     `receiver` int(11) NOT NULL,
+                                                     `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                                     PRIMARY KEY (`id`),
+                                                     UNIQUE KEY `unique_feature_group_alert` (`feature_group_id`,`status`),
+                                                     KEY `fk_feature_group_alert_2_idx` (`feature_group_id`),
+                                                     KEY `fk_feature_group_alert_1_idx` (`receiver`),
+                                                     CONSTRAINT `fk_feature_group_alert_1` FOREIGN KEY (`receiver`) REFERENCES `alert_receiver` (`id`) ON DELETE CASCADE,
+                                                     CONSTRAINT `fk_feature_group_alert_2` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `project_service_alert` (
                                                        `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2420,3 +2412,24 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     UNIQUE KEY `job_id` (`job_id`),
     CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- alert changes for feature monitoring
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
+                                                `id` int AUTO_INCREMENT
+                                                    PRIMARY KEY,
+                                                `status` varchar(45) NOT NULL,
+                                                `type` varchar(45) NOT NULL,
+                                                `severity` varchar(45) NOT NULL,
+                                                `receiver` int NOT NULL,
+                                                `created` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                                `feature_view_id` int NOT NULL,
+                                                CONSTRAINT `unique_feature_view_status`
+                                                    UNIQUE (`feature_view_id`, `status`),
+                                                CONSTRAINT `fk_fv_alert_1`
+                                                    FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`)
+                                                        ON DELETE CASCADE,
+                                                CONSTRAINT `fk_fv_alert_2`
+                                                    FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`)
+                                                        ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+-- end alert changes for feature monitoring
