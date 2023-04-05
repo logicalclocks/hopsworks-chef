@@ -1995,7 +1995,7 @@ CREATE TABLE IF NOT EXISTS `job_alert` (
                                            CONSTRAINT `fk_job_alert_2` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_alert` (
+CREATE TABLE IF NOT EXISTS `feature_group_alert` (
                                                      `id` int(11) NOT NULL AUTO_INCREMENT,
                                                      `feature_group_id` int(11) NOT NULL,
                                                      `status` varchar(45) COLLATE latin1_general_cs NOT NULL,
