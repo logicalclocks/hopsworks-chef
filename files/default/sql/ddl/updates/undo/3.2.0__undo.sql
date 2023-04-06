@@ -59,4 +59,19 @@ SET team_role = 'Data scientist'
 WHERE team_member = 'serving@hopsworks.se';
 SET SQL_SAFE_UPDATES = 1;
 
+ALTER TABLE `hopsworks`.`cached_feature_group` ADD COLUMN `online_enabled` TINYINT(1) NULL;
+ALTER TABLE `hopsworks`.`stream_feature_group` ADD COLUMN `online_enabled` TINYINT(1) NOT NULL DEFAULT 1;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`cached_feature_group` `cfg` 
+  INNER JOIN `feature_group` `fg` ON `fg`.`cached_feature_group_id` = `cfg`.`id`
+SET `cfg`.`online_enabled` = `fg`.`online_enabled`;
+UPDATE `hopsworks`.`stream_feature_group` `sfg` 
+  INNER JOIN `feature_group` `fg` ON `fg`.`cached_feature_group_id` = `sfg`.`id`
+SET `sfg`.`online_enabled` = `fg`.`online_enabled`;
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `online_enabled`;
+ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `default_value`;
+
 DROP TABLE IF EXISTS `hopsworks`.`project_topic_offsets`;
