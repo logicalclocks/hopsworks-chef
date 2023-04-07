@@ -4,9 +4,8 @@
     ignore_failure true
     code <<-EOF
         service glassfish-domain1 stop
-        systemctl stop glassfish-domain1 
-        pid=$(sudo netstat -lptn | grep 4848 | awk '{print $7}')
-        pid=echo "${pid//[!0-9]/}"
+        systemctl stop glassfish-domain1
+        pid=$(sudo lsof -t -i :4848 -s TCP:LISTEN)
         if [ $pid != "" ] ; then
            kill $pid
         fi
