@@ -65,6 +65,7 @@ ALTER TABLE `hopsworks`.`rstudio_project` DROP FOREIGN KEY `FK_103_577`;
 ALTER TABLE `hopsworks`.`rstudio_project` DROP KEY `hdfs_user_idx`;
 ALTER TABLE `hopsworks`.`rstudio_project` DROP COLUMN `hdfs_user_id`;
 
+
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `online_enabled` TINYINT(1) NULL;
 ALTER TABLE `hopsworks`.`on_demand_feature` ADD COLUMN `default_value` VARCHAR(400) NULL;
 
@@ -77,3 +78,113 @@ SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `online_enabled`;
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP COLUMN `online_enabled`;
+
+SET max_sp_recursion_depth=10;
+
+DROP PROCEDURE IF EXISTS `path_resolver`;
+DROP FUNCTION IF EXISTS `path_resolver_fn`;
+
+DELIMITER //
+CREATE PROCEDURE path_resolver(IN `parent_id` BIGINT, 
+                               OUT `inode_path` VARCHAR(255))
+BEGIN
+  DECLARE next_parent_id BIGINT;
+  DECLARE inode_name VARCHAR(255);
+  DECLARE parent_path VARCHAR(255);
+
+  IF `parent_id` = 1 THEN
+    -- We are at the root of the file system
+    SET `inode_path` =  "/";
+  ELSE
+
+    -- Not the root, we need to traverse more.
+    -- Get the information about the current inode
+    SELECT `h`.`parent_id`, `h`.`name`
+    INTO next_parent_id, inode_name
+    FROM `hops`.`hdfs_inodes` `h`
+    WHERE `h`.`id` = `parent_id`;
+
+    -- Recursively traverse upstream
+    CALL path_resolver(next_parent_id, parent_path);
+
+    -- Assemble the path
+    SET `inode_path` = CONCAT(parent_path, inode_name, "/");
+  END IF;
+END //
+
+
+-- MySQL does not support recursive functions. 
+-- Wrap the procedure above into a function to make the rest of the migrations easier
+CREATE FUNCTION path_resolver_fn(`parent_id` BIGINT, `name` VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+  DECLARE parent_path VARCHAR(255);
+
+  CALL path_resolver(`parent_id`, parent_path);
+
+  RETURN CONCAT(parent_path, `name`);
+END //
+
+DELIMITER ;
+
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` 
+  ADD COLUMN `truststore_path` VARCHAR(255) DEFAULT NULL,
+  ADD COLUMN `keystore_path` VARCHAR(255) DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE 
+  `hopsworks`.`feature_store_kafka_connector`
+SET 
+  truststore_path = path_resolver_fn(`truststore_inode_pid`, `truststore_inode_name`),
+  keystore_path = path_resolver_fn(`keystore_inode_pid`, `keystore_inode_name`);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP FOREIGN KEY `fk_fs_storage_connector_kafka_keystore`;
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP KEY `fk_fs_storage_connector_kafka_keystore`;
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` 
+  DROP COLUMN `keystore_inode_pid`,
+  DROP COLUMN `keystore_inode_name`,
+  DROP COLUMN `keystore_partition_id`;
+
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP FOREIGN KEY `fk_fs_storage_connector_kafka_truststore`;
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP KEY `fk_fs_storage_connector_kafka_truststore`;
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` 
+  DROP COLUMN `truststore_inode_pid`,
+  DROP COLUMN `truststore_inode_name`,
+  DROP COLUMN `truststore_partition_id`;
+
+
+ALTER TABLE `hopsworks`.`feature_store_gcs_connector` ADD COLUMN `key_path` VARCHAR(255) DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE 
+  `hopsworks`.`feature_store_gcs_connector`
+SET 
+  key_path = path_resolver_fn(`key_inode_pid`, `key_inode_name`);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_store_gcs_connector` DROP FOREIGN KEY `fk_fs_storage_connector_gcs_keyfile`;
+ALTER TABLE `hopsworks`.`feature_store_gcs_connector` DROP KEY `fk_fs_storage_connector_gcs_keyfile`;
+ALTER TABLE `hopsworks`.`feature_store_gcs_connector` 
+  DROP COLUMN `key_inode_pid`,
+  DROP COLUMN `key_inode_name`,
+  DROP COLUMN `key_partition_id`;
+
+
+ALTER TABLE `hopsworks`.`feature_store_bigquery_connector` ADD COLUMN `key_path` VARCHAR(255) DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE 
+  `hopsworks`.`feature_store_bigquery_connector`
+SET 
+  key_path = path_resolver_fn(`key_inode_pid`, `key_inode_name`);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`feature_store_bigquery_connector` DROP FOREIGN KEY `fk_fs_storage_connector_bigq_keyfile`;
+ALTER TABLE `hopsworks`.`feature_store_bigquery_connector` DROP KEY `fk_fs_storage_connector_bigq_keyfile`;
+ALTER TABLE `hopsworks`.`feature_store_bigquery_connector` 
+  DROP COLUMN `key_inode_pid`,
+  DROP COLUMN `key_inode_name`,
+  DROP COLUMN `key_partition_id`;
+

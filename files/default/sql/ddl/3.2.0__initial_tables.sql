@@ -1683,25 +1683,11 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
     `ssl_secret_name` VARCHAR(200) NULL,
     `ssl_endpoint_identification_algorithm` VARCHAR(100) NULL,
     `options` VARCHAR(2000) NULL,
-    `truststore_inode_pid` BIGINT(20) NULL,
-    `truststore_inode_name` VARCHAR(255) NULL,
-    `truststore_partition_id` BIGINT(20) NULL,
-    `keystore_inode_pid` BIGINT(20) NULL,
-    `keystore_inode_name` VARCHAR(255) NULL,
-    `keystore_partition_id` BIGINT(20) NULL,
+    `truststore_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+    `keystore_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `fk_fs_storage_connector_kafka_idx` (`ssl_secret_uid`, `ssl_secret_name`),
-    CONSTRAINT `fk_fs_storage_connector_kafka` FOREIGN KEY (`ssl_secret_uid`, `ssl_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_fs_storage_connector_kafka_truststore` FOREIGN KEY (
-        `truststore_inode_pid`,
-        `truststore_inode_name`,
-        `truststore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-    CONSTRAINT `fk_fs_storage_connector_kafka_keystore` FOREIGN KEY (
-        `keystore_inode_pid`,
-        `keystore_inode_name`,
-        `keystore_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
+    CONSTRAINT `fk_fs_storage_connector_kafka` FOREIGN KEY (`ssl_secret_uid`, `ssl_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1711,17 +1697,10 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
     `bucket` VARCHAR(1000) NOT NULL,
     `encryption_secret_uid` INT NULL,
     `encryption_secret_name` VARCHAR(200) NULL,
-    `key_inode_pid` BIGINT(20) NULL,
-    `key_inode_name` VARCHAR(255) NULL,
-    `key_partition_id` BIGINT(20) NULL,
+    `key_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `fk_fs_storage_connector_gcs_idx` (`encryption_secret_uid`, `encryption_secret_name`),
-    CONSTRAINT `fk_fs_storage_connector_gcs` FOREIGN KEY (`encryption_secret_uid`, `encryption_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT,
-    CONSTRAINT `fk_fs_storage_connector_gcs_keyfile` FOREIGN KEY (
-        `key_inode_pid`,
-        `key_inode_name`,
-        `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
+    CONSTRAINT `fk_fs_storage_connector_gcs` FOREIGN KEY (`encryption_secret_uid`, `encryption_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
@@ -1729,21 +1708,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_gcs_connector` (
 CREATE TABLE IF NOT EXISTS `feature_store_bigquery_connector`
 (
     `id`                      int AUTO_INCREMENT,
-    `key_inode_pid` BIGINT(20) NULL,
-    `key_inode_name` VARCHAR(255) NULL,
-    `key_partition_id` BIGINT(20) NULL,
     `parent_project`          varchar(1000) NOT NULL,
     `dataset`                 varchar(1000) NULL,
     `query_table`             varchar(1000) NULL,
     `query_project`           varchar(1000) NULL,
     `materialization_dataset` varchar(1000) NULL,
     `arguments`               varchar(2000) NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_fs_storage_connector_bigq_keyfile` FOREIGN KEY (
-        `key_inode_pid`,
-        `key_inode_name`,
-        `key_partition_id`
-    ) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE SET NULL ON UPDATE NO ACTION
+    `key_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+    PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_store_connector` (
