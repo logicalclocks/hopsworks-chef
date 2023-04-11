@@ -81,8 +81,8 @@ ALTER TABLE `hopsworks`.`stream_feature_group` DROP COLUMN `online_enabled`;
 
 SET max_sp_recursion_depth=10;
 
-DROP PROCEDURE `path_resolver`;
-DROP FUNCTION `path_resolver_fn`;
+DROP PROCEDURE IF EXISTS `path_resolver`;
+DROP FUNCTION IF EXISTS `path_resolver_fn`;
 
 DELIMITER //
 CREATE PROCEDURE path_resolver(IN `parent_id` BIGINT, 
