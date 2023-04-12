@@ -2051,8 +2051,7 @@ CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     PRIMARY KEY (`id`),
                                                     UNIQUE KEY `repository_path_constraint_unique` (`path`),
                                                     KEY `project_fk` (`project`),
-                                                    CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE,
-                                                    CONSTRAINT `repository_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE
+                                                    CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
  ) ENGINE=ndbcluster AUTO_INCREMENT=2061 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `git_executions` (
