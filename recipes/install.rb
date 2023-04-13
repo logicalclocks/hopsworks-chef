@@ -790,26 +790,7 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   action :create
 end
 
-template "#{theDomain}/flyway/flyway-undo.sh" do
-  source "flyway-undo.sh.erb"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
-end
-
-directory "#{theDomain}/flyway/undo" do
-  owner node['glassfish']['user']
-  mode "770"
-  action :create
-end
-
 directory "#{theDomain}/flyway/dml" do
-  owner node['glassfish']['user']
-  mode "770"
-  action :create
-end
-
-directory "#{theDomain}/flyway/dml/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
@@ -822,12 +803,6 @@ directory "#{theDomain}/flyway/all" do
 end
 
 directory "#{theDomain}/flyway/all/sql" do
-  owner node['glassfish']['user']
-  mode "770"
-  action :create
-end
-
-directory "#{theDomain}/flyway/all/undo" do
   owner node['glassfish']['user']
   mode "770"
   action :create
