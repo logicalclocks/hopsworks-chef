@@ -22,6 +22,7 @@ CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
 IS_TLS=<%= node['hops']['tls']['enabled'] %>
+SECCOMP_FILE=<%= node['hops']['docker']['fuse-seccomp-file'] %>
 NOT_FOUND=127
 
 help() {
@@ -57,12 +58,14 @@ if [ -f "$PID_FILE" ] ; then
 fi
 
 JUPYTER_HOPSFS_MOUNT=false
+DOCKER_FUSE_ARGS=""
 if [ -f ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py ]; then
   JUPYTER_HOPSFS_MOUNT=true
   paste ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py >> ${JUPYTER_HOME}/conf/jupyter_notebook_config.py
+  DOCKER_FUSE_ARGS="--device /dev/fuse --security-opt apparmor:unconfined --security-opt seccomp=${SECCOMP_FILE}"
 fi
 
-docker run --rm -d --device /dev/fuse --security-opt apparmor:unconfined --security-opt seccomp=<%= node['hops']['docker']['fuse-seccomp-file'] %> --name $CONTAINER_NAME --cidfile=$PID_FILE\
+docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
        --network=host \
        --init \
        --memory="${ALLOCATED_MEMORY}m" \
