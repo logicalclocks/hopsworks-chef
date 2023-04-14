@@ -64,3 +64,56 @@ os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
 os.environ['HADOOP_LOG_DIR'] = "/tmp"
+
+def script_post_save(model, os_path, contents_manager, **kwargs):
+    """scrub output before saving notebooks"""
+    # only run on notebooks
+    if model['type'] != 'notebook':
+        return
+    if os.environ['JUPYTER_HOPSFS_MOUNT']:
+        import sys
+        import logging
+        import re
+        relative_path = re.sub("/proc/\d+/root/home/yarnapp/" + os.environ['HADOOP_USER_NAME'] + "/", "", os_path)
+        logging.info("Attaching notebook configuration to file " + relative_path)
+        try:
+            from hops import util
+        except ImportError:
+            logging.error("Failed to import hops-util in notebook post save hook.")
+            return
+        if 'hops.util' in sys.modules:
+            kernel_id = get_notebook_kernel_id(relative_path)
+            if kernel_id != "":
+                try:
+                    util.attach_jupyter_configuration_to_notebook(kernel_id=kernel_id)
+                except Exception as e:
+                    logging.error("Failed to attach notebook configuration: " + e.message)
+            else:
+                logging.error("No kernel id for notebook " + relative_path)
+        else:
+            return
+def get_notebook_kernel_id(path):
+    """
+    Return the full path of the jupyter notebook.
+    """
+    if path != "":
+        import json
+        import os.path
+        import re
+        import requests
+        import logging
+        try:
+            from requests.compat import urljoin
+            from notebook.notebookapp import list_running_servers
+        except ImportError as e:
+            logging.log("Failed to import some stuff " + e.message)
+            return ""
+        servers = list_running_servers()
+        for ss in servers:
+            response = requests.get(urljoin(ss['url'], 'api/sessions'), params={'token': ss.get('token', '')})
+            for nn in json.loads(response.text):
+                if nn['notebook']['path'] == path:
+                    return nn['kernel']['id']
+    return ""
+
+c.FileContentsManager.post_save_hook = script_post_save
