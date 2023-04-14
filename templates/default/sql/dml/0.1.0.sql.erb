@@ -161,8 +161,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("staging_dir", "<%= node['hopswork
 
 REPLACE INTO variables(`id`, `value`) VALUES ("max_status_poll_retry", "<%= node['hopsworks']['monitor_max_status_poll_try'] %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("hopsutil_version", "<%= node['hadoop_spark']['hopsutil_version'] %>");
-
 --
 
 REPLACE INTO variables(`id`, `value`) VALUES ("hopsworks_endpoint","<%= @hopsworks_ip %>:<%= node['hopsworks']['port'] %>");
