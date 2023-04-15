@@ -98,7 +98,7 @@ def script_post_save(model, os_path, contents_manager, **kwargs):
 
 def get_notebook_kernel_id(path):
     """
-    Return the full path of the jupyter notebook.
+    Return the kernel_id of the jupyter notebook if it was opened or run.
     """
     if path != "":
         import os.path
