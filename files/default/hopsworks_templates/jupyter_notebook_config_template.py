@@ -65,68 +65,25 @@ os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
 os.environ['HADOOP_LOG_DIR'] = "/tmp"
 
-# hopsfs-mount does not support xattr. If we save the file then we loose the xattr info of the notebook
+# hopsfs-mount does not support xattr. If we save the file then we loose the xattr information of the notebook
 # We need to put back the xattr after saving the notebook.
-def script_post_save(model, os_path, contents_manager, **kwargs):
+def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
     """scrub output before saving notebooks"""
     # only run on notebooks
     if model['type'] != 'notebook':
         return
     if os.environ['JUPYTER_HOPSFS_MOUNT']:
-        import sys
-        import logging
-        import re
-        relative_path = re.sub("/proc/\d+/root/home/yarnapp/" + os.environ['HADOOP_USER_NAME'] + "/", "", os_path)
-        logging.info("Attaching notebook configuration to file " + relative_path)
         try:
+            import sys
             from hops import util
         except ImportError as err:
-            logging.error(err)
             return
         if 'hops.util' in sys.modules:
-            kernel_id = get_notebook_kernel_id(relative_path)
-            logging.info("Kernel id is " + kernel_id)
-            if kernel_id != "":
-                try:
-                    util.attach_jupyter_configuration_to_notebook(kernel_id)
-                except Exception as e:
-                    logging.error("Failed to attach notebook configuration: " + e.message)
-            else:
-                logging.error("No kernel id for notebook " + relative_path)
+            util.notebook_post_save(os_path)
         else:
             return
 
-def get_notebook_kernel_id(path):
-    """
-    Return the kernel_id of the jupyter notebook if it was opened or run.
-    """
-    if path != "":
-        import os.path
-        import re
-        import logging
-        try:
-            from requests.compat import urljoin
-            from notebook.notebookapp import list_running_servers
-            from hops import util
-            from hops import constants as hops_constants
-        except ImportError as e:
-            logging.error(e)
-            return ""
-        for srv in list_running_servers():
-            resource_url = srv['base_url'] + "api/sessions?token=" + srv.get('token', '')
-            method = hops_constants.HTTP_CONFIG.HTTP_GET
-            headers = {hops_constants.HTTP_CONFIG.HTTP_CONTENT_TYPE: hops_constants.HTTP_CONFIG.HTTP_APPLICATION_JSON}
-            response = util.send_request(method, resource_url, headers=headers)
-            response_object = response.json()
-            if response.status_code >= 400:
-                error_code, error_msg, user_msg = util._parse_rest_error(response_object)
-                logging.log("Failed to get active sessions".format(resource_url, response.status_code, response.reason,
-                                                                   error_code, error_msg, user_msg))
-                return ""
-            for session in response_object:
-                if session['notebook']['path'] == path:
-                    return session['kernel']['id']
-    return ""
 
-c.FileContentsManager.post_save_hook = script_post_save
+c.FileContentsManager.post_save_hook = notebook_post_save_hook
+
 
