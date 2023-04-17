@@ -59,10 +59,12 @@ fi
 
 JUPYTER_HOPSFS_MOUNT=false
 DOCKER_FUSE_ARGS=""
+WORKING_DIR=$SECRET_DIR
 if [ -f ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py ]; then
   JUPYTER_HOPSFS_MOUNT=true
   paste ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py >> ${JUPYTER_HOME}/conf/jupyter_notebook_config.py
   DOCKER_FUSE_ARGS="--device /dev/fuse --security-opt apparmor:unconfined --security-opt seccomp=${SECCOMP_FILE}"
+  WORKING_DIR=<%= node['hopsworks']['jupyter']['jupyter_notebooks_dir'] %>
 fi
 
 docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
@@ -96,7 +98,7 @@ docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
        -v ${SPARK_CONF_DIR}:${SPARK_CONF_DIR}:ro \
        -u="yarnapp" \
-       -w="$SECRET_DIR" \
+       -w="$WORKING_DIR" \
        $IMAGE \
        /usr/local/bin/jupyter-launcher.sh $PORT $LOGFILE $TOKEN $JUPYTER_MODE &
 
