@@ -217,6 +217,10 @@ if !node['hopsworks']['pki']['intermediate']['name'].empty?
   intermediateConf[:validityDuration] = node['hopsworks']['pki']['intermediate']['duration']
 end
 
+if !node['hopsworks']['pki']['intermediate']['extra_san_for_username'].empty?
+  intermediateConf[:extraUsernameSAN] = JSON.parse(node['hopsworks']['pki']['intermediate']['extra_san_for_username'])
+end
+
 kubernetesConf = {}
 if !node['hopsworks']['pki']['kubernetes']['name'].empty?
   kubernetesConf[:x509Name] = node['hopsworks']['pki']['kubernetes']['name']
@@ -243,6 +247,25 @@ end
 caConf[:rootCA] = rootConf
 caConf[:intermediateCA] = intermediateConf
 caConf[:kubernetesCA] = kubernetesConf
+
+
+# Usernames configuration
+usernamesConfiguration = {}
+usernamesConfiguration[:glassfish] = node['hopsworks']['user']
+usernamesConfiguration[:hdfs] = node['hops']['hdfs']['user']
+usernamesConfiguration[:rmyarn] = node['hops']['rm']['user']
+usernamesConfiguration[:yarn] = node['hops']['yarn']['user']
+usernamesConfiguration[:hive] = node['hive2']['user']
+usernamesConfiguration[:livy] = node['livy']['user']
+usernamesConfiguration[:flink] = node['flink']['user']
+usernamesConfiguration[:consul] = node['consul']['user']
+usernamesConfiguration[:hopsmon] = node['hopsmonitor']['user']
+usernamesConfiguration[:zookeeper] = node['kzookeeper']['user']
+usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
+usernamesConfiguration[:elastic] = node['elastic']['user']
+if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
+  usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
+end
 
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
@@ -273,7 +296,8 @@ for version in versions do
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt,
-         :pki_ca_configuration => caConf.to_json()
+         :pki_ca_configuration => caConf.to_json(),
+         :usernames_configuration => usernamesConfiguration.to_json()
     })
     action :create
   end
@@ -1189,7 +1213,7 @@ end
 
 # We can't use the internal port yet as the certificate has not been generated yet
 hopsworks_certs "generate-int-certs" do
-  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  subject     "/CN=#{node['fqdn']}/L=glassfishinternal/OU=0"
   action      :generate_int_certs
 end
 
