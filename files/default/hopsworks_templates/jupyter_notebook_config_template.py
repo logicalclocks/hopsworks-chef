@@ -75,11 +75,14 @@ def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
     if os.environ['JUPYTER_HOPSFS_MOUNT']:
         try:
             import sys
+            import threading
             from hops import util
         except ImportError as err:
             return
         if 'hops.util' in sys.modules:
-            util.notebook_post_save(os_path)
+            t = threading.Thread(target=util.notebook_post_save, args=(os_path.replace("/home/yarnapp/notebooks/", ""),))
+            t.start()
+            return
         else:
             return
 
