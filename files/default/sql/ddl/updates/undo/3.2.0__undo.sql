@@ -81,3 +81,6 @@ DROP TABLE IF EXISTS `hopsworks`.`monitoring_window_config`;
 DROP TABLE IF EXISTS `hopsworks`.`statistics_comparison_config`;
 
 DROP TABLE IF EXISTS `hopsworks`.`job_schedule`;
+-- alert feature monitoring changes
+DROP TABLE IF EXISTS `hopsworks`.`feature_view_alert`;
+-- end of alert for FM
