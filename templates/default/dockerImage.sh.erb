@@ -9,6 +9,7 @@ help() {
     exit 1
 }
 
+PATH="$PATH:/usr/local/bin"
 REGISTRY_URL='<%= @registry_addr %>'
 VALID_IMAGE_NAME='<%= node['conda']['docker']['image-validation-regex'] %>'
 if [ "$1" == "create" ] ; then
