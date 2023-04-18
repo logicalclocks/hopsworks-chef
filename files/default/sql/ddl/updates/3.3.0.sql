@@ -86,3 +86,11 @@ UPDATE `hopsworks`.`feature_store` `fs`
   LEFT JOIN `project` `proj` ON `fs`.`project_id` = `proj`.`id`
 SET `fs`.`name` = `proj`.`projectname`;
 SET SQL_SAFE_UPDATES = 1;
+
+-- HWORKS-486: Remove inode from project
+ALTER TABLE `hopsworks`.`project` DROP FOREIGN KEY `FK_149_289`;
+ALTER TABLE `hopsworks`.`project` DROP INDEX `inode_pid`;
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_pid`;
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_name`;
+ALTER TABLE `hopsworks`.`project` DROP COLUMN `partition_id`;
+
