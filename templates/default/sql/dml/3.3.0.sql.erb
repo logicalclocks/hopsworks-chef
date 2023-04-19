@@ -1,7 +1,11 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("docker_cgroup_parent", "<%= node['hops']['docker']['cgroup']['parent'] %>", 1);
+
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('unix_usernames_conf', '<%= @usernames_configuration %>');
+
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("loadbalancer_external_domain", "<%= node['hopsworks']['loadbalancer_external_domain'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("jupyter_remote_fs_driver", "<%= node['hopsworks']['jupyter']['remote_fs_driver'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsfsmount_apparmor_profile", "<%= node['hops']['docker']['hopsfsmount-apparmor-profile'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("apply_hopsfsmount_apparmor_profile_kube", "<%= @apparmor_enabled %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_feature_monitoring", "<%= node['hopsworks']['enable_feature_monitoring'] %>", 1);
