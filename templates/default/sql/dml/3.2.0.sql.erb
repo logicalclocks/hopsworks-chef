@@ -8,8 +8,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("testconnector_image
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_flyingduck", "<%= node['hopsworks']['enable_flyingduck'] %>", 1);
 
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_feature_monitoring", "<%= node['hopsworks']['enable_feature_monitoring'] %>", 1);
-
 -- Move Grants to DML files 
 -- Grants from hopsworks/default.rb 
 
