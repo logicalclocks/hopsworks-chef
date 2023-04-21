@@ -89,4 +89,6 @@ def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
 
 c.FileContentsManager.post_save_hook = notebook_post_save_hook
 
+c.NotebookNotary.data_dir = "${conf.secretDirectory}"
+
 
