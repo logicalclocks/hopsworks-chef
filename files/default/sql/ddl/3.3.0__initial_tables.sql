@@ -372,10 +372,10 @@ CREATE TABLE `feature_store_statistic` (
 CREATE TABLE `feature_store_code` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
                                       `commit_time` DATETIME(3) NOT NULL,
-                                      `path` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                      `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                       `feature_group_id` INT(11),
                                       `feature_group_commit_id` BIGINT(20),
-                                      `training_dataset_id`INT(11),
+                                      `training_dataset_id` INT(11),
                                       `application_id`VARCHAR(50),
                                       PRIMARY KEY (`id`),
                                       KEY `feature_group_id` (`feature_group_id`),

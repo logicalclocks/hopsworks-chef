@@ -34,7 +34,7 @@ SET SQL_SAFE_UPDATES = 0;
 UPDATE
     `hopsworks`.`feature_store_code`
 SET
-    path = path_resolver_fn(`inode_pid`, `inode_name`);
+    path = inode_name;
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_store_code` DROP FOREIGN KEY `inode_fk_fsc`;
