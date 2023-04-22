@@ -25,3 +25,9 @@ DROP COLUMN `inode_pid`,
     DROP COLUMN `partition_id`;
 
 ALTER TABLE `hopsworks`.`git_repositories` ADD UNIQUE KEY `repository_path_constraint_unique` (`path`);
+
+-- HWORKS-515: Remove inode foreign key from feature_store_code
+ALTER TABLE `hopsworks`.`feature_store_code` DROP FOREIGN KEY `inode_fk_fsc`;
+ALTER TABLE `hopsworks`.`feature_store_code` DROP KEY `inode_fk_fsc`;
+ALTER TABLE `hopsworks`.`feature_store_code` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`;
+ALTER TABLE `hopsworks`.`feature_store_code` RENAME COLUMN `inode_name` TO `name`;
