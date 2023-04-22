@@ -196,13 +196,6 @@ else
       mode 0750
       action :create
     end
-
-    cookbook_file "#{theDomain}/flyway/undo/U#{versions[i]}__undo.sql" do
-      source "sql/ddl/updates/undo/#{versions[i]}__undo.sql"
-      owner node['glassfish']['user']
-      mode 0750
-      action :create
-    end
   end
 end
 
@@ -285,13 +278,6 @@ for version in versions do
     action :create
   end
 
-  template "#{theDomain}/flyway/dml/undo/U#{version}__undo.sql" do
-    source "sql/dml/undo/#{version}__undo.sql.erb"
-    owner node['glassfish']['user']
-    mode 0750
-    action :create
-  end
-
    # template all the ddl files from all versions
    cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__hopsworks.sql" do
     source "sql/ddl/updates/#{version}.sql"
@@ -301,13 +287,6 @@ for version in versions do
     action :create
   end
 
-  cookbook_file "#{theDomain}/flyway/all/undo/U#{version}__undo.sql" do
-    source "sql/ddl/updates/undo/#{version}__undo.sql"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode 0750
-    action :create
-  end
 
   if Gem::Version.new(version) >= Gem::Version.new('2.0.0')
     cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__initial_tables.sql" do
