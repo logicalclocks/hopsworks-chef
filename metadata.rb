@@ -638,6 +638,15 @@ attribute "oauth/account_status",
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
           :type => 'string'
+attribute "oauth/email_claim",
+          :description => "OAuth email claim (default: email_claim)",
+          :type => 'string'
+attribute "oauth/given_name_claim",
+          :description => "OAuth given name claim (default: given_name)",
+          :type => 'string'
+attribute "oauth/family_name_claim",
+          :description => "OAuth family name claim (default: family_name)",
+          :type => 'string'
 
 attribute "remote_auth/need_consent",
           :description => "Remote user need to consent on first login. 'true' (default)",

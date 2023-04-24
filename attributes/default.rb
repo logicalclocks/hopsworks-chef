@@ -309,6 +309,9 @@ default['oauth']['redirect_uri']                     = "hopsworks/callback"
 default['oauth']['logout_redirect_uri']              = "hopsworks/"
 default['oauth']['account_status']                   = 1
 default['oauth']['group_mapping']                    = ""
+default['oauth']['email_claim']                      = "email"
+default['oauth']['given_name_claim']                 = "given_name"
+default['oauth']['family_name_claim']                = "family_name"
 
 default['remote_auth']['need_consent']               = "true"
 
