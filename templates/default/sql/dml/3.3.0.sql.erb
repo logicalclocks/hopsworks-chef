@@ -1,3 +1,6 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_email_claim", "<%= node['oauth']['email_claim'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_given_name_claim", "<%= node['oauth']['given_name_claim'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_family_name_claim", "<%= node['oauth']['family_name_claim'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_group_mapping_enabled", "<%= node['oauth']['group_mapping_enabled'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("docker_cgroup_parent", "<%= node['hops']['docker']['cgroup']['parent'] %>", 1);

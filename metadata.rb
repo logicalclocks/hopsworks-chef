@@ -635,6 +635,9 @@ attribute "oauth/logout_redirect_uri",
 attribute "oauth/account_status",
           :description => "Hopsworks account status given for new OAuth user. '1' verified account (default)",
           :type => 'string'
+attribute "oauth/group_mapping_enabled",
+          :description => "Whether to enabled OAuth group mapping for user roles (Default: true)",
+          :type => 'string'
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
           :type => 'string'
