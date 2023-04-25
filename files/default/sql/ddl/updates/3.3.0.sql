@@ -78,3 +78,11 @@ ALTER TABLE `hopsworks`.`feature_store_code` DROP FOREIGN KEY `inode_fk_fsc`;
 ALTER TABLE `hopsworks`.`feature_store_code` DROP KEY `inode_fk_fsc`;
 ALTER TABLE `hopsworks`.`feature_store_code` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`;
 ALTER TABLE `hopsworks`.`feature_store_code` RENAME COLUMN `inode_name` TO `name`;
+
+ALTER TABLE `hopsworks`.`feature_store` ADD COLUMN `name` varchar(100) COLLATE latin1_general_cs NOT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`feature_store` `fs` 
+  LEFT JOIN `project` `proj` ON `fs`.`project_id` = `proj`.`id`
+SET `fs`.`name` = `proj`.`projectname`;
+SET SQL_SAFE_UPDATES = 1;

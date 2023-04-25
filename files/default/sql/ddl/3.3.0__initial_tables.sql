@@ -324,6 +324,7 @@ CREATE TABLE `statistic_columns` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_store` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `name` varchar(100) COLLATE latin1_general_cs NOT NULL,
                                  `project_id` int(11) NOT NULL,
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                  `hive_db_id` bigint(20) NOT NULL,
