@@ -7,3 +7,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("git_image_version",
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("testconnector_image_version", "<%= node['hops']['docker']['testconnector']['image']['version'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_flyingduck", "<%= node['hopsworks']['enable_flyingduck'] %>", 1);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("docker_cgroup_parent", "<%= node['hops']['docker']['cgroup']['parent'] %>", 1);
