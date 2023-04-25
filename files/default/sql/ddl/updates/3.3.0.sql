@@ -94,3 +94,9 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_pid`;
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_name`;
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `partition_id`;
 
+-- HWORKS-523: Remove inode foreign key from transformation_function
+ALTER TABLE `hopsworks`.`transformation_function` DROP FOREIGN KEY `inode_fn_fk`;
+ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
+
+ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
+

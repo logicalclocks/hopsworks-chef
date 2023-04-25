@@ -1990,9 +1990,7 @@ CREATE TABLE IF NOT EXISTS `project_service_alert` (
 
 CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-                                                         `inode_pid`                         BIGINT(20)      NOT NULL,
-                                                         `inode_name`                        VARCHAR(255)    NOT NULL,
-                                                         `partition_id`                      BIGINT(20)      NOT NULL,
+                                                         `file_name`                        VARCHAR(255)    NOT NULL,
                                                          `name`                              VARCHAR(255)    NOT NULL,
                                                          `output_type`                       varchar(32)     NOT NULL,
                                                          `version`                           INT(11)         NOT NULL,
@@ -2000,7 +1998,6 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                                          `creator` int(11) NOT NULL,
                                                          PRIMARY KEY (`id`),
-                                                         CONSTRAINT `inode_fn_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
