@@ -291,7 +291,8 @@ for version in versions do
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt,
          :pki_ca_configuration => caConf.to_json(),
-         :usernames_configuration => usernamesConfiguration.to_json()
+         :usernames_configuration => usernamesConfiguration.to_json(),
+         :kafka_installed => exists_local("kkafka", "default")
     })
     action :create
   end

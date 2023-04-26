@@ -19,6 +19,7 @@ GRANT ALL PRIVILEGES ON <%= node['hops']['db'] %>.hdfs_directory_with_quota_feat
 GRANT SELECT ON metastore.* TO '<%= node['hopsworks']['mysql']['user'] %>'@'127.0.0.1';
 
 -- Grants for Kafka 
+<% if @kafka_installed -%>
 CREATE USER IF NOT EXISTS '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1' IDENTIFIED BY '<%= node['kkafka']['mysql']['password'] %>';
 REVOKE ALL PRIVILEGES ON *.* FROM '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
 
@@ -31,3 +32,4 @@ GRANT SELECT ON <%= node['hopsworks']['db'] %>.project_team TO '<%= node['kkafka
 GRANT SELECT ON <%= node['hopsworks']['db'] %>.project_topics TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
 GRANT SELECT ON <%= node['hopsworks']['db'] %>.dataset_shared_with TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
 GRANT SELECT ON <%= node['hopsworks']['db'] %>.dataset TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+<% end -%>
