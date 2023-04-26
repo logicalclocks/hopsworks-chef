@@ -2310,7 +2310,6 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
     `feature_monitoring_type` tinyint(4) NOT NULL,
-    `alert_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
     `scheduler_config_id` INT(11),
     `job_id` INT(11) NOT NULL,
     `detection_window_config_id` INT(11),
@@ -2373,7 +2372,6 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
     CONSTRAINT `detection_stats_monitoring_result_fk` FOREIGN KEY (`detection_stats_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION,
     CONSTRAINT `reference_stats_monitoring_result_fk` FOREIGN KEY (`reference_stats_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
-
 
 
 -- alert changes for feature monitoring

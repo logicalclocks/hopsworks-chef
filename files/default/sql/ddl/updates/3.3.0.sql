@@ -135,7 +135,6 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
     `feature_monitoring_type` tinyint(4) NOT NULL,
-    `alert_config` VARCHAR(63) COLLATE latin1_general_cs, -- dummy this should become ref to another table
     `scheduler_config_id` INT(11),
     `job_id` INT(11) NOT NULL,
     `detection_window_config_id` INT(11),
