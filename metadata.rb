@@ -183,6 +183,10 @@ attribute "hopsworks/pki/intermediate/duration",
           :description => "Validity period for Intermediate CA. Valid suffixes: s, m, h, d",
           :type => 'string'
 
+attribute "hopsworks/pki/intermediate/extra_san_for_username",
+          :description => "Configurable extra DNS SAN for system users such as hdfs. Check attributes/default.rb for the correct format",
+          :type => 'string'
+
 attribute "hopsworks/pki/kubernetes/name",
           :description => "X.509 Subject name for Kubernetes CA",
           :type => 'string'
