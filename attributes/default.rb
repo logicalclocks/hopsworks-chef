@@ -494,3 +494,8 @@ default['hopsworks']['max_allowed_long_running_http_requests']                  
 ## Flyingduck
 ##
 default['hopsworks']['enable_flyingduck'] = "false"
+
+##
+## Loadbalancer
+##
+default['hopsworks']['loadbalancer_external_domain'] = ""
