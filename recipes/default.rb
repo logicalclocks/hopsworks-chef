@@ -265,6 +265,17 @@ end
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
 
+# Check if Kafka is to be installed 
+kafka_installed = true
+begin
+  valid_recipe("kkafka", "default")
+  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
+  kafka_installed = true
+rescue
+  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
+  kafka_installed = false
+end
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -292,7 +303,7 @@ for version in versions do
          :onlinefs_salt => onlinefs_salt,
          :pki_ca_configuration => caConf.to_json(),
          :usernames_configuration => usernamesConfiguration.to_json(),
-         :kafka_installed => exists_local("kkafka", "default")
+         :kafka_installed => kafka_installed
     })
     action :create
   end
