@@ -2129,13 +2129,10 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
     `meta` VARCHAR(2000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
-    `inode_pid` BIGINT(20) NOT NULL,
-    `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
-    `partition_id` BIGINT(20) NOT NULL,
+    `file_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `ingestion_result` VARCHAR(11) NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `inode_result_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `validation_result` (
