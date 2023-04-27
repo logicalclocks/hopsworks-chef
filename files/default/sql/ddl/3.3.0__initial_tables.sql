@@ -768,9 +768,6 @@ CREATE TABLE `pia` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                           `inode_pid` bigint(20) NOT NULL,
-                           `inode_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                           `partition_id` bigint(20) NOT NULL,
                            `projectname` varchar(100) COLLATE latin1_general_cs NOT NULL,
                            `username` varchar(150) COLLATE latin1_general_cs NOT NULL,
                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -783,10 +780,8 @@ CREATE TABLE `project` (
                            `creation_status` tinyint(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
-                           UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
                            KEY `user_idx` (`username`),
-                           CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                           CONSTRAINT `FK_149_289` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                           CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
