@@ -121,3 +121,13 @@ ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `archived` TINYINT(1) 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` 
   ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
   MODIFY COLUMN `connector_id` INT(11) NULL;
+
+-- HWORKS-487: Remove inode from dataset
+ALTER TABLE `hopsworks`.`dataset` DROP FOREIGN KEY `FK_149_435`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `inode_id`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `inode_pid`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `uq_dataset`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_pid`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_id`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `partition_id`;
+ALTER TABLE `hopsworks`.`dataset` ADD KEY `dataset_name` (`inode_name`);
