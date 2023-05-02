@@ -9,3 +9,29 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("testconnector_image
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_flyingduck", "<%= node['hopsworks']['enable_flyingduck'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("docker_cgroup_parent", "<%= node['hops']['docker']['cgroup']['parent'] %>", 1);
+
+-- Move Grants to DML files 
+-- Grants from hopsworks/default.rb 
+
+GRANT NDB_STORED_USER ON *.* TO '<%= node['hopsworks']['mysql']['user'] %>'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON <%= node['hopsworks']['db'] %>.* TO '<%= node['hopsworks']['mysql']['user']%>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hops']['db'] %>.* TO '<%= node['hopsworks']['mysql']['user']%>'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON <%= node['hops']['db'] %>.yarn_projects_quota TO '<%= node['hopsworks']['mysql']['user'] %>'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON <%= node['hops']['db'] %>.hdfs_directory_with_quota_feature TO '<%= node['hopsworks']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON metastore.* TO '<%= node['hopsworks']['mysql']['user'] %>'@'127.0.0.1';
+
+-- Grants for Kafka 
+<% if @kafka_installed -%>
+CREATE USER IF NOT EXISTS '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1' IDENTIFIED BY '<%= node['kkafka']['mysql']['password'] %>';
+REVOKE ALL PRIVILEGES ON *.* FROM '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+
+GRANT NDB_STORED_USER ON *.* TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.project TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.users TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.project_team TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+
+-- FSTORE-588 Kafka Authoriser Update
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.project_topics TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.dataset_shared_with TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+GRANT SELECT ON <%= node['hopsworks']['db'] %>.dataset TO '<%= node['kkafka']['mysql']['user'] %>'@'127.0.0.1';
+<% end -%>

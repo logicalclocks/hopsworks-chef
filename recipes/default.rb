@@ -48,13 +48,6 @@ bash 'create_hopsworks_db' do
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
       #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']}\';\"
-      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      # Hopsworks needs to the quotas tables
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.yarn_projects_quota TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.hdfs_directory_with_quota_feature TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON metastore.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
     EOF
 end
 
@@ -255,6 +248,17 @@ caConf[:kubernetesCA] = kubernetesConf
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
 
+# Check if Kafka is to be installed 
+kafka_installed = true
+begin
+  valid_recipe("kkafka", "default")
+  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
+  kafka_installed = true
+rescue
+  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
+  kafka_installed = false
+end
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -280,7 +284,8 @@ for version in versions do
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt,
-         :pki_ca_configuration => caConf.to_json()
+         :pki_ca_configuration => caConf.to_json(),
+         :kafka_installed => kafka_installed
     })
     action :create
   end
@@ -368,30 +373,6 @@ bash "create users_groups view" do
   EOH
 end
 
-# Check if Kafka is to be installed and create user with grants
-begin
-  valid_recipe("kkafka", "default")
-  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
-
-  # Create kafka user and grant privileges. We do this here because we need this command to be executed at a host with
-  # a MySQL server
-  bash 'create_and_grant_kafka' do
-    user "root"
-    code <<-EOF
-      set -e
-      #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['kkafka']['mysql']['password']}\';\"
-      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\'\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.users TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_team TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_topics TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.dataset_shared_with TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.dataset TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-    EOF
-  end
-rescue
-  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
-end
 
 ###############################################################################
 # config glassfish
