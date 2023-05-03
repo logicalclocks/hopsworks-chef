@@ -353,7 +353,7 @@ CREATE TABLE `feature_group_statistics` (
                                            `feature_group_id` INT(11) NOT NULL,
                                            `window_start_commit_id`BIGINT(20) DEFAULT NULL, -- window start commit id (fg)
                                            `window_end_commit_id` BIGINT(20) DEFAULT NULL, -- commit id or window end commit id (fg)
-                                           `row_percentage` INT(11) NOT NULL DEFAULT 100,
+                                           `row_percentage` INT(11) NOT NULL DEFAULT 1,
                                            PRIMARY KEY (`id`),
                                            KEY `feature_group_id` (`feature_group_id`),
                                            KEY `window_start_commit_id_fk` (`feature_group_id`, `window_start_commit_id`),
@@ -379,7 +379,7 @@ CREATE TABLE `feature_view_statistics` (
                                            `feature_view_id`INT(11) NOT NULL,
                                            `window_start_event_time` timestamp NOT NULL, -- window start event time (fv)
                                            `window_end_event_time` timestamp NOT NULL, -- window end event time (fv)
-                                           `row_percentage` INT(11) NOT NULL DEFAULT 100,
+                                           `row_percentage` INT(11) NOT NULL DEFAULT 1,
                                            PRIMARY KEY (`id`),
                                            KEY `feature_view_id` (`feature_view_id`),
                                            KEY `window_start_event_time` (`window_start_event_time`),
@@ -400,7 +400,7 @@ CREATE TABLE `training_dataset_statistics` (
                                            `partition_id` BIGINT(20) DEFAULT NULL,
                                            `training_dataset_id`INT(11) NOT NULL,
                                            `for_transformation` TINYINT(1) DEFAULT '0',
-                                           `row_percentage` INT(11) NOT NULL DEFAULT 100,
+                                           `row_percentage` INT(11) NOT NULL DEFAULT 1,
                                            PRIMARY KEY (`id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
                                            CONSTRAINT `tds_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
