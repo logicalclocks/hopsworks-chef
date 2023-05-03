@@ -1990,7 +1990,6 @@ CREATE TABLE IF NOT EXISTS `project_service_alert` (
 
 CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-                                                         `file_name`                        VARCHAR(255)    NOT NULL,
                                                          `name`                              VARCHAR(255)    NOT NULL,
                                                          `output_type`                       varchar(32)     NOT NULL,
                                                          `version`                           INT(11)         NOT NULL,
