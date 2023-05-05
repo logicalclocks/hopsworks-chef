@@ -16,7 +16,7 @@ IMAGE=${12}
 ALLOCATED_MEMORY=${13}
 ALLOCATED_CORES=${14}
 BASE_DIR=${15}
-NAMENODE_IP=<%= @namenode_fdqn %>
+NAMENODE_HOSTNAME=<%= @namenode_fdqn %>
 NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
 PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
@@ -64,7 +64,7 @@ if [ -f ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py ]; then
   JUPYTER_HOPSFS_MOUNT=true
   paste ${JUPYTER_HOME}/conf/jupyter_contents_manager_config.py >> ${JUPYTER_HOME}/conf/jupyter_notebook_config.py
   DOCKER_FUSE_ARGS="--device /dev/fuse --security-opt apparmor:unconfined --security-opt seccomp=${SECCOMP_FILE}"
-  WORKING_DIR=<%= node['hopsworks']['jupyter']['jupyter_notebooks_dir'] %>
+  WORKING_DIR=<%= node['hopsworks']['jupyter']['notebooks_dir'] %>
 fi
 
 docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
@@ -88,13 +88,13 @@ docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
        -e "HADOOP_HOME=${HADOOP_HOME}" \
        -e "ANACONDA_ENV=$4" \
        -e "PYTHONHASHSEED=0" \
-       -e "NAMENODE_IP=${NAMENODE_IP}" \
+       -e "NAMENODE_HOSTNAME=${NAMENODE_HOSTNAME}" \
        -e "NAMENODE_PORT=${NAMENODE_PORT}" \
        -e "IS_TLS=${IS_TLS}" \
-       -e "BASE_DIR=${BASE_DIR}"
-       -e "JUPYTER_HOPSFS_MOUNT=${JUPYTER_HOPSFS_MOUNT}"
-       -v $JUPYTER_HOME:$JUPYTER_HOME:rw\
-       -v $SECRET_DIR:$SECRET_DIR:rw\
+       -e "BASE_DIR=${BASE_DIR}" \
+       -e "JUPYTER_HOPSFS_MOUNT=${JUPYTER_HOPSFS_MOUNT}" \
+       -v $JUPYTER_HOME:$JUPYTER_HOME:rw \
+       -v $SECRET_DIR:$SECRET_DIR:rw \
        -v ${HADOOP_CONF_DIR}:${HADOOP_CONF_DIR}:ro \
        -v ${SPARK_CONF_DIR}:${SPARK_CONF_DIR}:ro \
        -u="yarnapp" \

@@ -488,4 +488,4 @@ default['hopsworks']['max_allowed_long_running_http_requests']                  
 default['hopsworks']['enable_flyingduck'] = "false"
 
 default['hopsworks']['jupyter']['enable_jupyter_hopsfs_mount'] = "false"
-default['hopsworks']['jupyter']['jupyter_notebooks_dir']       = "/home/yarnapp/notebooks"
+default['hopsworks']['jupyter']['notebooks_dir']       = "/home/#{node['hops']['yarnapp']['user']}/notebooks"

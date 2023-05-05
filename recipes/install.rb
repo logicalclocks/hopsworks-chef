@@ -515,6 +515,14 @@ remote_directory "#{theDomain}/templates" do
   files_mode 0550
 end
 
+remote_file "#{theDomain}/templates/jupyter_notebook_config_template.py"  do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source "jupyter_notebook_config_template.py.erb"
+  mode 0755
+  action :create_if_missing
+end
+
 directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
   owner "root"
   group "root"

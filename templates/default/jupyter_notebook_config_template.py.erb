@@ -80,7 +80,7 @@ def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
         except ImportError as err:
             return
         if 'hops.util' in sys.modules:
-            t = threading.Thread(target=util.notebook_post_save, args=(os_path.replace("/home/yarnapp/notebooks/", ""),))
+            t = threading.Thread(target=util.notebook_post_save, args=(os_path.replace("#{node['hopsworks']['jupyter']['notebooks_dir']}", ""),))
             t.start()
             return
         else:
