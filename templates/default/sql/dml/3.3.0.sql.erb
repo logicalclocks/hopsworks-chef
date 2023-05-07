@@ -1,0 +1,3 @@
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("docker_cgroup_parent", "<%= node['hops']['docker']['cgroup']['parent'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('unix_usernames_conf', '<%= @usernames_configuration %>');
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("loadbalancer_external_domain", "<%= node['hopsworks']['loadbalancer_external_domain'] %>", 1);

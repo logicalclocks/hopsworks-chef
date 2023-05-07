@@ -183,6 +183,10 @@ attribute "hopsworks/pki/intermediate/duration",
           :description => "Validity period for Intermediate CA. Valid suffixes: s, m, h, d",
           :type => 'string'
 
+attribute "hopsworks/pki/intermediate/extra_san_for_username",
+          :description => "Configurable extra DNS SAN for system users such as hdfs. Check attributes/default.rb for the correct format",
+          :type => 'string'
+
 attribute "hopsworks/pki/kubernetes/name",
           :description => "X.509 Subject name for Kubernetes CA",
           :type => 'string'
@@ -1000,4 +1004,8 @@ attribute "hopsworks/max_allowed_long_running_http_requests",
 
 attribute "hopsworks/enable_flyingduck",
           :description => "Whether to enable flyingduck or not. Default: false",
+          :type => 'string'
+
+attribute "hopsworks/loadbalancer_external_domain",
+          :description => "URL of the Hopsworks external load balancer. Default: ''",
           :type => 'string'

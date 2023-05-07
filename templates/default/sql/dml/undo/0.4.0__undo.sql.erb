@@ -1,3 +1,0 @@
-DELETE FROM `hopsworks`.`variables` WHERE `id`='hopsexamples_version';
-
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsworks_endpoint" , "<%= @hopsworks_ip %>:<%= node['hopsworks']['https']['port'] %>");

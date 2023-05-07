@@ -129,6 +129,14 @@ default['hopsworks']['pki']['root']['name']             = ""
 default['hopsworks']['pki']['root']['duration']         = "3650d"
 default['hopsworks']['pki']['intermediate']['name']     = ""
 default['hopsworks']['pki']['intermediate']['duration'] = "3650d"
+## Additionally to Consul domain names add these as DNS SAN when generating a certificate for a system user
+## It should be a valid JSON object with the following format:
+## {
+##   "USERNAME such as hdfs": {
+##     "dns": ["EXTRA_DOMAINS"]
+##   }
+## }
+default['hopsworks']['pki']['intermediate']['extra_san_for_username'] = ""
 default['hopsworks']['pki']['kubernetes']['name']       = ""
 default['hopsworks']['pki']['kubernetes']['duration']   = "3650d"
 
@@ -486,3 +494,8 @@ default['hopsworks']['max_allowed_long_running_http_requests']                  
 ## Flyingduck
 ##
 default['hopsworks']['enable_flyingduck'] = "false"
+
+##
+## Loadbalancer
+##
+default['hopsworks']['loadbalancer_external_domain'] = ""
