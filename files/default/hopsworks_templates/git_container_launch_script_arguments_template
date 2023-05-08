@@ -12,6 +12,5 @@ EXECUTION_ID='${args.executionId}'
 PROJECT_ID='${args.projectId}'
 GIT_USERNAME='${args.gitUsername}'
 GIT_TOKEN='${args.gitToken}'
-HADOOP_GROUP='${args.inodeHdfsGroup}'
 REPOSITORY_ID='${args.repositoryId}'
 

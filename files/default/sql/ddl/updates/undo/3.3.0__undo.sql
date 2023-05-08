@@ -1,1 +1,0 @@
-DELETE FROM `hopsworks`.`variables` WHERE `id`='enable_jupyter_hopsfs_mount';

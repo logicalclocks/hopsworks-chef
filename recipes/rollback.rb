@@ -35,15 +35,6 @@ glassfish_deployable "undeploy_hopsworks-ca" do
   action :undeploy
 end
 
-bash "flyway_undo" do
-  user "root"
-  code <<-EOF
-    set -e
-    cd #{theDomain}/flyway
-    #{theDomain}/flyway/flyway undo
-  EOF
-end
-
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear"
   target "server"

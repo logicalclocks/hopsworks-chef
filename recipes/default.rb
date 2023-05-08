@@ -48,13 +48,6 @@ bash 'create_hopsworks_db' do
       set -e
       #{exec} -e \"CREATE DATABASE IF NOT EXISTS #{node['hopsworks']['db']} CHARACTER SET latin1\"
       #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['hopsworks']['mysql']['password']}\';\"
-      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hopsworks']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hops']['db']}.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      # Hopsworks needs to the quotas tables
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.yarn_projects_quota TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT ALL PRIVILEGES ON #{node['hops']['db']}.hdfs_directory_with_quota_feature TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON metastore.* TO \'#{node['hopsworks']['mysql']['user']}\'@\'127.0.0.1\';\"
     EOF
 end
 
@@ -196,13 +189,6 @@ else
       mode 0750
       action :create
     end
-
-    cookbook_file "#{theDomain}/flyway/undo/U#{versions[i]}__undo.sql" do
-      source "sql/ddl/updates/undo/#{versions[i]}__undo.sql"
-      owner node['glassfish']['user']
-      mode 0750
-      action :create
-    end
   end
 end
 
@@ -222,6 +208,10 @@ intermediateConf = {}
 if !node['hopsworks']['pki']['intermediate']['name'].empty?
   intermediateConf[:x509Name] = node['hopsworks']['pki']['intermediate']['name']
   intermediateConf[:validityDuration] = node['hopsworks']['pki']['intermediate']['duration']
+end
+
+if !node['hopsworks']['pki']['intermediate']['extra_san_for_username'].empty?
+  intermediateConf[:extraUsernameSAN] = JSON.parse(node['hopsworks']['pki']['intermediate']['extra_san_for_username'])
 end
 
 kubernetesConf = {}
@@ -251,9 +241,40 @@ caConf[:rootCA] = rootConf
 caConf[:intermediateCA] = intermediateConf
 caConf[:kubernetesCA] = kubernetesConf
 
+
+# Usernames configuration
+usernamesConfiguration = {}
+usernamesConfiguration[:glassfish] = node['hopsworks']['user']
+usernamesConfiguration[:hdfs] = node['hops']['hdfs']['user']
+usernamesConfiguration[:rmyarn] = node['hops']['rm']['user']
+usernamesConfiguration[:yarn] = node['hops']['yarn']['user']
+usernamesConfiguration[:hive] = node['hive2']['user']
+usernamesConfiguration[:livy] = node['livy']['user']
+usernamesConfiguration[:flink] = node['flink']['user']
+usernamesConfiguration[:consul] = node['consul']['user']
+usernamesConfiguration[:hopsmon] = node['hopsmonitor']['user']
+usernamesConfiguration[:zookeeper] = node['kzookeeper']['user']
+usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
+usernamesConfiguration[:elastic] = node['elastic']['user']
+usernamesConfiguration[:kagent] = node['kagent']['user']
+if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
+  usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
+end
+
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
+
+# Check if Kafka is to be installed 
+kafka_installed = true
+begin
+  valid_recipe("kkafka", "default")
+  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
+  kafka_installed = true
+rescue
+  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
+  kafka_installed = false
+end
 
 for version in versions do
   # Template DML files
@@ -280,15 +301,10 @@ for version in versions do
          :hops_version => node['hops']['version'],
          :onlinefs_password => encrypted_onlinefs_password,
          :onlinefs_salt => onlinefs_salt,
-         :pki_ca_configuration => caConf.to_json()
+         :pki_ca_configuration => caConf.to_json(),
+         :usernames_configuration => usernamesConfiguration.to_json(),
+         :kafka_installed => kafka_installed
     })
-    action :create
-  end
-
-  template "#{theDomain}/flyway/dml/undo/U#{version}__undo.sql" do
-    source "sql/dml/undo/#{version}__undo.sql.erb"
-    owner node['glassfish']['user']
-    mode 0750
     action :create
   end
 
@@ -301,13 +317,6 @@ for version in versions do
     action :create
   end
 
-  cookbook_file "#{theDomain}/flyway/all/undo/U#{version}__undo.sql" do
-    source "sql/ddl/updates/undo/#{version}__undo.sql"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode 0750
-    action :create
-  end
 
   if Gem::Version.new(version) >= Gem::Version.new('2.0.0')
     cookbook_file "#{theDomain}/flyway/all/sql/V#{version}__initial_tables.sql" do
@@ -368,30 +377,6 @@ bash "create users_groups view" do
   EOH
 end
 
-# Check if Kafka is to be installed and create user with grants
-begin
-  valid_recipe("kkafka", "default")
-  Chef::Log.info "Found kafka cookbooks, will proceed to create db user for Kafka"
-
-  # Create kafka user and grant privileges. We do this here because we need this command to be executed at a host with
-  # a MySQL server
-  bash 'create_and_grant_kafka' do
-    user "root"
-    code <<-EOF
-      set -e
-      #{exec} -e \"CREATE USER IF NOT EXISTS \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\' IDENTIFIED BY \'#{node['kkafka']['mysql']['password']}\';\"
-      #{exec} -e \"GRANT NDB_STORED_USER ON *.* TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\'\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.users TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_team TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.project_topics TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.dataset_shared_with TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-      #{exec} -e \"GRANT SELECT ON #{node['hopsworks']['db']}.dataset TO \'#{node['kkafka']['mysql']['user']}\'@\'127.0.0.1\';\"
-    EOF
-  end
-rescue
-  Chef::Log.info "Kafka will not be installed, skipped creating DB user."
-end
 
 ###############################################################################
 # config glassfish
@@ -735,7 +720,8 @@ glassfish_asadmin "delete-jdbc-connection-pool --cascade ejbTimerPool" do
   only_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-jdbc-connection-pools | grep 'ejbTimerPool$'"
 end
 
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks EJB Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/glassfish_timers\":useSSL=false:allowPublicKeyRetrieval=true ejbTimerPool" do
+# Timers can have nore than one database connections to different databases, so we need XADataSource (distributed) transaction manager b/c more than 1 non-XA Resource is not allowed. 
+glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname com.mysql.cj.jdbc.MysqlXADataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Hopsworks EJB Connection Pool\" --property user=#{node['hopsworks']['mysql']['user']}:password=#{node['hopsworks']['mysql']['password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/glassfish_timers\":useSSL=false:allowPublicKeyRetrieval=true ejbTimerPool" do
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -1210,7 +1196,7 @@ end
 
 # We can't use the internal port yet as the certificate has not been generated yet
 hopsworks_certs "generate-int-certs" do
-  subject     "/CN=#{consul_helper.get_service_fqdn("hopsworks.glassfish")}/OU=0"
+  subject     "/CN=#{node['fqdn']}/L=glassfishinternal/OU=0"
   action      :generate_int_certs
 end
 

@@ -324,6 +324,7 @@ CREATE TABLE `statistic_columns` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `feature_store` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `name` varchar(100) COLLATE latin1_general_cs NOT NULL,
                                  `project_id` int(11) NOT NULL,
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                  `hive_db_id` bigint(20) NOT NULL,
@@ -372,12 +373,10 @@ CREATE TABLE `feature_store_statistic` (
 CREATE TABLE `feature_store_code` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
                                       `commit_time` DATETIME(3) NOT NULL,
-                                      `inode_pid` BIGINT(20) NOT NULL,
-                                      `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
-                                      `partition_id` BIGINT(20) NOT NULL,
+                                      `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                       `feature_group_id` INT(11),
                                       `feature_group_commit_id` BIGINT(20),
-                                      `training_dataset_id`INT(11),
+                                      `training_dataset_id` INT(11),
                                       `application_id`VARCHAR(50),
                                       PRIMARY KEY (`id`),
                                       KEY `feature_group_id` (`feature_group_id`),
@@ -385,8 +384,7 @@ CREATE TABLE `feature_store_code` (
                                       KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
                                       CONSTRAINT `fg_fk_fsc` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                       CONSTRAINT `fg_ci_fk_fsc` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-                                      CONSTRAINT `td_fk_fsc` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                      CONSTRAINT `inode_fk_fsc` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                      CONSTRAINT `td_fk_fsc` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
@@ -770,9 +768,6 @@ CREATE TABLE `pia` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                           `inode_pid` bigint(20) NOT NULL,
-                           `inode_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                           `partition_id` bigint(20) NOT NULL,
                            `projectname` varchar(100) COLLATE latin1_general_cs NOT NULL,
                            `username` varchar(150) COLLATE latin1_general_cs NOT NULL,
                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -785,10 +780,8 @@ CREATE TABLE `project` (
                            `creation_status` tinyint(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
-                           UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
                            KEY `user_idx` (`username`),
-                           CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                           CONSTRAINT `FK_149_289` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                           CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1997,9 +1990,6 @@ CREATE TABLE IF NOT EXISTS `project_service_alert` (
 
 CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
-                                                         `inode_pid`                         BIGINT(20)      NOT NULL,
-                                                         `inode_name`                        VARCHAR(255)    NOT NULL,
-                                                         `partition_id`                      BIGINT(20)      NOT NULL,
                                                          `name`                              VARCHAR(255)    NOT NULL,
                                                          `output_type`                       varchar(32)     NOT NULL,
                                                          `version`                           INT(11)         NOT NULL,
@@ -2007,7 +1997,6 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                                          `creator` int(11) NOT NULL,
                                                          PRIMARY KEY (`id`),
-                                                         CONSTRAINT `inode_fn_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2040,9 +2029,8 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
 
 CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     `id` int NOT NULL AUTO_INCREMENT,
-                                                    `inode_pid` bigint NOT NULL,
-                                                    `inode_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-                                                    `partition_id` bigint NOT NULL,
+                                                    `path` varchar(1000) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                                                    `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                                     `project` int NOT NULL,
                                                     `provider` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                                     `current_branch` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
@@ -2050,10 +2038,9 @@ CREATE TABLE IF NOT EXISTS `git_repositories` (
                                                     `cid` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
                                                     `creator` int NOT NULL,
                                                     PRIMARY KEY (`id`),
-                                                    UNIQUE KEY `repository_inode_constraint_unique` (`inode_pid`,`inode_name`,`partition_id`),
+                                                    UNIQUE KEY `repository_path_constraint_unique` (`path`),
                                                     KEY `project_fk` (`project`),
-                                                    CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE,
-                                                    CONSTRAINT `repository_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE
+                                                    CONSTRAINT `project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
  ) ENGINE=ndbcluster AUTO_INCREMENT=2061 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `git_executions` (
