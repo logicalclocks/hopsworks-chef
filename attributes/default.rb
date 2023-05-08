@@ -487,5 +487,5 @@ default['hopsworks']['max_allowed_long_running_http_requests']                  
 ##
 default['hopsworks']['enable_flyingduck'] = "false"
 
-default['hopsworks']['jupyter']['enable_jupyter_hopsfs_mount'] = "false"
-default['hopsworks']['jupyter']['notebooks_dir']       = "/home/#{node['hops']['yarnapp']['user']}/notebooks"
+default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
+default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
