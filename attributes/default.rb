@@ -503,4 +503,3 @@ default['hopsworks']['loadbalancer_external_domain'] = ""
 # jupyter hopsfs mount
 default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
 default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
-

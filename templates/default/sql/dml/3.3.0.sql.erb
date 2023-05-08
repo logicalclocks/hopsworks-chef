@@ -3,3 +3,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES('unix_usernames_conf'
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("loadbalancer_external_domain", "<%= node['hopsworks']['loadbalancer_external_domain'] %>", 1);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_remote_fs_driver", "<%= node['hopsworks']['jupyter']['remote_fs_driver'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("enable_hopsfsmount_apparmor_profile_k8s", "<%= node['kube-hops']['fuse']['enable_apparmor_profile'] %>");
