@@ -71,7 +71,6 @@ import concurrent.futures
 notebook_save_thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=7)
 
 def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
-    """scrub output before saving notebooks"""
     # only run on notebooks
     if model['type'] != 'notebook':
         return
