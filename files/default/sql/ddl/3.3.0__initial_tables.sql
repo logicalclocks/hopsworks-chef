@@ -2288,7 +2288,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `feature_view_id` INT(11),
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs DEFAULT NULL,
     `description` VARCHAR(2000) COLLATE latin1_general_cs DEFAULT NULL,
-    `name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
+    `name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
     `feature_monitoring_type` tinyint(4) NOT NULL,
     `scheduler_config_id` INT(11),
