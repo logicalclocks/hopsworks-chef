@@ -245,11 +245,7 @@ ALTER TABLE `hopsworks`.`feature_store_activity`
     DROP FOREIGN KEY `fs_act_stat_fk`,
     DROP COLUMN `statistics_id`;
 
--- TODO: Delete feature_store_statistic table
 ALTER TABLE `hopsworks`.`feature_store_statistic`
-    -- DROP KEY `feature_group_id` (`feature_group_id`),
-    -- DROP KEY `training_dataset_id` (`training_dataset_id`),
-    -- DROP KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
     DROP FOREIGN KEY `fg_fk_fss`,
     DROP FOREIGN KEY `fg_ci_fk_fss`,
     DROP FOREIGN KEY `td_fk_fss`,
