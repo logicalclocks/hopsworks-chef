@@ -83,31 +83,141 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
 
 CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `feature_type` varchar(20) NOT NULL,
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
+    `feature_type` varchar(20),
     -- for any feature type
-    `count` BIGINT NOT NULL,
-    `completeness` FLOAT NULL,
-    `num_non_null_values` BIGINT NULL,
-    `num_null_values` BIGINT NULL,
-    `approx_num_distinct_values` BIGINT NULL,
+    `count` BIGINT,
+    `completeness` FLOAT,
+    `num_non_null_values` BIGINT,
+    `num_null_values` BIGINT,
+    `approx_num_distinct_values` BIGINT,
     -- for numerical features
-    `min` FLOAT NULL,
-    `max` FLOAT NULL,
-    `sum` FLOAT NULL,
-    `mean` FLOAT NULL,
-    `stddev` FLOAT NULL,
+    `min` FLOAT,
+    `max` FLOAT,
+    `sum` FLOAT,
+    `mean` FLOAT,
+    `stddev` FLOAT,
     `percentiles` BLOB,
     -- with exactUniqueness
-    `distinctness` FLOAT NULL,
-    `entropy` FLOAT NULL,
-    `uniqueness` FLOAT NULL,
-    `exact_num_distinct_values` BIGINT NULL,
-    -- for filtering
-    `start_time` TIMESTAMP NULL,    -- commit time
-    `end_time` TIMESTAMP NOT NULL,  -- commit time
-    `row_percentage` FLOAT NOT NULL,
-    PRIMARY KEY (`id`)
+    `distinctness` FLOAT,
+    `entropy` FLOAT,
+    `uniqueness` FLOAT,
+    `exact_num_distinct_values` BIGINT,
+    -- extended stats (hdfs file): histogram, correlations, kll
+    `extended_statistics_path` VARCHAR(255),
+    PRIMARY KEY (`id`),
+    KEY (`feature_name`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+-- Create new statistics tables
+CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `commit_time` DATETIME(3) NOT NULL,
+    `feature_group_id` INT(11) NOT NULL,
+    `window_start_commit_id`BIGINT(20) DEFAULT NULL, -- window start commit id (fg)
+    `window_end_commit_id` BIGINT(20) DEFAULT NULL, -- commit id or window end commit id (fg)
+    `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+    PRIMARY KEY (`id`),
+    KEY `feature_group_id` (`feature_group_id`),
+    KEY `window_start_commit_id_fk` (`feature_group_id`, `window_start_commit_id`),
+    KEY `window_end_commit_id_fk` (`feature_group_id`, `window_end_commit_id`),
+    UNIQUE KEY `window_commit_ids_row_perc_fk` (`feature_group_id`, `window_start_commit_id`, `window_end_commit_id`, `row_percentage`),
+    CONSTRAINT `fgs_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fgs_wec_fk` FOREIGN KEY (`feature_group_id`, `window_end_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fgs_wsc_fk` FOREIGN KEY (`feature_group_id`, `window_start_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
+                                           `id` int(11) NOT NULL AUTO_INCREMENT,
+                                           `commit_time` DATETIME(3) NOT NULL,
+                                           `feature_view_id`INT(11) NOT NULL,
+                                           `window_start_event_time` timestamp NOT NULL, -- window start event time (fv)
+                                           `window_end_event_time` timestamp NOT NULL, -- window end event time (fv)
+                                           `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+                                           PRIMARY KEY (`id`),
+                                           KEY `feature_view_id` (`feature_view_id`),
+                                           KEY `window_start_event_time` (`window_start_event_time`),
+                                           KEY `window_end_event_time` (`window_end_event_time`),
+                                           CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
+                                           `id` int(11) NOT NULL AUTO_INCREMENT,
+                                           `commit_time` DATETIME(3) NOT NULL,
+                                           `training_dataset_id`INT(11) NOT NULL,
+                                           `for_transformation` TINYINT(1) DEFAULT '0',
+                                           `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+                                           PRIMARY KEY (`id`),
+                                           KEY `training_dataset_id` (`training_dataset_id`),
+                                           CONSTRAINT `tds_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- TODO: SQL Queries for populating new tables based on feature_store_statistic table.
+
+-- Update feature_store_activity foreign keys
+ALTER TABLE `hopsworks`.`feature_store_activity`
+    ADD COLUMN `feature_group_statistics_id` INT(11) NULL,
+    ADD COLUMN `feature_view_statistics_id` INT(11) NULL,
+    ADD COLUMN `training_dataset_statistics_id` INT(11) NULL,
+    ADD CONSTRAINT `fs_act_fg_stat_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    ADD CONSTRAINT `fs_act_fv_stat_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    ADD CONSTRAINT `fs_act_td_stat_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+-- TODO: SQL Query populate ids based on statistics_id.
+ALTER TABLE `hopsworks`.`feature_store_activity`
+    DROP FOREIGN KEY `fs_act_stat_fk`,
+    DROP COLUMN `statistics_id`;
+
+ALTER TABLE `hopsworks`.`feature_store_statistic`
+    DROP FOREIGN KEY `fg_fk_fss`,
+    DROP FOREIGN KEY `fg_ci_fk_fss`,
+    DROP FOREIGN KEY `td_fk_fss`,
+    DROP FOREIGN KEY `inode_fk`;
+DROP TABLE IF EXISTS `hopsworks`.`feature_store_statistic`;
+
+CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
+    `feature_group_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
+    `feature_view_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `fvds_fvs_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fvds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+-- training_dataset_descriptive_statistics serves as either training dataset statistics or train split statistics
+CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-to-many relationship for training_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `tdds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tdds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-many relationship for test_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `tsds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_training_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `vlds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `vlds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
