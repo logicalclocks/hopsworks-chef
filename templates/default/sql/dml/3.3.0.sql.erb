@@ -4,4 +4,4 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("loadb
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("jupyter_remote_fs_driver", "<%= node['hopsworks']['jupyter']['remote_fs_driver'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hopsfsmount_apparmor_profile", "<%= node['hops']['docker']['hopfsmount-apparmor-profile'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("apply_hopsfsmount_apparmor_profile_kube", "<%= node['kube-hops']['fuse']['apply_hopsworks_apparmor_profile'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("apply_hopsfsmount_apparmor_profile_kube", "<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>");
