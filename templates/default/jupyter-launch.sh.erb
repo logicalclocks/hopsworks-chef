@@ -24,7 +24,7 @@ PID_FILE=${JUPYTER_HOME}/run/jupyter.pid
 SPARK_CONF_DIR=<%= node['hadoop_spark']['conf_dir'] %>
 IS_TLS=<%= node['hops']['tls']['enabled'] %>
 SECCOMP_PROFILE=<%= node['hops']['docker']['hopsfsmount-seccomp-profile'] %>
-APPARMOR_PROFILE=<%= node['hops']['docker']['hopfsmount-apparmor-profile'] %>
+APPARMOR_PROFILE=<%= node['hops']['docker']['hopsfsmount-apparmor-profile'] %>
 NOT_FOUND=127
 
 help() {

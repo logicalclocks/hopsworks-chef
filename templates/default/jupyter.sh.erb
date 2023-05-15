@@ -109,7 +109,7 @@ elif [ "$1" == "start" ] ; then
 
     APPARMOR_ENABLED=<%= node['hops']['docker']['apparmor-enabled']  %>
     APPARMOR_PROFILE_LOADED=<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>
-    if [[ "${17}" == "hopsfsmount" ]] && [["$APPARMOR_PROFILE_LOADED" == "false"]] && [["$APPARMOR_ENABLED" == "true"]] ; then
+    if [[ "${17}" == "hopsfsmount" ]] && [[ "$APPARMOR_PROFILE_LOADED" == "false" ]] && [[ "$APPARMOR_ENABLED" == "true" ]] ; then
   echo "Can not use hopsfsmount in jupyter notebook: hopsfsmount apparmor profile was not loaded during installation."
   exit 1
     fi
