@@ -61,8 +61,14 @@ fi
 
 DOCKER_FUSE_ARGS=""
 WORKING_DIR=$SECRET_DIR
+APPARMOR_ENABLED=<%= node['hops']['docker']['apparmor-enabled']  %>
+APPARMOR_PROFILE_SECURITY_OPT="--security-opt apparmor:${APPARMOR_PROFILE}"
+if [[ "$APPARMOR_ENABLED" == "false" ]]; then
+  APPARMOR_PROFILE_SECURITY_OPT=""
+fi
+
 if [[ "$REMOTE_FS_DRIVER" == "hopsfsmount" ]]; then
-  DOCKER_FUSE_ARGS="--device /dev/fuse --security-opt apparmor:${APPARMOR_PROFILE} --security-opt seccomp=${SECCOMP_PROFILE}"
+  DOCKER_FUSE_ARGS="--device /dev/fuse ${APPARMOR_PROFILE_SECURITY_OPT} --security-opt seccomp=${SECCOMP_PROFILE}"
   WORKING_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
 fi
 

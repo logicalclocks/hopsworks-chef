@@ -107,7 +107,9 @@ elif [ "$1" == "start" ] ; then
     chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
     chmod -R 770 "$2"
 
-    if [[ "${17}" == "hopsfsmount" ]] && [["<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>" == "false"]] ; then
+    APPARMOR_ENABLED=<%= node['hops']['docker']['apparmor-enabled']  %>
+    APPARMOR_PROFILE_LOADED=<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>
+    if [[ "${17}" == "hopsfsmount" ]] && [["$APPARMOR_PROFILE_LOADED" == "false"]] && [["$APPARMOR_ENABLED" == "true"]] ; then
   echo "Can not use hopsfsmount in jupyter notebook: hopsfsmount apparmor profile was not loaded during installation."
   exit 1
     fi
