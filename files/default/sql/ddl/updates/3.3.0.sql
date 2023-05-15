@@ -101,4 +101,9 @@ ALTER TABLE `hopsworks`.`validation_report` DROP COLUMN `inode_pid`, DROP COLUMN
 
 ALTER TABLE `hopsworks`.`validation_report` RENAME COLUMN `inode_name` TO `file_name`;
 
+-- HWORKS-523: Remove inode foreign key from transformation_function
+ALTER TABLE `hopsworks`.`transformation_function` DROP FOREIGN KEY `inode_fn_fk`;
+ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
+
+ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
 
