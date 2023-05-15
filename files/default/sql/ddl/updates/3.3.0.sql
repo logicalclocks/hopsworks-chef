@@ -100,3 +100,9 @@ ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
 
 ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
 
+-- FSTORE-840
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP FOREIGN KEY `fk_fs_storage_connector_kafka`;
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP KEY `fk_fs_storage_connector_kafka_idx`;
+
+ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP COLUMN `ssl_secret_uid`, DROP COLUMN `ssl_secret_name`, DROP COLUMN `ssl_endpoint_identification_algorithm`, DROP COLUMN `truststore_path`, DROP COLUMN `keystore_path`;
+

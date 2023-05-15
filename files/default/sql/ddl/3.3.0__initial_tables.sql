@@ -1672,15 +1672,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_kafka_connector` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `bootstrap_servers` VARCHAR(1000) NOT NULL,
     `security_protocol` VARCHAR(1000) NOT NULL,
-    `ssl_secret_uid` INT NULL,
-    `ssl_secret_name` VARCHAR(200) NULL,
-    `ssl_endpoint_identification_algorithm` VARCHAR(100) NULL,
     `options` VARCHAR(2000) NULL,
-    `truststore_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-    `keystore_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    KEY `fk_fs_storage_connector_kafka_idx` (`ssl_secret_uid`, `ssl_secret_name`),
-    CONSTRAINT `fk_fs_storage_connector_kafka` FOREIGN KEY (`ssl_secret_uid`, `ssl_secret_name`) REFERENCES `hopsworks`.`secrets` (`uid`, `secret_name`) ON DELETE RESTRICT
+    PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
