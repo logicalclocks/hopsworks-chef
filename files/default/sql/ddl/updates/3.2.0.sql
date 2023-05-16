@@ -195,3 +195,4 @@ ALTER TABLE `hopsworks`.`feature_store_bigquery_connector`
   DROP COLUMN `key_inode_pid`,
   DROP COLUMN `key_inode_name`,
   DROP COLUMN `key_partition_id`;
+
