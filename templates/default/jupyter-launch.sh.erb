@@ -61,10 +61,17 @@ fi
 
 DOCKER_FUSE_ARGS=""
 WORKING_DIR=$SECRET_DIR
-APPARMOR_ENABLED=<%= node['hops']['docker']['apparmor-enabled']  %>
-APPARMOR_PROFILE_SECURITY_OPT="--security-opt apparmor:${APPARMOR_PROFILE}"
-if [[ "$APPARMOR_ENABLED" == "false" ]]; then
-  APPARMOR_PROFILE_SECURITY_OPT=""
+APPARMOR_ENABLED="false"
+APPARMOR_PROFILE_SECURITY_OPT=""
+if [ docker info | grep -q 'apparmor' ]; then
+  APPARMOR_ENABLED="true"
+  APPARMOR_PROFILE_SECURITY_OPT="--security-opt apparmor:${APPARMOR_PROFILE}"
+fi
+
+APPARMOR_PROFILE_LOADED=<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>
+if [[ "${17}" == "hopsfsmount" ]] && [[ "$APPARMOR_PROFILE_LOADED" == "false" ]] && [[ "$APPARMOR_ENABLED" == "true" ]] ; then
+  echo "Can not use hopsfsmount in jupyter notebook: hopsfsmount apparmor profile was not loaded during installation."
+  exit 1
 fi
 
 if [[ "$REMOTE_FS_DRIVER" == "hopsfsmount" ]]; then

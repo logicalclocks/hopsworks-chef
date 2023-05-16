@@ -107,13 +107,6 @@ elif [ "$1" == "start" ] ; then
     chown -R "${JUPYTER_USER}":"${JUPYTER_GROUP}" "$2"
     chmod -R 770 "$2"
 
-    APPARMOR_ENABLED=<%= node['hops']['docker']['apparmor-enabled']  %>
-    APPARMOR_PROFILE_LOADED=<%= node['hops']['docker']['load-hopsfsmount-apparmor-profile'] %>
-    if [[ "${17}" == "hopsfsmount" ]] && [[ "$APPARMOR_PROFILE_LOADED" == "false" ]] && [[ "$APPARMOR_ENABLED" == "true" ]] ; then
-  echo "Can not use hopsfsmount in jupyter notebook: hopsfsmount apparmor profile was not loaded during installation."
-  exit 1
-    fi
-     
     # Launch JupyterLab
     ${DOMAINS_DIR}/domain1/bin/jupyter-launch.sh $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17}
 
