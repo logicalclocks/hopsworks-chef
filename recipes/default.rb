@@ -276,6 +276,8 @@ rescue
   kafka_installed = false
 end
 
+apparmor_enabled = is_apparmor_enabled() && node['hops']['docker']['load-hopsfsmount-apparmor-profile'].casecmp?("true")
+
 for version in versions do
   # Template DML files
   template "#{theDomain}/flyway/dml/V#{version}__hopsworks.sql" do
@@ -303,7 +305,8 @@ for version in versions do
          :onlinefs_salt => onlinefs_salt,
          :pki_ca_configuration => caConf.to_json(),
          :usernames_configuration => usernamesConfiguration.to_json(),
-         :kafka_installed => kafka_installed
+         :kafka_installed => kafka_installed,
+         :apparmor_enabled => apparmor_enabled
     })
     action :create
   end
