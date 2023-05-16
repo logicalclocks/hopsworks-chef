@@ -63,7 +63,7 @@ DOCKER_FUSE_ARGS=""
 WORKING_DIR=$SECRET_DIR
 APPARMOR_ENABLED="false"
 APPARMOR_PROFILE_SECURITY_OPT=""
-if [ docker info | grep -q 'apparmor' ]; then
+if docker info | grep -q 'apparmor'; then
   APPARMOR_ENABLED="true"
   APPARMOR_PROFILE_SECURITY_OPT="--security-opt apparmor:${APPARMOR_PROFILE}"
 fi
