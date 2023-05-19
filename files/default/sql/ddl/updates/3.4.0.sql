@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            KEY `feature_view_id` (`feature_view_id`),
                                            KEY `window_start_event_time` (`window_start_event_time`),
                                            KEY `window_end_event_time` (`window_end_event_time`),
+                                           UNIQUE KEY `window_event_time_ids_row_perc_fk` (`feature_view_id`, `window_start_event_time`, `window_end_event_time`, `row_percentage`),
                                            CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -149,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
                                            `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
                                            PRIMARY KEY (`id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
+                                           UNIQUE KEY `tr_ids_for_trans_row_perc_fk` (`training_dataset_id`, `for_transformation`, `row_percentage`),
                                            CONSTRAINT `tds_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
