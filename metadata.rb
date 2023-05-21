@@ -1009,3 +1009,7 @@ attribute "hopsworks/enable_flyingduck",
 attribute "hopsworks/loadbalancer_external_domain",
           :description => "URL of the Hopsworks external load balancer. Default: ''",
           :type => 'string'
+
+attribute "hopsworks/jupyter/remote_fs_driver",
+					:description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+					:type => "string"
