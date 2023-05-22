@@ -39,6 +39,8 @@ default['hopsworks']['https']['intermediate_ca_url'] = ""
 default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
+default['hopsworks']['ha']['loadbalancer']       = "false"
+default['hopsworks']['ha']['loadbalancer_port']  = 1080
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
@@ -57,13 +59,19 @@ default['glassfish']['install_dir']              = node['hopsworks']['dir']
 default['glassfish']['base_dir']                 = node['glassfish']['install_dir'] + "/glassfish"
 default['hopsworks']['domains_dir']              = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/domains" : node['install']['dir'] + "/domains"
 default['hopsworks']['domain_name']              = "domain1"
+default['hopsworks']['nodes_dir']                = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/nodes" : node['install']['dir'] + "/nodes"
+default['hopsworks']['node_name']                = "localhost-domain1"
 default['glassfish']['domains_dir']              = node['hopsworks']['domains_dir']
+default['glassfish']['nodes_dir']                = node['hopsworks']['nodes_dir']
 default['hopsworks']['domain1']['logs']          = "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/logs"
 
 # Data volume directories
 default['hopsworks']['data_volume']['root_dir']  = "#{node['data']['dir']}/hopsworks"
 default['hopsworks']['data_volume']['domain1']   = "#{node['hopsworks']['data_volume']['root_dir']}/#{node['hopsworks']['domain_name']}"
 default['hopsworks']['data_volume']['domain1_logs'] = "#{node['hopsworks']['data_volume']['domain1']}/logs"
+
+default['hopsworks']['data_volume']['localhost-domain1'] = "#{node['hopsworks']['data_volume']['root_dir']}/#{node['hopsworks']['node_name']}"
+default['hopsworks']['data_volume']['node_logs']         = "#{node['hopsworks']['data_volume']['localhost-domain1']}/logs"
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
 default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
@@ -215,7 +223,8 @@ default['jupyter']['base_dir']                         = node['install']['dir'].
 default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
-default['jupyter']['origin_scheme']                    = "https"
+# because loadbalancer does not support https
+default['jupyter']['origin_scheme']                    = node['hopsworks']['ha']['loadbalancer'] == "false" ? "https" : "http"
 
 #
 # Serving

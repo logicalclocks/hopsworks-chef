@@ -413,6 +413,61 @@ directory node['data']['dir'] do
   not_if { ::File.directory?(node['data']['dir']) }
 end
 
+directory node['hopsworks']['data_volume']['staging_dir']  do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "775"
+  action :create
+  recursive true
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/private_dirs"  do
+  owner node['hops']['yarnapp']['user']
+  group node['hopsworks']['group']
+  mode "0370"
+  action :create
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0730"
+  action :create
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
+  owner node['conda']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  action :create
+end
+
+bash 'Move staging to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hopsworks']['staging_dir']}/* #{node['hopsworks']['data_volume']['staging_dir']}
+    rm -rf #{node['hopsworks']['staging_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hopsworks']['staging_dir'])}
+  not_if { File.symlink?(node['hopsworks']['staging_dir'])}
+end
+
+link node['hopsworks']['staging_dir'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  to node['hopsworks']['data_volume']['staging_dir']
+end
+
+directory node['hopsworks']['conda_cache'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0700"
+  action :create
+end
+
 directory node['hopsworks']['data_volume']['root_dir'] do
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -431,7 +486,6 @@ directory node['hopsworks']['data_volume']['domain1_logs'] do
   group node['glassfish']['group']
   mode '0750'
 end
-
 
 package ["openssl", "zip"] do
   retries 10

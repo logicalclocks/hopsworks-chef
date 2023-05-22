@@ -141,6 +141,10 @@ attribute "hopsworks/domains_dir",
           :description => "Installation directory for the glassfish domains",
           :type => 'string'
 
+attribute "hopsworks/nodes_dir",
+          :description => "Installation directory for the glassfish nodes",
+          :type => 'string'
+
 attribute "hopsworks/domain_truststore",
           :description => "Name of the glassfish truststore for this domain.",
           :type => 'string'
@@ -253,6 +257,14 @@ attribute "hopsworks/https/ca_url",
 
 attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
+          :type => 'string'
+
+attribute "hopsworks/ha/loadbalancer",
+          :description => "Install a load balancer. 'false' (default)",
+          :type => 'string'
+
+attribute "hopsworks/ha/loadbalancer_port",
+          :description => "Load balancer port. '1080' (default)",
           :type => 'string'
 
 attribute "hopsworks/max_mem",
