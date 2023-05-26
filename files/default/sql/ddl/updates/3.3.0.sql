@@ -107,3 +107,7 @@ ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
 
 ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
 
+-- FSTORE-849: Add Spline dataframe functionality
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+  ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
+  MODIFY COLUMN `connector_id` INT(11) NULL;
