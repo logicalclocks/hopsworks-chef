@@ -116,3 +116,8 @@ ALTER TABLE `hopsworks`.`feature_group_commit`
   DROP COLUMN `partition_id`;
 
 ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `archived` TINYINT(1) NOT NULL DEFAULT '0';
+
+-- FSTORE-849: Add Spline dataframe functionality
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+  ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
+  MODIFY COLUMN `connector_id` INT(11) NULL;

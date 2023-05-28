@@ -1743,13 +1743,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
                                                          `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
                                                          `query`                   VARCHAR(26000),
-                                                         `connector_id`            INT(11)         NOT NULL,
+                                                         `connector_id`            INT(11)         NULL,
                                                          `description`             VARCHAR(1000)   NULL,
                                                          `inode_pid`               BIGINT(20)      NOT NULL,
                                                          `inode_name`              VARCHAR(255)    NOT NULL,
                                                          `partition_id`            BIGINT(20)      NOT NULL,
                                                          `data_format`             VARCHAR(10),
                                                          `path`                    VARCHAR(1000),
+                                                         `spine`                  TINYINT(1) NOT NULL DEFAULT 0,
                                                          PRIMARY KEY (`id`),
                                                          CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
