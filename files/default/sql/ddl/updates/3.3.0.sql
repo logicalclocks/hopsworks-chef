@@ -107,7 +107,7 @@ ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
 
 ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
 
--- FSTORE-737
+-- FSTORE-737: Remove inode foreign key from feature_group_commit
 ALTER TABLE `hopsworks`.`feature_group_commit` DROP FOREIGN KEY `hopsfs_parquet_inode_fk`;
 ALTER TABLE `hopsworks`.`feature_group_commit` DROP KEY `hopsfs_parquet_inode_fk`;
 ALTER TABLE `hopsworks`.`feature_group_commit`
