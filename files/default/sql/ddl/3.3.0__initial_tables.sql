@@ -1742,13 +1742,14 @@ CREATE TABLE IF NOT EXISTS `feature_store_connector` (
 CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
                                                          `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
                                                          `query`                   VARCHAR(26000),
-                                                         `connector_id`            INT(11)         NOT NULL,
+                                                         `connector_id`            INT(11)         NULL,
                                                          `description`             VARCHAR(1000)   NULL,
                                                          `inode_pid`               BIGINT(20)      NOT NULL,
                                                          `inode_name`              VARCHAR(255)    NOT NULL,
                                                          `partition_id`            BIGINT(20)      NOT NULL,
                                                          `data_format`             VARCHAR(10),
                                                          `path`                    VARCHAR(1000),
+                                                         `spine`                  TINYINT(1) NOT NULL DEFAULT 0,
                                                          PRIMARY KEY (`id`),
                                                          CONSTRAINT `on_demand_conn_fk` FOREIGN KEY (`connector_id`) REFERENCES `hopsworks`.`feature_store_connector` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `on_demand_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
@@ -1839,14 +1840,11 @@ CREATE TABLE `feature_group_commit` (
                                         `num_rows_updated` int(11) DEFAULT '0',
                                         `num_rows_inserted` int(11) DEFAULT '0',
                                         `num_rows_deleted` int(11) DEFAULT '0',
-                                        `inode_pid`                         BIGINT(20)      NOT NULL,
-                                        `inode_name`                        VARCHAR(255)    NOT NULL,
-                                        `partition_id`                      BIGINT(20)      NOT NULL,
+                                        `archived` TINYINT(1) NOT NULL DEFAULT '0',
                                         PRIMARY KEY (`feature_group_id`, `commit_id`),
                                         KEY `commit_id_idx` (`commit_id`),
                                         KEY `commit_date_idx` (`committed_on`),
-                                        CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                        CONSTRAINT `hopsfs_parquet_inode_fk` FOREIGN KEY (`inode_pid`, `inode_name`, `partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`, `name`, `partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                        CONSTRAINT `feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `cloud_role_mapping` (
@@ -2101,13 +2099,10 @@ CREATE TABLE IF NOT EXISTS `validation_report` (
     `evaluation_parameters` VARCHAR(1000) DEFAULT "{}",
     `meta` VARCHAR(2000) NULL DEFAULT "{}",
     `statistics` VARCHAR(1000) NOT NULL,
-    `inode_pid` BIGINT(20) NOT NULL,
-    `inode_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
-    `partition_id` BIGINT(20) NOT NULL,
+    `file_name` VARCHAR(255) COLLATE latin1_general_cs NOT NULL,
     `ingestion_result` VARCHAR(11) NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `inode_result_fk` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `feature_group_report_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `validation_result` (

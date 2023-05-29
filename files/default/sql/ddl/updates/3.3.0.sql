@@ -94,9 +94,30 @@ ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_pid`;
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `inode_name`;
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `partition_id`;
 
+-- HWORKS-526: Remove inode foreign key from validation_table
+ALTER TABLE `hopsworks`.`validation_report` DROP FOREIGN KEY `inode_result_fk`;
+ALTER TABLE `hopsworks`.`validation_report` DROP KEY `inode_result_fk`;
+ALTER TABLE `hopsworks`.`validation_report` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`;
+
+ALTER TABLE `hopsworks`.`validation_report` RENAME COLUMN `inode_name` TO `file_name`;
+
 -- HWORKS-523: Remove inode foreign key from transformation_function
 ALTER TABLE `hopsworks`.`transformation_function` DROP FOREIGN KEY `inode_fn_fk`;
 ALTER TABLE `hopsworks`.`transformation_function` DROP KEY `inode_fn_fk`;
 
 ALTER TABLE `hopsworks`.`transformation_function` DROP COLUMN `inode_pid`, DROP COLUMN `partition_id`, DROP COLUMN `inode_name`;
 
+-- FSTORE-737: Remove inode foreign key from feature_group_commit
+ALTER TABLE `hopsworks`.`feature_group_commit` DROP FOREIGN KEY `hopsfs_parquet_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_group_commit` DROP KEY `hopsfs_parquet_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_group_commit`
+  DROP COLUMN `inode_pid`,
+  DROP COLUMN `inode_name`,
+  DROP COLUMN `partition_id`;
+
+ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `archived` TINYINT(1) NOT NULL DEFAULT '0';
+
+-- FSTORE-849: Add Spline dataframe functionality
+ALTER TABLE `hopsworks`.`on_demand_feature_group` 
+  ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
+  MODIFY COLUMN `connector_id` INT(11) NULL;

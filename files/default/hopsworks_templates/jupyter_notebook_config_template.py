@@ -1,16 +1,18 @@
 c = get_config()
-c.HDFSContentsManager.hdfs_namenode_host='${conf.namenodeIp}'
-c.HDFSContentsManager.hdfs_namenode_port=${conf.namenodePort}
-c.HDFSContentsManager.root_dir='${conf.baseDirectory}'
-c.HDFSContentsManager.hdfs_user = '${conf.hdfsUser}'
-c.HDFSContentsManager.hadoop_client_env_opts = '-D fs.permissions.umask-mode=0002'
 
-c.NotebookApp.contents_manager_class = '${conf.contentsManager}'
+<#if instanceOf(conf.remoteFSDriver, HDFSContentsRemoteDriver)>
+c.HDFSContentsManager.hdfs_namenode_host='${conf.remoteFSDriver.namenodeIp}'
+c.HDFSContentsManager.hdfs_namenode_port=${conf.remoteFSDriver.namenodePort}
+c.HDFSContentsManager.root_dir='${conf.remoteFSDriver.baseDirectory}'
+c.HDFSContentsManager.hdfs_user = '${conf.remoteFSDriver.hdfsUser}'
+c.HDFSContentsManager.hadoop_client_env_opts = '-D fs.permissions.umask-mode=0002'
+c.NotebookApp.contents_manager_class = '${conf.remoteFSDriver.contentsManager}'
+
+c.NotebookApp.notebook_dir = '${conf.secretDirectory}'
+</#if>
 
 c.NotebookApp.ip = '127.0.0.1'
 c.NotebookApp.open_browser = False
-
-c.NotebookApp.notebook_dir = '${conf.secretDirectory}'
 
 c.NotebookApp.port_retries = 0
 c.NotebookApp.port = ${conf.port?c}
@@ -48,6 +50,7 @@ c.NotebookApp.tornado_settings = {
     }
 }
 
+c.FileCheckpoints.checkpoint_dir='${conf.secretDirectory}'
 
 import os
 os.environ['REST_ENDPOINT'] = "${conf.hopsworksEndpoint}"
@@ -70,3 +73,32 @@ os.environ['SECRETS_DIR'] = "${conf.secretDirectory}"
 
 os.environ['HADOOP_CLASSPATH_GLOB'] = "${conf.hadoopClasspathGlob}"
 os.environ['HADOOP_LOG_DIR'] = "/tmp"
+
+
+<#if instanceOf(conf.remoteFSDriver, HopsfsMountRemoteDriver)>
+# hopsfs-mount does not support xattr. If we save the file then we loose the xattr information of the notebook
+# We need to put back the xattr after saving the notebook.
+import concurrent.futures
+notebook_save_thread_pool = concurrent.futures.ThreadPoolExecutor(max_workers=7)
+
+def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
+    # only run on notebooks
+    if model['type'] != 'notebook':
+        return
+    try:
+        import sys
+        import threading
+        from hops import util
+        if 'hops.util' in sys.modules:
+            notebook_save_thread_pool.submit(util.notebook_post_save, os_path.replace(os.environ["JUPYTER_DATA_DIR"], ""))
+    except Exception as err:
+        return
+
+c.FileContentsManager.post_save_hook = notebook_post_save_hook
+
+c.NotebookNotary.data_dir = "${conf.secretDirectory}"
+
+c.NotebookApp.notebook_dir = os.environ['JUPYTER_DATA_DIR']
+c.FileContentsManager.delete_to_trash = False
+</#if>
+
