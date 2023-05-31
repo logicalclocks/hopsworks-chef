@@ -15,18 +15,6 @@ asadmin_cmd="#{asadmin} -I false --host #{das_ip} --port #{admin_port} --user #{
 service_name="glassfish-instance"
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
-#we do not want glassfish DAS on worker 
-service "glassfish-#{domain_name}" do
-  provider Chef::Provider::Service::Systemd
-  supports :restart => true, :stop => true, :start => true, :status => true, :disable => true
-  action :stop
-end
-service "glassfish-#{domain_name}" do
-  provider Chef::Provider::Service::Systemd
-  supports :restart => true, :stop => true, :start => true, :status => true, :disable => true
-  action :disable
-end
-
 node_name=get_node_name(asadmin_cmd, public_ip)
 # instance and node name should have the same suffix workerX/instanceX.
 instance_name="instance#{node_name.scan(/\d+/)[0]}"

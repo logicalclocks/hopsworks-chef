@@ -209,6 +209,9 @@ file "#{node['hopsworks']['env_var_file']}" do
   group node['glassfish']['group']
 end
 
+public_ip=my_public_ip()
+das_node_ip=node['hopsworks'].attribute?('das_node')? private_recipe_ip('hopsworks', 'das_node') : ""
+systemd_enabled=das_node_ip.empty? || das_node_ip == public_ip
 
 node.override = {
   'java' => {
@@ -222,7 +225,7 @@ node.override = {
       domain_name => {
         'config' => {
           'debug' => node['hopsworks']['debug'],    
-          'systemd_enabled' => true,
+          'systemd_enabled' => systemd_enabled,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
