@@ -13,9 +13,10 @@ module Hopsworks
       instance_command = "#{asadmin} list-instances #{node_name} | head -n 1 | awk '{print $1}'"
       return get_command_output(instance_command)
     end
+    # only works if the instance is created
     def get_instance_name_by_host(asadmin, host)
-      node_name = get_node_name(asadmin, host)
-      return "instance#{node_name.scan(/\d+/)[0]}"
+      instance_command = "#{asadmin} list-instances -l | grep #{host} | head -n 1 | awk '{print $1}'"
+      return get_command_output(instance_command)
     end
   end
 end

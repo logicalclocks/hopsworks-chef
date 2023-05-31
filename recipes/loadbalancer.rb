@@ -6,15 +6,11 @@ password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
 asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
 
-ssh_nodes= node['hopsworks'].attribute?('ssh_node')? private_recipe_ips('hopsworks', 'ssh_node') : []
 config_nodes= node['hopsworks'].attribute?('config_node')? private_recipe_ips('hopsworks', 'config_node') : []
-public_ip=my_public_ip()
-local_instance="instance0" #list-nodes does not show das node
+das_node=node['hopsworks'].attribute?('das_node')? private_recipe_ips('hopsworks', 'das_node') : []
 
-glassfish_nodes = ssh_nodes + config_nodes
-nodes_hash = glassfish_nodes.map{ |x| [x, get_instance_name_by_host(asadmin_cmd, x)] }.to_h
-
-puts ("glassfish_nodes #{glassfish_nodes}, #{nodes_hash}")
+nodes=das_node+config_nodes
+glassfish_nodes = nodes.map{ |x| [x, get_instance_name_by_host(asadmin_cmd, x)] }.to_h
 
 # Install load balancer
 case node['platform_family']
@@ -30,9 +26,7 @@ when "debian"
     variables({
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
       :load_balancer_log_dir => "/var/log/apache2",
-      :public_ip => public_ip,
-      :local_instance => local_instance,
-      :glassfish_nodes => nodes_hash
+      :glassfish_nodes => glassfish_nodes
     })
   end
 
@@ -70,9 +64,7 @@ when "rhel"
     variables({
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
       :load_balancer_log_dir => "/var/log/httpd",
-      :public_ip => public_ip,
-      :local_instance => local_instance,
-      :glassfish_nodes => nodes_hash
+      :glassfish_nodes => glassfish_nodes
     })
   end
 

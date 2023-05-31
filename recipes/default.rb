@@ -816,7 +816,6 @@ if current_version.eql?("") == false
 
 end  
 
-
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
   url node['hopsworks']['ear_url']

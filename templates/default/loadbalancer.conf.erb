@@ -18,16 +18,14 @@
   RewriteRule ^/(.*)  balancer://ws-hopsworkscluster/$1 [P,L]
 
   <Proxy balancer://hopsworkscluster>
-      BalancerMember <%= "http://#{@public_ip}:28182 route=#{@local_instance}" %>
     <% @glassfish_nodes.each do |ipaddress, instance_name| %>
-      BalancerMember <%= "http://#{ipaddress}:28182 route=#{instance_name}" %>
+    BalancerMember <%= "http://#{ipaddress}:28182 route=#{instance_name}" %>
     <% end %>
     ProxySet lbmethod=byrequests
     ProxySet stickysession=SESSION
   </Proxy>
 
   <Proxy balancer://ws-hopsworkscluster>
-    BalancerMember <%= "ws://#{@public_ip}:28182 route=#{@local_instance}" %>
     <% @glassfish_nodes.each do |ipaddress, instance_name| %>
     BalancerMember <%= "ws://#{ipaddress}:28182 route=#{instance_name}" %>
     <% end %>

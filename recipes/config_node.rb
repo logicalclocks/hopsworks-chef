@@ -28,6 +28,7 @@ service "glassfish-#{domain_name}" do
 end
 
 node_name=get_node_name(asadmin_cmd, public_ip)
+# instance and node name should have the same suffix workerX/instanceX.
 instance_name="instance#{node_name.scan(/\d+/)[0]}"
 
 directory "#{nodedir}" do

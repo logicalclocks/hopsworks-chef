@@ -23,20 +23,10 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
-  - recipe: hopsworks::das_ssh_key
-    global:
-      - hopsworks::default
   - recipe: hopsworks::das_node
     local:
       - hopsworks::default
       - kagent::default
-    global:
-      - hopsworks::das_ssh_key
-  - recipe: hopsworks::ssh_node
-    local:
-      - kagent::default
-    global:
-      - hopsworks::das_node
   - recipe: hopsworks::config_node
     local:
       - kagent::default
@@ -44,5 +34,5 @@ dependencies:
       - hopsworks::das_node
   - recipe: hopsworks::loadbalancer
     global:
-      - hopsworks::das_node
+      - hopsworks::config_node
     

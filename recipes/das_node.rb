@@ -18,7 +18,6 @@ admin_port = node['hopsworks']['admin']['port']
 username=node['hopsworks']['admin']['user']
 password=node['hopsworks']['admin']['password']
 
-ssh_nodes= node['hopsworks'].attribute?('ssh_node')? private_recipe_ips('hopsworks', 'ssh_node') : []
 config_nodes= node['hopsworks'].attribute?('config_node')? private_recipe_ips('hopsworks', 'config_node') : []
 
 current_version = node['hopsworks']['current_version']
@@ -170,7 +169,7 @@ hopsworks_configure_server "glassfish_configure_monitoring" do
   action :glassfish_configure_monitoring
 end
 
-node_ips=[public_ip]+ssh_nodes+config_nodes
+node_ips=[public_ip]+config_nodes
 interfaces=node_ips.join(",")
 glassfish_asadmin "set-hazelcast-configuration --publicaddress #{public_ip} --daspublicaddress #{public_ip} --autoincrementport true --interfaces #{interfaces} --membergroup #{payara_config} --target #{payara_config}" do
   domain_name domain_name
@@ -235,31 +234,19 @@ end
 # https://dzone.com/articles/configure-a-glassfish-cluster-with-automatic-load
 # docker
 # https://github.com/jelastic-jps/glassfish/
-hopsworks_create_nodes "create_ssh_nodes" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  asadmin_cmd asadmin_cmd
-  payara_config payara_config
-  nodedir nodedir
-  nodes ssh_nodes
-  glassfish_user_home glassfish_user_home
-  action :create_ssh_nodes
-end
 
 # This is done here to reserve the name of the worker
 # when config node runs on a worker it just need to get its name by ip
-hopsworks_create_nodes "create_config_nodes" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  asadmin_cmd asadmin_cmd
-  payara_config payara_config
-  nodedir nodedir
-  nodes config_nodes
-  action :create_config_nodes
+count_nodes_cmd="#{asadmin_cmd} list-nodes | wc -l"
+config_nodes.each do |val| 
+  glassfish_asadmin "create-node-config --nodehost #{val} --installdir #{node['glassfish']['base_dir']}/versions/current --nodedir #{nodedir} worker$(#{count_nodes_cmd})" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure false
+    not_if "#{asadmin_cmd} list-nodes -l | grep #{val}"
+  end
 end
 
 glassfish_asadmin "create-deployment-group #{deployment_group}" do
@@ -277,17 +264,6 @@ glassfish_asadmin "add-instance-to-deployment-group --instance #{local_instance}
   username username
   admin_port admin_port
   secure false
-end
-
-ssh_nodes.each do |val|
-  instance_name_cmd="#{asadmin_cmd} list-instances -l | grep #{val} | head -n 1 | awk '{print $1}'"
-  glassfish_asadmin "add-instance-to-deployment-group --instance $(#{instance_name_cmd}) --deploymentgroup #{deployment_group}" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-  end
 end
 
 glassfish_deployable "hopsworks-ear" do
