@@ -521,11 +521,10 @@ end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
-# If empty it is new server and we can create the simlink
 directory node['hopsworks']['domain1']['logs'] do
   recursive true
   action :delete
-  only_if { Dir.entries(node['hopsworks']['domain1']['logs']).select {|entry| !(entry =='.' || entry == '..' || entry == '.gitkeep') }.empty? }
+  only_if { Dir.entries(node['hopsworks']['domain1']['logs']).select {|entry| !(entry =='.' || entry == '..' || entry == '.gitkeep') }.empty? || !conda_helpers.is_upgrade }
 end
 
 bash 'Move glassfish logs to data volume' do

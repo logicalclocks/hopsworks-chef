@@ -5,7 +5,7 @@ attribute :domains_dir, :kind_of => String, :default => nil
 attribute :password_file, :kind_of => String, :default => nil
 attribute :username, :kind_of => String, :default => nil
 attribute :admin_port, :kind_of => Integer, :default => 4848
-attribute :target, :kind_of => String, :default => "server-config"
+attribute :target, :kind_of => String, :default => "server"
 attribute :asadmin, :kind_of => String, :default => nil
 attribute :internal_port, :kind_of => Integer, :default => 8182
 

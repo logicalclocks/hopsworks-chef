@@ -91,22 +91,22 @@ action :glassfish_configure do
   override=new_resource.override_props
 
   asadmin_cmd="#{asadmin} --terse=false --echo=false --user #{username} --passwordfile #{password_file}"
-
+  target_config = new_resource.target == "server" ? "server-config" : new_resource.target
   glassfish_conf = {
-    "#{target}.security-service.default-realm" => 'kthfsrealm',
+    "#{target_config}.security-service.default-realm" => 'kthfsrealm',
     # Jobs in Hopsworks use the Timer service
-    "#{target}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
+    "#{target_config}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
     "#{target}.ejb-container.ejb-timer-service.property.reschedule-failed-timer" => node['glassfish']['reschedule_failed_timer'],
     "#{target}.http-service.virtual-server.server.property.send-error_1" => "'code=404 path=#{domains_dir}/#{domain_name}/docroot/index.html reason=Resource_not_found'",
     # Enable/Disable HTTP listener
-    "configs.config.#{target}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
+    "configs.config.#{target_config}.network-config.network-listeners.network-listener.http-listener-1.enabled" => false,
     # Make sure the https listener is listening on the requested port
-    "configs.config.#{target}.network-config.network-listeners.network-listener.http-listener-2.port" => node['hopsworks']['https']['port'],
-    "configs.config.#{target}.network-config.protocols.protocol.http-listener-2.http.http2-enabled" => false,
-    "configs.config.#{target}.network-config.protocols.protocol.https-internal.http.http2-enabled" => false,
+    "configs.config.#{target_config}.network-config.network-listeners.network-listener.http-listener-2.port" => node['hopsworks']['https']['port'],
+    "configs.config.#{target_config}.network-config.protocols.protocol.http-listener-2.http.http2-enabled" => false,
+    "configs.config.#{target_config}.network-config.protocols.protocol.https-internal.http.http2-enabled" => false,
     # Disable X-Powered-By and server headers
-    "configs.config.#{target}.network-config.protocols.protocol.http-listener-2.http.server-header" => false,
-    "configs.config.#{target}.network-config.protocols.protocol.http-listener-2.http.xpowered-by" => false,
+    "configs.config.#{target_config}.network-config.protocols.protocol.http-listener-2.http.server-header" => false,
+    "configs.config.#{target_config}.network-config.protocols.protocol.http-listener-2.http.xpowered-by" => false,
     # Disable SSL3
     "#{target}.network-config.protocols.protocol.http-listener-2.ssl.ssl3-enabled" => false,
     "#{target}.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-enabled" => false,
@@ -115,7 +115,7 @@ action :glassfish_configure do
     "#{target}.iiop-service.iiop-listener.SSL.ssl.ssl3-enabled" => false,
     "#{target}.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-enabled" => false,
     # HTTP-2
-    "configs.config.#{target}.network-config.protocols.protocol.http-listener-2.http.http2-push-enabled" => true,
+    "configs.config.#{target_config}.network-config.protocols.protocol.http-listener-2.http.http2-push-enabled" => true,
     # Disable TLS 1.0
     "#{target}.network-config.protocols.protocol.http-listener-2.ssl.tls-enabled" => false,
     "#{target}.network-config.protocols.protocol.sec-admin-listener.ssl.tls-enabled" => false,
@@ -124,9 +124,9 @@ action :glassfish_configure do
     "#{target}.iiop-service.iiop-listener.SSL.ssl.tls-enabled" => false,
     "#{target}.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.tls-enabled" => false,
     # Restrict ciphersuite
-    "configs.config.#{target}.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
-    "configs.config.#{target}.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
-    "configs.config.#{target}.network-config.protocols.protocol.https-internal.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
+    "configs.config.#{target_config}.network-config.protocols.protocol.http-listener-2.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
+    "configs.config.#{target_config}.network-config.protocols.protocol.sec-admin-listener.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
+    "configs.config.#{target_config}.network-config.protocols.protocol.https-internal.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
     "#{target}.admin-service.jmx-connector.system.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
     "#{target}.iiop-service.iiop-listener.SSL.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
     "#{target}.iiop-service.iiop-listener.SSL_MUTUALAUTH.ssl.ssl3-tls-ciphers" => node['glassfish']['ciphersuite'],
@@ -136,10 +136,10 @@ action :glassfish_configure do
     "resources.managed-executor-service.concurrent\/condaExecutorService.thread-priority" => 9,
     "resources.managed-executor-service.concurrent\/jupyterExecutorService.thread-priority" => 8,
     # Enable Single Sign on
-    "configs.config.#{target}.http-service.virtual-server.server.sso-enabled" => true,
-    "configs.config.#{target}.http-service.virtual-server.server.sso-cookie-http-only" => true,
+    "configs.config.#{target_config}.http-service.virtual-server.server.sso-enabled" => true,
+    "configs.config.#{target_config}.http-service.virtual-server.server.sso-cookie-http-only" => true,
     # Allow following symlinks from docroot
-    "#{target}.http-service.virtual-server.server.property.allowLinking" => true,
+    "#{target_config}.http-service.virtual-server.server.property.allowLinking" => true,
     "#{target}.network-config.protocols.protocol.http-listener-2.http.timeout-seconds" => node['glassfish']['http']['keep_alive_timeout'],
     "#{target}.network-config.protocols.protocol.http-listener-1.http.timeout-seconds" => node['glassfish']['http']['keep_alive_timeout'],
     "#{target}.network-config.protocols.protocol.https-internal.http.timeout-seconds" => node['glassfish']['http']['keep_alive_timeout'],
@@ -169,7 +169,7 @@ action :glassfish_configure do
     end
   end
 
-  glassfish_asadmin "set configs.config.#{target}.cdi-service.enable-concurrent-deployment=true" do
+  glassfish_asadmin "set configs.config.#{target_config}.cdi-service.enable-concurrent-deployment=true" do
     domain_name domain_name
     password_file password_file
     username username
@@ -177,7 +177,7 @@ action :glassfish_configure do
     secure false
   end
   
-  glassfish_asadmin "set configs.config.#{target}.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
+  glassfish_asadmin "set configs.config.#{target_config}.cdi-service.pre-loader-thread-pool-size=#{node['glassfish']['ejb_loader']['thread_pool_size']}" do
     domain_name domain_name
     password_file password_file
     username username
