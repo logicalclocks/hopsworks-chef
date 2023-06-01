@@ -4,13 +4,14 @@ username=node['hopsworks']['admin']['user']
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 
-asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
+admin_port = node['hopsworks']['admin']['port']
+das_ip=private_recipe_ip('hopsworks', 'das_node')
+asadmin_cmd="#{asadmin} --host #{das_ip} --port #{admin_port} --user #{username} --passwordfile #{password_file}"
 
 config_nodes= node['hopsworks'].attribute?('config_node')? private_recipe_ips('hopsworks', 'config_node') : []
-das_node=node['hopsworks'].attribute?('das_node')? private_recipe_ips('hopsworks', 'das_node') : []
 
-nodes=das_node+config_nodes
-glassfish_nodes = nodes.map{ |x| [x, get_instance_name_by_host(asadmin_cmd, x)] }.to_h
+glassfish_nodes = config_nodes.map{ |x| [x, get_instance_name_by_host(asadmin_cmd, x)] }.to_h
+glassfish_nodes[das_ip]="instance0" # get_instance_name_by_host will not work for das node b/c host is localhost not ip
 
 # Install load balancer
 case node['platform_family']
