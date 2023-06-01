@@ -9,6 +9,10 @@ password_file = "#{theDomain}_admin_passwd"
 namenode_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
 glassfish_fdqn = consul_helper.get_service_fqdn("glassfish")
 
+public_ip=my_public_ip()
+das_node_ip=node['hopsworks'].attribute?('das_node')? private_recipe_ip('hopsworks', 'das_node') : ""
+systemd_enabled=das_node_ip.empty? || das_node_ip == public_ip
+
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
@@ -16,6 +20,7 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
     systemctl stop glassfish-#{domain_name}
   EOF
+  only_if { systemd_enabled }
 end
 
 # When we upgrade to version 3.1.0 make sure we have set the subjects
@@ -34,6 +39,7 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       mv -f #{node['hopsworks']['domains_dir']} #{node['hopsworks']['domains_dir']}4
     EOH
     not_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
+    only_if { File.exists?("#{node['hopsworks']['domains_dir']}") }
   end
 end
 
@@ -208,10 +214,6 @@ file "#{node['hopsworks']['env_var_file']}" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
 end
-
-public_ip=my_public_ip()
-das_node_ip=node['hopsworks'].attribute?('das_node')? private_recipe_ip('hopsworks', 'das_node') : ""
-systemd_enabled=das_node_ip.empty? || das_node_ip == public_ip
 
 node.override = {
   'java' => {
@@ -519,10 +521,11 @@ end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
+# If empty it is new server and we can create the simlink
 directory node['hopsworks']['domain1']['logs'] do
   recursive true
   action :delete
-  not_if { conda_helpers.is_upgrade }
+  only_if { Dir.entries(node['hopsworks']['domain1']['logs']).select {|entry| !(entry =='.' || entry == '..' || entry == '.gitkeep') }.empty? }
 end
 
 bash 'Move glassfish logs to data volume' do
@@ -895,6 +898,7 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/private/ca.key.pem
     EOH
+    only_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
   end
 end
 
