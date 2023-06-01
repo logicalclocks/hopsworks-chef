@@ -108,6 +108,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   asadmin asadmin
   internal_port node['hopsworks']['internal']['port']
   network_name "https-internal"
+  network_listener_name "https-int-list"
   action :glassfish_configure_network
 end
 
@@ -123,6 +124,7 @@ if node['hopsworks']['ha']['loadbalancer'].to_s == "true"
     asadmin asadmin
     internal_port 28182
     network_name "http-internal"
+    network_listener_name "http-int-list"
     securityenabled false
     action :glassfish_configure_network
   end
@@ -171,7 +173,7 @@ end
 
 node_ips=[public_ip]+config_nodes
 interfaces=node_ips.join(",")
-glassfish_asadmin "set-hazelcast-configuration --publicaddress #{public_ip} --daspublicaddress #{public_ip} --autoincrementport true --interfaces #{interfaces} --membergroup #{payara_config} --target #{payara_config}" do
+glassfish_asadmin "set-hazelcast-configuration --enabled true --publicaddress #{public_ip} --daspublicaddress #{public_ip} --autoincrementport true --interfaces #{interfaces} --membergroup #{payara_config} --target #{payara_config}" do
   domain_name domain_name
   password_file password_file
   username username

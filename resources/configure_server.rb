@@ -11,6 +11,7 @@ attribute :internal_port, :kind_of => Integer, :default => 8182
 
 attribute :securityenabled, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :network_name, :kind_of => String, :default => nil
+attribute :network_listener_name, :kind_of => String, :default => nil
 
 attribute :nodedir, :kind_of => String, :default => nil
 attribute :node_name, :kind_of => String, :default => nil

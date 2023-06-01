@@ -9,6 +9,7 @@ action :glassfish_configure_network do
   internal_port=new_resource.internal_port
   securityenabled=new_resource.securityenabled
   network_name=new_resource.network_name
+  network_listener_name=new_resource.network_listener_name
 
   asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
   
@@ -31,13 +32,13 @@ action :glassfish_configure_network do
     not_if "#{asadmin_cmd} get #{target}.network-config.protocols.protocol.#{network_name}.* | grep 'http.uri-encoding'"
   end
   
-  glassfish_asadmin "create-network-listener --listenerport #{internal_port} --threadpool http-thread-pool --target #{target} --protocol #{network_name} #{network_name}-list" do
+  glassfish_asadmin "create-network-listener --listenerport #{internal_port} --threadpool http-thread-pool --target #{target} --protocol #{network_name} #{network_listener_name}" do
     domain_name domain_name
     password_file password_file
     username username
     admin_port admin_port
     secure false
-    not_if "#{asadmin_cmd} list-http-listeners #{target} | grep #{network_name}-list"
+    not_if "#{asadmin_cmd} list-http-listeners #{target} | grep #{network_listener_name}"
   end
 end
 
