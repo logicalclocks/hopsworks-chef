@@ -782,7 +782,7 @@ if current_version.eql?("") == false
   end
 
   glassfish_deployable "hopsworks" do
-    component_name "hopsworks-web:#{node['hopsworks']['version']}"
+    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
     version current_version
     context_root "/hopsworks"
     domain_name domain_name
@@ -799,7 +799,7 @@ if current_version.eql?("") == false
   end
 
   glassfish_deployable "hopsworks-ca" do
-    component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
     version current_version
     context_root "/hopsworks-ca"
     domain_name domain_name
