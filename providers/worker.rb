@@ -77,8 +77,8 @@ action :configure_node do
       mv -f #{log_dir} #{data_volume_logs_dir}_deprecated
     EOH
     only_if { conda_helpers.is_upgrade }
-    only_if { File.directory?(log_dir)}
-    not_if { File.symlink?(log_dir)}
+    only_if { ::File.directory?(log_dir)}
+    not_if { ::File.symlink?(log_dir)}
   end
 
   link "#{log_dir}" do
