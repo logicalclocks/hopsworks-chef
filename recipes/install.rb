@@ -71,6 +71,7 @@ user node['hopsworks']['user'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
+#TODO: what does this do? Can it run even if it is HA upgrade? 
 group node["kagent"]["certs_group"] do
   action :manage
   append true
