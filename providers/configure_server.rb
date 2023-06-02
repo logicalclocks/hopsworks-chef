@@ -223,7 +223,7 @@ action :glassfish_configure_realm do
     admin_port admin_port
     secure false
     classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
-    not_if "#{asadmin_cmd} list-auth-realms #{target} | grep kthfsrealm"
+    not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end
 

@@ -1,12 +1,4 @@
-#rows_path = "#{domains_dir}/post.sql"
-
-case node['platform']
-when "rhel"
-  package "openssh-clients"
-end
-
-package "openssh-server"
-public_ip=my_public_ip()
+private_ip=my_private_ip()
 payara_config = "hopsworks-config"
 deployment_group = "hopsworks-dg"
 local_instance = "instance0"
@@ -112,7 +104,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
-if node['hopsworks']['ha']['loadbalancer'].to_s == "true"
+if node['hopsworks']['ha']['loadbalancer'].casecmp?("true")
   # http internal for load balancer
   hopsworks_configure_server "glassfish_configure_network" do
     domain_name domain_name
@@ -171,9 +163,9 @@ hopsworks_configure_server "glassfish_configure_monitoring" do
   action :glassfish_configure_monitoring
 end
 
-node_ips=[public_ip]+config_nodes
+node_ips=[private_ip]+config_nodes
 interfaces=node_ips.join(",")
-glassfish_asadmin "set-hazelcast-configuration --enabled true --publicaddress #{public_ip} --daspublicaddress #{public_ip} --autoincrementport true --interfaces #{interfaces} --membergroup #{payara_config} --target #{payara_config}" do
+glassfish_asadmin "set-hazelcast-configuration --enabled true --publicaddress #{private_ip} --daspublicaddress #{private_ip} --autoincrementport true --interfaces #{interfaces} --membergroup #{payara_config} --target #{payara_config}" do
   domain_name domain_name
   password_file password_file
   username username
@@ -202,18 +194,6 @@ directory node['hopsworks']['data_volume']['node_logs'] do
   mode '0750'
 end
 
-bash 'Move glassfish logs to data volume' do
-  user 'root'
-  code <<-EOH
-    set -e
-    mv -f #{log_dir}/* #{node['hopsworks']['data_volume']['node_logs']}
-    mv -f #{log_dir} #{node['hopsworks']['data_volume']['node_logs']}_deprecated
-  EOH
-  only_if { conda_helpers.is_upgrade }
-  only_if { File.directory?(log_dir)}
-  not_if { File.symlink?(log_dir)}
-end
-
 link "#{log_dir}" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -221,13 +201,13 @@ link "#{log_dir}" do
   to node['hopsworks']['data_volume']['node_logs']
 end
 
-glassfish_asadmin "create-system-properties --target #{local_instance} hazelcast.local.publicAddress=#{public_ip}" do
+glassfish_asadmin "create-system-properties --target #{local_instance} hazelcast.local.publicAddress=#{private_ip}" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin_cmd} list-system-properties #{local_instance} | grep hazelcast.local.publicAddress=#{public_ip}"
+  not_if "#{asadmin_cmd} list-system-properties #{local_instance} | grep hazelcast.local.publicAddress=#{private_ip}"
 end
 
 #

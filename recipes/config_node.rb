@@ -9,13 +9,13 @@ deployment_group = "hopsworks-dg"
 
 admin_port = node['hopsworks']['admin']['port']
 das_ip=private_recipe_ip('hopsworks', 'das_node')
-public_ip=my_public_ip()
+private_ip=my_private_ip()
 
 asadmin_cmd="#{asadmin} -I false --host #{das_ip} --port #{admin_port} --user #{username} --passwordfile #{password_file}"
 service_name="glassfish-instance"
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
-node_name=get_node_name(asadmin_cmd, public_ip)
+node_name=get_node_name(asadmin_cmd, private_ip)
 # instance and node name should have the same suffix workerX/instanceX.
 instance_name="instance#{node_name.scan(/\d+/)[0]}"
 
@@ -35,13 +35,13 @@ glassfish_asadmin "--host #{das_ip} create-local-instance --config #{payara_conf
   not_if "#{asadmin_cmd} list-instances | grep #{instance_name}"
 end
 
-glassfish_asadmin "--host #{das_ip} create-system-properties --target #{instance_name} hazelcast.local.publicAddress=#{public_ip}" do
+glassfish_asadmin "--host #{das_ip} create-system-properties --target #{instance_name} hazelcast.local.publicAddress=#{private_ip}" do
   domain_name domain_name
   password_file password_file
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin_cmd} list-system-properties #{instance_name} | grep hazelcast.local.publicAddress=#{public_ip}"
+  not_if "#{asadmin_cmd} list-system-properties #{instance_name} | grep hazelcast.local.publicAddress=#{private_ip}"
 end
 
 glassfish_asadmin "--host #{das_ip} add-instance-to-deployment-group --instance #{instance_name} --deploymentgroup #{deployment_group}" do

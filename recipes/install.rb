@@ -9,9 +9,9 @@ password_file = "#{theDomain}_admin_passwd"
 namenode_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
 glassfish_fdqn = consul_helper.get_service_fqdn("glassfish")
 
-public_ip=my_public_ip()
+private_ip=my_private_ip()
 das_node_ip=node['hopsworks'].attribute?('das_node')? private_recipe_ip('hopsworks', 'das_node') : ""
-systemd_enabled=das_node_ip.empty? || das_node_ip == public_ip
+systemd_enabled=das_node_ip.empty? || das_node_ip == private_ip
 
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
@@ -71,7 +71,6 @@ user node['hopsworks']['user'] do
   not_if { node['install']['external_users'].casecmp("true") == 0 }
 end
 
-#TODO: what does this do? Can it run even if it is HA upgrade? 
 group node["kagent"]["certs_group"] do
   action :manage
   append true
@@ -522,6 +521,8 @@ end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
+# if upgrade and a new HA node is added this needs to run as if it is a new install
+# So check if the logs dir is empty and delete even if it is upgrade.
 directory node['hopsworks']['domain1']['logs'] do
   recursive true
   action :delete

@@ -38,10 +38,11 @@ action :add_to_services do
               stop_domain_timeout: systemd_stop_timeout)
     notifies :start, "service[#{service_name}]", :delayed
   end
-
-  service service_name do
-    supports start: true, restart: true, stop: true, status: true
-    action [:enable]
+  if node['services']['enabled'].casecmp?("true")
+    service service_name do
+      supports start: true, restart: true, stop: true, status: true
+      action [:enable]
+    end
   end
 end
 
@@ -67,18 +68,6 @@ action :configure_node do
     owner node['glassfish']['user']
     group node['glassfish']['group']
     mode '0750'
-  end
-
-  bash 'Move glassfish logs to data volume' do
-    user 'root'
-    code <<-EOH
-      set -e
-      mv -f #{log_dir}/* #{data_volume_logs_dir}
-      mv -f #{log_dir} #{data_volume_logs_dir}_deprecated
-    EOH
-    only_if { conda_helpers.is_upgrade }
-    only_if { ::File.directory?(log_dir)}
-    not_if { ::File.symlink?(log_dir)}
   end
 
   link "#{log_dir}" do
