@@ -257,6 +257,7 @@ usernamesConfiguration[:zookeeper] = node['kzookeeper']['user']
 usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
 usernamesConfiguration[:elastic] = node['elastic']['user']
 usernamesConfiguration[:kagent] = node['kagent']['user']
+usernamesConfiguration[:mysql] = node['ndb']['user']
 if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
   usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
 end
