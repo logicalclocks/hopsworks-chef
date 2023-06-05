@@ -25,8 +25,6 @@ log_dir="#{nodedir}/#{node['hopsworks']['node_name']}/#{local_instance}/logs"
 #so we can configure hopsworks-config for cloud
 include_recipe 'hopsworks::copy_config'
 
-node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
-
 # disable monitoring and http-listeners on server-config
 glassfish_network_listener_conf = {
   "configs.config.server-config.network-config.network-listeners.network-listener.http-listener-2.enabled" => false,
