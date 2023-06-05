@@ -22,10 +22,10 @@ asadmin_cmd="#{asadmin} -I false -t --user #{username} --passwordfile #{password
 
 log_dir="#{nodedir}/#{node['hopsworks']['node_name']}/#{local_instance}/logs"
 
-node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
-
 #so we can configure hopsworks-config for cloud
 include_recipe 'hopsworks::copy_config'
+
+node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
 
 # disable monitoring and http-listeners on server-config
 glassfish_network_listener_conf = {
