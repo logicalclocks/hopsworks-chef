@@ -131,3 +131,13 @@ ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_pid`;
 ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_id`;
 ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `partition_id`;
 ALTER TABLE `hopsworks`.`dataset` ADD KEY `dataset_name` (`inode_name`);
+
+-- HWORKS-574: Remove inode from hdfs_command_execution
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP FOREIGN KEY `fk_hdfs_file_command_2`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP INDEX `fk_hdfs_file_command_2_idx`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP INDEX `uq_src_inode`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_pid`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_name`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_partition_id`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD COLUMN `src_path` VARCHAR(255) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD UNIQUE KEY `uq_src_path` (`src_path`);
