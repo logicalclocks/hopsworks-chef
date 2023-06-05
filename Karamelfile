@@ -27,6 +27,9 @@ dependencies:
     local:
       - hopsworks::default
       - kagent::default
+  - recipe: hopsworks::copy_config
+    global:
+      - hopsworks::default
   - recipe: hopsworks::config_node
     local:
       - kagent::default

@@ -1,4 +1,5 @@
 payara_config = "hopsworks-config"
+local_instance = "instance0"
 
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['glassfish']['domains_dir']
