@@ -342,7 +342,7 @@ CREATE TABLE `feature_group_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `commit_time` DATETIME(3) NOT NULL,
     `feature_group_id` INT(11) NOT NULL,
-    `window_start_commit_id`BIGINT(20) DEFAULT NULL, -- window start commit id (fg)
+    `window_start_commit_id` BIGINT(20) DEFAULT NULL, -- window start commit id (fg)
     `window_end_commit_id` BIGINT(20) DEFAULT NULL, -- commit id or window end commit id (fg)
     `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
     PRIMARY KEY (`id`),
@@ -364,14 +364,22 @@ CREATE TABLE `feature_view_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `commit_time` DATETIME(3) NOT NULL,
     `feature_view_id`INT(11) NOT NULL,
-    `window_start_event_time` timestamp NOT NULL, -- window start event time (fv)
-    `window_end_event_time` timestamp NOT NULL, -- window end event time (fv)
     `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+    -- fv statistics based on event times
+    `window_start_event_time` BIGINT(20) DEFAULT NULL,
+    `window_end_event_time`BIGINT(20) DEFAULT NULL,
+    -- fv statistics based on left fg commit times
+    `window_start_commit_time` BIGINT(20) DEFAULT NULL,
+    `window_end_commit_time`BIGINT(20) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `feature_view_id` (`feature_view_id`),
     KEY `window_start_event_time` (`window_start_event_time`),
     KEY `window_end_event_time` (`window_end_event_time`),
-    UNIQUE KEY `window_event_time_ids_row_perc_fk` (`feature_view_id`, `window_start_event_time`, `window_end_event_time`, `row_percentage`),
+    KEY `window_start_commit_time` (`window_start_commit_time`),
+    KEY `window_end_commit_time` (`window_end_commit_time`),
+    KEY `commit_time` (`commit_time`),
+    UNIQUE KEY `fv_ids_window_event_times_commit_time_row_perc_fk` (`feature_view_id`, `window_start_event_time`, `window_end_event_time`, `commit_time`, `row_percentage`),
+    UNIQUE KEY `fv_ids_window_commit_times_row_perc_fk` (`feature_view_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
     CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
@@ -2326,7 +2334,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `description` VARCHAR(2000) COLLATE latin1_general_cs DEFAULT NULL,
     `name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
-    `use_event_time` BOOLEAN DEFAULT FALSE,
+    `is_event_time` BOOLEAN DEFAULT FALSE,
     `training_dataset_version` INT(11) DEFAULT NULL,
     `feature_monitoring_type` tinyint(4) NOT NULL,
     `scheduler_config_id` INT(11),
