@@ -15,5 +15,4 @@ attribute :network_listener_name, :kind_of => String, :default => nil
 
 attribute :nodedir, :kind_of => String, :default => nil
 attribute :node_name, :kind_of => String, :default => nil
-attribute :current_master_password, :kind_of => String, :default => "changeit"
 attribute :override_props, :kind_of => Hash, :default => {}
