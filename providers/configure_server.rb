@@ -226,31 +226,3 @@ action :glassfish_configure_realm do
     not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end
-
-action :change_node_master_password do
-  username=new_resource.username
-  asadmin=new_resource.asadmin
-  nodedir=new_resource.nodedir
-  node_name=new_resource.node_name
-  current_password=new_resource.current_master_password
-  # Option "savemasterpassword" for change-master-password is always true for nodes.
-  bash "change-master-password" do 
-    user "#{node['glassfish']['user']}"
-    cwd "/tmp"
-    code <<-EOH
-      set -e
-      echo -e 'AS_ADMIN_PASSWORD=#{node['hopsworks']['admin']['password']}\nAS_ADMIN_MASTERPASSWORD=#{current_password}' > masterpwdfile
-
-      /usr/bin/expect <<EOF
-      spawn #{asadmin} --user #{username} --passwordfile masterpwdfile change-master-password --nodedir #{nodedir} #{node_name}
-      expect "Enter the new master password> "
-      send "#{node['hopsworks']['master']['password']}\r"
-      expect "Enter the new master password again> "
-      send "#{node['hopsworks']['master']['password']}\r"
-      expect "$ "
-EOF
-rm masterpwdfile
-EOH
-    not_if { ::File.exist?("#{nodedir}/#{node_name}/agent/master-password") }
-  end
-end

@@ -1,4 +1,4 @@
-actions :glassfish_configure_network, :glassfish_configure_monitoring, :glassfish_configure, :glassfish_configure_realm, :change_node_master_password
+actions :glassfish_configure_network, :glassfish_configure_monitoring, :glassfish_configure, :glassfish_configure_realm
 
 attribute :domain_name, :kind_of => String, :default => nil
 attribute :domains_dir, :kind_of => String, :default => nil
