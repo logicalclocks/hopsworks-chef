@@ -165,15 +165,6 @@ glassfish_deployable "hopsworks-ca" do
   only_if "#{asadmin_cmd} list-applications --type ejb server | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
-hopsworks_configure_server "change_node_master_password" do
-  username username
-  asadmin asadmin
-  nodedir nodedir
-  node_name node['hopsworks']['node_name']
-  current_master_password "changeit"
-  action :change_node_master_password
-end
-
 # Resources created in default server, so create a reference to the resources in the new config
 glassfish_resources = [
   'concurrent/hopsThreadFactory',

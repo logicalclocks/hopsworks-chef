@@ -117,13 +117,4 @@ action :configure_node do
     common_name node['hopsworks']['hopsworks_public_host']
     action :generate_x509
   end
-
-  hopsworks_configure_server "change_node_master_password" do
-    username username
-    asadmin asadmin
-    nodedir nodedir
-    node_name node_name
-    current_master_password "changeit"
-    action :change_node_master_password
-  end
 end
