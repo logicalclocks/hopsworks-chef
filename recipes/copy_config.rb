@@ -107,14 +107,6 @@ if node['hopsworks']['internal']['enable_http'].casecmp?("true")
   end
 end
 
-glassfish_asadmin "set #{payara_config}.http-service.virtual-server.server.property.send-error_1='code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found'" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
   domains_dir domains_dir
@@ -124,6 +116,15 @@ hopsworks_configure_server "glassfish_configure" do
   target payara_config
   asadmin asadmin
   action :glassfish_configure
+end
+
+# replace send-error_1 for instance after glassfish_configure above sets it to {domains_dir}/#{domain_name}/docroot/index.html
+glassfish_asadmin "set #{payara_config}.http-service.virtual-server.server.property.send-error_1='code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found'" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
 end
 
 hopsworks_configure_server "glassfish_configure_monitoring" do
