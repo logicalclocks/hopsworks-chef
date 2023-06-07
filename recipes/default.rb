@@ -969,13 +969,6 @@ kagent_config "glassfish-domain1" do
 end
 
 # Register Glassfish with Consul
-template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
-  source "consul/glassfish-health.sh.erb"
-  owner node['hopsworks']['user']
-  group node['hops']['group']
-  mode 0750
-end
-
 consul_service "Registering Glassfish with Consul" do
   service_definition "consul/glassfish-consul.hcl.erb"
   reload_consul false

@@ -583,6 +583,12 @@ directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
   action :create
 end
 
+template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
+  source "consul/glassfish-health.sh.erb"
+  owner node['hopsworks']['user']
+  group node['hops']['group']
+  mode 0750
+end
 
 template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
   source "limits.conf.erb"
