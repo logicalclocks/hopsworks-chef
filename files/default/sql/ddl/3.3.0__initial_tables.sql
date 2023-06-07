@@ -2242,7 +2242,7 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   `execution_id` int NOT NULL,
   `command` varchar(45) NOT NULL,
   `submitted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `src_path` varchar(255) NOT NULL,
+  `src_path` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_execution_id` (`execution_id`),
   UNIQUE KEY `uq_src_path` (`src_path`),
