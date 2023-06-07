@@ -949,3 +949,33 @@ end
 if (exists_local("hopsworks", "default")) && (node['install']['kubernetes'].casecmp?("false"))
   include_recipe "hopsworks::cadvisor"
 end
+
+hopsworks_user_home = conda_helpers.get_user_home(node['hopsworks']['user'])
+
+template "#{hopsworks_user_home}/.condarc" do
+  source "condarc.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  variables({
+    :pkgs_dirs => node['hopsworks']['conda_cache']
+  })
+  action :create
+end
+
+directory "#{hopsworks_user_home}/.pip" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
+end
+
+template "#{hopsworks_user_home}/.pip/pip.conf" do
+  source "pip.conf.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
