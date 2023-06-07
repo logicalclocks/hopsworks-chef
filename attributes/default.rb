@@ -39,8 +39,9 @@ default['hopsworks']['https']['intermediate_ca_url'] = ""
 default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
-default['hopsworks']['ha']['loadbalancer']       = "false"
 default['hopsworks']['ha']['loadbalancer_port']  = 1080
+default['hopsworks']['internal']['enable_http']  = "false"
+default['hopsworks']['internal']['http_port']    = 28182
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
@@ -224,7 +225,7 @@ default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 # because loadbalancer does not support https
-default['jupyter']['origin_scheme']                    = node['hopsworks']['ha']['loadbalancer'] == "false" ? "https" : "http"
+default['jupyter']['origin_scheme']                    = node['hopsworks']['internal']['enable_http'] == "false" ? "https" : "http"
 
 #
 # Serving

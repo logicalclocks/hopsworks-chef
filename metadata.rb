@@ -259,8 +259,8 @@ attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
           :type => 'string'
 
-attribute "hopsworks/ha/loadbalancer",
-          :description => "Install a load balancer. 'false' (default)",
+attribute "hopsworks/internal/enable_http",
+          :description => "Enable http. 'false' (default)",
           :type => 'string'
 
 attribute "hopsworks/ha/loadbalancer_port",

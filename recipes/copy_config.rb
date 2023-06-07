@@ -89,7 +89,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
-if node['hopsworks']['ha']['loadbalancer'].casecmp?("true")
+if node['hopsworks']['internal']['enable_http'].casecmp?("true")
   # http internal for load balancer
   hopsworks_configure_server "glassfish_configure_network" do
     domain_name domain_name
@@ -99,7 +99,7 @@ if node['hopsworks']['ha']['loadbalancer'].casecmp?("true")
     admin_port admin_port
     target payara_config
     asadmin asadmin
-    internal_port 28182
+    internal_port node['hopsworks']['internal']['http_port']
     network_name "http-internal"
     network_listener_name "http-int-list"
     securityenabled false
