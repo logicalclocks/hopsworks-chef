@@ -739,6 +739,16 @@ kagent_sudoers "testconnector" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+registry_addr = { :registry_addr => consul_helper.get_service_fqdn("registry") + ":#{node['hops']['docker']['registry']['port']}"}
+kagent_sudoers "dockerImage" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "dockerImage.sh"
+  template      "dockerImage.sh.erb"
+  variables     registry_addr
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -878,6 +888,38 @@ directory "#{theDomain}/flyway/all/sql" do
   owner node['glassfish']['user']
   mode "770"
   action :create
+end
+
+template "#{domains_dir}/#{domain_name}/config/login.conf" do
+  cookbook 'hopsworks'
+  source "login.conf.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "0600"
+  action :create
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty?
+  krb_conf_path = node['kerberos']['krb_conf_path']
+  remote_file "#{theDomain}/config/krb5.conf" do
+    source "file:///#{krb_conf_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create
+  end
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty?
+  key_tab_path = node['kerberos']['krb_server_key_tab_path']
+  ket_tab_name = node['kerberos']['krb_server_key_tab_name']
+  remote_file "#{theDomain}/config/#{ket_tab_name}" do
+    source "file:///#{key_tab_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create
+  end
 end
 
 if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')

@@ -397,15 +397,6 @@ asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 asadmin_cmd = "#{asadmin} --user #{username} --passwordfile #{password_file}"
 
-template "#{domains_dir}/#{domain_name}/config/login.conf" do
-  cookbook 'hopsworks'
-  source "login.conf.erb"
-  owner node['glassfish']['user']
-  group node['glassfish']['group']
-  mode "0600"
-  action :create
-end
-
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
 # systemd unit environment variables file
 hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
@@ -716,50 +707,13 @@ if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s ==
   end
 end
 
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty?
-  krb_conf_path = node['kerberos']['krb_conf_path']
-  remote_file "#{theDomain}/config/krb5.conf" do
-    source "file:///#{krb_conf_path}"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    action :create
-  end
-end
-
-if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty?
-  key_tab_path = node['kerberos']['krb_server_key_tab_path']
-  ket_tab_name = node['kerberos']['krb_server_key_tab_name']
-  remote_file "#{theDomain}/config/#{ket_tab_name}" do
-    source "file:///#{key_tab_path}"
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "0600"
-    action :create
-  end
-end
-
 if node['hopsworks']['http_logs']['enabled'].eql? "true"
-  http_logging_conf = {
-    # Enable http logging
-    "server.http-service.access-logging-enabled" => 'true',
-    # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
-    # ':' is not a legal filename character in HDFS, thus '_'
-    "server.http-service.access-log.rotation-suffix" => 'yyyy-MM-dd-kk_mm',
-    "server.http-service.access-log.max-history-files" => '10',
-    "server.http-service.access-log.buffer-size-bytes" => '32768',
-    "server.http-service.access-log.write-interval-seconds" => '120',
-    "server.http-service.access-log.rotation-interval-in-minutes" => "1400"
-  }
-
-  http_logging_conf.each do |property, value|
-    glassfish_asadmin "set #{property}=#{value}" do
-      domain_name domain_name
-      password_file password_file
-      username username
-      admin_port admin_port
-      secure false
-    end
+  hopsworks_configure_server "glassfish_configure_http_logging" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    action :glassfish_configure_http_logging
   end
 end
 
@@ -1077,16 +1031,6 @@ kagent_keys "#{hopsworks_user_home}" do
   cb_name "hopsworks"
   cb_recipe "default"
   action :return_publickey
-end
-
-registry_addr = { :registry_addr => consul_helper.get_service_fqdn("registry") + ":#{node['hops']['docker']['registry']['port']}"}
-kagent_sudoers "dockerImage" do
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "dockerImage.sh"
-  template      "dockerImage.sh.erb"
-  variables     registry_addr
-  run_as        "ALL" # run this as root - inside we change to different users
 end
 
 #

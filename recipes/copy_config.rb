@@ -136,3 +136,14 @@ hopsworks_configure_server "glassfish_configure_monitoring" do
   asadmin asadmin
   action :glassfish_configure_monitoring
 end
+
+if node['hopsworks']['http_logs']['enabled'].eql? "true"
+  hopsworks_configure_server "glassfish_configure_http_logging" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    target payara_config
+    action :glassfish_configure_http_logging
+  end
+end

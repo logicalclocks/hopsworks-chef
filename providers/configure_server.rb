@@ -226,3 +226,33 @@ action :glassfish_configure_realm do
     not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end
+
+action :glassfish_configure_http_logging do
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  target=new_resource.target
+
+  http_logging_conf = {
+    # Enable http logging
+    "#{target}.http-service.access-logging-enabled" => 'true',
+    # If you change the suffix, you should also change dump_web_logs_to_hdfs.sh.erb file
+    # ':' is not a legal filename character in HDFS, thus '_'
+    "#{target}.http-service.access-log.rotation-suffix" => 'yyyy-MM-dd-kk_mm',
+    "#{target}.http-service.access-log.max-history-files" => '10',
+    "#{target}.http-service.access-log.buffer-size-bytes" => '32768',
+    "#{target}.http-service.access-log.write-interval-seconds" => '120',
+    "#{target}.http-service.access-log.rotation-interval-in-minutes" => "1400"
+  }
+
+  http_logging_conf.each do |property, value|
+    glassfish_asadmin "set #{property}=#{value}" do
+      domain_name domain_name
+      password_file password_file
+      username username
+      admin_port admin_port
+      secure false
+    end
+  end
+end
