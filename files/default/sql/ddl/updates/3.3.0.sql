@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
     `training_dataset_id` INT(11),
     `time_offset` VARCHAR(63),
     `window_length` VARCHAR(63),
-    `row_percentage` FLOAT,
+    `row_percentage` DECIMAL(15,2),
     `specific_value` FLOAT,
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     `feature_group_id` INT(11) NOT NULL,
     `window_start_commit_id` BIGINT(20) DEFAULT NULL, -- window start commit id (fg)
     `window_end_commit_id` BIGINT(20) DEFAULT NULL, -- commit id or window end commit id (fg)
-    `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
     PRIMARY KEY (`id`),
     KEY `feature_group_id` (`feature_group_id`),
     KEY `window_start_commit_id_fk` (`feature_group_id`, `window_start_commit_id`),
@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            `id` int(11) NOT NULL AUTO_INCREMENT,
                                            `commit_time` DATETIME(3) NOT NULL,
                                            `feature_view_id`INT(11) NOT NULL,
-                                           `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+                                           `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
                                             -- fv statistics based on event times
                                            `window_start_event_time` BIGINT(20) DEFAULT NULL,
                                            `window_end_event_time`BIGINT(20) DEFAULT NULL,
@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
                                            `commit_time` DATETIME(3) NOT NULL,
                                            `training_dataset_id`INT(11) NOT NULL,
                                            `for_transformation` TINYINT(1) DEFAULT '0',
-                                           `row_percentage` FLOAT NOT NULL DEFAULT 1.0,
+                                           `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
                                            PRIMARY KEY (`id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
                                            UNIQUE KEY `tr_ids_for_trans_row_perc_fk` (`training_dataset_id`, `for_transformation`, `row_percentage`),
