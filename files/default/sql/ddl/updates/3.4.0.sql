@@ -134,6 +134,7 @@ CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            `commit_time` DATETIME(3) NOT NULL,
                                            `feature_view_id`INT(11) NOT NULL,
                                            `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+                                           `transformed_with_version` INT(11) DEFAULT NULL, -- training dataset id whose transformation functions were applied before computing statistics
                                             -- fv statistics based on event times
                                            `window_start_event_time` BIGINT(20) DEFAULT NULL,
                                            `window_end_event_time`BIGINT(20) DEFAULT NULL,
@@ -147,8 +148,8 @@ CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            KEY `window_start_commit_time` (`window_start_commit_time`),
                                            KEY `window_end_commit_time` (`window_end_commit_time`),
                                            KEY `commit_time` (`commit_time`),
-                                           UNIQUE KEY `fv_ids_window_event_times_commit_time_row_perc_fk` (`feature_view_id`, `window_start_event_time`, `window_end_event_time`, `commit_time`, `row_percentage`),
-                                           UNIQUE KEY `fv_ids_window_commit_times_row_perc_fk` (`feature_view_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
+                                           UNIQUE KEY `fv_ids_window_event_times_commit_time_row_perc_fk` (`feature_view_id`, `window_start_event_time`, `window_end_event_time`, `commit_time`, `row_percentage`, `transformed_with_version`),
+                                           UNIQUE KEY `fv_ids_window_commit_times_row_perc_fk` (`feature_view_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`, `transformed_with_version`),
                                            CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
