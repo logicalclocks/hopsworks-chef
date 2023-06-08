@@ -121,3 +121,23 @@ ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `archived` TINYINT(1) 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` 
   ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
   MODIFY COLUMN `connector_id` INT(11) NULL;
+
+
+-- HWORKS-548: Remove foreign key from training_dataset
+ALTER TABLE `hopsworks`.`training_dataset` 
+  ADD COLUMN `connector_id` INT(11) NULL,
+  ADD COLUMN `connector_path` VARCHAR(1000) NULL,
+  ADD COLUMN `tag_path` VARCHAR(1000) NULL,
+  ADD FOREIGN KEY `td_conn_fk`(`connector_id`) 
+    REFERENCES `hopsworks`.`feature_store_connector` (`id`) 
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `external_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `external_training_dataset_fk`;
+
+ALTER TABLE `hopsworks`.`training_dataset`
+  DROP COLUMN `hopsfs_training_dataset_id`,
+  DROP COLUMN `external_training_dataset_id`;
