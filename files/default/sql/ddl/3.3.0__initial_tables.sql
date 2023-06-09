@@ -1589,6 +1589,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
                                                             `server_encryption_key`               VARCHAR(1000)   NULL,
                                                             `key_secret_uid`                      INT             DEFAULT NULL,
                                                             `key_secret_name`                     VARCHAR(200)    DEFAULT NULL,
+                                                            `arguments`                            VARCHAR(2000)  DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             KEY `fk_feature_store_s3_connector_1_idx` (`key_secret_uid`, `key_secret_name`),
                                                             CONSTRAINT `fk_feature_store_s3_connector_1` FOREIGN KEY (`key_secret_uid` , `key_secret_name`)
