@@ -122,7 +122,6 @@ ALTER TABLE `hopsworks`.`on_demand_feature_group`
   ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
   MODIFY COLUMN `connector_id` INT(11) NULL;
 
-
 -- HWORKS-548: Remove foreign key from training_dataset
 ALTER TABLE `hopsworks`.`training_dataset` 
   ADD COLUMN `connector_id` INT(11) NULL,
@@ -132,7 +131,6 @@ ALTER TABLE `hopsworks`.`training_dataset`
     REFERENCES `hopsworks`.`feature_store_connector` (`id`) 
     ON DELETE CASCADE ON UPDATE NO ACTION;
 
-
 ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
 ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `hopsfs_training_dataset_fk`;
 ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `external_training_dataset_fk`;
@@ -141,3 +139,25 @@ ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `external_training_dataset_f
 ALTER TABLE `hopsworks`.`training_dataset`
   DROP COLUMN `hopsfs_training_dataset_id`,
   DROP COLUMN `external_training_dataset_id`;
+
+-- HWORKS-487: Remove inode from dataset
+ALTER TABLE `hopsworks`.`dataset` DROP FOREIGN KEY `FK_149_435`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `inode_id`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `inode_pid`;
+ALTER TABLE `hopsworks`.`dataset` DROP INDEX `uq_dataset`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_pid`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `inode_id`;
+ALTER TABLE `hopsworks`.`dataset` DROP COLUMN `partition_id`;
+ALTER TABLE `hopsworks`.`dataset` ADD KEY `dataset_name` (`inode_name`);
+
+-- HWORKS-574: Remove inode from hdfs_command_execution
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP FOREIGN KEY `fk_hdfs_file_command_2`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP INDEX `fk_hdfs_file_command_2_idx`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP INDEX `uq_src_inode`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_pid`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_name`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` DROP COLUMN `src_inode_partition_id`;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD COLUMN `src_path` VARCHAR(1000) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD UNIQUE KEY `uq_src_path` (`src_path`);
+-- FSTORE-577
+ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `arguments` VARCHAR(2000) DEFAULT NULL;

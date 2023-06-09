@@ -136,10 +136,7 @@ CREATE TABLE `conda_commands` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dataset` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                           `inode_pid` bigint(20) NOT NULL,
                            `inode_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                           `inode_id` bigint(20) NOT NULL,
-                           `partition_id` bigint(20) NOT NULL,
                            `projectId` int(11) NOT NULL,
                            `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
                            `searchable` tinyint(1) NOT NULL DEFAULT '0',
@@ -149,12 +146,9 @@ CREATE TABLE `dataset` (
                            `feature_store_id` int(11) DEFAULT NULL,
                            `permission` VARCHAR(45) NOT NULL DEFAULT 'READ_ONLY',
                            PRIMARY KEY (`id`),
-                           UNIQUE KEY `uq_dataset` (`inode_pid`,`inode_name`,`partition_id`),
-                           KEY `inode_id` (`inode_id`),
                            KEY `projectId_name` (`projectId`,`inode_name`),
-                           KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
                            KEY `featurestore_fk` (`feature_store_id`),
-                           CONSTRAINT `FK_149_435` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                           KEY `dataset_name` (`inode_name`),
                            CONSTRAINT `featurestore_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                            CONSTRAINT `FK_284_434` FOREIGN KEY (`projectId`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=747 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1594,6 +1588,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_s3_connector` (
                                                             `server_encryption_key`               VARCHAR(1000)   NULL,
                                                             `key_secret_uid`                      INT             DEFAULT NULL,
                                                             `key_secret_name`                     VARCHAR(200)    DEFAULT NULL,
+                                                            `arguments`                            VARCHAR(2000)  DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             KEY `fk_feature_store_s3_connector_1_idx` (`key_secret_uid`, `key_secret_name`),
                                                             CONSTRAINT `fk_feature_store_s3_connector_1` FOREIGN KEY (`key_secret_uid` , `key_secret_name`)
@@ -2224,14 +2219,10 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   `execution_id` int NOT NULL,
   `command` varchar(45) NOT NULL,
   `submitted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `src_inode_pid` bigint NOT NULL,
-  `src_inode_name` varchar(255) NOT NULL,
-  `src_inode_partition_id` bigint NOT NULL,
+  `src_path` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_execution_id` (`execution_id`),
-  UNIQUE KEY `uq_src_inode` (`src_inode_pid`,`src_inode_name`,`src_inode_partition_id`),
+  UNIQUE KEY `uq_src_path` (`src_path`),
   KEY `fk_hdfs_file_command_1_idx` (`execution_id`),
-  KEY `fk_hdfs_file_command_2_idx` (`src_inode_partition_id`,`src_inode_pid`,`src_inode_name`),
-  CONSTRAINT `fk_hdfs_file_command_1` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_hdfs_file_command_2` FOREIGN KEY (`src_inode_partition_id`,`src_inode_pid`,`src_inode_name`) REFERENCES `hops`.`hdfs_inodes` (`partition_id`, `parent_id`, `name`) ON DELETE CASCADE
+  CONSTRAINT `fk_hdfs_file_command_1` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
