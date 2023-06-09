@@ -26,7 +26,7 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `custom_commands_file` VARCH
 CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `window_config_type` INT(11) NOT NULL,
-    `training_dataset_id` INT(11),
+    `training_dataset_version` INT(11),
     `time_offset` VARCHAR(63),
     `window_length` VARCHAR(63),
     `row_percentage` DECIMAL(15,2),
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
     `name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
     `enabled` BOOLEAN DEFAULT TRUE,
     `is_event_time` BOOLEAN DEFAULT FALSE,
-    `training_dataset_version` INT(11) DEFAULT NULL,
+    `transformed_with_version` INT(11) DEFAULT NULL,
     `feature_monitoring_type` tinyint(4) NOT NULL,
     `scheduler_config_id` INT(11),
     `job_id` INT(11) NOT NULL,
