@@ -308,7 +308,8 @@ for version in versions do
          :pki_ca_configuration => caConf.to_json(),
          :usernames_configuration => usernamesConfiguration.to_json(),
          :kafka_installed => kafka_installed,
-         :apparmor_enabled => apparmor_enabled
+         :apparmor_enabled => apparmor_enabled,
+         :ha_enabled => node['hopsworks'].attribute?('das_node')
     })
     action :create
   end
