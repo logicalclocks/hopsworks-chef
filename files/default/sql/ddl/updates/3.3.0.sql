@@ -143,3 +143,11 @@ ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD COLUMN `src_path` VARCHAR(1
 ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD UNIQUE KEY `uq_src_path` (`src_path`);
 -- FSTORE-577
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `arguments` VARCHAR(2000) DEFAULT NULL;
+
+-- HWORKS-587: Remove inode foreign key from feature views
+ALTER TABLE `hopsworks`.`feature_view` DROP FOREIGN KEY `fv_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_view` DROP KEY `fv_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_view`
+  DROP COLUMN `inode_pid`,
+  DROP COLUMN `inode_name`,
+  DROP COLUMN `partition_id`;
