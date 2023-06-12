@@ -151,3 +151,14 @@ ALTER TABLE `hopsworks`.`on_demand_feature_group`
   DROP COLUMN `inode_pid`,
   DROP COLUMN `inode_name`,
   DROP COLUMN `partition_id`;
+
+-- HWORKS-587: Remove inode foreign key from feature views
+ALTER TABLE `hopsworks`.`feature_view` DROP FOREIGN KEY `fv_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_view` DROP KEY `fv_inode_fk`;
+ALTER TABLE `hopsworks`.`feature_view`
+  DROP COLUMN `inode_pid`,
+  DROP COLUMN `inode_name`,
+  DROP COLUMN `partition_id`;
+
+ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (`stream_feature_group_id`);
+ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

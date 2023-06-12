@@ -1,0 +1,18 @@
+services {
+    id = "hopsworks/web"
+    name = "glassfish"
+    tags = [
+        "http",
+        "monitoring",
+        "hopsworks"
+    ]
+    port = <%= node['hopsworks']['internal']['port'] %>
+    check = {
+        id = "hw-health-check"
+        name = "Health check for Hopsworks"
+        args = ["<%= node['glassfish']['domains_dir'] %>/<%= node['hopsworks']['domain_name'] %>/bin/glassfish-health.sh"]
+        interval = "20s"
+        timeout = "20s"
+        status = "passing"
+    }
+}

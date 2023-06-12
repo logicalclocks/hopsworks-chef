@@ -50,7 +50,7 @@ c.NotebookApp.tornado_settings = {
     }
 }
 
-c.FileCheckpoints.checkpoint_dir='${conf.secretDirectory}'
+c.FileCheckpoints.checkpoint_dir='/tmp'
 
 import os
 os.environ['REST_ENDPOINT'] = "${conf.hopsworksEndpoint}"
@@ -96,7 +96,7 @@ def notebook_post_save_hook(model, os_path, contents_manager, **kwargs):
 
 c.FileContentsManager.post_save_hook = notebook_post_save_hook
 
-c.NotebookNotary.data_dir = "${conf.secretDirectory}"
+c.NotebookNotary.data_dir = "/tmp"
 
 c.NotebookApp.notebook_dir = os.environ['JUPYTER_DATA_DIR']
 c.FileContentsManager.delete_to_trash = False
