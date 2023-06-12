@@ -23,3 +23,19 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
+  - recipe: hopsworks::das_node
+    local:
+      - hopsworks::default
+      - kagent::default
+  - recipe: hopsworks::copy_config
+    global:
+      - hopsworks::default
+  - recipe: hopsworks::config_node
+    local:
+      - kagent::default
+    global:
+      - hopsworks::das_node
+  - recipe: hopsworks::loadbalancer
+    global:
+      - hopsworks::config_node
+    
