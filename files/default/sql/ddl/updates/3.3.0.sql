@@ -145,6 +145,10 @@ ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD UNIQUE KEY `uq_src_path` (`
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `arguments` VARCHAR(2000) DEFAULT NULL;
 
 --FSTORE-709
+DELETE FROM `cached_feature_extra_constraints` WHERE `stream_feature_group_id` NOT IN (
+    SELECT `id`
+    FROM `stream_feature_group`
+);
 ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (`stream_feature_group_id`);
 ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
