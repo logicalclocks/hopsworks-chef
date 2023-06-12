@@ -9,6 +9,10 @@ password_file = "#{theDomain}_admin_passwd"
 namenode_fdqn = consul_helper.get_service_fqdn("rpc.namenode")
 glassfish_fdqn = consul_helper.get_service_fqdn("glassfish")
 
+private_ip=my_private_ip()
+das_node_ip=node['hopsworks'].attribute?('das_node')? private_recipe_ip('hopsworks', 'das_node') : ""
+systemd_enabled=das_node_ip.empty? || das_node_ip == private_ip
+
 bash "systemd_reload_for_glassfish_failures" do
   user "root"
   ignore_failure true
@@ -16,6 +20,7 @@ bash "systemd_reload_for_glassfish_failures" do
     systemctl daemon-reload
     systemctl stop glassfish-#{domain_name}
   EOF
+  only_if { systemd_enabled }
 end
 
 # When we upgrade to version 3.1.0 make sure we have set the subjects
@@ -34,6 +39,7 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       mv -f #{node['hopsworks']['domains_dir']} #{node['hopsworks']['domains_dir']}4
     EOH
     not_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
+    only_if { File.exists?("#{node['hopsworks']['domains_dir']}") }
   end
 end
 
@@ -209,7 +215,6 @@ file "#{node['hopsworks']['env_var_file']}" do
   group node['glassfish']['group']
 end
 
-
 node.override = {
   'java' => {
     'install_flavor' => node['java']['install_flavor'],
@@ -222,7 +227,7 @@ node.override = {
       domain_name => {
         'config' => {
           'debug' => node['hopsworks']['debug'],    
-          'systemd_enabled' => true,
+          'systemd_enabled' => systemd_enabled,
           'systemd_start_timeout' => 900,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
@@ -413,6 +418,61 @@ directory node['data']['dir'] do
   not_if { ::File.directory?(node['data']['dir']) }
 end
 
+directory node['hopsworks']['data_volume']['staging_dir']  do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "775"
+  action :create
+  recursive true
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/private_dirs"  do
+  owner node['hops']['yarnapp']['user']
+  group node['hopsworks']['group']
+  mode "0370"
+  action :create
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0730"
+  action :create
+end
+
+directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
+  owner node['conda']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  action :create
+end
+
+bash 'Move staging to data volume' do
+  user 'root'
+  code <<-EOH
+    set -e
+    mv -f #{node['hopsworks']['staging_dir']}/* #{node['hopsworks']['data_volume']['staging_dir']}
+    rm -rf #{node['hopsworks']['staging_dir']}
+  EOH
+  only_if { conda_helpers.is_upgrade }
+  only_if { File.directory?(node['hopsworks']['staging_dir'])}
+  not_if { File.symlink?(node['hopsworks']['staging_dir'])}
+end
+
+link node['hopsworks']['staging_dir'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0770"
+  to node['hopsworks']['data_volume']['staging_dir']
+end
+
+directory node['hopsworks']['conda_cache'] do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0700"
+  action :create
+end
+
 directory node['hopsworks']['data_volume']['root_dir'] do
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -431,7 +491,6 @@ directory node['hopsworks']['data_volume']['domain1_logs'] do
   group node['glassfish']['group']
   mode '0750'
 end
-
 
 package ["openssl", "zip"] do
   retries 10
@@ -462,10 +521,12 @@ end
 
 # Domain and logs directory is created by glassfish cookbook.
 # Small hack to symlink logs directory
+# if upgrade and a new HA node is added this needs to run as if it is a new install
+# So check if the logs dir is empty and delete even if it is upgrade.
 directory node['hopsworks']['domain1']['logs'] do
   recursive true
   action :delete
-  not_if { conda_helpers.is_upgrade }
+  only_if { Dir.entries(node['hopsworks']['domain1']['logs']).select {|entry| !(entry =='.' || entry == '..' || entry == '.gitkeep') }.empty? || !conda_helpers.is_upgrade }
 end
 
 bash 'Move glassfish logs to data volume' do
@@ -522,6 +583,12 @@ directory "/etc/systemd/system/glassfish-#{domain_name}.service.d" do
   action :create
 end
 
+template "#{node['glassfish']['domains_dir']}/#{node['hopsworks']['domain_name']}/bin/glassfish-health.sh" do
+  source "consul/glassfish-health.sh.erb"
+  owner node['hopsworks']['user']
+  group node['hops']['group']
+  mode 0750
+end
 
 template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
   source "limits.conf.erb"
@@ -678,6 +745,16 @@ kagent_sudoers "testconnector" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+registry_addr = { :registry_addr => consul_helper.get_service_fqdn("registry") + ":#{node['hops']['docker']['registry']['port']}"}
+kagent_sudoers "dockerImage" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "dockerImage.sh"
+  template      "dockerImage.sh.erb"
+  variables     registry_addr
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -819,6 +896,38 @@ directory "#{theDomain}/flyway/all/sql" do
   action :create
 end
 
+template "#{domains_dir}/#{domain_name}/config/login.conf" do
+  cookbook 'hopsworks'
+  source "login.conf.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "0600"
+  action :create
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_conf_path'].to_s.empty?
+  krb_conf_path = node['kerberos']['krb_conf_path']
+  remote_file "#{theDomain}/config/krb5.conf" do
+    source "file:///#{krb_conf_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create
+  end
+end
+
+if node['kerberos']['enabled'].to_s == "true" && !node['kerberos']['krb_server_key_tab_path'].to_s.empty?
+  key_tab_path = node['kerberos']['krb_server_key_tab_path']
+  ket_tab_name = node['kerberos']['krb_server_key_tab_name']
+  remote_file "#{theDomain}/config/#{ket_tab_name}" do
+    source "file:///#{key_tab_path}"
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "0600"
+    action :create
+  end
+end
+
 if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version']) < Gem::Version.new('3.1.0')
   # We need to restore the internal certificates and the flyway schemas for the upgrade
   # To be successfull
@@ -838,10 +947,41 @@ if conda_helpers.is_upgrade && Gem::Version.new(node['install']['current_version
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/certs/ca.cert.pem
       chown #{node['hopsworks']['user']} /srv/hops/certs-dir/private/ca.key.pem
     EOH
+    only_if { File.exists?("#{node['hopsworks']['domains_dir']}4")}
   end
 end
 
 #install cadvisor only on the headnode and no kubernetes
 if (exists_local("hopsworks", "default")) && (node['install']['kubernetes'].casecmp?("false"))
   include_recipe "hopsworks::cadvisor"
+end
+
+hopsworks_user_home = conda_helpers.get_user_home(node['hopsworks']['user'])
+
+template "#{hopsworks_user_home}/.condarc" do
+  source "condarc.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  variables({
+    :pkgs_dirs => node['hopsworks']['conda_cache']
+  })
+  action :create
+end
+
+directory "#{hopsworks_user_home}/.pip" do
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode '0700'
+  action :create
+end
+
+template "#{hopsworks_user_home}/.pip/pip.conf" do
+  source "pip.conf.erb"
+  cookbook "conda"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
 end
