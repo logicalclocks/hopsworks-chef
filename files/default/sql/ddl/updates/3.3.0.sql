@@ -212,7 +212,8 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     `start_date_time` timestamp NOT NULL,
     `end_date_time` timestamp,
     `enabled` BOOLEAN NOT NULL,
-    `job_frequency` varchar(20) NOT NULL,
+    `cron_expression` varchar(150) NOT NULL,
+    `next_execution_date_time` timestamp,
     PRIMARY KEY (`id`),
     UNIQUE KEY `job_id` (`job_id`),
     CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
