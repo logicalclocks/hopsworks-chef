@@ -2314,7 +2314,8 @@ CREATE TABLE IF NOT EXISTS `statistics_comparison_config` (
 CREATE TABLE IF NOT EXISTS `job_schedule` (
     `id` int NOT NULL AUTO_INCREMENT,
     `job_id` int NOT NULL,
-    `start_datetime` timestamp,
+    `start_date_time` timestamp NOT NULL,
+    `end_date_time` timestamp,
     `enabled` BOOLEAN NOT NULL,
     `job_frequency` varchar(20) NOT NULL,
     PRIMARY KEY (`id`),
