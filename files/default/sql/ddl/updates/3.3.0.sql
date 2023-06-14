@@ -145,10 +145,15 @@ ALTER TABLE `hopsworks`.`hdfs_command_execution` ADD UNIQUE KEY `uq_src_path` (`
 ALTER TABLE `hopsworks`.`feature_store_s3_connector` ADD COLUMN `arguments` VARCHAR(2000) DEFAULT NULL;
 
 --FSTORE-709
-DELETE FROM `cached_feature_extra_constraints` WHERE `stream_feature_group_id` NOT IN (
-    SELECT `id`
-    FROM `stream_feature_group`
+CREATE TABLE `temp_cached_feature_extra_constraints` AS (
+    SELECT feature.* FROM `cached_feature_extra_constraints` feature INNER JOIN `stream_feature_group` fg ON feature.stream_feature_group_id = fg.id
 );
+
+RENAME TABLE `cached_feature_extra_constraints` TO `backup_cached_feature_extra_constraints`;
+RENAME TABLE `temp_cached_feature_extra_constraints` TO `cached_feature_extra_constraints`;
+DROP TABLE `backup_cached_feature_extra_constraints`;
+
 ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (`stream_feature_group_id`);
 ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
+ALTER TABLE `cached_feature_extra_constraints` ADD KEY cached_feature_group_fk (`cached_feature_group_id`);
+ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
