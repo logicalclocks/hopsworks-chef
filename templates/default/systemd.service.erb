@@ -1,3 +1,4 @@
+<% prefix = @authbind ? '/usr/bin/authbind --deep ' : '' %>
 [Unit]
 Description = GlassFish instance
 After = syslog.target network.target remote-fs.target mysqld.service
@@ -8,9 +9,9 @@ WantedBy = multi-user.target
 
 [Service]
 User=<%= node['glassfish']['user'] %>
-ExecStart = <%= "#{@start_domain_command}" %>
-ExecStop = <%= "#{@stop_domain_command}" %>
-ExecReload = <%= "#{@restart_domain_command}" %>
+ExecStart = <%= "#{prefix} #{@start_domain_command}" %>
+ExecStop = <%= "#{prefix} #{@stop_domain_command}" %>
+ExecReload = <%= "#{prefix} #{@restart_domain_command}" %>
 Type = forking
 TimeoutStartSec = <%= @start_domain_timeout %>
 TimeoutStopSec = <%= @stop_domain_timeout %>
