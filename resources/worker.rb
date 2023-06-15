@@ -10,5 +10,6 @@ attribute :systemd_start_timeout, :kind_of => Integer, :default => 900
 attribute :systemd_stop_timeout, :kind_of => Integer, :default => 90
 attribute :node_name, :kind_of => String, :default => nil
 attribute :instance_name, :kind_of => String, :default => nil
+attribute :requires_authbind, :kind_of => [TrueClass, FalseClass], :default => false
 
 default_action :configure_node
