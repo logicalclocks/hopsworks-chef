@@ -57,6 +57,11 @@ when "rhel"
     action :create
     not_if { ::File.directory?('/etc/httpd/sites-enabled') }
   end
+  
+  file "/etc/httpd/conf.d/ssl.conf" do
+    action :delete
+    ignore_failure true
+  end
 
   template "/etc/httpd/sites-available/loadbalancer.conf"  do
     source 'loadbalancer.conf.erb'
