@@ -8,6 +8,7 @@ domain_name= node['hopsworks']['domain_name']
 domains_dir = node['glassfish']['domains_dir']
 admin_port = node['hopsworks']['admin']['port']
 username=node['hopsworks']['admin']['user']
+requires_authbind = admin_port.to_i < 1024 || node['hopsworks']['https']['port'].to_i < 1024
 
 config_nodes= node['hopsworks'].attribute?('config_node')? private_recipe_ips('hopsworks', 'config_node') : []
 
@@ -217,6 +218,7 @@ hopsworks_worker "add_to_services" do
   node_name node['hopsworks']['node_name']
   instance_name local_instance
   service_name service_name
+  requires_authbind requires_authbind
   action :add_to_services
   not_if "systemctl is-active --quiet #{service_name}"
 end

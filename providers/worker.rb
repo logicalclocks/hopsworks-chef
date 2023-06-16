@@ -35,7 +35,8 @@ action :add_to_services do
               restart_domain_command: "#{restart_instance_command}",
               stop_domain_command: "#{stop_instance_command}",
               start_domain_timeout: systemd_start_timeout,
-              stop_domain_timeout: systemd_stop_timeout)
+              stop_domain_timeout: systemd_stop_timeout,
+              authbind: new_resource.requires_authbind)
     notifies :start, "service[#{service_name}]", :delayed
   end
   if node['services']['enabled'].casecmp?("true")

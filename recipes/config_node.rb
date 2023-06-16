@@ -14,6 +14,7 @@ private_ip=my_private_ip()
 asadmin_cmd="#{asadmin} -I false --host #{das_ip} --port #{admin_port} --user #{username} --passwordfile #{password_file}"
 service_name="glassfish-instance"
 node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}/glassfish/versions/current"
+requires_authbind = admin_port.to_i < 1024 || node['hopsworks']['https']['port'].to_i < 1024
 
 node_name=get_node_name(asadmin_cmd, private_ip)
 # instance and node name should have the same suffix workerX/instanceX.
@@ -72,6 +73,7 @@ hopsworks_worker "add_to_services" do
   node_name node_name
   instance_name instance_name
   service_name service_name
+  requires_authbind requires_authbind
   action :add_to_services
   not_if "systemctl is-active --quiet #{service_name}"
 end
