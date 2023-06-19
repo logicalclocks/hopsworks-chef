@@ -1,6 +1,6 @@
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hdfs_base_storage_policy", "<%= node['hopsworks']['hdfs']['storage_policy']['base'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("hdfs_log_storage_policy", "<%= node['hopsworks']['hdfs']['storage_policy']['log'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_discovery_domain", "<%= node['consul']['domain'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("service_discovery_domain", "<%= node['consul']['domain'] %>", 1);
 DELETE FROM `hopsworks`.`variables` WHERE `id`='livy_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='zk_ip';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='rm_ip';
