@@ -157,3 +157,5 @@ ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (
 ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `cached_feature_extra_constraints` ADD KEY cached_feature_group_fk (`cached_feature_group_id`);
 ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE `cached_feature_extra_constraints` ADD PRIMARY KEY (`id`);
+ALTER TABLE `cached_feature_extra_constraints` MODIFY COLUMN `id` int(11) NOT NULL AUTO_INCREMENT;
