@@ -2040,7 +2040,7 @@ CREATE TABLE IF NOT EXISTS `git_executions` (
                                                 `state` varchar(128) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                                                 `final_result_message` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
                                                 `config_secret` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-                                                `host_ip` varchar(64) NOT NULL DEFAULT "localhost",
+                                                `hostname` varchar(128) NOT NULL DEFAULT "localhost",
                                                 PRIMARY KEY (`id`),
                                                 KEY `user` (`user`),
                                                 KEY `git_exec_repo_fkc` (`repository`),
