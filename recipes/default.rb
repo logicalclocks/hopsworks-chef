@@ -3,6 +3,9 @@ require 'securerandom'
 
 include_recipe "java"
 include_recipe "hops::default"
+include_recipe "hadoop_spark::install"
+include_recipe "hadoop_spark::config"
+include_recipe "flink::install"
 
 Chef::Recipe.send(:include, Hops::Helpers)
 Chef::Resource.send(:include, Hops::Helpers)

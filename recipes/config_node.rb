@@ -1,3 +1,7 @@
+include_recipe "hadoop_spark::install"
+include_recipe "hadoop_spark::config"
+include_recipe "flink::install"
+
 domain_name= node['hopsworks']['domain_name']
 domains_dir = node['glassfish']['domains_dir']
 asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
