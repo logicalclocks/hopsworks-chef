@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     `start_date_time` timestamp NOT NULL,
     `end_date_time` timestamp,
     `enabled` BOOLEAN NOT NULL,
-    `cron_expression` varchar(150) NOT NULL,
+    `cron_expression` varchar(500) NOT NULL,
     `next_execution_date_time` timestamp,
     PRIMARY KEY (`id`),
     UNIQUE KEY `job_id` (`job_id`),
