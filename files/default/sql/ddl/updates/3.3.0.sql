@@ -164,12 +164,21 @@ ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (
 ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- HWORKS-607: Remove inode from statistics
+ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `file_path` VARCHAR(1000) COLLATE latin1_general_cs NOT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE
+    `hopsworks`.`feature_store_statistic`
+SET
+    file_path = path_resolver_fn(`inode_pid`, `inode_name`);
+SET SQL_SAFE_UPDATES = 1;
+
 ALTER TABLE `hopsworks`.`feature_store_statistic`
   DROP FOREIGN KEY `inode_fk`,
+  DROP KEY `inode_fk`,
   DROP COLUMN `inode_pid`,
   DROP COLUMN `inode_name`,
-  DROP COLUMN `partition_id`,
-  ADD COLUMN `file_path` VARCHAR(1000) COLLATE latin1_general_cs NOT NULL;
+  DROP COLUMN `partition_id`;
 
-
+-- Git executions hostname
 ALTER TABLE `hopsworks`.`git_executions` ADD COLUMN `hostname` VARCHAR(128) COLLATE latin1_general_cs NOT NULL DEFAULT "localhost";
