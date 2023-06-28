@@ -1,0 +1,33 @@
+worker_processes auto;
+error_log <%= @load_balancer_log_dir %>/error.log;
+pid /var/run/nginx.pid;
+
+<% if @load_module -%>
+load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
+<% end %>
+
+events {
+  worker_connections 1024;
+}
+
+stream {
+  map $ssl_preread_server_name $name {
+    default  hopsworks;
+  }
+
+  upstream hopsworks {
+    <% @glassfish_nodes.each do |ipaddress, instance_name| %>
+     server <%= "#{ipaddress}:8182" %>
+    <% end %>
+  }
+
+  server {
+    ssl_preread on;
+    listen <%= @load_balancer_port %>;
+    listen [::]:<%= @load_balancer_port %>;
+    proxy_pass $name;
+ }
+  log_format proxy '$protocol $status $bytes_sent $bytes_received $session_time';
+  access_log  <%= @load_balancer_log_dir %>/access.log proxy;
+  error_log <%= @load_balancer_log_dir %>/error.log debug;
+}

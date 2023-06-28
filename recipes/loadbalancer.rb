@@ -16,72 +16,58 @@ glassfish_nodes[das_ip]="instance0" # get_instance_name_by_host will not work fo
 # Install load balancer
 case node['platform_family']
 when "debian"
-  package "apache2" do
+  package ["libnginx-mod-stream", "nginx"] do
     retries 10
     retry_delay 30
   end
-  template "/etc/apache2/sites-available/loadbalancer.conf"  do
-    source 'loadbalancer.conf.erb'
+  template "/etc/nginx/nginx.conf"  do
+    source 'nginx.conf.erb'
     user 'root'
     action :create
     variables({
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
-      :load_balancer_log_dir => "/var/log/apache2",
-      :glassfish_nodes => glassfish_nodes
+      :load_balancer_log_dir => "/var/log/nginx",
+      :glassfish_nodes => glassfish_nodes,
+      :load_module => false
     })
   end
 
-  bash "configure load balancer" do
+  bash "restart load balancer" do
     user 'root'
     code <<-EOF
-      sed -i 's/Listen 80$/Listen #{node['hopsworks']['ha']['loadbalancer_port']}/' /etc/apache2/ports.conf 
-      a2enmod proxy_http
-      a2enmod proxy_balancer proxy_wstunnel lbmethod_byrequests rewrite
-      a2dissite 000-default.conf
-      a2ensite loadbalancer.conf
-      systemctl restart apache2
+      systemctl restart nginx
     EOF
   end
 when "rhel"
-  package ["httpd", "mod_ssl"] do
+  bash "configure load balancer" do
+    user 'root'
+    code <<-EOF
+      yum module enable nginx:1.22 -y
+    EOF
+  end
+
+  package ["nginx", "nginx-mod-stream", "nano"] do
     retries 10
     retry_delay 30
   end
-  directory "/etc/httpd/sites-available" do
-    user 'root'
-    action :create
-    not_if { ::File.directory?('/etc/httpd/sites-available') }
-  end
-  directory "/etc/httpd/sites-enabled" do
-    user 'root'
-    action :create
-    not_if { ::File.directory?('/etc/httpd/sites-enabled') }
-  end
-  
-  file "/etc/httpd/conf.d/ssl.conf" do
-    action :delete
-    ignore_failure true
-  end
 
-  template "/etc/httpd/sites-available/loadbalancer.conf"  do
-    source 'loadbalancer.conf.erb'
+  template "/etc/nginx/nginx.conf"  do
+    source 'nginx.conf.erb'
     user 'root'
     action :create
     variables({
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
-      :load_balancer_log_dir => "/var/log/httpd",
-      :glassfish_nodes => glassfish_nodes
+      :load_balancer_log_dir => "/var/log/nginx",
+      :glassfish_nodes => glassfish_nodes,
+      :load_module => true
     })
   end
 
-  bash "configure load balancer" do
+  bash "enable and start load balancer" do
     user 'root'
     code <<-EOF
-      sed -i 's/Listen 80$/Listen #{node['hopsworks']['ha']['loadbalancer_port']}/' /etc/httpd/conf/httpd.conf
-      echo 'IncludeOptional sites-enabled/*.conf' >> /etc/httpd/conf/httpd.conf
-      ln -s /etc/httpd/sites-available/loadbalancer.conf /etc/httpd/sites-enabled/loadbalancer.conf
-      systemctl restart httpd
+      systemctl enable nginx
+      systemctl start nginx
     EOF
-    not_if { ::File.exist?('/etc/httpd/sites-enabled/loadbalancer.conf') }
   end
 end
