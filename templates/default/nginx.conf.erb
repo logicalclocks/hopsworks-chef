@@ -17,7 +17,7 @@ stream {
 
   upstream hopsworks {
     <% @glassfish_nodes.each do |ipaddress, instance_name| %>
-     server <%= "#{ipaddress}:8182" %>
+     server <%= "#{ipaddress}:8182;" %>
     <% end %>
   }
 
