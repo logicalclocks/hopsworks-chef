@@ -2,9 +2,7 @@ worker_processes auto;
 error_log <%= @load_balancer_log_dir %>/error.log;
 pid /var/run/nginx.pid;
 
-<% if @load_module -%>
-load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
-<% end %>
+load_module <%= "#{@load_module};" %>
 
 events {
   worker_connections 1024;

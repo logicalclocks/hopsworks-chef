@@ -28,7 +28,7 @@ when "debian"
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
       :load_balancer_log_dir => "/var/log/nginx",
       :glassfish_nodes => glassfish_nodes,
-      :load_module => false
+      :load_module => "/usr/lib/nginx/modules/ngx_stream_module.so"
     })
   end
 
@@ -59,7 +59,7 @@ when "rhel"
       :load_balancer_port => "#{node['hopsworks']['ha']['loadbalancer_port']}",
       :load_balancer_log_dir => "/var/log/nginx",
       :glassfish_nodes => glassfish_nodes,
-      :load_module => true
+      :load_module => "/usr/lib64/nginx/modules/ngx_stream_module.so"
     })
   end
 
