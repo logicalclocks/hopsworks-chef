@@ -2308,9 +2308,11 @@ CREATE TABLE IF NOT EXISTS `statistics_comparison_config` (
 CREATE TABLE IF NOT EXISTS `job_schedule` (
     `id` int NOT NULL AUTO_INCREMENT,
     `job_id` int NOT NULL,
-    `start_datetime` timestamp,
+    `start_date_time` timestamp NOT NULL,
+    `end_date_time` timestamp,
     `enabled` BOOLEAN NOT NULL,
-    `job_frequency` varchar(20) NOT NULL,
+    `cron_expression` varchar(500) NOT NULL,
+    `next_execution_date_time` timestamp,
     PRIMARY KEY (`id`),
     UNIQUE KEY `job_id` (`job_id`),
     CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
