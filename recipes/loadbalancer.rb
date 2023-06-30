@@ -46,7 +46,7 @@ when "rhel"
     EOF
   end
 
-  package ["nginx", "nginx-mod-stream", "nano"] do
+  package ["nginx", "nginx-mod-stream"] do
     retries 10
     retry_delay 30
   end
