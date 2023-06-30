@@ -475,24 +475,6 @@ hopsworks_configure_server "glassfish_configure_network" do
   not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
-if node['hopsworks']['internal']['enable_http'].casecmp?("true")
-  # http internal for load balancer
-  hopsworks_configure_server "glassfish_configure_network" do
-    domain_name domain_name
-    domains_dir domains_dir
-    password_file password_file
-    username username
-    admin_port admin_port
-    asadmin asadmin
-    internal_port node['hopsworks']['internal']['http_port']
-    network_name "http-internal"
-    network_listener_name "http-int-list"
-    securityenabled false
-    action :glassfish_configure_network
-    not_if "#{asadmin_cmd} list-instances | grep running"
-  end
-end
-
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
   domains_dir domains_dir
