@@ -1,3 +1,4 @@
+SET max_sp_recursion_depth=10;
 DROP PROCEDURE IF EXISTS `path_resolver`;
 DROP FUNCTION IF EXISTS `path_resolver_fn`;
 
@@ -121,6 +122,42 @@ ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `archived` TINYINT(1) 
 ALTER TABLE `hopsworks`.`on_demand_feature_group` 
   ADD COLUMN `spine` TINYINT(1) NOT NULL DEFAULT 0,
   MODIFY COLUMN `connector_id` INT(11) NULL;
+
+-- HWORKS-548: Remove foreign key from training_dataset
+ALTER TABLE `hopsworks`.`training_dataset` 
+  ADD COLUMN `connector_id` INT(11) NULL,
+  ADD COLUMN `connector_path` VARCHAR(1000) NULL,
+  ADD COLUMN `tag_path` VARCHAR(1000) NULL,
+  ADD FOREIGN KEY `td_conn_fk`(`connector_id`) 
+    REFERENCES `hopsworks`.`feature_store_connector` (`id`) 
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`training_dataset` `td`
+  JOIN `hopsworks`.`external_training_dataset` `etd`
+  ON `td`.`external_training_dataset_id` = `etd`.`id`
+  SET `td`.`connector_id` = `etd`.`connector_id`
+    , `td`.`connector_path` = `etd`.`path`
+    , `td`.`tag_path` = path_resolver_fn(`etd`.`inode_pid`, `etd`.`inode_name`);
+
+UPDATE `hopsworks`.`training_dataset` `td`
+  JOIN `hopsworks`.`hopsfs_training_dataset` `htd`
+  ON `td`.`hopsfs_training_dataset_id` = `htd`.`id`
+  SET `td`.`connector_id` = `htd`.`connector_id`
+    , `td`.`tag_path` = path_resolver_fn(`htd`.`inode_pid`, `htd`.`inode_name`);
+SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `hopsfs_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP FOREIGN KEY `external_training_dataset_fk`;
+ALTER TABLE `hopsworks`.`training_dataset` DROP KEY `external_training_dataset_fk`;
+
+ALTER TABLE `hopsworks`.`training_dataset`
+  DROP COLUMN `hopsfs_training_dataset_id`,
+  DROP COLUMN `external_training_dataset_id`;
+
+DROP TABLE `hopsworks`.`external_training_dataset`;
+DROP TABLE `hopsworks`.`hopsfs_training_dataset`;
 
 -- HWORKS-487: Remove inode from dataset
 ALTER TABLE `hopsworks`.`dataset` DROP FOREIGN KEY `FK_149_435`;
