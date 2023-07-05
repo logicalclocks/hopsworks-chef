@@ -17,7 +17,7 @@ depends 'authbind', '~> 0.1.10'
 depends 'ntp', '~> 2.0.0'
 depends 'sysctl', '~> 1.0.3'
 depends 'ulimit2', '~> 0.2.0'
-depends 'seven_zip', '~> 3.4.0'
+depends 'seven_zip', '~> 3.2.0'
 depends 'conda'
 depends 'kagent'
 depends 'hops'
@@ -838,7 +838,7 @@ attribute "hopsworks/audit_log_file_format",
           :description => "Audit log file format. 'server_audit_log%g.log' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_size_limit",
-          :description => "Audit log size per file. '3.4.00000' (default)",
+          :description => "Audit log size per file. '3.3.00000' (default)",
           :type => 'string'
 attribute "hopsworks/audit_log_count",
           :description => "Audit file count. '10' (default)",
