@@ -133,11 +133,19 @@ ALTER TABLE `hopsworks`.`feature_store_kafka_connector`
   ADD COLUMN `keystore_path` VARCHAR(255) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
+
 UPDATE 
   `hopsworks`.`feature_store_kafka_connector`
 SET 
-  truststore_path = path_resolver_fn(`truststore_inode_pid`, `truststore_inode_name`),
-  keystore_path = path_resolver_fn(`keystore_inode_pid`, `keystore_inode_name`);
+  truststore_path = path_resolver_fn(`truststore_inode_pid`, `truststore_inode_name`)
+WHERE truststore_inode_pid IS NOT NULL AND truststore_inode_name IS NOT NULL;
+
+UPDATE 
+  `hopsworks`.`feature_store_kafka_connector`
+SET 
+  keystore_path = path_resolver_fn(`keystore_inode_pid`, `keystore_inode_name`)
+WHERE keystore_inode_pid IS NOT NULL AND keystore_inode_name IS NOT NULL;
+
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_store_kafka_connector` DROP FOREIGN KEY `fk_fs_storage_connector_kafka_keystore`;
