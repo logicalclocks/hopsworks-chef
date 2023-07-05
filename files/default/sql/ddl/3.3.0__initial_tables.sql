@@ -1869,17 +1869,17 @@ CREATE TABLE `databricks_instance` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `cached_feature_extra_constraints` (
-                                                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                                                    `cached_feature_group_id` int(11) NULL,
-                                                    `stream_feature_group_id` int(11) NULL,
-                                                    `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
-                                                    `primary_column` tinyint(1) NOT NULL DEFAULT '0',
-                                                    `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
-                                                    PRIMARY KEY (`id`),
-                                                    KEY `cached_feature_group_fk` (`cached_feature_group_id`),
-                                                    KEY `stream_feature_group_fk` (`stream_feature_group_id`),
-                                                    CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                                    CONSTRAINT `cached_feature_group_fk1` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `cached_feature_group_id` int(11) NULL,
+        `stream_feature_group_id` int(11) NULL,
+        `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+        `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+        `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `stream_feature_group_constraint_fk` (`stream_feature_group_id`),
+        KEY `cached_feature_group_constraint_fk` (`cached_feature_group_id`),
+        CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+        CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `alert_manager_config` (

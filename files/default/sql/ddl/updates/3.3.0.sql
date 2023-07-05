@@ -197,8 +197,27 @@ ALTER TABLE `hopsworks`.`feature_view`
   DROP COLUMN `inode_name`,
   DROP COLUMN `partition_id`;
 
-ALTER TABLE `cached_feature_extra_constraints` ADD KEY stream_feature_group_fk (`stream_feature_group_id`);
-ALTER TABLE `cached_feature_extra_constraints` ADD CONSTRAINT `stream_feature_group_fk1` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+CREATE TABLE `temp_cached_feature_extra_constraints` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `cached_feature_group_id` int(11) NULL,
+    `stream_feature_group_id` int(11) NULL,
+    `name` varchar(63) COLLATE latin1_general_cs NOT NULL,
+    `primary_column` tinyint(1) NOT NULL DEFAULT '0',
+    `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+INSERT INTO `temp_cached_feature_extra_constraints`
+  SELECT feature.*
+	FROM `cached_feature_extra_constraints` feature
+	LEFT JOIN `stream_feature_group` sfg ON feature.stream_feature_group_id = sfg.id
+	WHERE feature.cached_feature_group_id IS NOT NULL OR (feature.stream_feature_group_id IS NOT NULL AND sfg.id IS NOT NULL);
+
+RENAME TABLE `cached_feature_extra_constraints` TO `backup_cached_feature_extra_constraints`;
+RENAME TABLE `temp_cached_feature_extra_constraints` TO `cached_feature_extra_constraints`;
+DROP TABLE `backup_cached_feature_extra_constraints`;
 
 -- HWORKS-607: Remove inode from statistics
 ALTER TABLE `hopsworks`.`feature_store_statistic` ADD COLUMN `file_path` VARCHAR(1000) COLLATE latin1_general_cs NOT NULL;
