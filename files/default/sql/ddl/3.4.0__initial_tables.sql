@@ -128,6 +128,31 @@ CREATE TABLE `conda_commands` (
 ) ENGINE=ndbcluster AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+--
+-- Table structure for table `environment_history`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `environment_history` (
+                           `id` int NOT NULL AUTO_INCREMENT,
+                           `project` int NOT NULL,
+                           `docker_image` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                           `downgraded` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                           `installed` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                           `uninstalled` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                           `upgraded` varchar(11000) CHARACTER SET latin1 COLLATE latin1_general_cs DEFAULT NULL,
+                           `previous_docker_image` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
+                           `user` int NOT NULL,
+                           `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                           PRIMARY KEY (`id`),
+                           KEY `project` (`project`),
+                           KEY `docker_image` (`docker_image`)
+                           CONSTRAINT `env_project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster AUTO_INCREMENT=69 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Table structure for table `dataset`
 --
