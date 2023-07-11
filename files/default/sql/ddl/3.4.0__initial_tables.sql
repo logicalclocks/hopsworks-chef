@@ -110,7 +110,7 @@ CREATE TABLE `conda_commands` (
                                   `project_id` int(11) NOT NULL,
                                   `op` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `channel_url` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-                                  `arg` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `arg` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
                                   `lib` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `version` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
