@@ -117,7 +117,7 @@ CREATE TABLE `conda_commands` (
                                   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
-                                  `custom_commands_file` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `custom_commands_file` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
                                   `git_api_key_name` VARCHAR(125) DEFAULT NULL,
                                   `git_backend` VARCHAR(45) DEFAULT NULL,
