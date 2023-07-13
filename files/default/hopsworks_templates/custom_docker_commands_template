@@ -1,5 +1,5 @@
 RUN apt-get update \
-     && apt-get install sudo -y echo "yarnapp ALL = NOPASSWD : /usr/bin/apt-get,/usr/bin/aptitude,/usr/bin/apt,/usr/bin/dpkg" > /etc/sudoers.d/yarnapp
+     && apt-get install sudo -y && echo "yarnapp ALL = NOPASSWD : /usr/bin/apt-get,/usr/bin/aptitude,/usr/bin/apt,/usr/bin/dpkg" > /etc/sudoers.d/yarnapp
 ENV BUILD_DIR=/srv/hops/build
 RUN mkdir -p $BUILD_DIR  \
     && chown yarnapp:hadoop $BUILD_DIR
@@ -8,5 +8,5 @@ RUN chown yarnapp:hadoop $BUILD_DIR/*  \
     && chmod +x $BUILD_DIR/${args.commandScript}
 USER yarnapp
 RUN cd $BUILD_DIR && ./${args.commandScript}
-RUN rm -f /etc/sudoers.d/yarnapp
 USER root
+RUN rm -f /etc/sudoers.d/yarnapp
