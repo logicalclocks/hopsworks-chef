@@ -1484,7 +1484,6 @@ CREATE TABLE `users` (
                          `notes` varchar(500) COLLATE latin1_general_cs DEFAULT '-',
                          `max_num_projects` int(11) NOT NULL,
                          `num_active_projects` int(11) NOT NULL DEFAULT '0',
-                         `num_created_projects` int(11) NOT NULL DEFAULT '0',
                          `two_factor` tinyint(1) NOT NULL DEFAULT '1',
                          `tours_state` tinyint(1) NOT NULL DEFAULT '0',
                          `salt` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT '',
