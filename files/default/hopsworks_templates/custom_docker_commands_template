@@ -5,8 +5,8 @@ RUN mkdir -p $BUILD_DIR  \
     && chown yarnapp:hadoop $BUILD_DIR
 COPY * $BUILD_DIR
 RUN chown yarnapp:hadoop $BUILD_DIR/*  \
-    && chmod +x $BUILD_DIR/${conf.commandScript}
+    && chmod +x $BUILD_DIR/${args.commandScript}
 USER yarnapp
-RUN cd $BUILD_DIR && ./${conf.commandScript}
+RUN cd $BUILD_DIR && ./${args.commandScript}
 RUN rm -f /etc/sudoers.d/yarnapp
 USER root
