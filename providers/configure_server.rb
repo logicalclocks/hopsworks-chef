@@ -256,3 +256,56 @@ action :glassfish_configure_http_logging do
     end
   end
 end
+
+action :glassfish_create_resource_ref do
+  domain_name=new_resource.domain_name
+  password_file=new_resource.password_file
+  username=new_resource.username
+  admin_port=new_resource.admin_port
+  asadmin=new_resource.asadmin
+  target=new_resource.target
+  recreate=new_resource.recreate
+
+  asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
+
+  # Resources created in default server, so create a reference to the resources in the new config
+  glassfish_resources = [
+    'concurrent/hopsThreadFactory',
+    'concurrent/condaExecutorService',
+    'concurrent/hopsExecutorService',
+    'concurrent/jupyterExecutorService',
+    'concurrent/condaScheduledExecutorService',
+    'concurrent/hopsScheduledExecutorService',
+    'concurrent/kagentExecutorService',
+    'jdbc/airflow', 
+    'jdbc/featurestore', 
+    'jdbc/hopsworks', 
+    'jdbc/hopsworksTimers',
+    'ldap/LdapResource',
+    'mail/BBCMail']
+
+  if recreate
+    glassfish_resources.each do |val|
+      glassfish_asadmin "delete-resource-ref --target #{target} #{val}" do
+        domain_name domain_name
+        password_file password_file
+        username username
+        admin_port admin_port
+        secure false
+        only_if "#{asadmin_cmd} list-resource-refs #{target} | grep #{val}"
+      end
+    end
+  end
+
+  glassfish_resources.each do |val|
+    glassfish_asadmin "create-resource-ref --target #{target} #{val}" do
+      domain_name domain_name
+      password_file password_file
+      username username
+      admin_port admin_port
+      secure false
+      only_if "#{asadmin_cmd} list-resource-refs server | grep #{val}"
+      not_if "#{asadmin_cmd} list-resource-refs #{target} | grep #{val}"
+    end
+  end
+end

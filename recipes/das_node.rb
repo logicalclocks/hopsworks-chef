@@ -170,32 +170,14 @@ glassfish_deployable "hopsworks-ca" do
   only_if "#{asadmin_cmd} list-applications --type ejb server | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
-# Resources created in default server, so create a reference to the resources in the new config
-glassfish_resources = [
-  'concurrent/hopsThreadFactory',
-  'concurrent/condaExecutorService',
-  'concurrent/hopsExecutorService',
-  'concurrent/jupyterExecutorService',
-  'concurrent/condaScheduledExecutorService',
-  'concurrent/hopsScheduledExecutorService',
-  'concurrent/kagentExecutorService',
-  'jdbc/airflow', 
-  'jdbc/featurestore', 
-  'jdbc/hopsworks', 
-  'jdbc/hopsworksTimers',
-  'ldap/LdapResource',
-  'mail/BBCMail']
-
-glassfish_resources.each do |val|
-  glassfish_asadmin "create-resource-ref --target #{deployment_group} #{val}" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-    only_if "#{asadmin_cmd} list-resource-refs server | grep #{val}"
-    not_if "#{asadmin_cmd} list-resource-refs #{deployment_group} | grep #{val}"
-  end
+hopsworks_configure_server "glassfish_create_resource_ref" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  asadmin asadmin
+  target deployment_group
+  action :glassfish_create_resource_ref
 end
 
 #restart only if new (no deployed apps)
@@ -222,63 +204,6 @@ hopsworks_worker "add_to_services" do
   action :add_to_services
   not_if "systemctl is-active --quiet #{service_name}"
 end
-
-if current_version.eql?("") == false
-  #
-  # undeploy previous version
-  #
-  glassfish_deployable "hopsworks-ear" do
-    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
-    target deployment_group
-    version current_version
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    action :undeploy
-    retries 1
-    keep_state true
-    enabled true
-    secure true
-    ignore_failure true
-  end
-
-  glassfish_deployable "hopsworks" do
-    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
-    target deployment_group
-    version current_version
-    context_root "/hopsworks"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true  
-  end
-
-  glassfish_deployable "hopsworks-ca" do
-    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
-    target deployment_group
-    version current_version
-    context_root "/hopsworks-ca"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true
-  end
-end    
 
 # change reference of the deployed apps will require restarting instances
 glassfish_deployable "hopsworks-ca" do
