@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `feature_monitoring_config` (
 CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
-    `feature_type` varchar(20),
+    `feature_type` VARCHAR(20),
     -- for any feature type
     `count` BIGINT,
     `completeness` FLOAT,
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     KEY (`feature_name`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
--- Create new statistics tables
+-- -- feature group statistics
 CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `commit_time` DATETIME(3) NOT NULL,
@@ -130,6 +130,33 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     CONSTRAINT `fgs_wec_fk` FOREIGN KEY (`feature_group_id`, `window_end_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fgs_wsc_fk` FOREIGN KEY (`feature_group_id`, `window_start_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
+    `feature_group_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+SET SQL_SAFE_UPDATES = 0;
+-- -- insert new feature_group_statistics. For the same feature group commit statistics, only insert the last computed statistics. For non-time-travel feature groups, insert all computed statistics.
+INSERT INTO `feature_group_statistics` (id, commit_time, feature_group_id, window_end_commit_id)
+  SELECT MAX(id) as id, MAX(commit_time) as commit_time, feature_group_id, MAX(feature_group_commit_id) as feature_group_commit_id FROM `feature_store_statistic`
+  WHERE feature_group_id IS NOT NULL GROUP BY feature_group_id, IFNULL(feature_group_commit_id, UUID());
+-- -- insert one feature descriptive statistic as a reference per feature_group_statistics. These will be used in the expat to parse and create the corresponding feature descriptive statistics rows
+INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, num_non_null_values, num_null_values, extended_statistics_path)
+  SELECT id, 'for-migration', 'FEATURE_GROUP' as feature_type, feature_group_id, UNIX_TIMESTAMP(commit_time)*1000, feature_group_commit_id, file_path
+  FROM `feature_store_statistic` WHERE id IN (SELECT id FROM `feature_group_statistics`);
+-- -- insert one feature descriptive statistic per orphan feature group statistics file, to be deleted during the expat
+INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, extended_statistics_path)
+  SELECT id, 'to-be-deleted', 'FEATURE_GROUP' as feature_type, feature_group_id, file_path
+  FROM `feature_store_statistic` WHERE feature_group_id IS NOT NULL AND id NOT IN (SELECT id FROM `feature_group_statistics`);
+-- To be done in the expat: insert feature_group_descriptive_statistics (many-to-many relationship), parse feature_descriptive_statistics, delete orphan fg statistics files
+SET SQL_SAFE_UPDATES = 1;
+
+-- -- feature view statistics
 
 CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -155,6 +182,8 @@ CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
                                            CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+-- -- training dataset statistics
+
 CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
                                            `id` int(11) NOT NULL AUTO_INCREMENT,
                                            `commit_time` DATETIME(3) NOT NULL,
@@ -167,36 +196,49 @@ CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
                                            CONSTRAINT `tds_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
--- TODO: SQL Queries for populating new tables based on feature_store_statistic table.
+SET SQL_SAFE_UPDATES = 0;
+-- -- insert new training_dataset_statistics. For the same training dataset, only insert the last computed statistics.
+INSERT INTO `training_dataset_statistics` (id, commit_time, training_dataset_id, for_transformation)
+  SELECT MAX(id) as id, MAX(commit_time) as commit_time, training_dataset_id, for_transformation FROM `feature_store_statistic`
+  WHERE training_dataset_id IS NOT NULL GROUP BY training_dataset_id, for_transformation;
+-- -- insert one feature descriptive statistic as a reference per training dataset statistics. These will be used in the expat to parse and create the corresponding feature descriptive statistics rows
+INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, num_non_null_values, num_null_values, extended_statistics_path)
+  SELECT id, 'for-migration', 'TRAINING_DATASET' as feature_type, training_dataset_id, UNIX_TIMESTAMP(commit_time)*1000, feature_group_commit_id, file_path
+  FROM `feature_store_statistic` WHERE id IN (SELECT id FROM training_dataset_statistics);
+  -- -- insert one feature descriptive statistic per orphan training dataset statistics file, to be deleted during the expat
+INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, extended_statistics_path)
+  SELECT id, 'to-be-deleted', 'TRAINING_DATASET' as feature_type, training_dataset_id, file_path
+  FROM `feature_store_statistic` WHERE training_dataset_id IS NOT NULL AND id NOT IN (SELECT id FROM `training_dataset_statistics`);
+-- To be done in the expat: insert training_dataset_descriptive_statistics, test_dataset_descriptive_statistics, val_dataset_descriptive_statistics (many-to-many relationship), parse feature_descriptive_statistics
+-- and delete orphan statistics files. Split statistics are handled in the expat migration as well
+SET SQL_SAFE_UPDATES = 1;   
 
--- Update feature_store_activity foreign keys
+-- -- Update feature_store_activity foreign keys
 ALTER TABLE `hopsworks`.`feature_store_activity`
     ADD COLUMN `feature_group_statistics_id` INT(11) NULL,
     ADD COLUMN `feature_view_statistics_id` INT(11) NULL,
-    ADD COLUMN `training_dataset_statistics_id` INT(11) NULL,
+    ADD COLUMN `training_dataset_statistics_id` INT(11) NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_activity`
     ADD CONSTRAINT `fs_act_fg_stat_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     ADD CONSTRAINT `fs_act_fv_stat_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    ADD CONSTRAINT `fs_act_td_stat_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
--- TODO: SQL Query populate ids based on statistics_id.
+    ADD CONSTRAINT `fs_act_td_stat_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    DROP FOREIGN KEY `fs_act_stat_fk`;
+
+SET SQL_SAFE_UPDATES = 0;
+-- -- update feature_store_activity statistics ids
+UPDATE `feature_store_activity` SET feature_group_statistics_id = statistics_id WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL;
+UPDATE `feature_store_activity` SET training_dataset_statistics_id = statistics_id WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL;
+SET SQL_SAFE_UPDATES = 1;
+
 ALTER TABLE `hopsworks`.`feature_store_activity`
-    DROP FOREIGN KEY `fs_act_stat_fk`,
     DROP COLUMN `statistics_id`;
 
 ALTER TABLE `hopsworks`.`feature_store_statistic`
     DROP FOREIGN KEY `fg_fk_fss`,
     DROP FOREIGN KEY `fg_ci_fk_fss`,
-    DROP FOREIGN KEY `td_fk_fss`,
-    DROP FOREIGN KEY `inode_fk`;
+    DROP FOREIGN KEY `td_fk_fss`;
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_statistic`;
-
-CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
-    `feature_group_statistics_id` int(11) NOT NULL,
-    `feature_descriptive_statistics_id` int(11) NOT NULL,
-    PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
-    CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
     `feature_view_statistics_id` int(11) NOT NULL,
