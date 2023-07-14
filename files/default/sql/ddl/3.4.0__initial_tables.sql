@@ -349,9 +349,7 @@ CREATE TABLE `feature_store_statistic` (
                                            PRIMARY KEY (`id`),
                                            KEY `feature_group_id` (`feature_group_id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
-                                           KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
                                            CONSTRAINT `fg_fk_fss` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                           CONSTRAINT `fg_ci_fk_fss` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                                            CONSTRAINT `td_fk_fss` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1460,7 +1458,6 @@ CREATE TABLE `users` (
                          `notes` varchar(500) COLLATE latin1_general_cs DEFAULT '-',
                          `max_num_projects` int(11) NOT NULL,
                          `num_active_projects` int(11) NOT NULL DEFAULT '0',
-                         `num_created_projects` int(11) NOT NULL DEFAULT '0',
                          `two_factor` tinyint(1) NOT NULL DEFAULT '1',
                          `tours_state` tinyint(1) NOT NULL DEFAULT '0',
                          `salt` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT '',
