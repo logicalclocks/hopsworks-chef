@@ -240,10 +240,8 @@ ALTER TABLE `hopsworks`.`feature_store_statistic`
 ALTER TABLE `hopsworks`.`git_executions` ADD COLUMN `hostname` VARCHAR(128) COLLATE latin1_general_cs NOT NULL DEFAULT "localhost";
 
 -- FSTORE-946: Orphan statistics are not removed from the DB
-ALTER TABLE `hopsworks`.`feature_store_statistic`
-  DROP FOREIGN KEY `fg_ci_fk_fss`,
-  DROP KEY `feature_group_commit_id_fk`;
-  
+ALTER TABLE `hopsworks`.`feature_store_statistic` DROP FOREIGN KEY `fg_ci_fk_fss`;
+
 -- FSTORE-857
 SET SQL_SAFE_UPDATES = 0;
 UPDATE hopsworks.jobs SET json_config=JSON_SET(json_config, '$.appPath', 'hdfs:///user/spark/hsfs-utils.jar') WHERE JSON_EXTRACT(json_config, '$.appPath') like '"hdfs:///user/spark/hsfs-utils-%.jar"';
