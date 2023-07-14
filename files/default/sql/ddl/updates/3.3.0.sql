@@ -205,6 +205,8 @@ CREATE TABLE `temp_cached_feature_extra_constraints` (
     `primary_column` tinyint(1) NOT NULL DEFAULT '0',
     `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
+    KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+    KEY `stream_feature_group_fk` (`stream_feature_group_id`),
     CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -240,9 +242,7 @@ ALTER TABLE `hopsworks`.`feature_store_statistic`
 ALTER TABLE `hopsworks`.`git_executions` ADD COLUMN `hostname` VARCHAR(128) COLLATE latin1_general_cs NOT NULL DEFAULT "localhost";
 
 -- FSTORE-946: Orphan statistics are not removed from the DB
-ALTER TABLE `hopsworks`.`feature_store_statistic`
-  DROP FOREIGN KEY `fg_ci_fk_fss`,
-  DROP KEY `feature_group_commit_id_fk`;
+ALTER TABLE `hopsworks`.`feature_store_statistic` DROP FOREIGN KEY `fg_ci_fk_fss`;
   
 -- FSTORE-857
 SET SQL_SAFE_UPDATES = 0;

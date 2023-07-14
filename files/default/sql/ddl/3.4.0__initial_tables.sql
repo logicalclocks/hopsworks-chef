@@ -348,6 +348,7 @@ CREATE TABLE `feature_store_statistic` (
                                            PRIMARY KEY (`id`),
                                            KEY `feature_group_id` (`feature_group_id`),
                                            KEY `training_dataset_id` (`training_dataset_id`),
+                                           KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
                                            CONSTRAINT `fg_fk_fss` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                            CONSTRAINT `td_fk_fss` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1873,8 +1874,8 @@ CREATE TABLE `cached_feature_extra_constraints` (
         `primary_column` tinyint(1) NOT NULL DEFAULT '0',
         `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `stream_feature_group_constraint_fk` (`stream_feature_group_id`),
-        KEY `cached_feature_group_constraint_fk` (`cached_feature_group_id`),
+        KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+        KEY `stream_feature_group_fk` (`stream_feature_group_id`),
         CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
         CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
