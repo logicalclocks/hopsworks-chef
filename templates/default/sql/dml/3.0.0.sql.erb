@@ -1,6 +1,6 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='fs_job_util';
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_py_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs_utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.py");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_java_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs-utils-<%= node['hadoop_spark']['hsfs']['utils']['version'] %>.jar");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_py_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs_utils.py");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("fs_java_job_util", "hdfs:///user/<%= node['hadoop_spark']['user'] %>/hsfs-utils.jar");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kube_skip_namespace_creation", "<%= node['hopsworks']['kubernetes']['skip_namespace_creation']%>");
 
 DELETE FROM `hopsworks`.`host_services` WHERE `name`='elasticsearch';
