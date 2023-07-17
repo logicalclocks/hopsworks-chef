@@ -134,7 +134,6 @@ CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-m
     `feature_group_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -242,7 +241,6 @@ CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-ma
     `feature_view_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `fvds_fvs_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fvds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -252,7 +250,6 @@ CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-t
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `tdds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tdds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -261,7 +258,6 @@ CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-ma
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `tsds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -270,7 +266,6 @@ CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-man
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `vlds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `vlds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -307,3 +302,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
     CONSTRAINT `fk_fv_alert_1` FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_fv_alert_2` FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- Statistics
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("statistics_cleaner_batch_size", "<%= node['hopsworks']['statistics']['statistics_cleaner_batch_size'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("statistics_cleaner_interval_ms", "<%= node['hopsworks']['statistics']['statistics_cleaner_interval_ms'] %>", 1);

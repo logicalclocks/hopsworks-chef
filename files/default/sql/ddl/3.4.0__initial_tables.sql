@@ -2378,7 +2378,6 @@ CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-m
     `feature_group_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2387,7 +2386,6 @@ CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-ma
     `feature_view_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `fvds_fvs_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fvds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2396,7 +2394,6 @@ CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-t
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `tdds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tdds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
@@ -2405,7 +2402,6 @@ CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-ma
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `tsds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;

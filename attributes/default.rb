@@ -498,6 +498,12 @@ default['hopsworks']['enable_gcs_storage_connectors'] = "true"
 default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
 ##
+## Statistics
+##
+default['hopsworks']['statistics']['statistics_cleaner_batch_size'] = "1000"
+default['hopsworks']['statistics']['statistics_cleaner_interval_ms'] = "900000"
+
+##
 ## Feature flag Feature Monitoring
 ##
 default['hopsworks']['enable_feature_monitoring'] = "false"
