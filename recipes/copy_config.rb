@@ -120,7 +120,7 @@ hopsworks_configure_server "glassfish_configure" do
   admin_port admin_port
   target payara_config
   asadmin asadmin
-  override override
+  override_props override
   ignore_failure true
   action :glassfish_configure
 end
