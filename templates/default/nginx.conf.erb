@@ -5,7 +5,7 @@ pid /var/run/nginx.pid;
 load_module <%= "#{@load_module};" %>
 
 events {
-  worker_connections 100000;
+  worker_connections 1024;
 }
 
 stream {
