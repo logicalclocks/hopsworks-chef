@@ -187,8 +187,6 @@ glassfish_asadmin "restart-domain" do
   username username
   admin_port admin_port
   secure false
-  not_if "#{asadmin_cmd} list-applications #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
-  only_if "#{asadmin_cmd} list-instances #{deployment_group} | grep -w \"not running\""
 end
 
 hopsworks_worker "add_to_services" do
