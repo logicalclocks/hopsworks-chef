@@ -16,6 +16,9 @@ glassfish_nodes[das_ip]="instance0" # get_instance_name_by_host will not work fo
 # Install load balancer
 case node['platform_family']
 when "debian"
+  package "apache2" do
+    action :purge
+  end
   package ["libnginx-mod-stream", "nginx"] do
     retries 10
     retry_delay 30
@@ -39,6 +42,9 @@ when "debian"
     EOF
   end
 when "rhel"
+  package ["httpd", "mod_ssl"] do
+    action :purge
+  end
   bash "configure load balancer" do
     user 'root'
     code <<-EOF
