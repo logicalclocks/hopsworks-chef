@@ -404,6 +404,75 @@ asadmin_cmd = "#{asadmin} --user #{username} --passwordfile #{password_file}"
 
 need_config_glassfish=!(node['hopsworks'].attribute?('das_node') && conda_helpers.is_upgrade) 
 
+node.override['glassfish']['asadmin']['timeout'] = 600
+
+# if there are running instances then un/deploy should have target deployment_group
+target = nil
+# Check the exit code of the `#{asadmin_cmd} list-instances | grep running` command
+if `#{asadmin_cmd} list-instances | grep running`; then
+  Chef::Log.info("There are running instances")
+  target = deployment_group
+end
+
+if current_version.eql?("") == false
+#
+# undeploy previous version
+#
+
+  glassfish_deployable "hopsworks-ear" do
+    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+    target target
+    version current_version
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    action :undeploy
+    retries 1
+    keep_state true
+    enabled true
+    secure true
+    ignore_failure true
+  end
+
+  glassfish_deployable "hopsworks" do
+    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
+    target target
+    version current_version
+    context_root "/hopsworks"
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true  
+  end
+
+  glassfish_deployable "hopsworks-ca" do
+    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
+    target target
+    version current_version
+    context_root "/hopsworks-ca"
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+    ignore_failure true
+  end
+
+end  
+
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
 # systemd unit environment variables file
 hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
@@ -737,80 +806,6 @@ hopsworks_mail "gmail" do
    not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
-# Reload glassfish with new configuration 
-kagent_config "glassfish-domain1" do
-  action :systemd_reload
-end
-
-node.override['glassfish']['asadmin']['timeout'] = 600
-
-# if there are running instances then un/deploy should have target deployment_group
-target = nil
-# Check the exit code of the `#{asadmin_cmd} list-instances | grep running` command
-if `#{asadmin_cmd} list-instances | grep running`; then
-  Chef::Log.info("There are running instances")
-  target = deployment_group
-end
-
-if current_version.eql?("") == false
-#
-# undeploy previous version
-#
-
-  glassfish_deployable "hopsworks-ear" do
-    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
-    target target
-    version current_version
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    action :undeploy
-    retries 1
-    keep_state true
-    enabled true
-    secure true
-    ignore_failure true
-  end
-
-  glassfish_deployable "hopsworks" do
-    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
-    target target
-    version current_version
-    context_root "/hopsworks"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true  
-  end
-
-  glassfish_deployable "hopsworks-ca" do
-    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
-    target target
-    version current_version
-    context_root "/hopsworks-ca"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true
-  end
-
-end  
-
 # Recreate resource references because they are recreated 
 hopsworks_configure_server "glassfish_create_resource_ref" do
   domain_name domain_name
@@ -821,6 +816,22 @@ hopsworks_configure_server "glassfish_create_resource_ref" do
   target deployment_group
   recreate true
   action :glassfish_create_resource_ref
+  only_if "#{asadmin_cmd} list-instances | grep running"
+end
+
+# Reload glassfish with new configuration 
+kagent_config "glassfish-domain1" do
+  action :systemd_reload
+end
+
+# Reload glassfish instance with new configuration if HA
+glassfish_asadmin "restart-deployment-group --rolling=true --delay 5000 #{deployment_group}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin_cmd} list-deployment-groups | grep #{deployment_group}"
   only_if "#{asadmin_cmd} list-instances | grep running"
 end
 

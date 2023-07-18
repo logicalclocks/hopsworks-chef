@@ -90,6 +90,7 @@ action :glassfish_configure do
   target=new_resource.target
   asadmin=new_resource.asadmin
   override=new_resource.override_props
+  ignore_failure=new_resource.ignore_failure
 
   asadmin_cmd="#{asadmin} --terse=false --echo=false --user #{username} --passwordfile #{password_file}"
   target_config = new_resource.target == "server" ? "server-config" : new_resource.target
@@ -166,6 +167,7 @@ action :glassfish_configure do
      password_file password_file
      username username
      admin_port admin_port
+     ignore_failure ignore_failure
      secure false
     end
   end
