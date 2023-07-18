@@ -212,7 +212,7 @@ CREATE TABLE `temp_cached_feature_extra_constraints` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 INSERT INTO `temp_cached_feature_extra_constraints`
-  SELECT feature.*
+  SELECT feature.id, feature.cached_feature_group_id, feature.stream_feature_group_id, feature.name, feature.primary_column, feature.hudi_precombine_key
 	FROM `cached_feature_extra_constraints` feature
 	LEFT JOIN `stream_feature_group` sfg ON feature.stream_feature_group_id = sfg.id
 	WHERE feature.cached_feature_group_id IS NOT NULL OR (feature.stream_feature_group_id IS NOT NULL AND sfg.id IS NOT NULL);
