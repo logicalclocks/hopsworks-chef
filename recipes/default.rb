@@ -406,7 +406,7 @@ need_config_glassfish=!(node['hopsworks'].attribute?('das_node') && conda_helper
 
 node.override['glassfish']['asadmin']['timeout'] = 600
 
-# if there are running instances then un/deploy should have target deployment_group
+# if there are running or not running instances then un/deploy should have target deployment_group
 target = nil
 # Check the exit code of the `#{asadmin_cmd} list-instances | grep running` command
 if `#{asadmin_cmd} list-instances | grep running`; then
