@@ -408,8 +408,9 @@ node.override['glassfish']['asadmin']['timeout'] = 600
 
 # if there are running or not running instances then un/deploy should have target deployment_group
 target = nil
+command_output = `#{asadmin_cmd} list-instances`
 # Check the exit code of the `#{asadmin_cmd} list-instances | grep running` command
-if `#{asadmin_cmd} list-instances | grep running`; then
+if `grep -q running #{command_output}`; then
   Chef::Log.info("There are running instances")
   target = deployment_group
 end
