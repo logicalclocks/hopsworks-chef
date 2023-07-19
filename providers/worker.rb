@@ -108,7 +108,6 @@ action :configure_node do
     user node['hopsworks']['user']
     crypto_directory x509_helper.get_crypto_dir(node['hopsworks']['user'])
     hopsworks_alt_url hopsworks_alt_url
-    common_name node['hopsworks']['hopsworks_public_host']
     action :generate_x509
   end
 end
