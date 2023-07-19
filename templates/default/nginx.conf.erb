@@ -14,8 +14,9 @@ stream {
   }
 
   upstream hopsworks {
+    least_conn;
     <% @glassfish_nodes.each do |ipaddress, instance_name| %>
-     server <%= "#{ipaddress}:#{node['hopsworks']['internal']['port']};" %>
+     server <%= "#{ipaddress}:#{node['hopsworks']['internal']['port']} max_fails=3 fail_timeout=5s;" %>
     <% end %>
   }
 
@@ -25,7 +26,7 @@ stream {
     listen [::]:<%= @load_balancer_port %>;
     proxy_pass $name;
  }
-  log_format proxy '$protocol $status $bytes_sent $bytes_received $session_time';
+  log_format proxy '$remote_addr $protocol $status $bytes_sent $bytes_received $session_time $session_time $upstream_addr';
   access_log  <%= @load_balancer_log_dir %>/access.log proxy;
   error_log <%= @load_balancer_log_dir %>/error.log debug;
 }
