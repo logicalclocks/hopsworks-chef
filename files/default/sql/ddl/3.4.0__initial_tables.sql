@@ -110,13 +110,14 @@ CREATE TABLE `conda_commands` (
                                   `project_id` int(11) NOT NULL,
                                   `op` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `channel_url` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-                                  `arg` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `arg` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
                                   `lib` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `version` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `custom_commands_file` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
                                   `git_api_key_name` VARCHAR(125) DEFAULT NULL,
                                   `git_backend` VARCHAR(45) DEFAULT NULL,
@@ -375,7 +376,6 @@ CREATE TABLE `feature_store_statistic` (
                                            KEY `training_dataset_id` (`training_dataset_id`),
                                            KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
                                            CONSTRAINT `fg_fk_fss` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                           CONSTRAINT `fg_ci_fk_fss` FOREIGN KEY (`feature_group_id`, `feature_group_commit_id`) REFERENCES `feature_group_commit` (`feature_group_id`, `commit_id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                                            CONSTRAINT `td_fk_fss` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1900,8 +1900,8 @@ CREATE TABLE `cached_feature_extra_constraints` (
         `primary_column` tinyint(1) NOT NULL DEFAULT '0',
         `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        KEY `stream_feature_group_constraint_fk` (`stream_feature_group_id`),
-        KEY `cached_feature_group_constraint_fk` (`cached_feature_group_id`),
+        KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+        KEY `stream_feature_group_fk` (`stream_feature_group_id`),
         CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
         CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -2240,4 +2240,21 @@ CREATE TABLE IF NOT EXISTS `hdfs_command_execution` (
   UNIQUE KEY `uq_src_path` (`src_path`),
   KEY `fk_hdfs_file_command_1_idx` (`execution_id`),
   CONSTRAINT `fk_hdfs_file_command_1` FOREIGN KEY (`execution_id`) REFERENCES `executions` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- FSTORE-921
+CREATE TABLE `serving_key` (
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `prefix` VARCHAR(63) NULL DEFAULT '',
+                               `feature_name` VARCHAR(1000) NOT NULL,
+                               `join_on` VARCHAR(1000) NULL,
+                               `join_index` int(11) NOT NULL,
+                               `feature_group_id` INT(11) NOT NULL,
+                               `required` tinyint(1) NOT NULL DEFAULT '0',
+                               `feature_view_id` INT(11) NULL,
+                               PRIMARY KEY (`id`),
+                               KEY `feature_view_id` (`feature_view_id`),
+                               KEY `feature_group_id` (`feature_group_id`),
+                               CONSTRAINT `feature_view_serving_key_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                               CONSTRAINT `feature_group_serving_key_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

@@ -205,12 +205,14 @@ CREATE TABLE `temp_cached_feature_extra_constraints` (
     `primary_column` tinyint(1) NOT NULL DEFAULT '0',
     `hudi_precombine_key` tinyint(1) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
+    KEY `cached_feature_group_fk` (`cached_feature_group_id`),
+    KEY `stream_feature_group_fk` (`stream_feature_group_id`),
     CONSTRAINT `stream_feature_group_constraint_fk` FOREIGN KEY (`stream_feature_group_id`) REFERENCES `stream_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `cached_feature_group_constraint_fk` FOREIGN KEY (`cached_feature_group_id`) REFERENCES `cached_feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 INSERT INTO `temp_cached_feature_extra_constraints`
-  SELECT feature.*
+  SELECT feature.id, feature.cached_feature_group_id, feature.stream_feature_group_id, feature.name, feature.primary_column, feature.hudi_precombine_key
 	FROM `cached_feature_extra_constraints` feature
 	LEFT JOIN `stream_feature_group` sfg ON feature.stream_feature_group_id = sfg.id
 	WHERE feature.cached_feature_group_id IS NOT NULL OR (feature.stream_feature_group_id IS NOT NULL AND sfg.id IS NOT NULL);
@@ -238,3 +240,12 @@ ALTER TABLE `hopsworks`.`feature_store_statistic`
 
 -- Git executions hostname
 ALTER TABLE `hopsworks`.`git_executions` ADD COLUMN `hostname` VARCHAR(128) COLLATE latin1_general_cs NOT NULL DEFAULT "localhost";
+
+-- FSTORE-946: Orphan statistics are not removed from the DB
+ALTER TABLE `hopsworks`.`feature_store_statistic` DROP FOREIGN KEY `fg_ci_fk_fss`;
+  
+-- FSTORE-857
+SET SQL_SAFE_UPDATES = 0;
+UPDATE hopsworks.jobs SET json_config=JSON_SET(json_config, '$.appPath', 'hdfs:///user/spark/hsfs-utils.jar') WHERE JSON_EXTRACT(json_config, '$.appPath') like '"hdfs:///user/spark/hsfs-utils-%.jar"';
+UPDATE hopsworks.jobs SET json_config=JSON_SET(json_config, '$.appPath', 'hdfs:///user/spark/hsfs_utils.py') WHERE JSON_EXTRACT(json_config, '$.appPath') like '"hdfs:///user/spark/hsfs_utils-%.py"';
+SET SQL_SAFE_UPDATES = 1;
