@@ -402,8 +402,6 @@ asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 asadmin_cmd = "#{asadmin} --user #{username} --passwordfile #{password_file}"
 
-need_config_glassfish=!(node['hopsworks'].attribute?('das_node') && conda_helpers.is_upgrade) 
-
 node.override['glassfish']['asadmin']['timeout'] = 600
 
 # if there are running or not running instances then un/deploy should have target deployment_group
@@ -472,6 +470,24 @@ if current_version.eql?("") == false
     ignore_failure true
   end
 
+  bash 'Force undeploy' do
+    user 'root'
+    code <<-EOH
+      set -e
+      systemctl stop glassfish-domain1
+      rm -rf #{theDomain}/applications/hopsworks-*~#{node['hopsworks']['current_version']}
+      rm -rf #{theDomain}/osgi-cache/*
+      systemctl start glassfish-domain1
+    EOH
+    only_if "#{asadmin_cmd} --echo=false list-applications #{target} | grep -E -i -w 'hopsworks-ca:#{node['hopsworks']['current_version']}|hopsworks-web:#{node['hopsworks']['current_version']}|hopsworks-ear:#{node['hopsworks']['current_version']}'"
+  end
+
+  ruby_block "Undeploy failed" do
+    block do
+      raise "Undeploy failed"
+    end
+    only_if "#{asadmin_cmd} --echo=false list-applications #{target} | grep -E -i -w 'hopsworks-ca:#{node['hopsworks']['current_version']}|hopsworks-web:#{node['hopsworks']['current_version']}|hopsworks-ear:#{node['hopsworks']['current_version']}'"
+  end
 end  
 
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
