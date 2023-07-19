@@ -1,3 +1,4 @@
+-- HWORKS-626: conda environment history
 CREATE TABLE IF NOT EXISTS `environment_history` (
                                        `id` int NOT NULL AUTO_INCREMENT,
                                        `project` int NOT NULL,
