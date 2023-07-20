@@ -232,7 +232,7 @@ glassfish_deployable "hopsworks-ca" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type war #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 glassfish_deployable "hopsworks-ear" do
@@ -273,5 +273,5 @@ glassfish_deployable "hopsworks" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type war #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type web #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
