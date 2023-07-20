@@ -203,7 +203,7 @@ hopsworks_worker "add_to_services" do
   not_if "systemctl is-active --quiet #{service_name}"
 end
 
-#If not going to redeploy restart
+# If not going to redeploy ear restart so the configs are applied
 glassfish_asadmin "restart-deployment-group --rolling=true --delay 5000 #{deployment_group}" do
   domain_name domain_name
   password_file password_file
