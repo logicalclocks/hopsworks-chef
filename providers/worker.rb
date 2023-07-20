@@ -100,6 +100,7 @@ action :configure_node do
 
   hopsworks_certs "import-user-certs" do
     action :import_certs
+    skip_secure_admin true 
     not_if { node['hopsworks']['https']['key_url'].eql?("") }
   end
 
