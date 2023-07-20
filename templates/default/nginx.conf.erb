@@ -1,11 +1,12 @@
-worker_processes auto;
-error_log <%= @load_balancer_log_dir %>/error.log;
+worker_processes 4;
+worker_rlimit_nofile 20000;
+
 pid /var/run/nginx.pid;
 
 load_module <%= "#{@load_module};" %>
 
 events {
-  worker_connections 1024;
+  worker_connections 10000;
 }
 
 stream {
@@ -25,6 +26,8 @@ stream {
     listen <%= @load_balancer_port %>;
     listen [::]:<%= @load_balancer_port %>;
     proxy_pass $name;
+    proxy_timeout 15m;
+    proxy_connect_timeout 60s;
  }
   log_format proxy '$remote_addr $protocol $status $bytes_sent $bytes_received $session_time $session_time $upstream_addr';
   access_log  <%= @load_balancer_log_dir %>/access.log proxy;
