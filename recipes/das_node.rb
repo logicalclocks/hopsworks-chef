@@ -203,6 +203,16 @@ hopsworks_worker "add_to_services" do
   not_if "systemctl is-active --quiet #{service_name}"
 end
 
+#If not going to redeploy restart
+glassfish_asadmin "restart-deployment-group --rolling=true --delay 5000 #{deployment_group}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin_cmd} list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
+end
+
 # change reference of the deployed apps will require restarting instances
 glassfish_deployable "hopsworks-ca" do
   component_name "hopsworks-ca:#{node['hopsworks']['version']}"
@@ -222,7 +232,7 @@ glassfish_deployable "hopsworks-ca" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type ejb #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type war #{deployment_group} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 glassfish_deployable "hopsworks-ear" do
@@ -263,5 +273,5 @@ glassfish_deployable "hopsworks" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type web #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type war #{deployment_group} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
