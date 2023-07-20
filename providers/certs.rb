@@ -56,13 +56,14 @@ action :import_certs do
     action :create
   end
 
-  remote_file "#{node['hopsworks']['config_dir']}/https_intermediate_ca.pem" do
-    source node['hopsworks']['https']['intermediate_ca_url']
-    user node['hopsworks']['user']
-    group node['hopsworks']['group']
-    mode '0700'
-    action :create
-    not_if { node['hopsworks']['https']['intermediate_ca_url'].empty? }
+  unless node['hopsworks']['https']['intermediate_ca_url'].empty?
+    remote_file "#{node['hopsworks']['config_dir']}/https_intermediate_ca.pem" do
+      source node['hopsworks']['https']['intermediate_ca_url']
+      user node['hopsworks']['user']
+      group node['hopsworks']['group']
+      mode '0700'
+      action :create
+    end
   end
 
   remote_file "#{node['hopsworks']['config_dir']}/https_ca.pem" do
@@ -120,6 +121,7 @@ action :import_certs do
     username node['hopsworks']['admin']['user']
     admin_port node['hopsworks']['admin']['port']
     secure false
+    not_if { new_resource.skip_secure_admin }
   end
 
   glassfish_asadmin "enable-secure-admin" do
@@ -128,6 +130,7 @@ action :import_certs do
     username node['hopsworks']['admin']['user']
     admin_port node['hopsworks']['admin']['port']
     secure false
+    not_if { new_resource.skip_secure_admin }
   end
 end
 
