@@ -1015,6 +1015,15 @@ attribute "hopsworks/jupyter/remote_fs_driver",
 					:description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
 					:type => "string"
 
+# Statistics
+attribute "hopsworks/statistics/statistics_cleaner_batch_size",
+					:description => "The maximum number of statistics to be deleted per timer trigger.",
+					:type => "string"
+
+attribute "hopsworks/statistics/statistics_cleaner_interval_ms",
+					:description => "How often the statistics cleaner is triggered.",
+					:type => "string"
+
 # Feature monitoring feature flag
 attribute "hopsworks/enable_feature_monitoring",
 					:description => "Whether to enable feature monitoring with scheduling and alerting",
