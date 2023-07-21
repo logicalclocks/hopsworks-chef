@@ -110,13 +110,14 @@ CREATE TABLE `conda_commands` (
                                   `project_id` int(11) NOT NULL,
                                   `op` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `channel_url` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-                                  `arg` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `arg` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
                                   `lib` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `version` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
                                   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+                                  `custom_commands_file` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `install_jupyter` tinyint(1) NOT NULL DEFAULT '0',
                                   `git_api_key_name` VARCHAR(125) DEFAULT NULL,
                                   `git_backend` VARCHAR(45) DEFAULT NULL,
@@ -2230,5 +2231,5 @@ CREATE TABLE `serving_key` (
                                KEY `feature_view_id` (`feature_view_id`),
                                KEY `feature_group_id` (`feature_group_id`),
                                CONSTRAINT `feature_view_serving_key_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                               CONSTRAINT `feature_group_serving_key_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+                               CONSTRAINT `feature_group_serving_key_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

@@ -182,10 +182,17 @@ if current_version.eql?("")
     action :create
   end
 else
-  current_version_idx = versions.index(current_version).to_i
+  # Current version can contain the patch version. However we don't have schemas for patch versions
+  # Which means that the `version.index` operation below will fail. To avoid this we parse the version
+  # and we replace the patch version to 0 before searching the version list.
+  version_segments = Gem::Version.new(current_version).canonical_segments()
+  version_segments[2] = 0
+  minor_version = version_segments.join('.')
+
+  minor_version_idx = versions.index(minor_version).to_i
   versions_length = versions.length.to_i - 1
 
-  for i in (current_version_idx + 1)..versions_length
+  for i in (minor_version_idx + 1)..versions_length
     # Update, template all the dml files from the current version to the target version
     cookbook_file "#{theDomain}/flyway/sql/V#{versions[i]}__hopsworks.sql" do
       source "sql/ddl/updates/#{versions[i]}.sql"
@@ -337,24 +344,6 @@ for version in versions do
     end
   end 
   
-end
-
-if !current_version.eql?("") && Gem::Version.new(current_version) < Gem::Version.new('0.6.0')
- cookbook_file "#{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql" do
-  source "sql/flyway_schema_history_0.6.0.sql"
-  owner node['glassfish']['user']
-  mode 0750
-  action :create
- end
-
- # Re-create the table only if it already exists
- bash "mod_flyway_history_0.6.0" do
-  user "root"
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/sql/flyway_schema_history_0.6.0.sql
-  EOH
-  only_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e \"select version from flyway_schema_history where script like 'V%' order by installed_on desc\" | grep -v \"0.6.0\""
- end
 end
 
 bash "flyway_migrate" do
