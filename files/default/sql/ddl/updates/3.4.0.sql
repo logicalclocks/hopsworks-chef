@@ -38,4 +38,4 @@ CREATE TABLE `environment_history` (
                                        KEY `project` (`project`),
                                        KEY `docker_image` (`docker_image`),
                                        CONSTRAINT `env_project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=ndbcluster AUTO_INCREMENT=69 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
