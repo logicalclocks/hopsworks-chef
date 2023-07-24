@@ -24,3 +24,7 @@ ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `custom_commands_file` VARCH
 
 -- FSTORE-952: Single Kafka topic per project
 ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
+
+UPDATE `hopsworks`.`subjects`
+SET `subject` = REGEXP_REPLACE(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs",'$3_$4')
+WHERE REGEXP_SUBSTR(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs");
