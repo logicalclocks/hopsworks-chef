@@ -21,3 +21,6 @@ CREATE TABLE `serving_key` (
 -- HWORKS-351: Add support to run generic docker commands
 ALTER TABLE `hopsworks`.`conda_commands` MODIFY COLUMN `arg` VARCHAR(11000) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `custom_commands_file` VARCHAR(255) DEFAULT NULL;
+
+-- FSTORE-952: Single Kafka topic per project
+ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;

@@ -917,7 +917,7 @@ CREATE TABLE `project_topics` (
                                   `topic_name` varchar(255) COLLATE latin1_general_cs NOT NULL,
                                   `project_id` int(11) NOT NULL,
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                                  `subject_id` int(11) NOT NULL,
+                                  `subject_id` int(11) DEFAULT NULL,
                                   `num_partitions` int(11) DEFAULT NULL,
                                   `num_replicas` int(11) DEFAULT NULL,
                                   PRIMARY KEY (`id`),
