@@ -28,3 +28,6 @@ ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFA
 UPDATE `hopsworks`.`subjects`
 SET `subject` = REGEXP_REPLACE(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs",'$3_$4')
 WHERE REGEXP_SUBSTR(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs");
+
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `kafka_topic_id` int(11) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_group` ADD CONSTRAINT `kafka_fk_feature_group` FOREIGN KEY (`kafka_topic_id`) REFERENCES `project_topics` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
