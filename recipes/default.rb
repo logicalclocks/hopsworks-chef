@@ -21,6 +21,7 @@ theDomain="#{domains_dir}/#{domain_name}"
 
 public_ip=my_public_ip()
 realmname = "kthfsrealm"
+deployment_group = "hopsworks-dg"
 
 begin
   elastic_ips = all_elastic_ips_str()
@@ -390,6 +391,72 @@ asadmin = "#{node['glassfish']['base_dir']}/versions/current/bin/asadmin"
 password_file = "#{domains_dir}/#{domain_name}_admin_passwd"
 asadmin_cmd = "#{asadmin} --user #{username} --passwordfile #{password_file}"
 
+node.override['glassfish']['asadmin']['timeout'] = 600
+
+# if there are running or not running instances then un/deploy should have target deployment_group
+target = nil
+command_output = `#{asadmin_cmd} list-instances | grep running`
+# Check the exit code of the `#{asadmin_cmd} list-instances | grep running` command
+if !command_output.empty?
+  Chef::Log.info("There are running instances")
+  target = deployment_group
+end
+
+if current_version.eql?("") == false
+#
+# undeploy previous version
+#
+
+  glassfish_deployable "hopsworks-ear" do
+    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
+    target "domain"
+    version current_version
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    action :undeploy
+    retries 1
+    keep_state true
+    enabled true
+    secure true
+  end
+
+  glassfish_deployable "hopsworks" do
+    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
+    target "domain"
+    version current_version
+    context_root "/hopsworks"
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+  end
+
+  glassfish_deployable "hopsworks-ca" do
+    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
+    target "domain"
+    version current_version
+    context_root "/hopsworks-ca"
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure true
+    action :undeploy
+    async_replication false
+    retries 1
+    keep_state true
+    enabled true
+  end
+end  
+
 # Add Hadoop glob classpath and HADOOP_CONF_DIR to Glassfish
 # systemd unit environment variables file
 hadoop_glob_command = "#{node['hops']['bin_dir']}/hadoop classpath --glob"
@@ -451,6 +518,7 @@ hopsworks_configure_server "glassfish_configure_network" do
   network_name "https-internal"
   network_listener_name "https-int-list"
   action :glassfish_configure_network
+  not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
 if node['hopsworks']['internal']['enable_http'].casecmp?("true")
@@ -467,6 +535,7 @@ if node['hopsworks']['internal']['enable_http'].casecmp?("true")
     network_listener_name "http-int-list"
     securityenabled false
     action :glassfish_configure_network
+    not_if "#{asadmin_cmd} list-instances | grep running"
   end
 end
 
@@ -478,6 +547,7 @@ hopsworks_configure_server "glassfish_configure" do
   admin_port admin_port
   asadmin asadmin
   action :glassfish_configure
+  not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
 glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningtasks=true --corepoolsize=50 --maximumpoolsize=400 --keepaliveseconds=60 --taskqueuecapacity=20000 concurrent/condaExecutorService" do
@@ -665,6 +735,7 @@ hopsworks_configure_server "glassfish_configure_monitoring" do
   admin_port admin_port
   asadmin asadmin
   action :glassfish_configure_monitoring
+  not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
 if node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true"
@@ -716,6 +787,20 @@ hopsworks_mail "gmail" do
    username username
    admin_port admin_port
    action :jndi
+   not_if "#{asadmin_cmd} list-instances | grep running"
+end
+
+# Recreate resource references because they are recreated 
+hopsworks_configure_server "glassfish_create_resource_ref" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  asadmin asadmin
+  target deployment_group
+  recreate true
+  action :glassfish_create_resource_ref
+  only_if "#{asadmin_cmd} list-instances | grep running"
 end
 
 # Reload glassfish with new configuration 
@@ -723,66 +808,22 @@ kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
-node.override['glassfish']['asadmin']['timeout'] = 600
+# Reload glassfish instance with new configuration if HA
+glassfish_asadmin "restart-deployment-group --rolling=true --delay 5000 #{deployment_group}" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin_cmd} list-deployment-groups | grep #{deployment_group}"
+  only_if "#{asadmin_cmd} list-instances | grep running"
+end
 
-if current_version.eql?("") == false
-#
-# undeploy previous version
-#
-
-  glassfish_deployable "hopsworks-ear" do
-    component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
-    version current_version
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    action :undeploy
-    retries 1
-    keep_state true
-    enabled true
-    secure true
-    ignore_failure true
-  end
-
-  glassfish_deployable "hopsworks" do
-    component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
-    version current_version
-    context_root "/hopsworks"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true  
-  end
-
-  glassfish_deployable "hopsworks-ca" do
-    component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
-    version current_version
-    context_root "/hopsworks-ca"
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure true
-    action :undeploy
-    async_replication false
-    retries 1
-    keep_state true
-    enabled true
-    ignore_failure true
-  end
-
-end  
+list_target = target.nil? ? "" : target
 
 glassfish_deployable "hopsworks-ear" do
   component_name "hopsworks-ear:#{node['hopsworks']['version']}"
+  target target
   url node['hopsworks']['ear_url']
   auth_username node['install']['enterprise']['username']
   auth_password node['install']['enterprise']['password']
@@ -797,11 +838,12 @@ glassfish_deployable "hopsworks-ear" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type ejb | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type ejb #{list_target} | grep -w \"hopsworks-ear:#{node['hopsworks']['version']}\""
 end
 
 glassfish_deployable "hopsworks" do
   component_name "hopsworks-web:#{node['hopsworks']['version']}"
+  target target
   url node['hopsworks']['war_url']
   auth_username node['install']['enterprise']['username']
   auth_password node['install']['enterprise']['password']
@@ -817,11 +859,12 @@ glassfish_deployable "hopsworks" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type web #{list_target} | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
 end
 
 glassfish_deployable "hopsworks-ca" do
   component_name "hopsworks-ca:#{node['hopsworks']['version']}"
+  target target
   url node['hopsworks']['ca_url']
   auth_username node['install']['enterprise']['username']
   auth_password node['install']['enterprise']['password']
@@ -837,7 +880,7 @@ glassfish_deployable "hopsworks-ca" do
   retries 1
   keep_state true
   enabled true
-  not_if "#{asadmin_cmd} list-applications --type ejb | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
+  not_if "#{asadmin_cmd} list-applications --type ejb #{list_target} | grep -w \"hopsworks-ca:#{node['hopsworks']['version']}\""
 end
 
 
