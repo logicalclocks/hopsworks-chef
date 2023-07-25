@@ -420,7 +420,7 @@ if current_version.eql?("") == false
 
   glassfish_deployable "hopsworks-ear" do
     component_name "hopsworks-ear:#{node['hopsworks']['current_version']}"
-    target target
+    target "domain"
     version current_version
     domain_name domain_name
     password_file password_file
@@ -431,12 +431,11 @@ if current_version.eql?("") == false
     keep_state true
     enabled true
     secure true
-    ignore_failure true
   end
 
   glassfish_deployable "hopsworks" do
     component_name "hopsworks-web:#{node['hopsworks']['current_version']}"
-    target target
+    target "domain"
     version current_version
     context_root "/hopsworks"
     domain_name domain_name
@@ -449,12 +448,11 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
-    ignore_failure true  
   end
 
   glassfish_deployable "hopsworks-ca" do
     component_name "hopsworks-ca:#{node['hopsworks']['current_version']}"
-    target target
+    target "domain"
     version current_version
     context_root "/hopsworks-ca"
     domain_name domain_name
@@ -467,26 +465,6 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
-    ignore_failure true
-  end
-
-  bash 'Force undeploy' do
-    user 'root'
-    code <<-EOH
-      set -e
-      systemctl stop glassfish-domain1
-      rm -rf #{theDomain}/applications/hopsworks-*~#{node['hopsworks']['current_version']}
-      rm -rf #{theDomain}/osgi-cache/*
-      systemctl start glassfish-domain1
-    EOH
-    only_if "#{asadmin_cmd} --echo=false list-applications #{target} | grep -E -i -w 'hopsworks-ca:#{node['hopsworks']['current_version']}|hopsworks-web:#{node['hopsworks']['current_version']}|hopsworks-ear:#{node['hopsworks']['current_version']}'"
-  end
-
-  ruby_block "Undeploy failed" do
-    block do
-      raise "Undeploy failed"
-    end
-    only_if "#{asadmin_cmd} --echo=false list-applications #{target} | grep -E -i -w 'hopsworks-ca:#{node['hopsworks']['current_version']}|hopsworks-web:#{node['hopsworks']['current_version']}|hopsworks-ear:#{node['hopsworks']['current_version']}'"
   end
 end  
 
