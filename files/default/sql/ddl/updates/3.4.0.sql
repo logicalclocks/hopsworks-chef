@@ -30,3 +30,5 @@ SET `subject` = REGEXP_REPLACE(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs",'$3_$4'
 WHERE REGEXP_SUBSTR(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs");
 
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `use_project_topic` BOOLEAN DEFAULT TRUE;
+
+UPDATE `hopsworks`.`feature_group` SET `use_project_topic` = FALSE;
