@@ -597,19 +597,6 @@ template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
   action :create
 end
 
-ulimit_domain node['hopsworks']['user'] do
-  rule do
-    item :memlock
-    type :soft
-    value "unlimited"
-  end
-  rule do
-    item :memlock
-    type :hard
-    value "unlimited"
-  end
-end
-
 kagent_config "glassfish-domain1" do 
   action :systemd_reload
 end
