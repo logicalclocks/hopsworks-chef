@@ -1018,22 +1018,6 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   action :create
 end
 
-Chef::Log.info "Home dir is #{hopsworks_user_home}. Generating ssh keys..."
-
-kagent_keys "#{hopsworks_user_home}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  action :generate
-end
-
-kagent_keys "#{hopsworks_user_home}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  cb_name "hopsworks"
-  cb_recipe "default"
-  action :return_publickey
-end
-
 #
 # Rstudio
 #
