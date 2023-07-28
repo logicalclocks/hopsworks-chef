@@ -2,8 +2,8 @@ module Hopsworks
   module Helpers
     def get_command_output(command)
       Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-      ommand_out = shell_out(command)
-      return ommand_out.stdout.strip
+      command_out = shell_out(command)
+      return command_out.stdout.strip
     end
     def get_node_name(asadmin, host)
       worker_command = "#{asadmin} list-nodes -l | grep #{host} | awk '{print $1}'"
