@@ -21,3 +21,16 @@ CREATE TABLE `serving_key` (
 -- HWORKS-351: Add support to run generic docker commands
 ALTER TABLE `hopsworks`.`conda_commands` MODIFY COLUMN `arg` VARCHAR(11000) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`conda_commands` ADD COLUMN `custom_commands_file` VARCHAR(255) DEFAULT NULL;
+
+CREATE TABLE IF NOT EXISTS `job_schedule` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `job_id` int NOT NULL,
+    `start_date_time` timestamp NOT NULL,
+    `end_date_time` timestamp,
+    `enabled` BOOLEAN NOT NULL,
+    `cron_expression` varchar(500) NOT NULL,
+    `next_execution_date_time` timestamp,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `job_id` (`job_id`),
+    CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
