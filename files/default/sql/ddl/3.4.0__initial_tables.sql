@@ -2250,3 +2250,18 @@ CREATE TABLE `command_search` (
   CONSTRAINT `fk_command_search_feature_view` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `fk_command_search_training_dataset` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `command_search_history` (
+  `h_id` bigint NOT NULL AUTO_INCREMENT,
+  `executed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id` bigint NOT NULL,
+  `inode_id` bigint NOT NULL,
+  `project_id` int,
+  `op` VARCHAR(20) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `feature_group_id` int(11),
+  `feature_view_id` int(11),
+  `training_dataset_id` int(11),
+  `error_message` varchar(10000),
+  PRIMARY KEY (`h_id`)
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
