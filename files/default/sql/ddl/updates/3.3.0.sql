@@ -246,6 +246,14 @@ ALTER TABLE `hopsworks`.`feature_store_statistic` DROP FOREIGN KEY `fg_ci_fk_fss
   
 -- FSTORE-857
 SET SQL_SAFE_UPDATES = 0;
-UPDATE hopsworks.jobs SET json_config=JSON_SET(json_config, '$.appPath', 'hdfs:///user/spark/hsfs-utils.jar') WHERE JSON_EXTRACT(json_config, '$.appPath') like '"hdfs:///user/spark/hsfs-utils-%.jar"';
-UPDATE hopsworks.jobs SET json_config=JSON_SET(json_config, '$.appPath', 'hdfs:///user/spark/hsfs_utils.py') WHERE JSON_EXTRACT(json_config, '$.appPath') like '"hdfs:///user/spark/hsfs_utils-%.py"';
+SET @spark_user := (SELECT `value` FROM `hopsworks`.`variables` WHERE `id`='spark_user');
+
+UPDATE `hopsworks`.`jobs`
+  SET `json_config`=JSON_SET(`json_config`, '$.appPath', CONCAT('hdfs:///user/', @spark_user, '/hsfs-utils.jar'))
+  WHERE JSON_EXTRACT(`json_config`, '$.appPath') LIKE CONCAT('"hdfs:///user/', @spark_user, '/hsfs-utils-%.jar"');
+
+UPDATE `hopsworks`.`jobs`
+  SET `json_config`=JSON_SET(`json_config`, '$.appPath', CONCAT('hdfs:///user/', @spark_user, '/hsfs_utils.py'))
+  WHERE JSON_EXTRACT(`json_config`, '$.appPath') LIKE CONCAT('"hdfs:///user/', @spark_user, '/hsfs_utils-%.py"');
+
 SET SQL_SAFE_UPDATES = 1;
