@@ -382,11 +382,6 @@ default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 # The timeout, in seconds, for requests. A value of -1 will disable it.
 default['glassfish']['http']['request-timeout-seconds']   = "3600"
 
-#
-# kagent liveness monitor configuration
-#
-default['hopsworks']['kagent_liveness']['enabled']         = "false"
-default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 
 #
 # Online FeatureStore JDBC Connection Details

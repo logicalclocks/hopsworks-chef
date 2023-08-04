@@ -24,12 +24,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_redirect_uri"
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("oauth_group_mapping", "<%= node['oauth']['group_mapping'] %>");
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_env';
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_user", "<%= node['kagent']['user'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_liveness_monitor_enabled", "<%= node['hopsworks']['kagent_liveness']['enabled'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("kagent_liveness_threshold", "<%= node['hopsworks']['kagent_liveness']['threshold'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_restart_script", "<%= node['hopsworks']['kagent_liveness']['restart_script'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_start_script", "<%= node['hopsworks']['kagent_liveness']['start_script'] %>");
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_stop_script", "<%= node['hopsworks']['kagent_liveness']['stop_script'] %>");
 
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_user", "<%= node['hops']['yarnapp']['user'] %>");
 REPLACE INTO `hopsworks`.`variables` (`id`, `value`) VALUES ("jupyter_group", "<%= node['hops']['group'] %>");
