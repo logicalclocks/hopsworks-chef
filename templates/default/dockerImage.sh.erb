@@ -50,6 +50,18 @@ elif [ "$1" == "gc" ] ; then
     docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
 	  docker container restart registry
 
+elif ["$1" == "delete-with-tags"]; then
+    REPO_NAME=$2
+    TAGS_STR=$3
+    read -ra TAGS <<< $(echo "$TAGS_STR" | tr ',' ' ')
+    for TAG in "${TAGS[@]}"; do
+      # get the digest
+      DIGEST=$(curl -g -k -sSL -I \
+          -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+          "https://$REGISTRY_URL/v2/$REPO_NAME/manifests/$TAG" | awk '$1 == "docker-content-digest:" { print $2 }' | tr -d $'\r')
+      # delete the manifest
+      curl -g -k -v -sSL -X DELETE "https://${REGISTRY_URL}/v2/$REPO_NAME/manifests/${DIGEST}"
+    done
 <% else -%>
 
 elif [ "$1" == "delete-acr" ] ; then
