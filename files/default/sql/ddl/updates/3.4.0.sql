@@ -38,3 +38,6 @@ CREATE TABLE `environment_history` (
                            KEY `env_project_fk` (`project`),
                            CONSTRAINT `env_project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- FSTORE-866: Add option to deprecate a feature group
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `deprecated` BOOLEAN DEFAULT FALSE;

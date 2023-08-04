@@ -282,6 +282,7 @@ CREATE TABLE `feature_group` (
                                  `stream_feature_group_id` INT(11) NULL,
                                  `event_time` VARCHAR(63) DEFAULT NULL,
                                  `online_enabled` TINYINT(1) NULL,
+                                 `deprecated` BOOLEAN DEFAULT FALSE,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
