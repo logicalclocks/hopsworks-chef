@@ -50,7 +50,7 @@ elif [ "$1" == "gc" ] ; then
     docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml -m
 	  docker container restart registry
 
-elif ["$1" == "delete-with-tags"]; then
+elif [ "$1" == "delete-with-tags" ] ; then
     REPO_NAME=$2
     TAGS_STR=$3
     read -ra TAGS <<< $(echo "$TAGS_STR" | tr ',' ' ')
