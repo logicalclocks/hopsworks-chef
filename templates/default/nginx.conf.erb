@@ -17,7 +17,7 @@ stream {
   upstream hopsworks {
     least_conn;
     <% @glassfish_nodes.each do |ipaddress, instance_name| %>
-     server <%= "#{ipaddress}:#{node['hopsworks']['internal']['port']} max_fails=3 fail_timeout=5s;" %>
+     server <%= "#{ipaddress}:#{node['hopsworks']['https']['port']} max_fails=3 fail_timeout=5s;" %>
     <% end %>
   }
 
