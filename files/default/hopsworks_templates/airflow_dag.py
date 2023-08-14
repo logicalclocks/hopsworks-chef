@@ -44,7 +44,7 @@ dag = DAG(
     dag_id = "${dag.id}",
     default_args = args,
     access_control = {
-        "${dag.project_name}": {"can_dag_read", "can_dag_edit"},
+        "${dag.projectName}": {"can_dag_read", "can_dag_edit"},
     }
 
     # Run the DAG only one time
