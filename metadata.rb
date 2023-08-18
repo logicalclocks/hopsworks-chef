@@ -16,7 +16,6 @@ depends 'compat_resource', '~> 12.19.0'
 depends 'authbind', '~> 0.1.10'
 depends 'ntp', '~> 2.0.0'
 depends 'sysctl', '~> 1.0.3'
-depends 'ulimit2', '~> 0.2.0'
 depends 'seven_zip', '~> 3.2.0'
 depends 'conda'
 depends 'kagent'
@@ -35,7 +34,6 @@ depends 'hopsmonitor'
 depends 'hops_airflow'
 depends 'hive2'
 depends 'consul'
-depends 'ulimit'
 depends 'glassfish'
 depends 'kube-hops'
 depends 'onlinefs'
@@ -783,15 +781,6 @@ attribute "glassfish/reschedule_failed_timer",
 attribute "glassfish/http/request-timeout-seconds",
         :description => "timeout, in seconds, for requests. A value of -1 will disable it. (default 3600)",
         :type => 'string'
-
-# kagent liveness monitor configuration
-attribute "hopsworks/kagent_liveness/enabled",
-          :description => "Enables kagent service monitoring and restart",
-          :type => 'string'
-
-attribute "hopsworks/kagent_liveness/threshold",
-          :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
-          :type => 'string'
 
 # Online featurestore jdbc connection details
 attribute "featurestore/jdbc_url",
