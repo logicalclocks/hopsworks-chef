@@ -3,3 +3,10 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_threshold';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_monitor_enabled';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("airflow_user", "<%= node['airflow']['user'] %>", 1);
+
+INSERT INTO `hopsworks`.`users`
+(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+  ('<%= node['airflow']['user'] %>', '<%= @airflow_password %>', '<%= node['airflow']['hopsworks']['email'] %>', 'Airflow', 'Server', '2023-08-30 00:01:00', 'Mr', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2023-08-30 00:03:00', NULL, 2, 30, 0, 3, '<%= @airföw_salt %>')
+  ON DUPLICATE KEY UPDATE `username`="airflow";
+
+INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='airflow';
