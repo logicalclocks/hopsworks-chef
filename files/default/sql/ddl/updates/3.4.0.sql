@@ -51,3 +51,6 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
     UNIQUE KEY `job_id` (`job_id`),
     CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- FSTORE-866: Add option to deprecate a feature group
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `deprecated` BOOLEAN DEFAULT FALSE;
