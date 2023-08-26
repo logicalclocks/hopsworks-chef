@@ -83,13 +83,7 @@ REPLACE INTO variables(`id`, `value`) VALUES ("epipe_ip", "<%= @epipe_ip %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("livy_ip", "<%= @livy_ip %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
-
 REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_port", "<%= node['hops']['rm']['http_port'] %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("file_preview_image_size", "<%= node['hopsworks']['file_preview_image_size'] %>");
 
