@@ -37,13 +37,6 @@ rescue
   Chef::Log.warn "could not find the kibana server ip!"
 end
 
-begin
-  python_kernel = "#{node['jupyter']['python']}".downcase
-rescue
-  python_kernel = "true"
-  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
-end
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -286,7 +279,6 @@ for version in versions do
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
          :kibana_ip => kibana_ip,
-         :python_kernel => python_kernel,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
