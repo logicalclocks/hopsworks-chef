@@ -282,6 +282,7 @@ CREATE TABLE `feature_group` (
                                  `stream_feature_group_id` INT(11) NULL,
                                  `event_time` VARCHAR(63) DEFAULT NULL,
                                  `online_enabled` TINYINT(1) NULL,
+                                 `deprecated` BOOLEAN DEFAULT FALSE,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
@@ -2256,6 +2257,19 @@ CREATE TABLE `serving_key` (
                                KEY `feature_group_id` (`feature_group_id`),
                                CONSTRAINT `feature_view_serving_key_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                CONSTRAINT `feature_group_serving_key_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `job_schedule` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `job_id` int NOT NULL,
+    `start_date_time` timestamp NOT NULL,
+    `end_date_time` timestamp,
+    `enabled` BOOLEAN NOT NULL,
+    `cron_expression` varchar(500) NOT NULL,
+    `next_execution_date_time` timestamp,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `job_id` (`job_id`),
+    CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE `command_search_fs` (
