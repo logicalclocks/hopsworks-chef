@@ -78,20 +78,6 @@ template timerTablePath do
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end
 
-require 'resolv'
-hostf = Resolv::Hosts.new
-dns = Resolv::DNS.new
-
-hosts = ""
-
-for h in node['kagent']['default']['private_ips']
-  hname = resolve_hostname(h)
-  hosts += "('" + hname.to_s + "','" + h + "')" + ","
-end
-if h.length > 0
-  hosts = hosts.chop!
-end
-
 hops_rpc_tls_val = "false"
 if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
@@ -300,7 +286,6 @@ for version in versions do
     variables({
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
-         :hosts => hosts,
          :elastic_ip => elastic_ips,
          :yarn_ui_ip => public_recipe_ip("hops","rm"),
          :hdfs_ui_ip => public_recipe_ip("hops","nn"),
