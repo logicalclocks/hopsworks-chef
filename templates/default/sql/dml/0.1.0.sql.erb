@@ -53,11 +53,6 @@ REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
 REPLACE INTO variables(`id`, `value`) VALUES ("twofactor_auth", "<%= node['hopsworks']['twofactor_auth'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("twofactor-excluded-groups", "<%= node['hopsworks']['twofactor_exclude_groups'] %>");
 
--- kmon
-
-INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDATE cores=NULL;
-
-
 -- --------------------------------------------------------
 --
 -- Default settings
