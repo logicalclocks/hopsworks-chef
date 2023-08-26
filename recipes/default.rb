@@ -44,7 +44,6 @@ rescue
   Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
 end
 
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -81,11 +80,6 @@ end
 hops_rpc_tls_val = "false"
 if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
-end
-
-hdfs_ui_port = node['hops']['nn']['http_port']
-if node['hops']['tls']['enabled'].eql? "true"
-  hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
 condaRepo = 'defaults'
@@ -287,9 +281,6 @@ for version in versions do
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
          :elastic_ip => elastic_ips,
-         :yarn_ui_ip => public_recipe_ip("hops","rm"),
-         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-         :hdfs_ui_port => hdfs_ui_port,
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
