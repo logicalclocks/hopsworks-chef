@@ -3,3 +3,5 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_threshold';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_monitor_enabled';
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("airflow_user", "<%= node['airflow']['user'] %>", 1);
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='kibana_ip';

@@ -31,13 +31,6 @@ rescue
 end
 
 begin
-  kibana_ip = private_recipe_ip("hopslog","default")
-rescue
-  kibana_ip = node['hostname']
-  Chef::Log.warn "could not find the kibana server ip!"
-end
-
-begin
   python_kernel = "#{node['jupyter']['python']}".downcase
 rescue
   python_kernel = "true"
@@ -309,7 +302,6 @@ for version in versions do
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
-         :kibana_ip => kibana_ip,
          :python_kernel => python_kernel,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
