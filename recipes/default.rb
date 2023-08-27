@@ -86,11 +86,6 @@ if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
 end
 
-
-# Hive metastore should be created before the hopsworks tables are created
-# Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
-include_recipe "hive2::db"
-
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
 # Ignore patch versions starting from version 3.0.0
