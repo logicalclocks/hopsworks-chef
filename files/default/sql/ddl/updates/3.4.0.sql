@@ -89,3 +89,4 @@ ALTER TABLE `hopsworks`.`cached_feature_group` DROP COLUMN `offline_feature_grou
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP FOREIGN KEY `stream_fg_hive_fk`;
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP KEY `stream_fg_hive_fk`;
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP COLUMN `offline_feature_group`;
+ALTER TABLE `hopsworks`.`stream_feature_group` ADD COLUMN `timetravel_format` INT NOT NULL DEFAULT 1;

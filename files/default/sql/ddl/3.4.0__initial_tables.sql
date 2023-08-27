@@ -1771,6 +1771,7 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 --
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
+                                                      `timetravel_format`              INT NOT NULL DEFAULT 1,
                                                       PRIMARY KEY (`id`)
 )
 ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
