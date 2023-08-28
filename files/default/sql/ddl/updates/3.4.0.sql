@@ -90,3 +90,6 @@ ALTER TABLE `hopsworks`.`stream_feature_group` DROP FOREIGN KEY `stream_fg_hive_
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP KEY `stream_fg_hive_fk`;
 ALTER TABLE `hopsworks`.`stream_feature_group` DROP COLUMN `offline_feature_group`;
 ALTER TABLE `hopsworks`.`stream_feature_group` ADD COLUMN `timetravel_format` INT NOT NULL DEFAULT 1;
+
+-- HWORKS-705: Chef should not pre-register the hosts
+ALTER TABLE `hopsworks`.`hosts` MODIFY COLUMN `num_gpus` tinyint(1) DEFAULT '0';
