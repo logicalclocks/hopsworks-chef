@@ -54,3 +54,6 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
 
 -- FSTORE-866: Add option to deprecate a feature group
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `deprecated` BOOLEAN DEFAULT FALSE;
+
+-- HWORKS-705: Chef should not pre-register the hosts
+ALTER TABLE `hopsworks`.`hosts` MODIFY COLUMN `num_gpus` tinyint(1) DEFAULT '0';
