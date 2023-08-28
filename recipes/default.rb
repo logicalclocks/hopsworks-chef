@@ -37,14 +37,6 @@ rescue
   Chef::Log.warn "could not find the kibana server ip!"
 end
 
-begin
-  python_kernel = "#{node['jupyter']['python']}".downcase
-rescue
-  python_kernel = "true"
-  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
-end
-
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -78,28 +70,9 @@ template timerTablePath do
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end
 
-require 'resolv'
-hostf = Resolv::Hosts.new
-dns = Resolv::DNS.new
-
-hosts = ""
-
-for h in node['kagent']['default']['private_ips']
-  hname = resolve_hostname(h)
-  hosts += "('" + hname.to_s + "','" + h + "')" + ","
-end
-if h.length > 0
-  hosts = hosts.chop!
-end
-
 hops_rpc_tls_val = "false"
 if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
-end
-
-hdfs_ui_port = node['hops']['nn']['http_port']
-if node['hops']['tls']['enabled'].eql? "true"
-  hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
 condaRepo = 'defaults'
@@ -300,17 +273,12 @@ for version in versions do
     variables({
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
-         :hosts => hosts,
          :elastic_ip => elastic_ips,
-         :yarn_ui_ip => public_recipe_ip("hops","rm"),
-         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-         :hdfs_ui_port => hdfs_ui_port,
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
          :kibana_ip => kibana_ip,
-         :python_kernel => python_kernel,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
