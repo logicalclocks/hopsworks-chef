@@ -276,6 +276,7 @@ CREATE TABLE `feature_group` (
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                  `creator` int(11) NOT NULL,
                                  `version` int(11) NOT NULL,
+                                 `description` VARCHAR(1000) NULL,
                                  `feature_group_type` INT(11) NOT NULL DEFAULT '0',
                                  `on_demand_feature_group_id` INT(11) NULL,
                                  `cached_feature_group_id` INT(11) NULL,
@@ -348,11 +349,8 @@ CREATE TABLE `feature_store` (
                                  `name` varchar(100) COLLATE latin1_general_cs NOT NULL,
                                  `project_id` int(11) NOT NULL,
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-                                 `hive_db_id` bigint(20) NOT NULL,
                                  PRIMARY KEY (`id`),
                                  KEY `project_id` (`project_id`),
-                                 KEY `hive_db_id` (`hive_db_id`),
-                                 CONSTRAINT `FK_368_663` FOREIGN KEY (`hive_db_id`) REFERENCES `metastore`.`DBS` (`DB_ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                  CONSTRAINT `FK_883_662` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=67 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1755,7 +1753,6 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
                                                          `id`                      INT(11)         NOT NULL AUTO_INCREMENT,
                                                          `query`                   VARCHAR(26000),
                                                          `connector_id`            INT(11)         NULL,
-                                                         `description`             VARCHAR(1000)   NULL,
                                                          `data_format`             VARCHAR(10),
                                                          `path`                    VARCHAR(1000),
                                                          `spine`                  TINYINT(1) NOT NULL DEFAULT 0,
@@ -1766,12 +1763,8 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
 
 CREATE TABLE IF NOT EXISTS `cached_feature_group` (
                                                       `id`                             INT(11)         NOT NULL AUTO_INCREMENT,
-                                                      `offline_feature_group`          BIGINT(20)      NOT NULL,
                                                       `timetravel_format`              INT NOT NULL DEFAULT 1,
-                                                      PRIMARY KEY (`id`),
-                                                      CONSTRAINT `cached_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`)
-                                                          ON DELETE CASCADE
-                                                          ON UPDATE NO ACTION
+                                                      PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 --
@@ -1779,9 +1772,8 @@ CREATE TABLE IF NOT EXISTS `cached_feature_group` (
 --
 CREATE TABLE IF NOT EXISTS `stream_feature_group` (
                                                       `id`                             INT(11) NOT NULL AUTO_INCREMENT,
-                                                      `offline_feature_group`          BIGINT(20) NOT NULL,
-                                                      PRIMARY KEY (`id`),
-                                                      CONSTRAINT `stream_fg_hive_fk` FOREIGN KEY (`offline_feature_group`) REFERENCES `metastore`.`TBLS` (`TBL_ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                                      `timetravel_format`              INT NOT NULL DEFAULT 1,
+                                                      PRIMARY KEY (`id`)
 )
 ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
