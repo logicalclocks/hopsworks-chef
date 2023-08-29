@@ -221,7 +221,6 @@ default['hopsworks']['nonconda_hosts']               = ""
 # Jupyter
 #
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
-default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 # because loadbalancer does not support https

@@ -39,6 +39,25 @@ CREATE TABLE `environment_history` (
                            CONSTRAINT `env_project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `job_schedule` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `job_id` int NOT NULL,
+    `start_date_time` timestamp NOT NULL,
+    `end_date_time` timestamp,
+    `enabled` BOOLEAN NOT NULL,
+    `cron_expression` varchar(500) NOT NULL,
+    `next_execution_date_time` timestamp,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `job_id` (`job_id`),
+    CONSTRAINT `fk_schedule_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- FSTORE-866: Add option to deprecate a feature group
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `deprecated` BOOLEAN DEFAULT FALSE;
+
+-- HWORKS-705: Chef should not pre-register the hosts
+ALTER TABLE `hopsworks`.`hosts` MODIFY COLUMN `num_gpus` tinyint(1) DEFAULT '0';
+
 -- FSTORE-952: Single Kafka topic per project
 ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
 
