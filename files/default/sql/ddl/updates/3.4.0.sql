@@ -128,10 +128,12 @@ CREATE TABLE `command_search_fs_history` (
 -- FSTORE-952: Single Kafka topic per project
 ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
 
-UPDATE `hopsworks`.`subjects`
-SET `subject` = REGEXP_REPLACE(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs",'$3_$4')
-WHERE REGEXP_SUBSTR(`subject`, "(.*)_(.*)_(.*)_(.*)_onlinefs");
-
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `use_project_topic` BOOLEAN DEFAULT TRUE;
 
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`subjects`
+SET `subject` = REGEXP_REPLACE(`subject`, "^(\d+)_(\d+)_(.+)_(\d+)(_onlinefs|$)",'$3_$4')
+WHERE REGEXP_SUBSTR(`subject`, "^(\d+)_(\d+)_(.+)_(\d+)(_onlinefs|$)");
+
 UPDATE `hopsworks`.`feature_group` SET `use_project_topic` = FALSE;
+SET SQL_SAFE_UPDATES = 1;
