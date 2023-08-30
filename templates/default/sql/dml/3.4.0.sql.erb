@@ -12,3 +12,9 @@ INSERT INTO `hopsworks`.`users`
 INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='airflow';
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='python_kernel';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_enable", "<%= node['hopsworks']['commands']['search_fs']['history']['enable'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_clean_period_as_ms", "<%= node['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_window_as_s", "<%= node['hopsworks']['commands']['search_fs']['history']['window_as_s'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_retry_per_clean_interval", "<%= node['hopsworks']['commands']['search_fs']['history']['retry'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_process_timer_period_as_ms", "<%= node['hopsworks']['commands']['search_fs']['process']['period_as_ms'] %>", 1);
