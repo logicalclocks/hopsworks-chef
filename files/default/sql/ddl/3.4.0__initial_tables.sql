@@ -15,6 +15,36 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS CREATE_TABLE_SPACE$$
+
+CREATE PROCEDURE CREATE_TABLE_SPACE ()
+BEGIN
+    DECLARE lc INTEGER;
+    DECLARE tc INTEGER;
+
+    SELECT count(LOGFILE_GROUP_NAME) INTO lc FROM INFORMATION_SCHEMA.FILES where LOGFILE_GROUP_NAME="lg_1";
+    IF (lc = 0) THEN
+        CREATE LOGFILE GROUP lg_1 ADD UNDOFILE 'undo_log_0.log' INITIAL_SIZE = 128M ENGINE ndbcluster;
+    ELSE
+    	select "The LogFile has already been created" as "";
+    END IF;
+
+
+    SELECT count(TABLESPACE_NAME) INTO tc FROM INFORMATION_SCHEMA.FILES where TABLESPACE_NAME="ts_1";
+    IF (tc = 0) THEN
+    	CREATE TABLESPACE ts_1 ADD datafile 'ts_1_data_file_0.dat' use LOGFILE GROUP lg_1 INITIAL_SIZE = 128M  ENGINE ndbcluster;
+    ELSE
+    	select "The DataFile has already been created" as "";
+    END IF;
+END$$
+
+DELIMITER ;
+
+CALL CREATE_TABLE_SPACE;
+
+
 --
 -- Table structure for table `account_audit`
 --

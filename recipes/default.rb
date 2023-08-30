@@ -238,6 +238,7 @@ usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
 usernamesConfiguration[:elastic] = node['elastic']['user']
 usernamesConfiguration[:kagent] = node['kagent']['user']
 usernamesConfiguration[:mysql] = node['ndb']['user']
+usernamesConfiguration[:airflow] = node['airflow']['user']
 if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
   usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
 end
@@ -245,6 +246,10 @@ end
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
+
+# encrypt airflow user poassword
+airflow_salt = SecureRandom.base64(64)
+encrypted_airflow_password = Digest::SHA256.hexdigest node['airflow']['hopsworks']['password'] + airflow_salt
 
 # Check if Kafka is to be installed 
 kafka_installed = true
@@ -283,7 +288,9 @@ for version in versions do
          :usernames_configuration => usernamesConfiguration.to_json(),
          :kafka_installed => kafka_installed,
          :apparmor_enabled => apparmor_enabled,
-         :ha_enabled => node['hopsworks'].attribute?('das_node')
+         :ha_enabled => node['hopsworks'].attribute?('das_node'),
+         :airflow_salt => airflow_salt,
+         :airflow_password => encrypted_airflow_password
     })
     action :create
   end
