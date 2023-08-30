@@ -10,3 +10,5 @@ INSERT INTO `hopsworks`.`users`
   ON DUPLICATE KEY UPDATE `username`="airflow";
 
 INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='airflow';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='python_kernel';
