@@ -154,12 +154,15 @@ CREATE TABLE `feature_store_keyword` (
 -- FSTORE-952: Single Kafka topic per project
 ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
 
-ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `use_project_topic` BOOLEAN DEFAULT TRUE;
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(50) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(50) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`subjects`
 SET `subject` = REGEXP_REPLACE(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)",'$3_$4')
 WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
 
-UPDATE `hopsworks`.`feature_group` SET `use_project_topic` = FALSE;
+UPDATE `hopsworks`.`feature_group` `fg`
+    JOIN `hopsworks`.`feature_store` `fs` ON `fg`.`feature_store_id` = `fs`.`id`
+SET `fg`.`topic_name` = CONCAT(fs.project_id, "_", fg.id, "_", fg.name, "_", fg.version, IF(fg.online_enabled , "_onlinefs", ""));
 SET SQL_SAFE_UPDATES = 1;
