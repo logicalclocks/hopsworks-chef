@@ -53,11 +53,6 @@ REPLACE INTO `user_group` (`uid`, `gid`) VALUES (10001, 1007);
 REPLACE INTO variables(`id`, `value`) VALUES ("twofactor_auth", "<%= node['hopsworks']['twofactor_auth'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("twofactor-excluded-groups", "<%= node['hopsworks']['twofactor_exclude_groups'] %>");
 
--- kmon
-
-INSERT INTO hosts(hostname, host_ip) VALUES <%= @hosts %> ON DUPLICATE KEY UPDATE cores=NULL;
-
-
 -- --------------------------------------------------------
 --
 -- Default settings
@@ -72,29 +67,7 @@ REPLACE INTO variables(`id`, `value`) VALUES
 
 REPLACE INTO variables(`id`, `value`) VALUES ("max_num_proj_per_user", "<%= node['hopsworks']['max_num_proj_per_user'] %>");
 
-REPLACE INTO variables(`id`, `value`) VALUES ("spark_history_server_ip", "<%= @spark_history_server_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("oozie_ip", "<%= @oozie_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("jhs_ip", "<%= @jhs_ip %>");
-
 REPLACE INTO variables(`id`, `value`) VALUES ("hadoop_version", "<%= @hops_version %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("rm_ip", "<%= @rm_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("rm_port", "<%= @rm_port %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("epipe_ip", "<%= @epipe_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("livy_ip", "<%= @livy_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_ip", "<%= @yarn_ui_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("yarn_ui_port", "<%= node['hops']['rm']['http_port'] %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_ip", "<%= @hdfs_ui_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("hdfs_ui_port", "<%= @hdfs_ui_port %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("file_preview_image_size", "<%= node['hopsworks']['file_preview_image_size'] %>");
 
@@ -115,10 +88,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("spark_user", "<%= node['hadoop_sp
 REPLACE INTO variables(`id`, `value`) VALUES ("flink_user", "<%= node['flink']['user'] %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("kafka_user", "<%= node['kkafka']['user'] %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("zk_ip", "<%= @zk_ip %>");
-
-REPLACE INTO variables(`id`, `value`) VALUES ("kafka_ip", "<%= @kafka_ip %>");
 
 REPLACE INTO variables(`id`, `value`) VALUES ("kafka_num_partitions", "<%= node['hopsworks']['kafka_num_partitions'] %>");
 
@@ -182,8 +151,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("logstash_port", "<%= @logstash_po
 --
 -- pyspark, python
 --
-REPLACE INTO variables(`id`, `value`) VALUES ("python_kernel", "<%= @python_kernel %>");
-
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");

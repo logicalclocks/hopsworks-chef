@@ -5,3 +5,18 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_monitor_enabled'
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("airflow_user", "<%= node['airflow']['user'] %>", 1);
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kibana_ip';
+
+INSERT INTO `hopsworks`.`users`
+(`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
+  ('<%= node['airflow']['user'] %>', '<%= @airflow_password %>', '<%= node['airflow']['hopsworks']['email'] %>', 'Airflow', 'Server', '2023-08-30 00:01:00', 'Mr', -1, 0, 'V3WBPS4G2WMQ53VA', NULL, 0, '2023-08-30 00:03:00', NULL, 2, 30, 0, 3, '<%= @airflow_salt %>')
+  ON DUPLICATE KEY UPDATE `username`="airflow";
+
+INSERT IGNORE INTO `hopsworks`.`user_group` (`uid`, `gid`) SELECT `uid`, 1007 FROM `hopsworks`.`users` WHERE `username`='airflow';
+
+DELETE FROM `hopsworks`.`variables` WHERE `id`='python_kernel';
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_enable", "<%= node['hopsworks']['commands']['search_fs']['history']['enable'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_clean_period_as_ms", "<%= node['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_history_window_as_s", "<%= node['hopsworks']['commands']['search_fs']['history']['window_as_s'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_retry_per_clean_interval", "<%= node['hopsworks']['commands']['search_fs']['history']['retry'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("command_search_fs_process_timer_period_as_ms", "<%= node['hopsworks']['commands']['search_fs']['process']['period_as_ms'] %>", 1);
