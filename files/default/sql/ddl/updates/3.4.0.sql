@@ -132,8 +132,8 @@ ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `use_project_topic` BOOLEAN D
 
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`subjects`
-SET `subject` = REGEXP_REPLACE(`subject`, "^(\d+)_(\d+)_(.+)_(\d+)(_onlinefs|$)",'$3_$4')
-WHERE REGEXP_SUBSTR(`subject`, "^(\d+)_(\d+)_(.+)_(\d+)(_onlinefs|$)");
+SET `subject` = REGEXP_REPLACE(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)",'$3_$4')
+WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
 
 UPDATE `hopsworks`.`feature_group` SET `use_project_topic` = FALSE;
 SET SQL_SAFE_UPDATES = 1;
