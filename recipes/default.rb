@@ -31,11 +31,6 @@ rescue
 end
 
 begin
-  kibana_ip = private_recipe_ip("hopslog","default")
-rescue
-  kibana_ip = node['hostname']
-  Chef::Log.warn "could not find the kibana server ip!"
-end
 
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
@@ -278,7 +273,6 @@ for version in versions do
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
-         :kibana_ip => kibana_ip,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
