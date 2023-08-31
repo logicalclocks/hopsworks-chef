@@ -2325,3 +2325,29 @@ CREATE TABLE `command_search_fs_history` (
   `error_message` varchar(10000),
   PRIMARY KEY (`h_id`)
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_store_tag_value` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `schema_id` int(11) NOT NULL,
+  `feature_group_id` int(11),
+  `feature_view_id` int(11),
+  `training_dataset_id` int(11),
+  `value` VARCHAR(29000) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_fs_tag_value_schema` FOREIGN KEY (`schema_id`) REFERENCES `feature_store_tag` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fs_tag_value_fg` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fs_tag_value_fv` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fs_tag_value_td` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE `feature_store_keyword` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `feature_group_id` int(11),
+  `feature_view_id` int(11),
+  `training_dataset_id` int(11),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_fs_keyword_fg` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fs_keyword_fv` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fs_keyword_td` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
