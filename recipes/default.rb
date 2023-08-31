@@ -30,8 +30,6 @@ rescue
   Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
 end
 
-begin
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
