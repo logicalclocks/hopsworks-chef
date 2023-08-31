@@ -154,8 +154,8 @@ CREATE TABLE `feature_store_keyword` (
 -- FSTORE-952: Single Kafka topic per project
 ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
 
-ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(50) DEFAULT NULL;
-ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(50) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
 UPDATE `hopsworks`.`subjects`
