@@ -5,6 +5,7 @@ DELETE FROM `hopsworks`.`variables` WHERE `id`='kagent_liveness_monitor_enabled'
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("airflow_user", "<%= node['airflow']['user'] %>", 1);
 
 DELETE FROM `hopsworks`.`variables` WHERE `id`='kibana_ip';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='elastic_ip';
 
 INSERT INTO `hopsworks`.`users`
 (`username`, `password`, `email`, `fname`, `lname`, `activated`, `title`, `false_login`, `isonline`, `secret`, `validation_key`, `mode`, `password_changed`, `notes`, `status`, `max_num_projects`, `two_factor`, `tours_state` , `salt`) VALUES
