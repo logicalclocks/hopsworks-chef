@@ -23,13 +23,6 @@ public_ip=my_public_ip()
 realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
-begin
-  elastic_ips = all_elastic_ips_str()
-rescue
-  elastic_ips = ""
-  Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
-end
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -266,7 +259,6 @@ for version in versions do
     variables({
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
-         :elastic_ip => elastic_ips,
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
