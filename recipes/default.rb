@@ -23,28 +23,6 @@ public_ip=my_public_ip()
 realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
-begin
-  elastic_ips = all_elastic_ips_str()
-rescue
-  elastic_ips = ""
-  Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
-end
-
-begin
-  kibana_ip = private_recipe_ip("hopslog","default")
-rescue
-  kibana_ip = node['hostname']
-  Chef::Log.warn "could not find the kibana server ip!"
-end
-
-begin
-  python_kernel = "#{node['jupyter']['python']}".downcase
-rescue
-  python_kernel = "true"
-  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
-end
-
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -78,28 +56,9 @@ template timerTablePath do
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end
 
-require 'resolv'
-hostf = Resolv::Hosts.new
-dns = Resolv::DNS.new
-
-hosts = ""
-
-for h in node['kagent']['default']['private_ips']
-  hname = resolve_hostname(h)
-  hosts += "('" + hname.to_s + "','" + h + "')" + ","
-end
-if h.length > 0
-  hosts = hosts.chop!
-end
-
 hops_rpc_tls_val = "false"
 if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
-end
-
-hdfs_ui_port = node['hops']['nn']['http_port']
-if node['hops']['tls']['enabled'].eql? "true"
-  hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
 condaRepo = 'defaults'
@@ -112,11 +71,6 @@ end
 if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
 end
-
-
-# Hive metastore should be created before the hopsworks tables are created
-# Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
-include_recipe "hive2::db"
 
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
@@ -270,6 +224,7 @@ usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
 usernamesConfiguration[:elastic] = node['elastic']['user']
 usernamesConfiguration[:kagent] = node['kagent']['user']
 usernamesConfiguration[:mysql] = node['ndb']['user']
+usernamesConfiguration[:airflow] = node['airflow']['user']
 if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
   usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
 end
@@ -277,6 +232,10 @@ end
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
+
+# encrypt airflow user poassword
+airflow_salt = SecureRandom.base64(64)
+encrypted_airflow_password = Digest::SHA256.hexdigest node['airflow']['hopsworks']['password'] + airflow_salt
 
 # Check if Kafka is to be installed 
 kafka_installed = true
@@ -300,17 +259,10 @@ for version in versions do
     variables({
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
-         :hosts => hosts,
-         :elastic_ip => elastic_ips,
-         :yarn_ui_ip => public_recipe_ip("hops","rm"),
-         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-         :hdfs_ui_port => hdfs_ui_port,
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
-         :kibana_ip => kibana_ip,
-         :python_kernel => python_kernel,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
@@ -320,7 +272,9 @@ for version in versions do
          :usernames_configuration => usernamesConfiguration.to_json(),
          :kafka_installed => kafka_installed,
          :apparmor_enabled => apparmor_enabled,
-         :ha_enabled => node['hopsworks'].attribute?('das_node')
+         :ha_enabled => node['hopsworks'].attribute?('das_node'),
+         :airflow_salt => airflow_salt,
+         :airflow_password => encrypted_airflow_password
     })
     action :create
   end

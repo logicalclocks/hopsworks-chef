@@ -221,7 +221,6 @@ default['hopsworks']['nonconda_hosts']               = ""
 # Jupyter
 #
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
-default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 # because loadbalancer does not support https
@@ -508,3 +507,9 @@ default['hopsworks']['loadbalancer_external_domain'] = ""
 # jupyter hopsfs mount
 default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
 default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
+
+default['hopsworks']['commands']['search_fs']['history']['enable'] = "false"
+default['hopsworks']['commands']['search_fs']['history']['window_as_s'] = 3600
+default['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] = 3600000
+default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
+default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
