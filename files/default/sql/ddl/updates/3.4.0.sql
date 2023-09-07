@@ -150,3 +150,19 @@ CREATE TABLE `feature_store_keyword` (
   CONSTRAINT `fk_fs_keyword_fv` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_fs_keyword_td` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- FSTORE-952: Single Kafka topic per project
+ALTER TABLE `hopsworks`.`project_topics` MODIFY COLUMN `subject_id` int(11) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `hopsworks`.`subjects`
+SET `subject` = REGEXP_REPLACE(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)",'$3_$4')
+WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
+
+UPDATE `hopsworks`.`feature_group` `fg`
+    JOIN `hopsworks`.`feature_store` `fs` ON `fg`.`feature_store_id` = `fs`.`id`
+SET `fg`.`topic_name` = CONCAT(fs.project_id, "_", fg.id, "_", fg.name, "_", fg.version, IF(fg.online_enabled , "_onlinefs", ""));
+SET SQL_SAFE_UPDATES = 1;
