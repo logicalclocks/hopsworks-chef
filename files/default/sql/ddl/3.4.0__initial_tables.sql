@@ -1290,6 +1290,7 @@ CREATE TABLE `training_dataset_feature` (
                                             `td_join`int(11) NULL,
                                             `idx` int(11) NULL,
                                             `label` tinyint(1) NOT NULL DEFAULT '0',
+                                            `helper_column` tinyint(1) NOT NULL DEFAULT '0',
                                             `transformation_function`  int(11) NULL,
                                             `feature_view_id` INT(11) NULL,
                                             PRIMARY KEY (`id`),
