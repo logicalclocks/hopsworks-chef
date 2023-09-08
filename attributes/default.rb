@@ -491,6 +491,11 @@ default['hopsworks']['enable_kafka_storage_connectors'] = "true"
 default['hopsworks']['enable_gcs_storage_connectors'] = "true"
 default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
+##
+## BYOK
+##
+default['hopsworks']['enable_bring_your_own_kafka'] = "false"
+
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
 

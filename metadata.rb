@@ -991,6 +991,10 @@ attribute "hopsworks/enable_bigquery_storage_connectors",
           :description => "Whether to enable BigQuery storage connectors or not",
           :type => 'string'
 
+attribute "hopsworks/enable_bring_your_own_kafka",
+          :description => "Whether to enable bring your own kafka or not",
+          :type => 'string'
+
 attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
           :description => "Show the Python kernel in Jupyter configuration page and Jupyter interface. Only takes effect if Kubernetes is not installed. Default: false",
           :type => 'string'
