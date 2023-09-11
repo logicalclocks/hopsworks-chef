@@ -158,6 +158,12 @@ ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(255) DEF
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
+-- deletes unused topics (fg was deleted)
+DELETE
+FROM `hopsworks`.`project_topics`
+WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)")
+  AND REGEXP_REPLACE(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)", '$2') NOT IN (SELECT `feature_group`.`id` FROM `feature_group`);
+
 -- deletes unused subjects (fg was deleted)
 DELETE
 FROM `hopsworks`.`subjects`
