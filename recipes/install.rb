@@ -331,28 +331,6 @@ node.override = {
               }
             }
           },
-          'featureStorePool' => {
-            'config' => {
-              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
-              'restype' => 'javax.sql.DataSource',
-              'isconnectvalidatereq' => 'true',
-              'validationmethod' => 'auto-commit',
-              'ping' => 'true',
-              'description' => 'FeatureStore Connection Pool',
-              'properties' => {
-                'Url' => node['featurestore']['hopsworks_url'],
-                'User' => node['featurestore']['user'],
-                'Password' => node['featurestore']['password'],
-                'useSSL' => 'false',
-                'allowPublicKeyRetrieval' => 'true'
-              }
-            },
-            'resources' => {
-              'jdbc/featurestore' => {
-                'description' => 'Resource for Hopsworks Pool',
-              }
-            }
-          },
           'airflowPool' => {
             'config' => {
               'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
