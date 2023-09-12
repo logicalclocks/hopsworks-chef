@@ -556,6 +556,16 @@ if exists_local("hops_airflow", "default")
   end
 end
 
+# Drop Existing featureStore connection pool and recreate it
+glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
+  domain_name domain_name
+  password_file password_file
+  username username
+  admin_port admin_port
+  secure false
+  only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'featureStorePool$'"
+end
+
 # Drop Existing hopsworksPool connection pool and recreate it
 glassfish_asadmin "delete-jdbc-connection-pool --cascade hopsworksPool" do
   domain_name domain_name
