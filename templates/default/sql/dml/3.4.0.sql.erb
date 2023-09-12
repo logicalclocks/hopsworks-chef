@@ -24,4 +24,7 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("comma
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_bring_your_own_kafka", "<%= node['hopsworks']['enable_bring_your_own_kafka'] %>", 1);
 
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featurestore_db_admin_user", "<%= node['featurestore']['user'] %>", 0);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featurestore_db_admin_pwd", "<%= node['featurestore']['password'] %>", 0);
+
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ldap_groups_search_filter", "<%= node['ldap']['groups_search_filter'] %>");

@@ -566,23 +566,6 @@ glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'featureStorePool$'"
 end
 
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=\"#{node['featurestore']['hopsworks_url'].gsub(":", "\\:")}\":useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin_cmd} list-jdbc-resources | grep 'jdbc/featurestore$'"
-end
-
 # Drop Existing hopsworksPool connection pool and recreate it
 glassfish_asadmin "delete-jdbc-connection-pool --cascade hopsworksPool" do
   domain_name domain_name

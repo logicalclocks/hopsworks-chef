@@ -787,13 +787,6 @@ attribute "featurestore/jdbc_url",
           :description => "Url for JDBC Connection to the the Online FeatureStore",
           :type => 'string'
 
-attribute "featurestore/user",
-          :description => "User for the JDBC Connection to the the Online FeatureStore",
-          :type => 'string'
-
-attribute "featurestore/password",
-          :description => "Password for the JDBC Connection to the the Online FeatureStore"
-
 attribute "featurestore/job_activity_timer",
           :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
           :type => 'string'
