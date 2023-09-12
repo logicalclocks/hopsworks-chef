@@ -596,6 +596,10 @@ attribute "ldap/group_mapping_sync_interval",
           :description => "LDAP group mapping sync interval in hours. 0 (default)",
           :type => 'string'
 
+attribute "ldap/groups_search_filter",
+          :description => "Filter to use when looking up for groups in configured LDAP server. Default: (&(objectCategory=group)(cn=%c))",
+          :type => 'string'
+
 #
 # Kerberos
 #
