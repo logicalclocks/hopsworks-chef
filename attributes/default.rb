@@ -319,6 +319,7 @@ default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
 default['ldap']['group_mapping_sync_enabled']        = "false"
 default['ldap']['group_mapping_sync_interval']       = 0
+default['ldap']['groups_search_filter']              = "(&(objectCategory=group)(cn=%c))"
 
 # OAuth2
 default['oauth']['enabled']                          = "false"
