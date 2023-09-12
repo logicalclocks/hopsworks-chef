@@ -164,6 +164,11 @@ FROM `hopsworks`.`project_topics`
 WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)")
   AND REGEXP_REPLACE(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)", '$2') NOT IN (SELECT `feature_group`.`id` FROM `feature_group`);
 
+-- remove the foreign key to subject from data ingestion topics (henceforth not needed)
+UPDATE `hopsworks`.`project_topics`
+SET `subject_id` = NULL
+WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
+
 -- deletes unused subjects (fg was deleted)
 DELETE
 FROM `hopsworks`.`subjects`
