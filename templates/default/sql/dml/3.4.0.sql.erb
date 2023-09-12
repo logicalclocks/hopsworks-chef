@@ -26,3 +26,5 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enabl
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featurestore_db_admin_user", "<%= node['featurestore']['user'] %>", 0);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featurestore_db_admin_pwd", "<%= node['featurestore']['password'] %>", 0);
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ldap_groups_search_filter", "<%= node['ldap']['groups_search_filter'] %>");
