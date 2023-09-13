@@ -518,7 +518,7 @@ default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
 default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
 
 default['judge']['image_url'] = "#{node['download_url']}/nginx-stable-bullseye.tar"
-default['judge']['port']      = "5001"
+default['judge']['port']      = "1111"
 default['judge']['home']      = "#{node['install']['dir']}/judge"
 default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
