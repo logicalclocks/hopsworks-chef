@@ -27,12 +27,14 @@ file "#{node['judge']['logs']}/access.log" do
     owner 'root'
     group 'root'
     mode 0750
+    action :create_if_missing
 end
 
 file "#{node['judge']['logs']}/error.log" do
     owner 'root'
     group 'root'
     mode 0750
+    action :create_if_missing
 end
 
 filename = File.basename(node['judge']['image_url'])
