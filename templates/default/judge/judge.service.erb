@@ -1,0 +1,19 @@
+[Unit]
+Description = Judge service advertising which region is active
+After = network-online.target docker.service
+Requires = docker.service
+
+[Service]
+ExecStart = /usr/bin/docker run --rm --name %n \
+           -v <%= node['judge']['etc'] %>/default.conf:/etc/nginx/conf.d/default.conf:ro \
+           -v <%= node['judge']['logs'] %>/access.log:/var/log/nginx/access.log \
+           -v <%= node['judge']['logs'] %>/error.log:/var/log/nginx/error.log \
+           -p <%= node['judge']['port'] %>:<%= node['judge']['port'] %> \
+           nginx:stable-bullseye
+ExecStop = /usr/bin/docker stop %n 
+
+Restart = on-failure
+RestartSec = 2
+
+[Install]
+WantedBy = multi-user.target

@@ -1009,5 +1009,9 @@ attribute "hopsworks/loadbalancer_external_domain",
           :type => 'string'
 
 attribute "hopsworks/jupyter/remote_fs_driver",
-					:description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
-					:type => "string"
+	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+	  :type => "string"
+
+attribute "judge/port",
+          :description => "Port where the Judge service will be listening on. Default: 5001",
+          :type => 'string'
