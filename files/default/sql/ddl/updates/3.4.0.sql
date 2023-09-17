@@ -168,4 +168,5 @@ SET `fg`.`topic_name` = CONCAT(fs.project_id, "_", fg.id, "_", fg.name, "_", fg.
 SET SQL_SAFE_UPDATES = 1;
 
 -- FSTORE-980: helper columns for feature view
-ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `helper_column` tinyint(1) DEFAULT '0';
+ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `inference_helper_column` tinyint(1) DEFAULT '0';
+ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `training_helper_column` tinyint(1) DEFAULT '0';
