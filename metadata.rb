@@ -596,6 +596,10 @@ attribute "ldap/group_mapping_sync_interval",
           :description => "LDAP group mapping sync interval in hours. 0 (default)",
           :type => 'string'
 
+attribute "ldap/groups_search_filter",
+          :description => "Filter to use when looking up for groups in configured LDAP server. Default: (&(objectCategory=group)(cn=%c))",
+          :type => 'string'
+
 #
 # Kerberos
 #
@@ -782,13 +786,6 @@ attribute "glassfish/http/request-timeout-seconds",
 attribute "featurestore/jdbc_url",
           :description => "Url for JDBC Connection to the the Online FeatureStore",
           :type => 'string'
-
-attribute "featurestore/user",
-          :description => "User for the JDBC Connection to the the Online FeatureStore",
-          :type => 'string'
-
-attribute "featurestore/password",
-          :description => "Password for the JDBC Connection to the the Online FeatureStore"
 
 attribute "featurestore/job_activity_timer",
           :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
@@ -991,6 +988,10 @@ attribute "hopsworks/enable_bigquery_storage_connectors",
           :description => "Whether to enable BigQuery storage connectors or not",
           :type => 'string'
 
+attribute "hopsworks/enable_bring_your_own_kafka",
+          :description => "Whether to enable bring your own kafka or not",
+          :type => 'string'
+
 attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
           :description => "Show the Python kernel in Jupyter configuration page and Jupyter interface. Only takes effect if Kubernetes is not installed. Default: false",
           :type => 'string'
@@ -1008,5 +1009,9 @@ attribute "hopsworks/loadbalancer_external_domain",
           :type => 'string'
 
 attribute "hopsworks/jupyter/remote_fs_driver",
-					:description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
-					:type => "string"
+	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+	  :type => "string"
+
+attribute "judge/port",
+          :description => "Port where the Judge service will be listening on. Default: 5001",
+          :type => 'string'

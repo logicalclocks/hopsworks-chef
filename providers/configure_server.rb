@@ -280,7 +280,6 @@ action :glassfish_create_resource_ref do
     'concurrent/hopsScheduledExecutorService',
     'concurrent/kagentExecutorService',
     'jdbc/airflow', 
-    'jdbc/featurestore', 
     'jdbc/hopsworks', 
     'jdbc/hopsworksTimers',
     'ldap/LdapResource',

@@ -158,6 +158,18 @@ ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `topic_name` VARCHAR(255) DEF
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `topic_name` VARCHAR(255) DEFAULT NULL;
 
 SET SQL_SAFE_UPDATES = 0;
+-- deletes unused topics (fg was deleted)
+DELETE
+FROM `hopsworks`.`project_topics`
+WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)")
+  AND REGEXP_REPLACE(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)", '$2') NOT IN (SELECT `feature_group`.`id` FROM `feature_group`);
+
+-- deletes unused subjects (fg was deleted)
+DELETE
+FROM `hopsworks`.`subjects`
+WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)")
+  AND REGEXP_REPLACE(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)", '$2') NOT IN (SELECT `feature_group`.`id` FROM `feature_group`);
+
 UPDATE `hopsworks`.`subjects`
 SET `subject` = REGEXP_REPLACE(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)",'$3_$4')
 WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
@@ -166,6 +178,11 @@ UPDATE `hopsworks`.`feature_group` `fg`
     JOIN `hopsworks`.`feature_store` `fs` ON `fg`.`feature_store_id` = `fs`.`id`
 SET `fg`.`topic_name` = CONCAT(fs.project_id, "_", fg.id, "_", fg.name, "_", fg.version, IF(fg.online_enabled , "_onlinefs", ""));
 SET SQL_SAFE_UPDATES = 1;
+
+-- FSTORE-1010: Don't leave orphaned subjects when deleting online enabled fg
+UPDATE `hopsworks`.`project_topics`
+SET `subject_id` = NULL
+    WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
 
 -- FSTORE-980: helper columns for feature view
 ALTER TABLE `hopsworks`.`training_dataset_feature` ADD COLUMN `inference_helper_column` tinyint(1) DEFAULT '0';
