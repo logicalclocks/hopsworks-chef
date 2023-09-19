@@ -25,7 +25,6 @@ cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "3.4"
 cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", branch: "3.4"
 cookbook 'flyingduck', github: "logicalclocks/flyingduck-chef", branch: "3.4"
 
-cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "3.4"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "3.4"
 cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"
 cookbook 'packagecloud', '= 1.0.1'
