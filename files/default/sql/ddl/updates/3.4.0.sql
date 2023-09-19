@@ -183,3 +183,9 @@ SET SQL_SAFE_UPDATES = 1;
 UPDATE `hopsworks`.`project_topics`
 SET `subject_id` = NULL
     WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
+
+-- FSTORE-1020
+ALTER TABLE `hopsworks`.`training_dataset_filter_condition` DROP FOREIGN KEY `tdfc_feature_group_fk`;
+ALTER TABLE `hopsworks`.`training_dataset_filter_condition` ADD FOREIGN KEY `tdfc_feature_group_fk`(`feature_group_id`)
+    REFERENCES `hopsworks`.`feature_group` (`id`)
+    ON DELETE SET NULL ON UPDATE NO ACTION;
