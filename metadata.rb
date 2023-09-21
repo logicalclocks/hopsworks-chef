@@ -51,6 +51,7 @@ recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
+recipe  "hopsworks::reindex", "Reindex the featurestore search index"
 #######################################################################################
 # Required Attributes
 #######################################################################################
