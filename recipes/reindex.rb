@@ -58,6 +58,6 @@ ruby_block 'featurestore reindex' do
           raise "Hopsworks Reindex - failed"
       end
     end
-    only_if_cond node['elastic']['featurestore']['reindex'] == "true"
   end
+  only_if { node['elastic']['featurestore']['reindex'] == "true" }
 end
