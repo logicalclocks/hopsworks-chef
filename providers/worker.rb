@@ -37,8 +37,12 @@ action :add_to_services do
               start_domain_timeout: systemd_start_timeout,
               stop_domain_timeout: systemd_stop_timeout,
               authbind: new_resource.requires_authbind)
-    notifies :start, "service[#{service_name}]", :delayed
   end
+
+  kagent_config service_name do
+    action :systemd_reload
+  end
+
   if node['services']['enabled'].casecmp?("true")
     service service_name do
       supports start: true, restart: true, stop: true, status: true
