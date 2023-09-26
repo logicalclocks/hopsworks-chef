@@ -134,8 +134,6 @@ elif [ "$1" == "tag" ] ; then
     docker pull $2
     docker tag $2 $3
     docker push $3
-elif [ "$1" == "info" ] ; then
-    docker info
 else
     help
 fi
