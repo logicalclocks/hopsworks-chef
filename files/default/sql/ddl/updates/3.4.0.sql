@@ -177,9 +177,10 @@ WHERE REGEXP_SUBSTR(`subject`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
 UPDATE `hopsworks`.`feature_group` `fg`
     JOIN `hopsworks`.`feature_store` `fs` ON `fg`.`feature_store_id` = `fs`.`id`
 SET `fg`.`topic_name` = CONCAT(fs.project_id, "_", fg.id, "_", fg.name, "_", fg.version, IF(fg.online_enabled , "_onlinefs", ""));
-SET SQL_SAFE_UPDATES = 1;
 
 -- FSTORE-1010: Don't leave orphaned subjects when deleting online enabled fg
 UPDATE `hopsworks`.`project_topics`
 SET `subject_id` = NULL
     WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
+
+SET SQL_SAFE_UPDATES = 1;
