@@ -374,6 +374,7 @@ if current_version.eql?("") == false
     keep_state true
     enabled true
     secure true
+    only_if "#{asadmin_cmd} list-applications --type ejb domain | grep -w \"hopsworks-ear:#{node['hopsworks']['current_version']}\""
   end
 
   glassfish_deployable "hopsworks" do
@@ -391,6 +392,7 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
+    only_if "#{asadmin_cmd} list-applications --type web domain | grep -w \"hopsworks-web:#{node['hopsworks']['current_version']}\""
   end
 
   glassfish_deployable "hopsworks-ca" do
@@ -408,6 +410,7 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
+    only_if "#{asadmin_cmd} list-applications --type ejb domain | grep -w \"hopsworks-ca:#{node['hopsworks']['current_version']}\""
   end
 end  
 
