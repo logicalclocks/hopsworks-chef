@@ -144,7 +144,7 @@ CREATE TABLE `conda_commands` (
                                   `lib` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `version` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
-                                  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  `created` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                                   `custom_commands_file` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
