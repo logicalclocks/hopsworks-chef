@@ -432,6 +432,8 @@ default['hopsworks']['job']['executions_per_job_limit'] = "10000"
 default['hopsworks']['job']['executions_cleaner_batch_size'] = "1000"
 default['hopsworks']['job']['executions_cleaner_interval_ms'] = "600000"
 
+default['hopsworks']['job']['mount_hopsfs_in_python_job'] = "true"
+
 default['hopsworks']['enable_user_search'] = "true"
 
 default['hopsworks']['kubernetes']['api_max_attempts']        = "12"
