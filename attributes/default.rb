@@ -221,7 +221,6 @@ default['hopsworks']['nonconda_hosts']               = ""
 # Jupyter
 #
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
-default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
 # because loadbalancer does not support https
@@ -320,6 +319,7 @@ default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
 default['ldap']['group_mapping_sync_enabled']        = "false"
 default['ldap']['group_mapping_sync_interval']       = 0
+default['ldap']['groups_search_filter']              = "(&(objectCategory=group)(cn=%c))"
 
 # OAuth2
 default['oauth']['enabled']                          = "false"
@@ -388,9 +388,6 @@ default['glassfish']['http']['request-timeout-seconds']   = "3600"
 #
 
 default['featurestore']['jdbc_url']             = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}/"
-default['featurestore']['hopsworks_url']        = "jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-default['featurestore']['user']                 = node['mysql']['user']
-default['featurestore']['password']             = node['mysql']['password']
 default['featurestore']['job_activity_timer']   = "5m"
 
 # hops-util-py
@@ -492,6 +489,11 @@ default['hopsworks']['enable_kafka_storage_connectors'] = "true"
 default['hopsworks']['enable_gcs_storage_connectors'] = "true"
 default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
+##
+## BYOK
+##
+default['hopsworks']['enable_bring_your_own_kafka'] = "false"
+
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
 
@@ -508,3 +510,15 @@ default['hopsworks']['loadbalancer_external_domain'] = ""
 # jupyter hopsfs mount
 default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
 default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
+
+default['hopsworks']['commands']['search_fs']['history']['enable'] = "false"
+default['hopsworks']['commands']['search_fs']['history']['window_as_s'] = 3600
+default['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] = 3600000
+default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
+default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
+
+default['judge']['image_url'] = "#{node['download_url']}/nginx-stable-bullseye.tar"
+default['judge']['port']      = "1111"
+default['judge']['home']      = "#{node['install']['dir']}/judge"
+default['judge']['etc']       = "#{node['judge']['home']}/etc"
+default['judge']['logs']      = "#{node['judge']['home']}/logs"
