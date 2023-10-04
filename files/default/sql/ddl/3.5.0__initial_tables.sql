@@ -703,6 +703,10 @@ CREATE TABLE `oauth_client` (
                                 `code_challenge` tinyint(1) NOT NULL DEFAULT '0',
                                 `code_challenge_method` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
                                 `verify_email` tinyint(1) NOT NULL DEFAULT '0',
+                                `given_name_claim` varchar(256) COLLATE latin1_general_cs DEFAULT NULL,
+                                `family_name_claim` varchar(256) COLLATE latin1_general_cs DEFAULT NULL,
+                                `email_claim` varchar(256) COLLATE latin1_general_cs DEFAULT NULL,
+                                `group_claim` varchar(256) COLLATE latin1_general_cs DEFAULT NULL,
                                 PRIMARY KEY (`id`),
                                 UNIQUE KEY `client_id_UNIQUE` (`client_id`),
                                 UNIQUE KEY `provider_name_UNIQUE` (`provider_name`)
