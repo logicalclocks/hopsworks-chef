@@ -5,3 +5,5 @@ ALTER TABLE `hopsworks`.`training_dataset_filter_condition` ADD FOREIGN KEY `tdf
     ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE `hopsworks`.`conda_commands` MODIFY COLUMN `created` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+DROP TABLE `hopsworks`.`pia`;

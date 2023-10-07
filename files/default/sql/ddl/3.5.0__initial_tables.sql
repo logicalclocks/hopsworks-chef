@@ -774,38 +774,6 @@ CREATE TABLE `ops_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `pia`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pia` (
-                       `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                       `project_id` int(11) DEFAULT NULL,
-                       `personal_data` varchar(4000) COLLATE latin1_general_cs NOT NULL,
-                       `how_data_collected` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-                       `specified_explicit_legitimate` int(11) NOT NULL DEFAULT '0',
-                       `consent_process` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
-                       `consent_basis` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
-                       `data_minimized` int(11) NOT NULL DEFAULT '0',
-                       `data_uptodate` int(11) NOT NULL DEFAULT '0',
-                       `users_informed_how` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `user_controls_data_collection_retention` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `data_encrypted` int(11) NOT NULL DEFAULT '0',
-                       `data_anonymized` int(11) NOT NULL DEFAULT '0',
-                       `data_pseudonymized` int(11) NOT NULL DEFAULT '0',
-                       `data_backedup` int(11) NOT NULL DEFAULT '0',
-                       `data_security_measures` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `data_portability_measure` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `subject_access_rights` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `risks` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-                       PRIMARY KEY (`id`),
-                       KEY `project_id` (`project_id`),
-                       CONSTRAINT `FK_284_353` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `project`
 --
 
