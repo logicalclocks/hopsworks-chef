@@ -5,3 +5,8 @@ ALTER TABLE `hopsworks`.`training_dataset_filter_condition` ADD FOREIGN KEY `tdf
     ON DELETE SET NULL ON UPDATE NO ACTION;
 
 ALTER TABLE `hopsworks`.`conda_commands` MODIFY COLUMN `created` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+ALTER TABLE `hopsworks`.`oauth_client` ADD COLUMN `given_name_claim` VARCHAR(255) NOT NULL DEFAULT 'given_name';
+ALTER TABLE `hopsworks`.`oauth_client` ADD COLUMN `family_name_claim` VARCHAR(255) NOT NULL DEFAULT 'family_name';
+ALTER TABLE `hopsworks`.`oauth_client` ADD COLUMN `email_claim` VARCHAR(255) NOT NULL DEFAULT 'email';
+ALTER TABLE `hopsworks`.`oauth_client` ADD COLUMN `group_claim` VARCHAR(255) DEFAULT NULL;
