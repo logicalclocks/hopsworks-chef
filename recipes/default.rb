@@ -507,6 +507,21 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
  not_if "#{asadmin_cmd} list-managed-executor-services | grep 'kagent'"
 end
 
+if exists_local("hops_airflow", "default")
+  # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
+  # connection pool for Airflow
+
+  # Drop Existing airflowPool connection pool and recreate it
+  glassfish_asadmin "delete-jdbc-connection-pool --cascade airflowPool" do
+    domain_name domain_name
+    password_file password_file
+    username username
+    admin_port admin_port
+    secure false
+    only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'airflowPool$'"
+  end
+end
+
 # Drop Existing featureStore connection pool and recreate it
 glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   domain_name domain_name
