@@ -507,9 +507,7 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
  not_if "#{asadmin_cmd} list-managed-executor-services | grep 'kagent'"
 end
 
-airflow_exists = false
 if exists_local("hops_airflow", "default")
-  airflow_exists = true
   # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
   # connection pool for Airflow
 
@@ -521,23 +519,6 @@ if exists_local("hops_airflow", "default")
     admin_port admin_port
     secure false
     only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'airflowPool$'"
-  end
-
-  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true airflowPool" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-  end
-
-  glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-    not_if "#{asadmin_cmd} list-jdbc-resources | grep 'jdbc/airflow$'"
   end
 end
 
@@ -855,9 +836,6 @@ template "#{theDomain}/config/metrics.xml"  do
   group node['hopsworks']['group']
   mode "700"
   action :create
-  variables({
-    :airflow_exists => airflow_exists
-  })
 end
 
 kagent_keys "#{hopsworks_user_home}" do
