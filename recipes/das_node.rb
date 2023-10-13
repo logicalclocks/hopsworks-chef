@@ -36,10 +36,6 @@ glassfish_network_listener_conf = {
   "configs.config.server-config.microprofile-metrics-configuration.enabled" => false
 }
 
-if node['hopsworks']['internal']['enable_http'].casecmp?("true")
-  glassfish_network_listener_conf["configs.config.server-config.network-config.network-listeners.network-listener.http-int-list.enabled"] = false
-end
-
 glassfish_network_listener_conf.each do |property, value|
   glassfish_asadmin "set #{property}=#{value}" do
    domain_name domain_name

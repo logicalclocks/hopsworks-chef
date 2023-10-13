@@ -331,28 +331,6 @@ node.override = {
               }
             }
           },
-          'airflowPool' => {
-            'config' => {
-              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
-              'restype' => 'javax.sql.DataSource',
-              'isconnectvalidatereq' => 'true',
-              'validationmethod' => 'auto-commit',
-              'ping' => 'true',
-              'description' => 'Airflow Connection Pool',
-              'properties' => {
-                'Url' => "jdbc:mysql://127.0.0.1:3306/",
-                'User' => node['airflow']['mysql_user'],
-                'Password' => node['airflow']['mysql_password'],
-                'useSSL' => 'false',
-                'allowPublicKeyRetrieval' => 'true'
-              }
-            },
-            'resources' => {
-              'jdbc/airflow' => {
-                'description' => 'Resource for Airflow Pool',
-              }
-            }
-          },
           'ejbTimerPool' => {
             'config' => {
               'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',

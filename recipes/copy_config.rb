@@ -89,27 +89,11 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
-if node['hopsworks']['internal']['enable_http'].casecmp?("true")
-  # http internal for load balancer
-  hopsworks_configure_server "glassfish_configure_network" do
-    domain_name domain_name
-    domains_dir domains_dir
-    password_file password_file
-    username username
-    admin_port admin_port
-    target payara_config
-    asadmin asadmin
-    internal_port node['hopsworks']['internal']['http_port']
-    network_name "http-internal"
-    network_listener_name "http-int-list"
-    securityenabled false
-    action :glassfish_configure_network
-  end
-end
 
 # replace send-error_1 for instance after glassfish_configure above sets it to {domains_dir}/#{domain_name}/docroot/index.html
 override = {
   "#{payara_config}.http-service.virtual-server.server.property.send-error_1" => "'code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found'",
+  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size" => 200,
 }
 
 hopsworks_configure_server "glassfish_configure" do

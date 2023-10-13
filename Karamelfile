@@ -38,4 +38,7 @@ dependencies:
   - recipe: hopsworks::loadbalancer
     global:
       - hopsworks::config_node
-    
+  - recipe: hopsworks::reindex
+    global:
+      - hopsworks::default
+      - elastic::default

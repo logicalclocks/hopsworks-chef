@@ -40,8 +40,6 @@ default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
 default['hopsworks']['ha']['loadbalancer_port']  = 1080
-default['hopsworks']['internal']['enable_http']  = "false"
-default['hopsworks']['internal']['http_port']    = 28182
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
@@ -223,8 +221,7 @@ default['hopsworks']['nonconda_hosts']               = ""
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
-# because loadbalancer does not support https
-default['jupyter']['origin_scheme']                    = node['hopsworks']['internal']['enable_http'] == "false" ? "https" : "http"
+default['jupyter']['origin_scheme']                    =  "https"
 
 #
 # Serving
@@ -431,6 +428,8 @@ default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 default['hopsworks']['job']['executions_per_job_limit'] = "10000"
 default['hopsworks']['job']['executions_cleaner_batch_size'] = "1000"
 default['hopsworks']['job']['executions_cleaner_interval_ms'] = "600000"
+
+default['hopsworks']['job']['mount_hopsfs_in_python_job'] = "true"
 
 default['hopsworks']['enable_user_search'] = "true"
 

@@ -43,6 +43,9 @@ dag = DAG(
     # Arbitrary identifier/name
     dag_id = "${dag.id}",
     default_args = args,
+    access_control = {
+        "${dag.projectName}": {"can_dag_read", "can_dag_edit"},
+    },
 
     # Run the DAG only one time
     # It can take Cron like expressions

@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.4.0"
+version          "3.5.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -45,12 +45,12 @@ recipe  "hopsworks::install", "Installs Glassfish"
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
-recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
+recipe  "hopsworks::reindex", "Reindex the featurestore search index"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -255,10 +255,6 @@ attribute "hopsworks/https/ca_url",
 
 attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
-          :type => 'string'
-
-attribute "hopsworks/internal/enable_http",
-          :description => "Enable http. 'false' (default)",
           :type => 'string'
 
 attribute "hopsworks/ha/loadbalancer_port",
