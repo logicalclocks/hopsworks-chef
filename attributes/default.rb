@@ -519,15 +519,26 @@ default['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] =
 default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
 default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
 
+##
+## Judge
+##
 default['judge']['image_url'] = "#{node['download_url']}/nginx-stable-bullseye.tar"
 default['judge']['port']      = "1111"
 default['judge']['home']      = "#{node['install']['dir']}/judge"
 default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
 
-# Opensearch embedding db
+##
+## Opensearch embedding db
+##
 default['hopsworks']['opensearch']['default_embedding_index']     = node['hopsworks']['opensearch']['default_embedding_index'].to_s.empty? ? "" : node['hopsworks']['opensearch']['default_embedding_index']
 default['hopsworks']['opensearch']['num_default_embedding_index'] = node['hopsworks']['opensearch']['num_default_embedding_index'].to_s.empty? ? 1 : node['hopsworks']['opensearch']['num_default_embedding_index']
 
 # enable conda install HWORKS-302
 default['hopsworks']['enable_conda_install'] = "true"
+
+##
+## Statistics
+##
+default['hopsworks']['statistics']['statistics_cleaner_batch_size'] = "1000"
+default['hopsworks']['statistics']['statistics_cleaner_interval_ms'] = "900000"

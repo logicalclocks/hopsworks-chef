@@ -1020,11 +1020,12 @@ attribute "hopsworks/jupyter/remote_fs_driver",
 	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
 	  :type => "string"
 
+# Judge
 attribute "judge/port",
           :description => "Port where the Judge service will be listening on. Default: 5001",
           :type => 'string'
 
-# opensearch embedding
+# Opensearch embedding
 attribute "hopsworks/opensearch/default_embedding_index",
           :description => "Comma separate value of default embedding index name. e.g default_embedding_index_1,default_embedding_index_2. Make sure onlinefs and data scientist have the appropriate permission of the indices.",
           :type => "string"
@@ -1037,3 +1038,12 @@ attribute "hopsworks/opensearch/num_default_embedding_index",
 attribute "hopsworks/enable_conda_install",
           :description => "Boolean value to enable/disable installing libraries with conda option.",
           :type => "string"
+        
+# Statistics
+attribute "hopsworks/statistics/statistics_cleaner_batch_size",
+        :description => "The maximum number of statistics to be deleted per timer trigger.",
+        :type => "string"
+
+attribute "hopsworks/statistics/statistics_cleaner_interval_ms",
+        :description => "How often the statistics cleaner is triggered.",
+        :type => "string"
