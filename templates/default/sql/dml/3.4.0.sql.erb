@@ -28,3 +28,8 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featu
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("featurestore_db_admin_pwd", "<%= node['featurestore']['password'] %>", 0);
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("ldap_groups_search_filter", "<%= node['ldap']['groups_search_filter'] %>");
+
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("multiregion_watchdog_enabled", "<%= node['hops']['alive-watchdog']['enabled'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("multiregion_watchdog_interval", "<%= node['hops']['alive-watchdog']['interval'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("multiregion_watchdog_url", "<%= node['hops']['alive-watchdog']['http-poll']['url'] %>");
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("multiregion_watchdog_region", "<%= node['hops']['alive-watchdog']['json-poll']['dc-id'] %>");
