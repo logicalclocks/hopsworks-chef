@@ -1,7 +1,6 @@
 [Unit]
 Description = Judge service advertising which region is active
 After = network-online.target docker.service
-Requires = docker.service
 
 [Service]
 ExecStart = /usr/bin/docker run --rm --name %n \
