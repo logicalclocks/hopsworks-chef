@@ -25,13 +25,6 @@ if [ "$1" == "create" ] ; then
     fi
 
     # Remove single quotes from args
-    DOCKER_BUILD_OPTS=$(echo $4 | xargs)
-
-    DOCKER_BUILDKIT=1 docker build $DOCKER_BUILD_OPTS -f $2 --tag $3 ./
-
-    docker push $3
-
-    # Remove single quotes from args
     # Use the last argument as building opts
     DOCKER_BUILD_OPTS=$(echo ${@: -1}  | xargs)
 
