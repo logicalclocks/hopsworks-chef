@@ -221,7 +221,7 @@ jvm_options = [
 ]
 
 if not node['install']['tmp_directory'].eql?("")
-  jvm_options.push("-Djava.io.tmpdir=#{jvm_options}")
+  jvm_options.push("-Djava.io.tmpdir=#{node['install']['tmp_directory']}")
 end
 
 node.override = {
