@@ -54,10 +54,6 @@ jvm_options = [
   "-DHADOOP_CONF_DIR=#{node['hops']['dir']}/hadoop/etc/hadoop",
   "-DjvmRoute=${com.sun.aas.instanceName}"]
 
-if not node['install']['tmp_directory'].eql?("")
-  jvm_options.push("-Djava.io.tmpdir=#{node['install']['tmp_directory']}")
-end
-
 glassfish_jvm_options "JvmOptions #{payara_config}" do
   domain_name domain_name
   admin_port admin_port

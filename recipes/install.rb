@@ -221,7 +221,7 @@ jvm_options = [
 ]
 
 if not node['install']['tmp_directory'].eql?("")
-  jvm_options.push("-Djava.io.tmpdir=#{node['install']['tmp_directory']}")
+  jvm_options.push("-Djava.io.tmpdir=#{node['install']['tmp_directory']}/glassfish")
 end
 
 node.override = {

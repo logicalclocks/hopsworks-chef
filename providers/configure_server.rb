@@ -187,6 +187,19 @@ action :glassfish_configure do
     admin_port admin_port
     secure false
   end
+
+  if not node['install']['tmp_directory'].eql?("")
+    glassfish_jvm_options "JvmOptions java.io.tmpdir" do
+      domain_name domain_name
+      admin_port admin_port
+      username username
+      password_file password_file
+      target target_config
+      secure false
+      options ["-Djava.io.tmpdir=#{node['install']['tmp_directory']}/glassfish"]
+      not_if "#{asadmin_cmd} list-jvm-options --target #{target_config} | grep tmpdir"
+    end
+  end
 end
 
 action :glassfish_configure_realm do
