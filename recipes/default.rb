@@ -23,28 +23,6 @@ public_ip=my_public_ip()
 realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
-begin
-  elastic_ips = all_elastic_ips_str()
-rescue
-  elastic_ips = ""
-  Chef::Log.warn "could not find the elastic server ip for HopsWorks!"
-end
-
-begin
-  kibana_ip = private_recipe_ip("hopslog","default")
-rescue
-  kibana_ip = node['hostname']
-  Chef::Log.warn "could not find the kibana server ip!"
-end
-
-begin
-  python_kernel = "#{node['jupyter']['python']}".downcase
-rescue
-  python_kernel = "true"
-  Chef::Log.warn "could not find the jupyter/python variable defined as an attribute!"
-end
-
-
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
 
 bash 'create_hopsworks_db' do
@@ -78,28 +56,9 @@ template timerTablePath do
   notifies :create_timers, 'hopsworks_grants[timers_tables]', :immediately
 end
 
-require 'resolv'
-hostf = Resolv::Hosts.new
-dns = Resolv::DNS.new
-
-hosts = ""
-
-for h in node['kagent']['default']['private_ips']
-  hname = resolve_hostname(h)
-  hosts += "('" + hname.to_s + "','" + h + "')" + ","
-end
-if h.length > 0
-  hosts = hosts.chop!
-end
-
 hops_rpc_tls_val = "false"
 if node['hops']['tls']['enabled'].eql? "true"
   hops_rpc_tls_val = "true"
-end
-
-hdfs_ui_port = node['hops']['nn']['http_port']
-if node['hops']['tls']['enabled'].eql? "true"
-  hdfs_ui_port = node['hops']['dfs']['https']['port']
 end
 
 condaRepo = 'defaults'
@@ -112,11 +71,6 @@ end
 if node['install']['localhost'].eql? "true"
   node.override['hopsworks']['requests_verify'] = "false"
 end
-
-
-# Hive metastore should be created before the hopsworks tables are created
-# Hopsworks 0.8.0 introduce tables with foreign keys to Hive metastore (feature store service)
-include_recipe "hive2::db"
 
 versions = node['hopsworks']['versions'].split(/\s*,\s*/)
 target_version = node['hopsworks']['version'].sub("-SNAPSHOT", "")
@@ -270,6 +224,7 @@ usernamesConfiguration[:onlinefs] = node['onlinefs']['user']
 usernamesConfiguration[:elastic] = node['elastic']['user']
 usernamesConfiguration[:kagent] = node['kagent']['user']
 usernamesConfiguration[:mysql] = node['ndb']['user']
+usernamesConfiguration[:airflow] = node['airflow']['user']
 if node.attribute?('flyingduck') && node['flyingduck'].attribute?('user')
   usernamesConfiguration[:flyingduck] = node['flyingduck']['user']
 end
@@ -277,6 +232,10 @@ end
 # encrypt onlinefs user password
 onlinefs_salt = SecureRandom.base64(64)
 encrypted_onlinefs_password = Digest::SHA256.hexdigest node['onlinefs']['hopsworks']['password'] + onlinefs_salt
+
+# encrypt airflow user poassword
+airflow_salt = SecureRandom.base64(64)
+encrypted_airflow_password = Digest::SHA256.hexdigest node['airflow']['hopsworks']['password'] + airflow_salt
 
 # Check if Kafka is to be installed 
 kafka_installed = true
@@ -300,17 +259,10 @@ for version in versions do
     variables({
          :user_cert_valid_days => node['hopsworks']['cert']['user_cert_valid_days'],
          :conda_repo => condaRepo,
-         :hosts => hosts,
-         :elastic_ip => elastic_ips,
-         :yarn_ui_ip => public_recipe_ip("hops","rm"),
-         :hdfs_ui_ip => public_recipe_ip("hops","nn"),
-         :hdfs_ui_port => hdfs_ui_port,
          :hopsworks_dir => theDomain,
          :hops_rpc_tls => hops_rpc_tls_val,
          :yarn_default_quota => node['hopsworks']['yarn_default_quota_mins'].to_i * 60,
          :java_home => node['java']['java_home'],
-         :kibana_ip => kibana_ip,
-         :python_kernel => python_kernel,
          :public_ip => public_ip,
          :krb_ldap_auth => node['ldap']['enabled'].to_s == "true" || node['kerberos']['enabled'].to_s == "true",
          :hops_version => node['hops']['version'],
@@ -320,7 +272,9 @@ for version in versions do
          :usernames_configuration => usernamesConfiguration.to_json(),
          :kafka_installed => kafka_installed,
          :apparmor_enabled => apparmor_enabled,
-         :ha_enabled => node['hopsworks'].attribute?('das_node')
+         :ha_enabled => node['hopsworks'].attribute?('das_node'),
+         :airflow_salt => airflow_salt,
+         :airflow_password => encrypted_airflow_password
     })
     action :create
   end
@@ -420,6 +374,7 @@ if current_version.eql?("") == false
     keep_state true
     enabled true
     secure true
+    only_if "#{asadmin_cmd} list-applications --type ejb domain | grep -w \"hopsworks-ear:#{node['hopsworks']['current_version']}\""
   end
 
   glassfish_deployable "hopsworks" do
@@ -437,6 +392,7 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
+    only_if "#{asadmin_cmd} list-applications --type web domain | grep -w \"hopsworks-web:#{node['hopsworks']['current_version']}\""
   end
 
   glassfish_deployable "hopsworks-ca" do
@@ -454,6 +410,7 @@ if current_version.eql?("") == false
     retries 1
     keep_state true
     enabled true
+    only_if "#{asadmin_cmd} list-applications --type ejb domain | grep -w \"hopsworks-ca:#{node['hopsworks']['current_version']}\""
   end
 end  
 
@@ -521,24 +478,6 @@ hopsworks_configure_server "glassfish_configure_network" do
   not_if "#{asadmin_cmd} list-instances | grep running"
 end
 
-if node['hopsworks']['internal']['enable_http'].casecmp?("true")
-  # http internal for load balancer
-  hopsworks_configure_server "glassfish_configure_network" do
-    domain_name domain_name
-    domains_dir domains_dir
-    password_file password_file
-    username username
-    admin_port admin_port
-    asadmin asadmin
-    internal_port node['hopsworks']['internal']['http_port']
-    network_name "http-internal"
-    network_listener_name "http-int-list"
-    securityenabled false
-    action :glassfish_configure_network
-    not_if "#{asadmin_cmd} list-instances | grep running"
-  end
-end
-
 hopsworks_configure_server "glassfish_configure" do
   domain_name domain_name
   domains_dir domains_dir
@@ -568,9 +507,7 @@ glassfish_asadmin "create-managed-executor-service --enabled=true --longrunningt
  not_if "#{asadmin_cmd} list-managed-executor-services | grep 'kagent'"
 end
 
-airflow_exists = false
 if exists_local("hops_airflow", "default")
-  airflow_exists = true
   # In case of an upgrade, attribute-driven-domain will not run but we still need to configure
   # connection pool for Airflow
 
@@ -583,23 +520,6 @@ if exists_local("hops_airflow", "default")
     secure false
     only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'airflowPool$'"
   end
-
-  glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Airflow connection pool\" --property user=#{node['airflow']['mysql_user']}:password=#{node['airflow']['mysql_password']}:url=\"jdbc\\:mysql\\://127.0.0.1\\:3306/\":useSSL=false:allowPublicKeyRetrieval=true airflowPool" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-  end
-
-  glassfish_asadmin "create-jdbc-resource --connectionpoolid airflowPool --description \"Airflow jdbc resource\" jdbc/airflow" do
-    domain_name domain_name
-    password_file password_file
-    username username
-    admin_port admin_port
-    secure false
-    not_if "#{asadmin_cmd} list-jdbc-resources | grep 'jdbc/airflow$'"
-  end
 end
 
 # Drop Existing featureStore connection pool and recreate it
@@ -610,23 +530,6 @@ glassfish_asadmin "delete-jdbc-connection-pool --cascade featureStorePool" do
   admin_port admin_port
   secure false
   only_if "#{asadmin_cmd} list-jdbc-connection-pools | grep 'featureStorePool$'"
-end
-
-glassfish_asadmin "create-jdbc-connection-pool --restype javax.sql.DataSource --datasourceclassname com.mysql.cj.jdbc.MysqlDataSource --ping=true --isconnectvalidatereq=true --validationmethod=auto-commit --description=\"Featurestore connection pool\" --property user=#{node['featurestore']['user']}:password=#{node['featurestore']['password']}:url=\"#{node['featurestore']['hopsworks_url'].gsub(":", "\\:")}\":useSSL=false:allowPublicKeyRetrieval=true featureStorePool" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-end
-
-glassfish_asadmin "create-jdbc-resource --connectionpoolid featureStorePool --description \"Featurestore jdbc resource\" jdbc/featurestore" do
-  domain_name domain_name
-  password_file password_file
-  username username
-  admin_port admin_port
-  secure false
-  not_if "#{asadmin_cmd} list-jdbc-resources | grep 'jdbc/featurestore$'"
 end
 
 # Drop Existing hopsworksPool connection pool and recreate it
@@ -933,9 +836,6 @@ template "#{theDomain}/config/metrics.xml"  do
   group node['hopsworks']['group']
   mode "700"
   action :create
-  variables({
-    :airflow_exists => airflow_exists
-  })
 end
 
 kagent_keys "#{hopsworks_user_home}" do
@@ -1016,22 +916,6 @@ template "#{domains_dir}/#{domain_name}/bin/letsencrypt.sh" do
   owner node['glassfish']['user']
   mode 0770
   action :create
-end
-
-Chef::Log.info "Home dir is #{hopsworks_user_home}. Generating ssh keys..."
-
-kagent_keys "#{hopsworks_user_home}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  action :generate
-end
-
-kagent_keys "#{hopsworks_user_home}" do
-  cb_user node['hopsworks']['user']
-  cb_group node['hopsworks']['group']
-  cb_name "hopsworks"
-  cb_recipe "default"
-  action :return_publickey
 end
 
 #

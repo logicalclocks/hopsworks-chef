@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.4.0"
+version          "3.5.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -45,12 +45,12 @@ recipe  "hopsworks::install", "Installs Glassfish"
 recipe  "hopsworks", "Installs HopsWorks war file, starts glassfish+application."
 recipe  "hopsworks::dev", "Installs development libraries needed for HopsWorks development."
 recipe  "hopsworks::letsencypt", "Given a glassfish installation and a letscrypt installation, update glassfish's key."
-recipe  "hopsworks::image", "Prepare for use as a virtualbox image."
 recipe  "hopsworks::rollback", "Rollback an upgrade to Hopsworks."
 
 recipe  "hopsworks::migrate", "Call expat to migrate between Hopsworks versions"
 
 recipe  "hopsworks::purge", "Deletes glassfish installation."
+recipe  "hopsworks::reindex", "Reindex the featurestore search index"
 #######################################################################################
 # Required Attributes
 #######################################################################################
@@ -257,10 +257,6 @@ attribute "hopsworks/internal/port",
           :description => "Port that the webserver will listen on for internal calls",
           :type => 'string'
 
-attribute "hopsworks/internal/enable_http",
-          :description => "Enable http. 'false' (default)",
-          :type => 'string'
-
 attribute "hopsworks/ha/loadbalancer_port",
           :description => "Load balancer port. '1080' (default)",
           :type => 'string'
@@ -462,10 +458,6 @@ attribute "serving/max_route_connections",
 ##
 ##
 
-attribute "jupyter/python",
-          :description => "'true' (default) to enable the python interpreter, 'false' to disable it (more secure). ",
-          :type => 'string'
-
 attribute "jupyter/shutdown_timer_interval",
           :description => "notebook cleaner interval for shutting down expired notebooks",
           :type => 'string'
@@ -598,6 +590,10 @@ attribute "ldap/group_mapping_sync_enabled",
 
 attribute "ldap/group_mapping_sync_interval",
           :description => "LDAP group mapping sync interval in hours. 0 (default)",
+          :type => 'string'
+
+attribute "ldap/groups_search_filter",
+          :description => "Filter to use when looking up for groups in configured LDAP server. Default: (&(objectCategory=group)(cn=%c))",
           :type => 'string'
 
 #
@@ -782,26 +778,10 @@ attribute "glassfish/http/request-timeout-seconds",
         :description => "timeout, in seconds, for requests. A value of -1 will disable it. (default 3600)",
         :type => 'string'
 
-# kagent liveness monitor configuration
-attribute "hopsworks/kagent_liveness/enabled",
-          :description => "Enables kagent service monitoring and restart",
-          :type => 'string'
-
-attribute "hopsworks/kagent_liveness/threshold",
-          :description => "Period of time after which kagent will be declared dead and restarted. If suffix is omitted, it defaults to Minutes",
-          :type => 'string'
-
 # Online featurestore jdbc connection details
 attribute "featurestore/jdbc_url",
           :description => "Url for JDBC Connection to the the Online FeatureStore",
           :type => 'string'
-
-attribute "featurestore/user",
-          :description => "User for the JDBC Connection to the the Online FeatureStore",
-          :type => 'string'
-
-attribute "featurestore/password",
-          :description => "Password for the JDBC Connection to the the Online FeatureStore"
 
 attribute "featurestore/job_activity_timer",
           :description => "How often to run the timer to backfill jobs for feature groups and training datasets - default 5 minutes",
@@ -1004,6 +984,10 @@ attribute "hopsworks/enable_bigquery_storage_connectors",
           :description => "Whether to enable BigQuery storage connectors or not",
           :type => 'string'
 
+attribute "hopsworks/enable_bring_your_own_kafka",
+          :description => "Whether to enable bring your own kafka or not",
+          :type => 'string'
+
 attribute "hopsworks/enable_jupyter_python_kernel_non_kubernetes",
           :description => "Show the Python kernel in Jupyter configuration page and Jupyter interface. Only takes effect if Kubernetes is not installed. Default: false",
           :type => 'string'
@@ -1021,5 +1005,9 @@ attribute "hopsworks/loadbalancer_external_domain",
           :type => 'string'
 
 attribute "hopsworks/jupyter/remote_fs_driver",
-					:description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
-					:type => "string"
+	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+	  :type => "string"
+
+attribute "judge/port",
+          :description => "Port where the Judge service will be listening on. Default: 5001",
+          :type => 'string'

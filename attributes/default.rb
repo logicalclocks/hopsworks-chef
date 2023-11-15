@@ -40,8 +40,6 @@ default['hopsworks']['https']['ca_url']          = ""
 
 default['hopsworks']['internal']['port']         = 8182
 default['hopsworks']['ha']['loadbalancer_port']  = 1080
-default['hopsworks']['internal']['enable_http']  = "false"
-default['hopsworks']['internal']['http_port']    = 28182
 
 default['hopsworks']['admin']['port']            = 4848
 default['hopsworks']['admin']['user']            = "adminuser"
@@ -221,11 +219,9 @@ default['hopsworks']['nonconda_hosts']               = ""
 # Jupyter
 #
 default['jupyter']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/jupyter" : node['install']['dir'] + "/jupyter"
-default['jupyter']['python']                           = "true"
 default['jupyter']['shutdown_timer_interval']          = "30m"
 default['jupyter']['ws_ping_interval']                 = "10s"
-# because loadbalancer does not support https
-default['jupyter']['origin_scheme']                    = node['hopsworks']['internal']['enable_http'] == "false" ? "https" : "http"
+default['jupyter']['origin_scheme']                    =  "https"
 
 #
 # Serving
@@ -320,6 +316,7 @@ default['ldap']['referral']                          = "ignore"
 default['ldap']['additional_props']                  = ""
 default['ldap']['group_mapping_sync_enabled']        = "false"
 default['ldap']['group_mapping_sync_interval']       = 0
+default['ldap']['groups_search_filter']              = "(&(objectCategory=group)(cn=%c))"
 
 # OAuth2
 default['oauth']['enabled']                          = "false"
@@ -382,20 +379,12 @@ default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 # The timeout, in seconds, for requests. A value of -1 will disable it.
 default['glassfish']['http']['request-timeout-seconds']   = "3600"
 
-#
-# kagent liveness monitor configuration
-#
-default['hopsworks']['kagent_liveness']['enabled']         = "false"
-default['hopsworks']['kagent_liveness']['threshold']       = "10s"
 
 #
 # Online FeatureStore JDBC Connection Details
 #
 
 default['featurestore']['jdbc_url']             = "jdbc:mysql://onlinefs.mysql.service.#{node['consul']['domain']}:#{node['ndb']['mysql_port']}/"
-default['featurestore']['hopsworks_url']        = "jdbc:mysql://127.0.0.1:#{node['ndb']['mysql_port']}/"
-default['featurestore']['user']                 = node['mysql']['user']
-default['featurestore']['password']             = node['mysql']['password']
 default['featurestore']['job_activity_timer']   = "5m"
 
 # hops-util-py
@@ -439,6 +428,8 @@ default['hopsworks']['docker-job']['docker_job_uid_strict'] = "true"
 default['hopsworks']['job']['executions_per_job_limit'] = "10000"
 default['hopsworks']['job']['executions_cleaner_batch_size'] = "1000"
 default['hopsworks']['job']['executions_cleaner_interval_ms'] = "600000"
+
+default['hopsworks']['job']['mount_hopsfs_in_python_job'] = "true"
 
 default['hopsworks']['enable_user_search'] = "true"
 
@@ -497,6 +488,11 @@ default['hopsworks']['enable_kafka_storage_connectors'] = "true"
 default['hopsworks']['enable_gcs_storage_connectors'] = "true"
 default['hopsworks']['enable_bigquery_storage_connectors'] = "true"
 
+##
+## BYOK
+##
+default['hopsworks']['enable_bring_your_own_kafka'] = "false"
+
 # The maximum number of http threads in the thread pool are 200 by default
 default['hopsworks']['max_allowed_long_running_http_requests']                  = 50
 
@@ -513,3 +509,15 @@ default['hopsworks']['loadbalancer_external_domain'] = ""
 # jupyter hopsfs mount
 default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
 default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
+
+default['hopsworks']['commands']['search_fs']['history']['enable'] = "false"
+default['hopsworks']['commands']['search_fs']['history']['window_as_s'] = 3600
+default['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] = 3600000
+default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
+default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
+
+default['judge']['image_url'] = "#{node['download_url']}/nginx-stable-bullseye.tar"
+default['judge']['port']      = "1111"
+default['judge']['home']      = "#{node['install']['dir']}/judge"
+default['judge']['etc']       = "#{node['judge']['home']}/etc"
+default['judge']['logs']      = "#{node['judge']['home']}/logs"

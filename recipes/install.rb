@@ -102,18 +102,17 @@ group node['hops']['group'] do
 end
 
 group node['hopsmonitor']['group'] do
+  gid node['hopsmonitor']['group_id']
+  action :create
+  not_if "getent group #{node['hopsmonitor']['group']}"
+  not_if { node['install']['external_users'].casecmp("true") == 0 }
+end
+
+group node['hopsmonitor']['group'] do
   action :modify
   members ["#{node['hopsworks']['user']}"]
   append true
   not_if { node['install']['external_users'].casecmp("true") == 0 }
-end
-
-group node['airflow']['group'] do
-  action :modify
-  members ["#{node['hopsworks']['user']}"]  
-  append true
-  not_if { node['install']['external_users'].casecmp("true") == 0 }
-  only_if "getent group #{node['airflow']['group']}"
 end
 
 group node['logger']['group'] do
@@ -329,50 +328,6 @@ node.override = {
             'resources' => {
               'jdbc/hopsworks' => {
                 'description' => 'Resource for Hopsworks Pool',
-              }
-            }
-          },
-          'featureStorePool' => {
-            'config' => {
-              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
-              'restype' => 'javax.sql.DataSource',
-              'isconnectvalidatereq' => 'true',
-              'validationmethod' => 'auto-commit',
-              'ping' => 'true',
-              'description' => 'FeatureStore Connection Pool',
-              'properties' => {
-                'Url' => node['featurestore']['hopsworks_url'],
-                'User' => node['featurestore']['user'],
-                'Password' => node['featurestore']['password'],
-                'useSSL' => 'false',
-                'allowPublicKeyRetrieval' => 'true'
-              }
-            },
-            'resources' => {
-              'jdbc/featurestore' => {
-                'description' => 'Resource for Hopsworks Pool',
-              }
-            }
-          },
-          'airflowPool' => {
-            'config' => {
-              'datasourceclassname' => 'com.mysql.cj.jdbc.MysqlDataSource',
-              'restype' => 'javax.sql.DataSource',
-              'isconnectvalidatereq' => 'true',
-              'validationmethod' => 'auto-commit',
-              'ping' => 'true',
-              'description' => 'Airflow Connection Pool',
-              'properties' => {
-                'Url' => "jdbc:mysql://127.0.0.1:3306/",
-                'User' => node['airflow']['mysql_user'],
-                'Password' => node['airflow']['mysql_password'],
-                'useSSL' => 'false',
-                'allowPublicKeyRetrieval' => 'true'
-              }
-            },
-            'resources' => {
-              'jdbc/airflow' => {
-                'description' => 'Resource for Airflow Pool',
               }
             }
           },

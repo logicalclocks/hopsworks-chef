@@ -144,7 +144,7 @@ CREATE TABLE `conda_commands` (
                                   `lib` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                                   `version` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `status` varchar(52) COLLATE latin1_general_cs NOT NULL,
-                                  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  `created` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                                   `install_type` varchar(52) COLLATE latin1_general_cs DEFAULT NULL,
                                   `environment_file` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                                   `custom_commands_file` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
@@ -703,6 +703,10 @@ CREATE TABLE `oauth_client` (
                                 `code_challenge` tinyint(1) NOT NULL DEFAULT '0',
                                 `code_challenge_method` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
                                 `verify_email` tinyint(1) NOT NULL DEFAULT '0',
+                                `given_name_claim` varchar(256) COLLATE latin1_general_cs NOT NULL DEFAULT 'given_name',
+                                `family_name_claim` varchar(256) COLLATE latin1_general_cs NOT NULL DEFAULT 'family_name',
+                                `email_claim` varchar(256) COLLATE latin1_general_cs NOT NULL DEFAULT 'email',
+                                `group_claim` varchar(256) COLLATE latin1_general_cs DEFAULT NULL,
                                 PRIMARY KEY (`id`),
                                 UNIQUE KEY `client_id_UNIQUE` (`client_id`),
                                 UNIQUE KEY `provider_name_UNIQUE` (`provider_name`)
@@ -771,38 +775,6 @@ CREATE TABLE `ops_log` (
                            `inode_id` bigint(20) NOT NULL,
                            PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=308 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `pia`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pia` (
-                       `id` bigint(20) NOT NULL AUTO_INCREMENT,
-                       `project_id` int(11) DEFAULT NULL,
-                       `personal_data` varchar(4000) COLLATE latin1_general_cs NOT NULL,
-                       `how_data_collected` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-                       `specified_explicit_legitimate` int(11) NOT NULL DEFAULT '0',
-                       `consent_process` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
-                       `consent_basis` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
-                       `data_minimized` int(11) NOT NULL DEFAULT '0',
-                       `data_uptodate` int(11) NOT NULL DEFAULT '0',
-                       `users_informed_how` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `user_controls_data_collection_retention` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `data_encrypted` int(11) NOT NULL DEFAULT '0',
-                       `data_anonymized` int(11) NOT NULL DEFAULT '0',
-                       `data_pseudonymized` int(11) NOT NULL DEFAULT '0',
-                       `data_backedup` int(11) NOT NULL DEFAULT '0',
-                       `data_security_measures` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `data_portability_measure` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `subject_access_rights` varchar(500) COLLATE latin1_general_cs NOT NULL,
-                       `risks` varchar(2000) COLLATE latin1_general_cs NOT NULL,
-                       PRIMARY KEY (`id`),
-                       KEY `project_id` (`project_id`),
-                       CONSTRAINT `FK_284_353` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2031,7 +2003,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter_condition` (
     `filter_value_fg_id` INT(11) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `tdfc_training_dataset_filter_fk` FOREIGN KEY (`training_dataset_filter_id`) REFERENCES `training_dataset_filter` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-    CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT `tdfc_feature_group_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `git_repositories` (
