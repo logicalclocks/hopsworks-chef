@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+help() {
+    echo ""
+    echo "usage: $0 CONTAINER_ID PROJECT_USER_NAME"
+    echo ""
+    exit 1
+}
+
+
+if [ $# -ne 2 ]; then
+  help
+fi
+
+if [ "$2" != "" ]; then
+    PROJECT_USER_NAME=$2
+    CONTAINER_NAME=${PROJECT_USER_NAME}__rstudio
+
+    echo "Killing input container_name: $CONTAINER_NAME"
+    docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1
+    exit $?
+fi
+
+echo "Killing input container_id: $1"
+docker rm -f "$1" > /dev/null 2>&1
+exit $?

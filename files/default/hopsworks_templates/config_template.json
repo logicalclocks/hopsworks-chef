@@ -50,6 +50,7 @@
     "executorCores": ${conf.executorCores?c},
     "executorMemory": "${conf.executorMemory}",
     "proxyUser": "${conf.hdfsUser}",
+    "name": "${conf.livySessionName}",
     "queue": "${conf.yarnQueue}",
     "conf": {
 ${conf.sparkConfiguration}
