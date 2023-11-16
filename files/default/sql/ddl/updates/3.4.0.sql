@@ -230,4 +230,4 @@ CREATE TABLE `rstudio_environment_build` (
                                              KEY `rstudio_env_build_project_fk` (`project`),
                                              CONSTRAINT `rstudio_env_build_project_fk` FOREIGN KEY (`project`) REFERENCES `project` (`id`) ON DELETE CASCADE,
                                              CONSTRAINT `rstudio_env_build_usr_fkc` FOREIGN KEY (`user`) REFERENCES `users` (`uid`) ON DELETE CASCADE
-) ENGINE=ndbcluster AUTO_INCREMENT=5154 DEFAULT CHARSET=latin1
+) ENGINE=ndbcluster AUTO_INCREMENT=5154 DEFAULT CHARSET=latin1;
