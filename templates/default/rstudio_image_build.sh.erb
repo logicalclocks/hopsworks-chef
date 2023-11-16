@@ -17,7 +17,7 @@ send_response_hopsworks() {
 
 echo "Starting build..." > $LOG_FILE
 
-docker build --progress=plain --tag $IMAGE_TAG ./  >> $LOG_FILE
+docker build --progress=plain --tag $IMAGE_TAG . &>> $LOG_FILE
 
 if [ $? -ne 0 ] ; then
    echo "Docker build failed"
