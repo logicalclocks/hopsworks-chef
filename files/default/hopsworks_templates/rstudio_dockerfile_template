@@ -1,0 +1,6 @@
+FROM ${conf.baseImage}
+
+COPY ${conf.buildScript} ./
+RUN chmod +x ${conf.buildScript}
+RUN ./${conf.buildScript}
+RUN rm ${conf.buildScript}

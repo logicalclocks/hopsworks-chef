@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+LOG_FILE=$2
+PROJECT_ID=$3
+BUILD_ID=$4
+IMAGE_TAG=$5
+GLASSFISH_IP=glassfish.service.consul
+GLASSFISH_PORT=8182
+TOKEN=$(cat token.jwt)
+
+
+send_response_hopsworks() {
+  NEW_STATUS=$1
+  curl -k -X PUT https://$GLASSFISH_IP:$GLASSFISH_PORT/hopsworks-api/api/project/$PROJECT_ID/rstudio/environment/build/$BUILD_ID/state?status=$NEW_STATUS -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" >> $LOG_FILE
+}
+
+
+echo "Starting build..." > $LOG_FILE
+
+docker build --progress=plain --tag $IMAGE_TAG ./  >> $LOG_FILE
+
+if [ $? -ne 0 ] ; then
+   echo "Docker build failed"
+   send_response_hopsworks "FAILED"
+   exit 1
+fi
+
+echo "Pushing images to registry..." >> $LOG_FILE
+
+docker push $IMAGE_TAG >> $LOG_FILE
+
+if [ $? -ne 0 ] ; then
+   echo "Failed to push to registry"
+   send_response_hopsworks "FAILED"
+   exit 2
+fi
+
+#cat $LOG_FILE | sed 's/\x1B[@A-Z\\\]^_]\|\x1B\[[0-9:;<=>?]*[-!"#$%&'"'"'()*+,.\/]*[][\\@A-Z^_`a-z{|}~]//g' > $LOG_FILE
+
+send_response_hopsworks "SUCCESS"

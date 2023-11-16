@@ -184,3 +184,5 @@ SET `subject_id` = NULL
     WHERE REGEXP_SUBSTR(`topic_name`, "^([0-9]+)_([0-9]+)_(.+)_([0-9]+)(_onlinefs|$)");
 
 SET SQL_SAFE_UPDATES = 1;
+
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `rstudio_docker_image` VARCHAR(255) COLLATE latin1_general_cs DEFAULT NULL;

@@ -764,7 +764,8 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
 end
 
 ["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
-"tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh", "rstudio-kill.sh"].each do |script|
+"tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh", "rstudio-kill.sh",
+ "rstudio_image_build.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
     owner node['glassfish']['user']

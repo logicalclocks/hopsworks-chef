@@ -159,6 +159,20 @@ elif [ "$1" == "generate_pems" ]; then
 
     rm $CERTS_DIR/${HADOOP_USERNAME}__keystore.p12
     rm $CERTS_DIR/${HADOOP_USERNAME}__tstore.p12
+elif [ "$1" == "build" ] ; then
+    ${DOMAINS_DIR}/domain1/bin/rstudio_image_build.sh "build" $2 $3 $4 $5 &
+    echo $! > build.pid
+elif [ "$1" == "cancel_build" ] ; then
+    kill -9 $(cat build.pid)
+elif [ "$1" == "remove_image" ] ; then
+    REGISTRY_URL=$2
+    TAG=$3
+    docker rmi -f $REGISTRY_URL/rstudio:$TAG >> delete_docker_image_log.log
+    DIGEST=$(curl -g -k -sSL -I \
+    -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+    "https://${REGISTRY_URL}/v2/rstudio/manifests/${TAG}" | awk '$1 == "docker-content-digest:" { print $2 }' | tr -d $'\r')
+    echo $DIGEST >> delete_docker_image_log.log
+    curl -g -k -v -sSL -X DELETE "https://${REGISTRY_URL}/v2/rstudio/manifests/${DIGEST}" >> delete_docker_image_log.log
 else
   help
 fi
