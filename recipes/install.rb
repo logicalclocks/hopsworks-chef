@@ -258,10 +258,10 @@ node.override = {
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
-            'idletimeout' => 900,
-            'maxqueuesize' => 4096
+            'maxthreadpoolsize' => node['glassfish']['http']['thread-pool']['maxthreadpoolsize'],
+            'minthreadpoolsize' => node['glassfish']['http']['thread-pool']['minthreadpoolsize'],
+            'idletimeout' => node['glassfish']['http']['thread-pool']['idletimeout'],
+            'maxqueuesize' => node['glassfish']['http']['thread-pool']['maxqueuesize']
           },
           'admin-pool' => {
             'maxthreadpoolsize' => 40,

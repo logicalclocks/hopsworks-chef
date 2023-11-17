@@ -381,6 +381,11 @@ default['glassfish']['http']['keep_alive_timeout']   = "30"
 default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 # The timeout, in seconds, for requests. A value of -1 will disable it.
 default['glassfish']['http']['request-timeout-seconds']   = "3600"
+default['glassfish']['http']['thread-pool']['maxthreadpoolsize'] = 200
+default['glassfish']['http']['thread-pool']['minthreadpoolsize'] = 5
+default['glassfish']['http']['thread-pool']['idletimeout'] = 900
+default['glassfish']['http']['thread-pool']['maxqueuesize'] = 4096
+
 
 #
 # kagent liveness monitor configuration

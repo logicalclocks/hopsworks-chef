@@ -784,6 +784,23 @@ attribute "glassfish/http/request-timeout-seconds",
         :description => "timeout, in seconds, for requests. A value of -1 will disable it. (default 3600)",
         :type => 'string'
 
+# Glassfish http thread pool
+attribute "glassfish/http/thread-pool/maxthreadpoolsize",
+          :description => "The maximum number of threads in the thread pool. (default 200)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/minthreadpoolsize",
+          :description => "The minimum number of threads in the thread pool. (default 5)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/idletimeout",
+          :description => "The maximum amount of time that a thread can remain idle in the pool. After this time expires, the thread is removed from the pool. (default 900)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/maxqueuesize",
+          :description => "The maximum number of threads in the queue. A value of -1 indicates that there is no limit to the queue size. (default 4096)",
+          :type => 'string'
+
 # kagent liveness monitor configuration
 attribute "hopsworks/kagent_liveness/enabled",
           :description => "Enables kagent service monitoring and restart",
