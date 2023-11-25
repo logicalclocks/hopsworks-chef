@@ -111,7 +111,6 @@ default['hopsworks']['logsize']                  = "200000000"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
-default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
 ## s: seconds
@@ -119,7 +118,6 @@ default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## h: hours
 ## d: days
 default['hopsworks']['cert_mater_delay']                            = "3m"
-default['hopsworks']['service_key_rotation_interval']               = "2d"
 default['hopsworks']['application_certificate_validity_period']     = "3650d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
