@@ -409,7 +409,7 @@ default['hopsworks']['provenance']['archive']['delay']        = "86400"
 default['hopsworks']['provenance']['cleaner']['period']       = "3600"
 
 # clients
-default['hopsworks']['client_path']           = "COMMUNITY"
+default['hopsworks']['client_path']           = node['install']['enterprise']['install'].casecmp? "true" ? "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}" : "COMMUNITY"
 
 # hdfs storage policy
 # accepted hopsworks storage policy files: CLOUD, DB, HOT

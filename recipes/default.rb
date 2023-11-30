@@ -83,44 +83,7 @@ end
 versions.push(target_version)
 current_version = node['hopsworks']['current_version']
 
-# download client archive and set its path to be added to the variables table
-if node['install']['enterprise']['install'].casecmp? "true"
-  file_name = "clients.tar.gz"
-  client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
-  node.override['hopsworks']['client_path'] = client_dir
-
-  directory client_dir do
-    owner node['glassfish']['user']
-    group node['glassfish']['group']
-    mode "775"
-    action :create
-    recursive true
-  end
-
-  source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
-  remote_file "#{node['hopsworks']['client_path']}/#{file_name}" do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    source source
-    headers get_ee_basic_auth_header()
-    sensitive true
-    mode 0555
-    action :create_if_missing
-  end
-
-  bash "extract clients jar" do
-    user node['glassfish']['user']
-    group node['glassfish']['group']
-    cwd client_dir
-    code <<-EOF
-      tar xf #{file_name}
-    EOF
-    not_if { ::Dir.exists?("#{client_dir}/client")}
-  end
-end
-
 if current_version.eql?("")
-
   # Make sure the database is actually empty. Otherwise raise an error
   ruby_block "check_db_empty" do
     block do
