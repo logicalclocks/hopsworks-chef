@@ -321,6 +321,7 @@ default['oauth']['enabled']                          = "false"
 default['oauth']['redirect_uri']                     = "hopsworks/callback"
 default['oauth']['logout_redirect_uri']              = "hopsworks/"
 default['oauth']['account_status']                   = 1
+default['oauth']['group_mapping_enabled']            = "true"
 default['oauth']['group_mapping']                    = ""
 
 default['remote_auth']['need_consent']               = "true"
