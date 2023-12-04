@@ -526,5 +526,5 @@ default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
 
 # Opensearch embedding db
-node['hopsworks']['opensearch']['default_embedding_index']     = ""
-node['hopsworks']['opensearch']['num_default_embedding_index'] = 1
+default['hopsworks']['opensearch']['default_embedding_index']     = node['hopsworks']['opensearch'].nil || node['hopsworks']['opensearch']['default_embedding_index'].nil ? "" : node['hopsworks']['opensearch']['default_embedding_index']
+default['hopsworks']['opensearch']['num_default_embedding_index'] = node['hopsworks']['opensearch'].nil || node['hopsworks']['opensearch']['num_default_embedding_index'].nil ? 1 : node['hopsworks']['opensearch']['num_default_embedding_index']
