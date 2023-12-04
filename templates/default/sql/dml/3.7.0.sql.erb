@@ -1,2 +1,6 @@
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_enabled';
 DELETE FROM `hopsworks`.`variables` WHERE `id`='service_key_rotation_interval';
+
+-- FSTORE-1047
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("opensearch_default_embedding_index", "<%= node['hopsworks']['opensearch']['default_embedding_index'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("opensearch_num_default_embedding_index", "<%= node['hopsworks']['opensearch']['num_default_embedding_index'] %>", 1);
