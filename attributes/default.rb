@@ -524,3 +524,7 @@ default['judge']['port']      = "1111"
 default['judge']['home']      = "#{node['install']['dir']}/judge"
 default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
+
+# Opensearch embedding db
+node['hopsworks']['opensearch']['default_embedding_index']     = ""
+node['hopsworks']['opensearch']['num_default_embedding_index'] = 1
