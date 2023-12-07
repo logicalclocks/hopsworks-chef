@@ -2364,7 +2364,7 @@ CREATE TABLE IF NOT EXISTS `model_version` (
   `user_id` int(10) NOT NULL,
   `created` timestamp DEFAULT NULL,
   `description` VARCHAR(1000) DEFAULT NULL,
-  `metrics` VARCHAR(2000) DEFAULT NULL,
+  `metrics` VARCHAR(3000) DEFAULT NULL,
   `program` VARCHAR(1000) DEFAULT NULL,
   `framework` VARCHAR(128) DEFAULT NULL,
   `environment` VARCHAR(1000) DEFAULT NULL,
