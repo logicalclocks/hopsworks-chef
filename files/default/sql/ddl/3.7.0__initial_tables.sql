@@ -2362,7 +2362,7 @@ CREATE TABLE IF NOT EXISTS `model_version` (
   `model_id` int(11) NOT NULL,
   `version` int(11) NOT NULL,
   `user_id` int(10) NOT NULL,
-  `created` timestamp DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(1000) DEFAULT NULL,
   `metrics` VARCHAR(3000) DEFAULT NULL,
   `program` VARCHAR(1000) DEFAULT NULL,
