@@ -211,7 +211,7 @@ action :glassfish_configure_realm do
   glassfish_auth_realm "#{realmname}" do
     target target
     realm_name "#{realmname}"
-    jaas_context "jdbcRealm"
+    jaas_context "hopsworksJdbcRealm"
     properties props
     domain_name domain_name
     password_file password_file
