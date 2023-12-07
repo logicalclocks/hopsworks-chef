@@ -218,7 +218,7 @@ action :glassfish_configure_realm do
     username username
     admin_port admin_port
     secure false
-    classname="io.hops.hopsworks.realm.jdbc.HopsworksJDBCRealm"
+    classname "io.hops.hopsworks.realm.jdbc.HopsworksJDBCRealm"
     not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end
