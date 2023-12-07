@@ -103,6 +103,8 @@ default['hopsworks']['war_url']                  = "#{node['hopsworks']['downloa
 default['hopsworks']['ca_url']                   = "#{node['hopsworks']['download_url']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['hopsworks']['download_url']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") ? "-kube" : ""}.ear"
 
+default['hopsworks']['cauth_url']                = "#{node['hopsworks']['download_url']}/hopsworks-realm.jar"
+
 # Currently we don't have an enterprise version of the new frontend. So the download url is the same for both community and enterprise 
 default['hopsworks']['frontend_url']             = "#{node['download_url']}/hopsworks/frontend/#{node['hopsworks']['version']}/frontend.tgz"
 

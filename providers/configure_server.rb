@@ -95,7 +95,7 @@ action :glassfish_configure do
   asadmin_cmd="#{asadmin} --terse=false --echo=false --user #{username} --passwordfile #{password_file}"
   target_config = new_resource.target == "server" ? "server-config" : new_resource.target
   glassfish_conf = {
-    "#{target_config}.security-service.default-realm" => 'kthfsrealm',
+    "#{target_config}.security-service.default-realm" => 'hopsworksrealm',
     # Jobs in Hopsworks use the Timer service
     "#{target_config}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
     "#{target}.ejb-container.ejb-timer-service.property.reschedule-failed-timer" => node['glassfish']['reschedule_failed_timer'],
@@ -196,19 +196,13 @@ action :glassfish_configure_realm do
   admin_port=new_resource.admin_port
   target=new_resource.target
   asadmin=new_resource.asadmin
-  realmname = "kthfsrealm"
+  realmname = "hopsworksrealm"
   jndiDB = "jdbc/hopsworks"
 
   asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
 
   props =  {
     'datasource-jndi' => jndiDB,
-    'password-column' => 'password',
-    'group-table' => 'hopsworks.users_groups',
-    'user-table' => 'hopsworks.users',
-    'group-name-column' => 'group_name',
-    'user-name-column' => 'email',
-    'group-table-user-name-column' => 'email',
     'encoding' => 'Hex',
     'digestrealm-password-enc-algorithm' => 'SHA-256',
     'digest-algorithm' => 'SHA-256'
@@ -224,7 +218,7 @@ action :glassfish_configure_realm do
     username username
     admin_port admin_port
     secure false
-    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
+    classname="io.hops.hopsworks.realm.jdbc.HopsworksJDBCRealm"
     not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end

@@ -20,7 +20,6 @@ node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}
 theDomain="#{domains_dir}/#{domain_name}"
 
 public_ip=my_public_ip()
-realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"

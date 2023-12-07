@@ -487,6 +487,16 @@ package ["openssl", "zip"] do
   retry_delay 30
 end
 
+cauth = File.basename(node['hopsworks']['cauth_url'])
+
+remote_file "#{theDomain}/lib/#{cauth}"  do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['cauth_url']
+  mode 0755
+  action :create_if_missing
+end
+
 # In Hopsworks 3.1 we updated glassfish from 4.x to 5.x. As the domains
 # are not compatible, we move the old domains dir to domains4 and
 # expect the recipe to create new domain. The issue is that the if
