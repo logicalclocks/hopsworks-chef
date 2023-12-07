@@ -2369,7 +2369,7 @@ CREATE TABLE IF NOT EXISTS `model_version` (
   `framework` VARCHAR(128) DEFAULT NULL,
   `environment` VARCHAR(1000) DEFAULT NULL,
   `experiment_id` VARCHAR(128) DEFAULT NULL,
-  `experiment_project_name` VARCHAR(100) DEFAULT NULL,
+  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
   PRIMARY KEY (`model_id`, `version`),
   CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
