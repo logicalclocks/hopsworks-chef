@@ -558,7 +558,8 @@ end
 
 cauth = File.basename(node['hopsworks']['cauth_url'])
 
-remote_file "#{theDomain}/lib/#{cauth}"  do
+remote_file "#{theDomain}/lib/#{cauth}" do
+  node['install']['enterprise']['install'].casecmp?("true") ? headers( "Authorization"=>"Basic #{ Base64.encode64("#{node['install']['enterprise']['username']}:#{node['install']['enterprise']['password']}").gsub("\n", "") }" ) : headers({})
   user node['glassfish']['user']
   group node['glassfish']['group']
   source node['hopsworks']['cauth_url']
