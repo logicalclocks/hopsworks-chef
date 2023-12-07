@@ -1,5 +1,5 @@
 -- FSTORE-1047
-CREATE TABLE IF NOT EXISTS `embedding` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`embedding` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `feature_group_id` int(11) NOT NULL,
     `col_prefix` varchar(255) NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `embedding` (
     CONSTRAINT `feature_group_embedding_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `embedding_feature` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`embedding_feature` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `embedding_id` int(11) NOT NULL,
     `name` varchar(255) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `embedding_feature` (
     CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `model` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`model` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `project_id` int(11) NOT NULL,
@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS `model` (
   CONSTRAINT `model_project_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `model_version` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`model_version` (
   `model_id` int(11) NOT NULL,
   `version` int(11) NOT NULL,
   `user_id` int(10) NOT NULL,
-  `created` timestamp DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` VARCHAR(1000) DEFAULT NULL,
   `metrics` VARCHAR(3000) DEFAULT NULL,
   `program` VARCHAR(1000) DEFAULT NULL,
