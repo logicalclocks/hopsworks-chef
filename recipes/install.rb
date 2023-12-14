@@ -559,10 +559,11 @@ end
 cauth = File.basename(node['hopsworks']['cauth_url'])
 
 remote_file "#{theDomain}/lib/#{cauth}" do
-  node['install']['enterprise']['install'].casecmp?("true") ? headers( "Authorization"=>"Basic #{ Base64.encode64("#{node['install']['enterprise']['username']}:#{node['install']['enterprise']['password']}").gsub("\n", "") }" ) : headers({})
   user node['glassfish']['user']
   group node['glassfish']['group']
   source node['hopsworks']['cauth_url']
+  headers get_ee_basic_auth_header()
+  sensitive true
   mode 0755
   action :create_if_missing
 end

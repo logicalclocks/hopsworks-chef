@@ -91,11 +91,12 @@ action :glassfish_configure do
   asadmin=new_resource.asadmin
   override=new_resource.override_props
   ignore_failure=new_resource.ignore_failure
+  realmname = new_resource.realmname
 
   asadmin_cmd="#{asadmin} --terse=false --echo=false --user #{username} --passwordfile #{password_file}"
   target_config = new_resource.target == "server" ? "server-config" : new_resource.target
   glassfish_conf = {
-    "#{target_config}.security-service.default-realm" => 'hopsworksrealm',
+    "#{target_config}.security-service.default-realm" => realmname,
     # Jobs in Hopsworks use the Timer service
     "#{target_config}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
     "#{target}.ejb-container.ejb-timer-service.property.reschedule-failed-timer" => node['glassfish']['reschedule_failed_timer'],
@@ -196,7 +197,7 @@ action :glassfish_configure_realm do
   admin_port=new_resource.admin_port
   target=new_resource.target
   asadmin=new_resource.asadmin
-  realmname = "hopsworksrealm"
+  realmname = new_resource.realmname
   jndiDB = "jdbc/hopsworks"
 
   asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
