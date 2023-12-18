@@ -111,7 +111,6 @@ default['hopsworks']['logsize']                  = "200000000"
 default['hopsworks']['twofactor_auth']              = "false"
 default['hopsworks']['twofactor_exclude_groups']    = "AGENT;CLUSTER_AGENT" #semicolon separated list of roles
 
-default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## Suffix can be: (defaults to minutes if omitted)
 ## ms: milliseconds
 ## s: seconds
@@ -119,7 +118,6 @@ default['hopsworks']['service_key_rotation_enabled'] = "false"
 ## h: hours
 ## d: days
 default['hopsworks']['cert_mater_delay']                            = "3m"
-default['hopsworks']['service_key_rotation_interval']               = "2d"
 default['hopsworks']['application_certificate_validity_period']     = "3650d"
 
 #Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
@@ -323,6 +321,7 @@ default['oauth']['enabled']                          = "false"
 default['oauth']['redirect_uri']                     = "hopsworks/callback"
 default['oauth']['logout_redirect_uri']              = "hopsworks/"
 default['oauth']['account_status']                   = 1
+default['oauth']['group_mapping_enabled']            = "true"
 default['oauth']['group_mapping']                    = ""
 
 default['remote_auth']['need_consent']               = "true"
@@ -378,6 +377,10 @@ default['glassfish']['http']['keep_alive_timeout']   = "30"
 default['glassfish']['ejb_loader']['thread_pool_size']   = 8
 # The timeout, in seconds, for requests. A value of -1 will disable it.
 default['glassfish']['http']['request-timeout-seconds']   = "3600"
+default['glassfish']['http']['thread-pool']['maxthreadpoolsize'] = 200
+default['glassfish']['http']['thread-pool']['minthreadpoolsize'] = 5
+default['glassfish']['http']['thread-pool']['idletimeout'] = 900
+default['glassfish']['http']['thread-pool']['maxqueuesize'] = 4096
 
 
 #
@@ -405,7 +408,7 @@ default['hopsworks']['provenance']['archive']['delay']        = "86400"
 default['hopsworks']['provenance']['cleaner']['period']       = "3600"
 
 # clients
-default['hopsworks']['client_path']           = "COMMUNITY"
+default['hopsworks']['client_path']           = node['install']['enterprise']['install'].casecmp?("true") ? "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}" : "COMMUNITY"
 
 # hdfs storage policy
 # accepted hopsworks storage policy files: CLOUD, DB, HOT
@@ -521,3 +524,7 @@ default['judge']['port']      = "1111"
 default['judge']['home']      = "#{node['install']['dir']}/judge"
 default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
+
+# Opensearch embedding db
+default['hopsworks']['opensearch']['default_embedding_index']     = node['hopsworks']['opensearch']['default_embedding_index'].to_s.empty? ? "" : node['hopsworks']['opensearch']['default_embedding_index']
+default['hopsworks']['opensearch']['num_default_embedding_index'] = node['hopsworks']['opensearch']['num_default_embedding_index'].to_s.empty? ? 1 : node['hopsworks']['opensearch']['num_default_embedding_index']

@@ -214,6 +214,41 @@ file "#{node['hopsworks']['env_var_file']}" do
   group node['glassfish']['group']
 end
 
+# download client archive
+if node['install']['enterprise']['install'].casecmp? "true"
+  file_name = "clients.tar.gz"
+  client_dir = "#{node['install']['dir']}/clients-#{node['hopsworks']['version']}"
+
+  directory client_dir do
+    owner node['glassfish']['user']
+    group node['glassfish']['group']
+    mode "775"
+    action :create
+    recursive true
+  end
+
+  source = "#{node['install']['enterprise']['download_url']}/remote_clients/#{node['hopsworks']['version']}/#{file_name}"
+  remote_file "#{node['hopsworks']['client_path']}/#{file_name}" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    source source
+    headers get_ee_basic_auth_header()
+    sensitive true
+    mode 0555
+    action :create_if_missing
+  end
+
+  bash "extract clients jar" do
+    user node['glassfish']['user']
+    group node['glassfish']['group']
+    cwd client_dir
+    code <<-EOF
+      tar xf #{file_name}
+    EOF
+    not_if { ::Dir.exists?("#{client_dir}/client")}
+  end
+end
+
 node.override = {
   'java' => {
     'install_flavor' => node['java']['install_flavor'],
@@ -257,10 +292,10 @@ node.override = {
             'maxqueuesize' => 4096
           },
           'http-thread-pool' => {
-            'maxthreadpoolsize' => 200,
-            'minthreadpoolsize' => 5,
-            'idletimeout' => 900,
-            'maxqueuesize' => 4096
+            'maxthreadpoolsize' => node['glassfish']['http']['thread-pool']['maxthreadpoolsize'],
+            'minthreadpoolsize' => node['glassfish']['http']['thread-pool']['minthreadpoolsize'],
+            'idletimeout' => node['glassfish']['http']['thread-pool']['idletimeout'],
+            'maxqueuesize' => node['glassfish']['http']['thread-pool']['maxqueuesize']
           },
           'admin-pool' => {
             'maxthreadpoolsize' => 40,

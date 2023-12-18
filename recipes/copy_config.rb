@@ -89,11 +89,13 @@ hopsworks_configure_server "glassfish_configure_network" do
   action :glassfish_configure_network
 end
 
-
 # replace send-error_1 for instance after glassfish_configure above sets it to {domains_dir}/#{domain_name}/docroot/index.html
 override = {
   "#{payara_config}.http-service.virtual-server.server.property.send-error_1" => "'code=404 path=${com.sun.aas.instanceRoot}/docroot/index.html reason=Resource_not_found'",
-  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size" => 200,
+  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size" => node['glassfish']['http']['thread-pool']['maxthreadpoolsize'],
+  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.min-thread-pool-size" => node['glassfish']['http']['thread-pool']['minthreadpoolsize'],
+  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.idle-thread-timeout-seconds" => node['glassfish']['http']['thread-pool']['idletimeout'],
+  "configs.config.#{payara_config}.thread-pools.thread-pool.http-thread-pool.max-queue-size" => node['glassfish']['http']['thread-pool']['maxqueuesize'],
 }
 
 hopsworks_configure_server "glassfish_configure" do

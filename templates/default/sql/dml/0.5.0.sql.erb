@@ -1,9 +1,6 @@
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_key_rotation_interval", "<%= node['hopsworks']['service_key_rotation_interval'] %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("conda_default_repo", "<%= @conda_repo %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("user_cert_valid_days", "<%= @user_cert_valid_days %>");
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("support_email_addr", "<%= node['hopsworks']['support_email_addr'] %>");
-
-REPLACE INTO `hopsworks`.`variables`(`id`, `value`) VALUES ("service_key_rotation_enabled", "<%= node['hopsworks']['service_key_rotation_enabled'] %>");
 
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("zookeeper_version", "<%= node['kzookeeper']['version'] %>", 1);
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("grafana_version", "<%= node['grafana']['version'] %>", 1);

@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.5.0"
+version          "3.7.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -79,14 +79,6 @@ attribute "hopsworks/twofactor_auth",
 
 attribute "hopsworks/cert_mater_delay",
           :description => "Delay for the Certificate Materialization service of Hopsworks to delete the certificates from the local fs",
-          :type => 'string'
-
-attribute "hopsworks/service_key_rotation_enabled",
-          :description => "Configuration option to enable/disable automatic service key rotation",
-          :type => 'string'
-
-attribute "hopsworks/service_key_rotation_interval",
-          :description => "Interval for Hops service certificates rotation",
           :type => 'string'
 
 attribute "hopsworks/application_certificate_validity_period",
@@ -645,6 +637,9 @@ attribute "oauth/logout_redirect_uri",
 attribute "oauth/account_status",
           :description => "Hopsworks account status given for new OAuth user. '1' verified account (default)",
           :type => 'string'
+attribute "oauth/group_mapping_enabled",
+          :description => "Whether or not oauth group mapping is enabled (Default: true)",
+          :type => 'string'
 attribute "oauth/group_mapping",
           :description => "OAuth group to hopsworks group mappings. Format: (groupA-> HOPS_USER,HOPS_ADMIN;groupB->HOPS_USER)",
           :type => 'string'
@@ -777,6 +772,23 @@ attribute "glassfish/reschedule_failed_timer",
 attribute "glassfish/http/request-timeout-seconds",
         :description => "timeout, in seconds, for requests. A value of -1 will disable it. (default 3600)",
         :type => 'string'
+
+# Glassfish http thread pool
+attribute "glassfish/http/thread-pool/maxthreadpoolsize",
+          :description => "The maximum number of threads in the thread pool. (default 200)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/minthreadpoolsize",
+          :description => "The minimum number of threads in the thread pool. (default 5)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/idletimeout",
+          :description => "The maximum amount of time that a thread can remain idle in the pool. After this time expires, the thread is removed from the pool. (default 900)",
+          :type => 'string'
+
+attribute "glassfish/http/thread-pool/maxqueuesize",
+          :description => "The maximum number of threads in the queue. A value of -1 indicates that there is no limit to the queue size. (default 4096)",
+          :type => 'string'
 
 # Online featurestore jdbc connection details
 attribute "featurestore/jdbc_url",
@@ -1010,4 +1022,13 @@ attribute "hopsworks/jupyter/remote_fs_driver",
 
 attribute "judge/port",
           :description => "Port where the Judge service will be listening on. Default: 5001",
+          :type => 'string'
+
+# opensearch embedding
+attribute "hopsworks/opensearch/default_embedding_index",
+          :description => "Comma separate value of default embedding index name. e.g default_embedding_index_1,default_embedding_index_2. Make sure onlinefs and data scientist have the appropriate permission of the indices.",
+          :type => "string"
+
+attribute "hopsworks/opensearch/num_default_embedding_index",
+          :description => "Number of default embedding index if `default_embedding_index` is not provided.",
           :type => 'string'
