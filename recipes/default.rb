@@ -843,21 +843,19 @@ kagent_config "glassfish-domain1" do
   action :systemd_reload
 end
 
-# Generate a service JWT token and renewal one-time tokens to be used internally in Hopsworks
-ruby_block "generate_service_jwt" do
+# Generate service API key
+ruby_block "generate_api_key" do
   block do
-    master_token, renew_tokens = get_service_jwt()
-    sql_command_template = "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, hide) VALUE ('%s', '%s', 1);\""
-    master_token_command = sql_command_template % ['service_master_jwt', master_token]
-    execute_shell_command master_token_command
-
-    idx = 0
-    variable_key_template = "service_renew_token_%d"
-    renew_tokens.each do |token|
-      variable_key = variable_key_template % idx
-      renew_token_command = sql_command_template % [variable_key, token]
-      execute_shell_command renew_token_command
-      idx += 1
+    begin
+      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT id FROM hopsworks.variables WHERE id='int_service_api_key' AND value != '';\" | grep 'int_service_api_key'"
+      Chef::Log.warn "Internal service API key already exists"
+    rescue
+      api_key_params = {
+        :name => "hw_int_#{my_private_ip()}_#{SecureRandom.hex(6)}",
+        :scope => "AUTH"
+      }
+      api_key = create_api_key(node['kagent']['dashboard']['user'], node['kagent']['dashboard']['password'], api_key_params, hopsworks_ip="127.0.0.1")
+      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, visibility, hide) VALUE ('int_service_api_key', '#{api_key}', 0, 1);\""
     end
   end
 end
