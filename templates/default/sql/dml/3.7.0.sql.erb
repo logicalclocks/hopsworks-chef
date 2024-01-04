@@ -11,3 +11,6 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'service_renew_token_1';
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'service_renew_token_2';
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'service_renew_token_3';
 DELETE FROM `hopsworks`.`variables` WHERE `id` = 'service_renew_token_4';
+
+-- HWORKS-302
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_conda_install", "<%= node['hopsworks']['enable_conda_install'] %>", 1);

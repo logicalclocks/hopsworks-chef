@@ -1032,3 +1032,8 @@ attribute "hopsworks/opensearch/default_embedding_index",
 attribute "hopsworks/opensearch/num_default_embedding_index",
           :description => "Number of default embedding index if `default_embedding_index` is not provided.",
           :type => 'string'
+
+# enable/disable conda install option
+attribute "hopsworks/enable_conda_install",
+          :description => "Boolean value to enable/disable installing libraries with conda option.",
+          :type => "string"
