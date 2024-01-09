@@ -48,3 +48,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_version` (
 
 -- FSTORE-1146: Appending lots of features results in error to commit activity update
 ALTER TABLE `hopsworks`.`feature_store_activity` MODIFY COLUMN `meta_msg` VARCHAR(15000) COLLATE latin1_general_cs DEFAULT NULL;
+
+--FSTORE-920
+ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
+    ADD `driver_path` VARCHAR(2000) NULL;
