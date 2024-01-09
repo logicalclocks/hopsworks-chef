@@ -2135,7 +2135,7 @@ CREATE TABLE `feature_store_activity` (
                                           `uid`                           INT(11) NOT NULL,
                                           `type`                          INT(11) NOT NULL,
                                           `meta_type`                     INT(11) NULL,
-                                          `meta_msg`                      VARCHAR(255) NULL,
+                                          `meta_msg`                      VARCHAR(15000) NULL,
                                           `execution_id`                  INT(11) NULL,
                                           `statistics_id`                 INT(11) NULL,
                                           `commit_id`                     BIGINT(20) NULL,
