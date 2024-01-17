@@ -385,29 +385,124 @@ CREATE TABLE `feature_store` (
 ) ENGINE=ndbcluster AUTO_INCREMENT=67 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-
 --
--- Table structure for table `feature_store_statistic`
+-- Table structure for table `feature_group_statistics`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feature_store_statistic` (
-                                           `id` int(11) NOT NULL AUTO_INCREMENT,
-                                           `commit_time` DATETIME(3) NOT NULL,
-                                           `file_path` VARCHAR(1000) NOT NULL,
-                                           `feature_group_id` INT(11),
-                                           `feature_group_commit_id` BIGINT(20),
-                                           `training_dataset_id`INT(11),
-                                           `for_transformation` TINYINT(1) DEFAULT '0',
-                                           PRIMARY KEY (`id`),
-                                           KEY `feature_group_id` (`feature_group_id`),
-                                           KEY `training_dataset_id` (`training_dataset_id`),
-                                           KEY `feature_group_commit_id_fk` (`feature_group_id`, `feature_group_commit_id`),
-                                           CONSTRAINT `fg_fk_fss` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                           CONSTRAINT `td_fk_fss` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `computation_time` DATETIME(3) NOT NULL,
+    `feature_group_id` INT(11) NOT NULL,
+    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    -- fg statistics based on left fg commit times
+    `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg), if computed on the whole fg data, it has value 0
+    `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg), if non-time-travel-enabled, it has same value as computation time
+    PRIMARY KEY (`id`),
+    KEY `feature_group_id` (`feature_group_id`),
+    UNIQUE KEY `window_commit_times_row_perc_fk` (`feature_group_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
+    CONSTRAINT `fgs_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `feature_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
+    `feature_type` varchar(20),
+    -- for any feature type
+    `count` BIGINT,
+    `completeness` DOUBLE,
+    `num_non_null_values` BIGINT,
+    `num_null_values` BIGINT,
+    `approx_num_distinct_values` BIGINT,
+    -- for numerical features
+    `min` DOUBLE,
+    `max` DOUBLE,
+    `sum` DOUBLE,
+    `mean` DOUBLE,
+    `stddev` DOUBLE,
+    `percentiles` BLOB,
+    -- with exactUniqueness
+    `distinctness` DOUBLE,
+    `entropy` DOUBLE,
+    `uniqueness` DOUBLE,
+    `exact_num_distinct_values` BIGINT,
+    -- extended stats (hdfs file): histogram, correlations, kll
+    `extended_statistics_path` VARCHAR(255),
+    PRIMARY KEY (`id`),
+    KEY (`feature_name`)
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `feature_group_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
+    `feature_group_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
+    CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `training_dataset_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-to-many relationship for training_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    CONSTRAINT `tdds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tdds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `test_dataset_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-many relationship for test_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    CONSTRAINT `tsds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `val_dataset_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_dataset_descriptive_statistics table
+    `training_dataset_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
+    KEY (`feature_descriptive_statistics_id`),
+    CONSTRAINT `vlds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `vlds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `training_dataset_statistics`
+--
+
+CREATE TABLE `training_dataset_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `computation_time` DATETIME(3) NOT NULL,
+    `training_dataset_id`INT(11) NOT NULL,
+    `before_transformation` TINYINT(1) DEFAULT '0',
+    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    PRIMARY KEY (`id`),
+    KEY `training_dataset_id` (`training_dataset_id`),
+    UNIQUE KEY `tr_ids_for_trans_row_perc_fk` (`training_dataset_id`, `before_transformation`, `row_percentage`),
+    CONSTRAINT `tds_td_fk` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
 -- Table structure for table `feature_store_code`
