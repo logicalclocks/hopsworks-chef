@@ -483,7 +483,6 @@ CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-man
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
-    KEY (`feature_descriptive_statistics_id`),
     CONSTRAINT `vlds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `vlds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
