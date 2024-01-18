@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-ma
     CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_training_dataset_descriptive_statistics table
+CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_dataset_descriptive_statistics table
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
