@@ -891,6 +891,7 @@ CREATE TABLE `project` (
                            `topic_name` VARCHAR(255) DEFAULT NULL,
                            `python_env_id` int(11) DEFAULT NULL,
                            `creation_status` tinyint(1) NOT NULL DEFAULT '0',
+                           `online_feature_store_available` tinyint(1) NULL DEFAULT '1',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
                            KEY `user_idx` (`username`),
