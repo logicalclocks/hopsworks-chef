@@ -9,3 +9,19 @@ ALTER TABLE `hopsworks`.`embedding_feature`
 
 ALTER TABLE `hopsworks`.`embedding_feature`
     ADD CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`model_version_id`) REFERENCES `model_version` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `model_version_id` int(11) NOT NULL,
+  `parent_training_dataset_id` int(11),
+  `parent_feature_store` varchar(100) NOT NULL,
+  `parent_feature_view_name` varchar(63) NOT NULL,
+  `parent_feature_view_version` int(11) NOT NULL,
+  `parent_training_dataset_version` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_unique` (`model_version_id`, `parent_training_dataset_id`),
+  KEY `model_version_id_fkc` (`model_version_id`),
+  KEY `parent_training_dataset_id_fkc` (`parent_training_dataset_id`),
+  CONSTRAINT `model_version_id_fkc` FOREIGN KEY (`model_version_id`) REFERENCES `hopsworks`.`model_version` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `training_dataset_parent_fkc` FOREIGN KEY (`parent_training_dataset_id`) REFERENCES `hopsworks`.`training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
