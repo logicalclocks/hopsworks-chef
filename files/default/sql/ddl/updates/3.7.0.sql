@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     `feature_type` VARCHAR(20),
     -- for any feature type
     `count` BIGINT,
-    `completeness` DOUBLE,
+    `completeness` FLOAT,
     `num_non_null_values` BIGINT,
     `num_null_values` BIGINT,
     `approx_num_distinct_values` BIGINT,
@@ -68,9 +68,9 @@ CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
     `stddev` DOUBLE,
     `percentiles` BLOB,
     -- with exactUniqueness
-    `distinctness` DOUBLE,
-    `entropy` DOUBLE,
-    `uniqueness` DOUBLE,
+    `distinctness` FLOAT,
+    `entropy` FLOAT,
+    `uniqueness` FLOAT,
     `exact_num_distinct_values` BIGINT,
     -- extended stats (hdfs file): histogram, correlations, kll
     `extended_statistics_path` VARCHAR(255),
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `computation_time` DATETIME(3) NOT NULL,
     `feature_group_id` INT(11) NOT NULL,
-    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    `row_percentage` DECIMAL(6,5) NOT NULL DEFAULT 1.00, -- from -9.99999 to 9.99999 (3 bytes)
     -- fg statistics based on left fg commit times
     `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg), if computed on the whole fg data, it has value 0
     `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg), if non-time-travel-enabled, it has same value as computation time
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
     `computation_time` DATETIME(3) NOT NULL,
     `training_dataset_id`INT(11) NOT NULL,
     `before_transformation` TINYINT(1) DEFAULT '0',
-    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    `row_percentage` DECIMAL(6,5) NOT NULL DEFAULT 1.00, -- from -9.99999 to 9.99999 (3 bytes)
     PRIMARY KEY (`id`),
     KEY `training_dataset_id` (`training_dataset_id`),
     UNIQUE KEY `tr_ids_before_trans_row_perc_fk` (`training_dataset_id`, `before_transformation`, `row_percentage`),
