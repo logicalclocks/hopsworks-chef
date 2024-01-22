@@ -684,6 +684,10 @@ attribute "hopsworks/kafka_num_replicas",
           :description => "Default number of replicas for Kafka Topics.",
           :type => 'string'
 
+attribute "hopsworks/notification_topic_name_suffix",
+          :description => "Topic name suffix that is appended to project ID, the generated topic name will be used by the OnlineFS Kafka producer to send notifications.",
+          :type => 'string'
+
 attribute "hopsworks/kafka_num_partitions",
           :description => "Default number of partitions for Kafka Topics.",
           :type => 'string'

@@ -14,3 +14,6 @@ DELETE FROM `hopsworks`.`variables` WHERE `id` = 'service_renew_token_4';
 
 -- HWORKS-302
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_conda_install", "<%= node['hopsworks']['enable_conda_install'] %>", 1);
+
+-- FSTORE-1147
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("notification_topic_name_suffix", "<%= node['hopsworks']['notification_topic_name_suffix'] %>", 1);
