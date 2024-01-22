@@ -195,3 +195,6 @@ CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-man
     CONSTRAINT `vlds_tds_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `vlds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+-- HWORKS-919
+ALTER TABLE `hopsworks`.`project` ADD COLUMN `online_feature_store_available` tinyint(1) NOT NULL DEFAULT '1';
