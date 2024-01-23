@@ -314,6 +314,7 @@ CREATE TABLE `feature_group` (
                                  `event_time` VARCHAR(63) DEFAULT NULL,
                                  `online_enabled` TINYINT(1) NULL,
                                  `topic_name` VARCHAR(255) DEFAULT NULL,
+                                 `notification_topic_name` VARCHAR(255) DEFAULT NULL,
                                  `deprecated` BOOLEAN DEFAULT FALSE,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),

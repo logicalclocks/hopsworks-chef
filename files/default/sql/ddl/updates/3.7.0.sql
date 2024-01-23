@@ -198,3 +198,6 @@ CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-man
 
 -- HWORKS-919
 ALTER TABLE `hopsworks`.`project` ADD COLUMN `online_feature_store_available` tinyint(1) NOT NULL DEFAULT '1';
+
+-- FSTORE-1147
+ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `notification_topic_name` VARCHAR(255) DEFAULT NULL;
