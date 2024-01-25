@@ -542,3 +542,9 @@ default['hopsworks']['enable_conda_install'] = "true"
 ##
 default['hopsworks']['statistics']['statistics_cleaner_batch_size'] = "1000"
 default['hopsworks']['statistics']['statistics_cleaner_interval_ms'] = "900000"
+
+##
+## Feature Monitoring
+##
+default['hopsworks']['enable_feature_monitoring'] = "false"
+

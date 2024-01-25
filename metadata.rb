@@ -1047,3 +1047,8 @@ attribute "hopsworks/statistics/statistics_cleaner_batch_size",
 attribute "hopsworks/statistics/statistics_cleaner_interval_ms",
         :description => "How often the statistics cleaner is triggered.",
         :type => "string"
+
+# Feature monitoring
+attribute "hopsworks/enable_feature_monitoring",
+        :description => "Whether to enable feature monitoring with scheduling and alerting",
+        :type => 'string'
