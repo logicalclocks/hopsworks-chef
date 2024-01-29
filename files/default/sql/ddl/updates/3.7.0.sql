@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     `feature_group_id` INT(11) NOT NULL,
     `row_percentage` DECIMAL(6,5) NOT NULL DEFAULT 1.00, -- from -9.99999 to 9.99999 (3 bytes)
     -- fg statistics based on left fg commit times
-    `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg), if computed on the whole fg data, it has value 0
-    `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg), if non-time-travel-enabled, it has same value as computation time
+    `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg). If computed on the whole fg data, it has value 0
+    `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg). If non-time-travel-enabled, it has same value as computation time
     PRIMARY KEY (`id`),
     KEY `feature_group_id` (`feature_group_id`),
     UNIQUE KEY `window_commit_times_row_perc_fk` (`feature_group_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
@@ -281,3 +281,32 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
     CONSTRAINT `fk_fv_alert_1` FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_fv_alert_2` FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`) ON DELETE CASCADE
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+-- -- feature view statistics
+CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `computation_time` DATETIME(3) NOT NULL,
+    `feature_view_id`INT(11) NOT NULL,
+    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    -- fv statistics based on left fg commit times
+    `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg). If computed on the whole fg data, it has value 0
+    `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg). If non-time-travel-enabled, it has same value as computation time
+    PRIMARY KEY (`id`),
+    KEY `feature_view_id` (`feature_view_id`),
+    UNIQUE KEY `window_commit_times_row_perc_fk` (`feature_view_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
+    CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
+    `feature_view_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
+    CONSTRAINT `fvds_fvs_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fvds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+-- -- Update feature_store_activity foreign keys
+ALTER TABLE `hopsworks`.`feature_store_activity`
+    ADD COLUMN `feature_view_statistics_id` INT(11) NULL;
+
+ALTER TABLE `hopsworks`.`feature_store_activity` ADD CONSTRAINT `fs_act_fv_stat_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

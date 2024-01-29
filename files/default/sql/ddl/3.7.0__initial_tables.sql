@@ -409,6 +409,24 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `feature_group_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `computation_time` DATETIME(3) NOT NULL,
+    `feature_view_id`INT(11) NOT NULL,
+    `row_percentage` DECIMAL(15,2) NOT NULL DEFAULT 1.00,
+    -- fv statistics based on left fg commit times
+    `window_start_commit_time` BIGINT(20) NOT NULL DEFAULT 0, -- window start commit time (fg). If computed on the whole fg data, it has value 0
+    `window_end_commit_time` BIGINT(20) NOT NULL, -- commit time or window end commit time (fg). If non-time-travel-enabled, it has same value as computation time
+    PRIMARY KEY (`id`),
+    KEY `feature_view_id` (`feature_view_id`),
+    UNIQUE KEY `window_commit_times_row_perc_fk` (`feature_view_id`, `window_start_commit_time`, `window_end_commit_time`, `row_percentage`),
+    CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+--
 -- Table structure for table `feature_descriptive_statistics`
 --
 
@@ -450,6 +468,18 @@ CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-m
     PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
     CONSTRAINT `fgds_fgs_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fgds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `feature_view_descriptive_statistics`
+--
+
+CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
+    `feature_view_statistics_id` int(11) NOT NULL,
+    `feature_descriptive_statistics_id` int(11) NOT NULL,
+    PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
+    CONSTRAINT `fvds_fvs_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fvds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 --
@@ -2235,6 +2265,7 @@ CREATE TABLE `feature_store_activity` (
                                           `execution_id`                  INT(11) NULL,
                                           `commit_id`                     BIGINT(20) NULL,
                                           `feature_group_id`              INT(11) NULL,
+                                          `feature_view_id`               INT(11) NULL,
                                           `training_dataset_id`           INT(11) NULL,
                                           `feature_view_id`               INT(11) NULL,
                                           `expectation_suite_id`          INT(11) NULL,
@@ -2252,6 +2283,7 @@ CREATE TABLE `feature_store_activity` (
                                           CONSTRAINT `fs_act_validationreport_fk` FOREIGN KEY (`validation_report_id`) REFERENCES `validation_report` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_expectationsuite_fk` FOREIGN KEY (`expectation_suite_id`) REFERENCES `expectation_suite` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_fg_stat_fk` FOREIGN KEY (`feature_group_statistics_id`) REFERENCES `feature_group_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                          CONSTRAINT `fs_act_fv_stat_fk` FOREIGN KEY (`feature_view_statistics_id`) REFERENCES `feature_view_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                           CONSTRAINT `fs_act_td_stat_fk` FOREIGN KEY (`training_dataset_statistics_id`) REFERENCES `training_dataset_statistics` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
