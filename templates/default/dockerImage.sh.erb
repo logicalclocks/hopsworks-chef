@@ -95,7 +95,39 @@ elif [ "$1" == "list-tags-acr" ] ; then
     exit 1
   fi
   az acr repository show-tags --name $registry --repository $repository --query "[?contains(@, '$image_prefix')]" -o tsv --only-show-errors
-  
+
+elif [ "$1" == "delete-gcr" ] ; then
+  registry=$2
+  repository=$3
+  image_prefix=$4
+  if [[ -z "$registry" ||  -z "$image_prefix" || -z "$repository" ]] ; then
+    echo ""
+    echo "usage: delete-gcr [registry_name repository_name image_prefix]"
+    echo "deletes all images under the specified image_prefix inside the specified registry and repository"
+    echo ""
+    exit 1
+  fi
+
+  tags=`gcloud artifacts docker tags list ${registry}/${repository} --format='csv[no-heading](tag)' --filter="tag~${image_prefix}"`
+  for tag in ${tags[@]};
+  do
+    echo "delete ${tag}"
+    gcloud artifacts docker tags delete ${registry}/${repository}:${tag} --quiet
+  done
+
+elif [ "$1" == "list-tags-gcr" ] ; then
+  registry=$2
+  repository=$3
+  image_prefix=$4
+  if [[ -z "$registry" ||  -z "$image_prefix" || -z "$repository" ]] ; then
+    echo ""
+    echo "usage: list-gcr [registry_name repository_name image_prefix]"
+    echo "list all images under the specified image_prefix inside the specified registry and repository"
+    echo ""
+    exit 1
+  fi
+
+  gcloud artifacts docker tags list ${registry}/${repository} --format='csv[no-heading](tag)' --filter="tag~${image_prefix}"
 <% end -%>
 
 elif [ "$1" == "list" ] ; then
