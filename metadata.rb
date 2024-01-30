@@ -1017,7 +1017,7 @@ attribute "hopsworks/loadbalancer_external_domain",
           :type => 'string'
 
 attribute "hopsworks/jupyter/remote_fs_driver",
-	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hopsfsmount.",
 	  :type => "string"
 
 # Judge
