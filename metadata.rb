@@ -1050,5 +1050,5 @@ attribute "hopsworks/statistics/statistics_cleaner_interval_ms",
 
 # Feature monitoring
 attribute "hopsworks/enable_feature_monitoring",
-        :description => "Whether to enable feature monitoring with scheduling and alerting",
+        :description => "Whether to enable feature monitoring with scheduling and alerting. Default is false.",
         :type => 'string'
