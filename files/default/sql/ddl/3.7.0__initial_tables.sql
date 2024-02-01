@@ -2265,12 +2265,12 @@ CREATE TABLE `feature_store_activity` (
                                           `execution_id`                  INT(11) NULL,
                                           `commit_id`                     BIGINT(20) NULL,
                                           `feature_group_id`              INT(11) NULL,
-                                          `feature_view_id`               INT(11) NULL,
                                           `training_dataset_id`           INT(11) NULL,
                                           `feature_view_id`               INT(11) NULL,
                                           `expectation_suite_id`          INT(11) NULL,
                                           `validation_report_id`          INT(11) NULL,
                                           `feature_group_statistics_id`   INT(11) NULL,
+                                          `feature_view_statistics_id`    INT(11) NULL,
                                           `training_dataset_statistics_id` INT(11) NULL,
                                           PRIMARY KEY (`id`),
                                           CONSTRAINT `fsa_feature_view_fk` FOREIGN KEY  (`feature_view_id`) REFERENCES
