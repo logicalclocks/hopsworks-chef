@@ -203,7 +203,7 @@ ALTER TABLE `hopsworks`.`project` ADD COLUMN `online_feature_store_available` ti
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `notification_topic_name` VARCHAR(255) DEFAULT NULL;
 
 -- Feature monitoring
-CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`monitoring_window_config` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `window_config_type` INT(11) NOT NULL,
     `training_dataset_version` INT(11),
