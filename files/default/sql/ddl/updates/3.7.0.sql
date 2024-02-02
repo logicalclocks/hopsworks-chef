@@ -201,3 +201,5 @@ ALTER TABLE `hopsworks`.`project` ADD COLUMN `online_feature_store_available` ti
 
 -- FSTORE-1147
 ALTER TABLE `hopsworks`.`feature_group` ADD COLUMN `notification_topic_name` VARCHAR(255) DEFAULT NULL;
+
+
