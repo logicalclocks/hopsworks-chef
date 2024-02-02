@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`monitoring_window_config` (
     PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `statistics_comparison_config` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`statistics_comparison_config` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `strict` BOOLEAN DEFAULT FALSE,
     `relative` BOOLEAN DEFAULT FALSE,
