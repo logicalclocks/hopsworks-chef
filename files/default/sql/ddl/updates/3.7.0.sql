@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_version` (
 ALTER TABLE `hopsworks`.`feature_store_activity` MODIFY COLUMN `meta_msg` VARCHAR(15000) COLLATE latin1_general_cs DEFAULT NULL;
 
 -- HWORKS-707: Store descriptive statistics in the DB instead of HopsFS
-CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_descriptive_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
     `feature_type` VARCHAR(20),
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `feature_descriptive_statistics` (
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 -- -- feature group statistics
-CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `computation_time` DATETIME(3) NOT NULL,
     `feature_group_id` INT(11) NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `feature_group_statistics` (
     CONSTRAINT `fgs_fg_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_descriptive_statistics` ( -- many-to-many relationship for legacy feature_group_statistics table
     `feature_group_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_group_statistics_id`, `feature_descriptive_statistics_id`),
@@ -118,7 +118,7 @@ INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, co
 SET SQL_SAFE_UPDATES = 1;
 
 -- -- training dataset statistics
-CREATE TABLE IF NOT EXISTS `training_dataset_statistics` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `computation_time` DATETIME(3) NOT NULL,
     `training_dataset_id`INT(11) NOT NULL,
@@ -172,7 +172,7 @@ ALTER TABLE `hopsworks`.`feature_store_statistic`
 DROP TABLE IF EXISTS `hopsworks`.`feature_store_statistic`;
 
 -- training_dataset_descriptive_statistics serves as either training dataset statistics or train split statistics
-CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-to-many relationship for training_dataset_descriptive_statistics table
+CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_descriptive_statistics` ( -- many-to-many relationship for training_dataset_descriptive_statistics table
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `training_dataset_descriptive_statistics` ( -- many-t
     CONSTRAINT `tdds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-many relationship for test_dataset_descriptive_statistics table
+CREATE TABLE IF NOT EXISTS `hopsworks`.`test_dataset_descriptive_statistics` ( -- many-to-many relationship for test_dataset_descriptive_statistics table
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `test_dataset_descriptive_statistics` ( -- many-to-ma
     CONSTRAINT `tsds_fds_fk` FOREIGN KEY (`feature_descriptive_statistics_id`) REFERENCES `feature_descriptive_statistics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_dataset_descriptive_statistics table
+CREATE TABLE IF NOT EXISTS `hopsworks`.`val_dataset_descriptive_statistics` ( -- many-to-many relationship for val_dataset_descriptive_statistics table
     `training_dataset_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`training_dataset_statistics_id`, `feature_descriptive_statistics_id`),
