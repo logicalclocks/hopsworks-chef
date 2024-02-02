@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_monitoring_config` (
     CONSTRAINT `job_schedule_fk` FOREIGN KEY (`job_schedule_id`) REFERENCES `job_schedule` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `feature_monitoring_result` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_monitoring_result` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `feature_monitoring_config_id` INT(11) NOT NULL,
     `feature_name` VARCHAR(63) COLLATE latin1_general_cs NOT NULL,
