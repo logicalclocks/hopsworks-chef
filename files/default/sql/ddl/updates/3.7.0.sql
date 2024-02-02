@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- -- feature view statistics
-CREATE TABLE IF NOT EXISTS `feature_view_statistics` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_statistics` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `computation_time` DATETIME(3) NOT NULL,
     `feature_view_id`INT(11) NOT NULL,
