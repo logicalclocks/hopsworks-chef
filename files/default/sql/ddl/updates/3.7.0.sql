@@ -297,7 +297,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_statistics` (
     CONSTRAINT `fvs_fv_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
+CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_descriptive_statistics` ( -- many-to-many relationship for legacy feature_view_statistics table
     `feature_view_statistics_id` int(11) NOT NULL,
     `feature_descriptive_statistics_id` int(11) NOT NULL,
     PRIMARY KEY (`feature_view_statistics_id`, `feature_descriptive_statistics_id`),
