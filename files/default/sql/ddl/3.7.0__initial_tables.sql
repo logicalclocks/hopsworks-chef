@@ -1240,6 +1240,7 @@ CREATE TABLE `serving` (
                            KEY `name_k` (`name`),
                            CONSTRAINT `user_fk_serving` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                            CONSTRAINT `FK_284_315` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                           CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `project_topics` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                            CONSTRAINT `specification_fk` FOREIGN KEY (`specification`) REFERENCES `serving_spec` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                            CONSTRAINT `canary_spec_fk` FOREIGN KEY (`canary_spec`) REFERENCES `serving_spec` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
