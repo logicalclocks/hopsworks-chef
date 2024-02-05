@@ -2489,6 +2489,7 @@ CREATE TABLE IF NOT EXISTS `model` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `model_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `model_id` int(11) NOT NULL,
   `version` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -2500,7 +2501,8 @@ CREATE TABLE IF NOT EXISTS `model_version` (
   `environment` VARCHAR(1000) DEFAULT NULL,
   `experiment_id` VARCHAR(128) DEFAULT NULL,
   `experiment_project_name` VARCHAR(128) DEFAULT NULL,
-  PRIMARY KEY (`model_id`, `version`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `model_version_key` (`model_id`, `version`),
   CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
