@@ -2468,15 +2468,18 @@ CREATE TABLE IF NOT EXISTS `embedding` (
     CONSTRAINT `feature_group_embedding_fk` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
-CREATE TABLE IF NOT EXISTS `embedding_feature` (
+CREATE TABLE IF NOT EXISTS `hopsworks`.`embedding_feature` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `embedding_id` int(11) NOT NULL,
     `name` varchar(255) NOT NULL,
     `dimension` int NOT NULL,
     `similarity_function_type` varchar(255) NOT NULL,
+    `hsml_model_id` int(11) NULL,
+    `hsml_model_version` int(11) NULL,
     PRIMARY KEY (`id`),
     KEY `embedding_id` (`embedding_id`),
-    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`hsml_model_id`, `hsml_model_version`) REFERENCES `model_version` (`model_id`, `version`) ON DELETE SET NULL ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `model` (
