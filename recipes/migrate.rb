@@ -37,7 +37,7 @@ end
 kibana_url = get_kibana_url()
 elastic_url = any_elastic_url()
 hopsworks_url = "https://#{private_recipe_ip("hopsworks", "default")}:#{node['hopsworks']['https']['port']}"
-serviceJwt, _ = get_service_jwt()
+serviceJwt = get_service_jwt()
 if node.attribute?("kube-hops") == true && node['kube-hops'].attribute?('master') == true && !node['kube-hops']['master'][:private_ips].nil?
   kube_hopsworks_user = node['kube-hops']['hopsworks_user']
   kube_master_url = "#{private_recipe_ip('kube-hops', 'master')}:#{node["kube-hops"]["apiserver"]["port"]}"
