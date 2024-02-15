@@ -9,3 +9,5 @@ ALTER TABLE `hopsworks`.`embedding_feature`
 
 ALTER TABLE `hopsworks`.`embedding_feature`
     ADD CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`model_version_id`) REFERENCES `model_version` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE `hopsworks`.`serving` ADD COLUMN `api_protocol` TINYINT(1) NOT NULL DEFAULT '0';
