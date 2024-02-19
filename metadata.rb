@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.7.0"
+version          "3.8.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -1017,14 +1017,15 @@ attribute "hopsworks/loadbalancer_external_domain",
           :type => 'string'
 
 attribute "hopsworks/jupyter/remote_fs_driver",
-	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hdfscontentsmanager.",
+	  :description => "Driver to interact with HOPSFS. Can be hdfscontentsmanager or hopsfsmount. Default is hopsfsmount.",
 	  :type => "string"
 
+# Judge
 attribute "judge/port",
           :description => "Port where the Judge service will be listening on. Default: 5001",
           :type => 'string'
 
-# opensearch embedding
+# Opensearch embedding
 attribute "hopsworks/opensearch/default_embedding_index",
           :description => "Comma separate value of default embedding index name. e.g default_embedding_index_1,default_embedding_index_2. Make sure onlinefs and data scientist have the appropriate permission of the indices.",
           :type => "string"
@@ -1037,3 +1038,17 @@ attribute "hopsworks/opensearch/num_default_embedding_index",
 attribute "hopsworks/enable_conda_install",
           :description => "Boolean value to enable/disable installing libraries with conda option.",
           :type => "string"
+        
+# Statistics
+attribute "hopsworks/statistics/statistics_cleaner_batch_size",
+        :description => "The maximum number of statistics to be deleted per timer trigger.",
+        :type => "string"
+
+attribute "hopsworks/statistics/statistics_cleaner_interval_ms",
+        :description => "How often the statistics cleaner is triggered.",
+        :type => "string"
+
+# Feature monitoring
+attribute "hopsworks/enable_feature_monitoring",
+        :description => "Whether to enable feature monitoring with scheduling and alerting. Default is false.",
+        :type => 'string'

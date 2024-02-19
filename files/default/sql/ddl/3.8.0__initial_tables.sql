@@ -2457,6 +2457,34 @@ CREATE TABLE `feature_store_keyword` (
   CONSTRAINT `fk_fs_keyword_td` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  UNIQUE KEY `project_unique_name` (`name`, `project_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `model_project_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `model_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_id` int(11) NOT NULL,
+  `version` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` VARCHAR(1000) DEFAULT NULL,
+  `metrics` VARCHAR(3000) DEFAULT NULL,
+  `program` VARCHAR(1000) DEFAULT NULL,
+  `framework` VARCHAR(128) DEFAULT NULL,
+  `environment` VARCHAR(1000) DEFAULT NULL,
+  `experiment_id` VARCHAR(128) DEFAULT NULL,
+  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `model_version_key` (`model_id`, `version`),
+  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 -- FSTORE-1047
 CREATE TABLE IF NOT EXISTS `embedding` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2474,36 +2502,12 @@ CREATE TABLE IF NOT EXISTS `embedding_feature` (
     `name` varchar(255) NOT NULL,
     `dimension` int NOT NULL,
     `similarity_function_type` varchar(255) NOT NULL,
+    `model_version_id` INT(11) NULL,
     PRIMARY KEY (`id`),
     KEY `embedding_id` (`embedding_id`),
-    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`model_version_id`) REFERENCES `model_version` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `model` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `project_id` int(11) NOT NULL,
-  UNIQUE KEY `project_unique_name` (`name`, `project_id`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `model_project_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `model_version` (
-  `model_id` int(11) NOT NULL,
-  `version` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description` VARCHAR(1000) DEFAULT NULL,
-  `metrics` VARCHAR(3000) DEFAULT NULL,
-  `program` VARCHAR(1000) DEFAULT NULL,
-  `framework` VARCHAR(128) DEFAULT NULL,
-  `environment` VARCHAR(1000) DEFAULT NULL,
-  `experiment_id` VARCHAR(128) DEFAULT NULL,
-  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
-  PRIMARY KEY (`model_id`, `version`),
-  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- FSTORE-612: Feature monitoring
 CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
