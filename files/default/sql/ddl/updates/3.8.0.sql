@@ -9,3 +9,8 @@ ALTER TABLE `hopsworks`.`embedding_feature`
 
 ALTER TABLE `hopsworks`.`embedding_feature`
     ADD CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`model_version_id`) REFERENCES `model_version` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+--FSTORE-1096
+ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
+    ADD COLUMN `secret_uid` INT DEFAULT NULL,
+    ADD COLUMN `secret_name` VARCHAR(200) DEFAULT NULL;
