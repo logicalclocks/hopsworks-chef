@@ -171,8 +171,10 @@ SET SQL_SAFE_UPDATES = 0;
 -- -- update feature_store_activity statistics ids
 UPDATE `feature_store_activity` SET feature_group_statistics_id = statistics_id
     WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND EXISTS(SELECT 1 FROM `feature_group_statistics` WHERE id = statistics_id LIMIT 1);
+DELETE FROM `feature_store_activity` WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND feature_group_statistics_id IS NULL;
 UPDATE `feature_store_activity` SET training_dataset_statistics_id = statistics_id
     WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND EXISTS(SELECT 1 FROM `training_dataset_statistics` WHERE id = statistics_id LIMIT 1);
+DELETE FROM `feature_store_activity` WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND training_dataset_statistics_id IS NULL;
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_store_activity`
