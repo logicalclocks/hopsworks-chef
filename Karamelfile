@@ -24,6 +24,8 @@ dependencies:
       - hops::dn
       - hopslog::default
       - hopsworks::default
+      - hopsworks::das_node
+      - hopsworks::config_node
   - recipe: hopsworks::das_node
     local:
       - hopsworks::default
