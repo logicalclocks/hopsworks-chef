@@ -20,3 +20,4 @@ start-dev.sh
 vagrant.pid
 
 .idea
+.DS_Store
