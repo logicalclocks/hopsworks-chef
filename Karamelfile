@@ -23,6 +23,7 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
+      - hopsworks::default
   - recipe: hopsworks::das_node
     local:
       - hopsworks::default
