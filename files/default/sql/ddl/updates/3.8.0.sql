@@ -18,5 +18,5 @@ ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD COLUMN `secret_name` VARCHAR(200) DEFAULT NULL;
 
 --FSTORE-1248
-ALTER TABLE hopsworks.`executions`
+ALTER TABLE `hopsworks`.`executions`
     ADD COLUMN `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
