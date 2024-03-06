@@ -835,20 +835,11 @@ kagent_config "glassfish-domain1" do
 end
 
 # Generate service API key
-ruby_block "generate_api_key" do
-  block do
-    begin
-      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT id FROM hopsworks.variables WHERE id='int_service_api_key' AND value != '';\" | grep 'int_service_api_key'"
-      Chef::Log.warn "Internal service API key already exists"
-    rescue
-      api_key_params = {
-        :name => "hw_int_#{my_private_ip()}_#{SecureRandom.hex(6)}",
-        :scope => "AUTH"
-      }
-      api_key = create_api_key(node['kagent']['dashboard']['user'], node['kagent']['dashboard']['password'], api_key_params, hopsworks_ip="127.0.0.1")
-      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, visibility, hide) VALUE ('int_service_api_key', '#{api_key}', 0, 1);\""
-    end
-  end
+# In HA deployments we skip this resources and execute it at config_node
+# where the application has been deployed in Instances
+hopsworks_configure_server "generate-int-api-key" do
+  action :generate_internal_api_key
+  not_if { exists_local("hopsworks", "das_node") || exists_local("hopsworks", "config_node") }
 end
 
 # Force variables reload
