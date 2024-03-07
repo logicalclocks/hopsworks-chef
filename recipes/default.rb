@@ -20,7 +20,6 @@ node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}
 theDomain="#{domains_dir}/#{domain_name}"
 
 public_ip=my_public_ip()
-realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
@@ -283,14 +282,6 @@ for version in versions do
       #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
     EOH
   end
-end
-
-# Create the users_groups view if it doesn't exists (see HWORKS-457 for explanation)
-bash "create users_groups view" do
-  user "root"
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e "CREATE OR REPLACE VIEW users_groups AS select u.username AS username, u.password AS password, u.secret AS secret, u.email AS email,g.group_name AS group_name from ((user_group ug join users u on((u.uid = ug.uid))) join bbc_group g on((g.gid = ug.gid)));"
-  EOH
 end
 
 

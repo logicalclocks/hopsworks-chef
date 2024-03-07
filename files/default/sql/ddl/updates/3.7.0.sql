@@ -104,8 +104,13 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_group_descriptive_statistics` ( 
 SET SQL_SAFE_UPDATES = 0;
 -- -- insert new feature_group_statistics. For the same feature group commit statistics, only insert the last computed statistics. For non-time-travel feature groups, insert all computed statistics.
 INSERT INTO `feature_group_statistics` (id, computation_time, feature_group_id, window_end_commit_time)
-  SELECT MAX(id) as id, MAX(commit_time) as computation_time, feature_group_id, MAX(feature_group_commit_id) as window_end_commit_time FROM `feature_store_statistic`
-  WHERE feature_group_id IS NOT NULL GROUP BY feature_group_id, IFNULL(feature_group_commit_id, UUID());
+  WITH sorted_feature_store_statistic AS (
+    SELECT `feature_store_statistic`.*, ROW_NUMBER() OVER (PARTITION BY feature_group_id, IFNULL(feature_group_commit_id, UUID()) ORDER BY commit_time DESC) as rn -- group by fg_id and commit_id, and sort by commit_time --
+    FROM `feature_store_statistic` WHERE feature_group_id IS NOT NULL
+  )
+  SELECT id, commit_time as computation_time, feature_group_id, IFNULL(feature_group_commit_id, UNIX_TIMESTAMP(commit_time)*1000) as window_end_commit_time
+  FROM sorted_feature_store_statistic WHERE rn = 1; -- last computed stats --
+
 -- -- insert one feature descriptive statistic as a reference per feature_group_statistics. These will be used in the expat to parse and create the corresponding feature descriptive statistics rows
 INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, num_non_null_values, num_null_values, extended_statistics_path)
   SELECT id, 'for-migration', 'FEATURE_GROUP' as feature_type, feature_group_id, UNIX_TIMESTAMP(commit_time)*1000, feature_group_commit_id, file_path
@@ -133,8 +138,13 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_statistics` (
 SET SQL_SAFE_UPDATES = 0;
 -- -- insert new training_dataset_statistics. For the same training dataset, only insert the last computed statistics.
 INSERT INTO `training_dataset_statistics` (id, computation_time, training_dataset_id, before_transformation)
-  SELECT MAX(id) as id, MAX(commit_time) as computation_time, training_dataset_id, for_transformation FROM `feature_store_statistic`
-  WHERE training_dataset_id IS NOT NULL GROUP BY training_dataset_id, for_transformation;
+  WITH sorted_feature_store_statistic AS (
+    SELECT `feature_store_statistic`.*, ROW_NUMBER() OVER (PARTITION BY training_dataset_id, for_transformation ORDER BY commit_time DESC) as rn -- group by td_id and before_transformation, and sort by commit_time --
+    FROM `feature_store_statistic` WHERE training_dataset_id IS NOT NULL
+  )
+  SELECT id, commit_time as computation_time, training_dataset_id, for_transformation
+  FROM sorted_feature_store_statistic WHERE rn = 1; -- last computed stats --
+
 -- -- insert one feature descriptive statistic as a reference per training dataset statistics. These will be used in the expat to parse and create the corresponding feature descriptive statistics rows
 INSERT INTO `feature_descriptive_statistics` (id, feature_name, feature_type, count, num_non_null_values, num_null_values, extended_statistics_path)
   SELECT id, 'for-migration', 'TRAINING_DATASET' as feature_type, training_dataset_id, UNIX_TIMESTAMP(commit_time)*1000, feature_group_commit_id, file_path
@@ -159,8 +169,12 @@ ALTER TABLE `hopsworks`.`feature_store_activity`
 
 SET SQL_SAFE_UPDATES = 0;
 -- -- update feature_store_activity statistics ids
-UPDATE `feature_store_activity` SET feature_group_statistics_id = statistics_id WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL;
-UPDATE `feature_store_activity` SET training_dataset_statistics_id = statistics_id WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL;
+UPDATE `feature_store_activity` SET feature_group_statistics_id = statistics_id
+    WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND EXISTS(SELECT 1 FROM `feature_group_statistics` WHERE id = statistics_id LIMIT 1);
+DELETE FROM `feature_store_activity` WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND feature_group_statistics_id IS NULL;
+UPDATE `feature_store_activity` SET training_dataset_statistics_id = statistics_id
+    WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND EXISTS(SELECT 1 FROM `training_dataset_statistics` WHERE id = statistics_id LIMIT 1);
+DELETE FROM `feature_store_activity` WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND training_dataset_statistics_id IS NULL;
 SET SQL_SAFE_UPDATES = 1;
 
 ALTER TABLE `hopsworks`.`feature_store_activity`
