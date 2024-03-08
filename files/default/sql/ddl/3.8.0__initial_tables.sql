@@ -1275,6 +1275,7 @@ CREATE TABLE `serving` (
                            `revision` varchar(8) DEFAULT NULL,
                            `predictor_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                            `transformer_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+                           `api_protocol` TINYINT(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `Serving_Constraint` (`project_id`,`name`),
                            KEY `user_fk` (`creator`),
