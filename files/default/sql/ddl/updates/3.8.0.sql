@@ -12,7 +12,6 @@ ALTER TABLE `hopsworks`.`embedding_feature`
 
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `api_protocol` TINYINT(1) NOT NULL DEFAULT '0';
 
-
 --FSTORE-1096
 ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD COLUMN `secret_uid` INT DEFAULT NULL,
