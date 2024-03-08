@@ -82,13 +82,6 @@ action :configure_node do
     to data_volume_logs_dir
   end
 
-  bash "create_users_groups_view" do
-    user "root"
-    code <<-EOH
-      #{node['ndb']['scripts_dir']}/mysql-client.sh --database=hopsworks -e \"CREATE OR REPLACE ALGORITHM=UNDEFINED VIEW users_groups AS select u.username AS username,u.password AS password,u.secret AS secret,u.email AS email,g.group_name AS group_name from ((user_group ug join users u on((u.uid = ug.uid))) join bbc_group g on((g.gid = ug.gid)));\" 
-    EOH
-  end
-
   # Register Glassfish with Consul
   consul_service "Registering Glassfish worker with Consul" do
     service_definition "consul/glassfish-worker-consul.hcl.erb"

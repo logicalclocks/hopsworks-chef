@@ -18,3 +18,4 @@ attribute :node_name, :kind_of => String, :default => nil
 attribute :override_props, :kind_of => Hash, :default => {}
 attribute :recreate, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :ignore_failure, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :realmname, :kind_of => String, :default =>  "hopsworksrealm"

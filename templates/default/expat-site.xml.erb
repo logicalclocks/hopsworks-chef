@@ -76,7 +76,7 @@
 
     <hops>
         <client>
-            <user><%= node['hops']['hdfs']['user'] %></user>
+            <user><%= node['hopsworks']['user'] %></user>
         </client>
     </hops>
 
@@ -162,5 +162,6 @@
     </version-35>
     <version-37>
         io.hops.hopsworks.expat.migrations.models.OpenSearchToRonDBMigration
+        io.hops.hopsworks.expat.migrations.featurestore.statistics.StatisticsMigration
     </version-37>
 </expat>

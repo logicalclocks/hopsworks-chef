@@ -66,7 +66,7 @@ end
 bash 'run-expat' do
   user "root"
   environment ({'HADOOP_HOME' => node['hops']['base_dir'],
-                'HADOOP_USER_NAME' => node['hops']['hdfs']['user'],
+                'HADOOP_USER_NAME' => node['hopsworks']['user'],
                 'HOPSWORKS_EAR_HOME' => "#{node['hopsworks']['domains_dir']}/#{node['hopsworks']['domain_name']}/applications/hopsworks-ear~#{node['install']['version']}"})
   code <<-EOH
     #{node['hopsworks']['expat_dir']}/bin/expat -a migrate -v #{node['install']['version']}
