@@ -7,6 +7,6 @@ COPY * $BUILD_DIR
 RUN chown yarnapp:hadoop $BUILD_DIR/*  \
     && chmod +x $BUILD_DIR/${args.commandScript}
 USER yarnapp
-RUN cd $BUILD_DIR && ./${args.commandScript}
+RUN cd $BUILD_DIR && sed -i '2s/^/set -e\n/' ${args.commandScript} && ./${args.commandScript}
 USER root
 RUN rm -f /etc/sudoers.d/yarnapp
