@@ -275,6 +275,7 @@ CREATE TABLE `executions` (
                               `execution_stop` bigint(20) DEFAULT NULL,
                               `stdout_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `stderr_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                              `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `args` varchar(10000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
                               `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL,
