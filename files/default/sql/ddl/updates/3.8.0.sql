@@ -17,11 +17,10 @@ ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD COLUMN `secret_uid` INT DEFAULT NULL,
     ADD COLUMN `secret_name` VARCHAR(200) DEFAULT NULL;
 
-<<<<<<< HEAD
 -- FSTORE-1248
 ALTER TABLE `hopsworks`.`executions`
     ADD COLUMN `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
-=======
+
 -- HWORKS-927
 ALTER TABLE `hopsworks`.`serving`
     DROP COLUMN `model_path`,
@@ -67,4 +66,3 @@ CREATE TABLE `serving_spec` (
 
 ALTER TABLE `hopsworks`.`serving` ADD CONSTRAINT `specification_fk` FOREIGN KEY (`specification`) REFERENCES `serving_spec` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE `hopsworks`.`serving` ADD CONSTRAINT `canary_spec_fk` FOREIGN KEY (`canary_spec`) REFERENCES `serving_spec` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
->>>>>>> 23b86bb0 (Support canary serving deployments)
