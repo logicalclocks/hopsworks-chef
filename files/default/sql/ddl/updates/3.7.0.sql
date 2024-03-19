@@ -106,7 +106,7 @@ DROP PROCEDURE IF EXISTS BatchProc;
 DROP PROCEDURE IF EXISTS PopulateFeatureGroupStatistics;
 DROP PROCEDURE IF EXISTS BatchPopulateFeatureGroupStatistics;
 DROP PROCEDURE IF EXISTS PopulateFeatureDescriptiveStatistics;
-DROP PROCEDURE IF EXISTS BatchPopulatePopulateFeatureDescriptiveStatistics;
+DROP PROCEDURE IF EXISTS BatchPopulateFeatureDescriptiveStatistics;
 DROP PROCEDURE IF EXISTS PopulateTrainingDatasetStatistics;
 DROP PROCEDURE IF EXISTS BatchPopulateTrainingDatasetStatistics;
 DROP PROCEDURE IF EXISTS PopulateFeatureDescriptiveStatisticsForTrainingDataset;
@@ -187,7 +187,7 @@ BEGIN
   -- To be done in the expat: insert feature_group_descriptive_statistics (many-to-many relationship), parse feature_descriptive_statistics, delete orphan fg statistics files
 END //
 
-CREATE PROCEDURE BatchPopulatePopulateFeatureDescriptiveStatistics()
+CREATE PROCEDURE BatchPopulateFeatureDescriptiveStatistics()
 BEGIN
     DECLARE start_id INT;
     DECLARE end_id INT;
@@ -293,7 +293,7 @@ DELIMITER ;
 
 SET SQL_SAFE_UPDATES = 0;
 CALL BatchPopulateFeatureGroupStatistics();
-CALL BatchPopulatePopulateFeatureDescriptiveStatistics();
+CALL BatchPopulateFeatureDescriptiveStatistics();
 SET SQL_SAFE_UPDATES = 1;
 
 -- -- training dataset statistics
