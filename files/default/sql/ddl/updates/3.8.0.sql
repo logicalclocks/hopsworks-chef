@@ -17,6 +17,10 @@ ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD COLUMN `secret_uid` INT DEFAULT NULL,
     ADD COLUMN `secret_name` VARCHAR(200) DEFAULT NULL;
 
+-- FSTORE-1248
+ALTER TABLE `hopsworks`.`executions`
+    ADD COLUMN `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL;
+
 CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model_version_id` int(11) NOT NULL,
@@ -32,4 +36,3 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
   CONSTRAINT `model_version_id_fkc` FOREIGN KEY (`model_version_id`) REFERENCES `hopsworks`.`model_version` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `training_dataset_parent_fkc` FOREIGN KEY (`parent_training_dataset_id`) REFERENCES `hopsworks`.`training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
