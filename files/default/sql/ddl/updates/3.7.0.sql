@@ -109,8 +109,8 @@ DROP PROCEDURE IF EXISTS PopulateFeatureDescriptiveStatistics;
 DROP PROCEDURE IF EXISTS BatchPopulatePopulateFeatureDescriptiveStatistics;
 DROP PROCEDURE IF EXISTS PopulateTrainingDatasetStatistics;
 DROP PROCEDURE IF EXISTS BatchPopulateTrainingDatasetStatistics;
-DROP PROCEDURE IF EXISTS PopulateFeatureDescriptiveStatisticsForTraingingDataset;
-DROP PROCEDURE IF EXISTS BatchPopulateFeatureDescriptiveStatisticsForTraingingDataset;
+DROP PROCEDURE IF EXISTS PopulateFeatureDescriptiveStatisticsForTrainingDataset;
+DROP PROCEDURE IF EXISTS BatchPopulateFeatureDescriptiveStatisticsForTrainingDataset;
 DROP PROCEDURE IF EXISTS UpdateFeatureStoreActivity;
 DROP PROCEDURE IF EXISTS BatchUpdateFeatureStoreActivity;
 DROP PROCEDURE IF EXISTS UpdateFeatureStoreActivityForTrainingDatset;
@@ -157,7 +157,7 @@ BEGIN
     FROM `hopsworks`.`feature_store_statistic` WHERE feature_group_id IS NOT NULL and feature_group_id BETWEEN start_id AND end_id
   )
   SELECT id, commit_time as computation_time, feature_group_id, IFNULL(feature_group_commit_id, UNIX_TIMESTAMP(commit_time)*1000) as window_end_commit_time
-  FROM sorted_feature_store_statistic WHERE rn = 1;
+  FROM sorted_feature_store_statistic WHERE rn = 1; -- select last computed stats in the current fg stats batch --
 
 END //
 
@@ -223,7 +223,7 @@ BEGIN
 END //
 
 -- Procedure to populate feature_descriptive_statistics
-CREATE PROCEDURE PopulateFeatureDescriptiveStatisticsForTraingingDataset(start_id INT, end_id INT)
+CREATE PROCEDURE PopulateFeatureDescriptiveStatisticsForTrainingDataset(start_id INT, end_id INT)
 BEGIN
     -- -- insert one feature descriptive statistic as a reference per training dataset statistics. These will be used in the expat to parse and create the corresponding feature descriptive statistics rows
     INSERT INTO `hopsworks`.`feature_descriptive_statistics` (id, feature_name, feature_type, count, num_non_null_values, num_null_values, extended_statistics_path)
@@ -237,14 +237,14 @@ BEGIN
     -- and delete orphan statistics files. Split statistics are handled in the expat migration as well
 END //
 
-CREATE PROCEDURE BatchPopulateFeatureDescriptiveStatisticsForTraingingDataset()
+CREATE PROCEDURE BatchPopulateFeatureDescriptiveStatisticsForTrainingDataset()
 BEGIN
     DECLARE start_id INT;
     DECLARE end_id INT;
 
     SELECT MIN(id), MAX(id) INTO start_id, end_id FROM `hopsworks`.`feature_store_statistic`;
 
-    CALL BatchProc('PopulateFeatureDescriptiveStatisticsForTraingingDataset', 1000, start_id, end_id);
+    CALL BatchProc('PopulateFeatureDescriptiveStatisticsForTrainingDataset', 1000, start_id, end_id);
     
 END //
 
@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_statistics` (
 
 SET SQL_SAFE_UPDATES = 0;
 CALL BatchPopulateTrainingDatasetStatistics();
-CALL BatchPopulateFeatureDescriptiveStatisticsForTraingingDataset();
+CALL BatchPopulateFeatureDescriptiveStatisticsForTrainingDataset();
 SET SQL_SAFE_UPDATES = 1;   
 
 -- -- Update feature_store_activity foreign keys
