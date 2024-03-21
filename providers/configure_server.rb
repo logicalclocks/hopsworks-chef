@@ -325,7 +325,7 @@ action :generate_internal_api_key do
             return
           rescue => ex
             attempts += 1
-            if attempts > 2 do
+            if attempts > 2
               raise ex
             end
 
