@@ -21,7 +21,7 @@ cookbook 'hops_airflow', github: "logicalclocks/airflow-chef", branch: "3.7"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "3.7"
 cookbook 'consul', github: "logicalclocks/consul-chef", branch: "3.7"
 cookbook 'kube-hops', github: "logicalclocks/kube-hops-chef", branch: "3.7"
-cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "3.7"
+cookbook 'cloud', github: "logicalclocks/cloud-chef", branch: "app_3.7"
 cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", branch: "3.7"
 cookbook 'flyingduck', github: "logicalclocks/flyingduck-chef", branch: "3.7"
 
