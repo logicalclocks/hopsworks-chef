@@ -835,11 +835,9 @@ kagent_config "glassfish-domain1" do
 end
 
 # Generate service API key
-# In HA deployments we skip this resources and execute it at config_node
-# where the application has been deployed in Instances
+# Even in HA configuration, Hopsworks has been deployed when we reach this point
 hopsworks_configure_server "generate-int-api-key" do
   action :generate_internal_api_key
-  not_if { exists_local("hopsworks", "das_node") || exists_local("hopsworks", "config_node") }
 end
 
 # Force variables reload
