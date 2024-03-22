@@ -81,7 +81,3 @@ hopsworks_worker "add_to_services" do
   action :add_to_services
   not_if "systemctl is-active --quiet #{service_name}"
 end
-
-hopsworks_configure_server "generate-int-api-key" do
-  action :generate_internal_api_key
-end
