@@ -151,8 +151,6 @@ REPLACE INTO variables(`id`, `value`) VALUES ("logstash_port", "<%= @logstash_po
 --
 -- pyspark, python
 --
-REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_user", "<%= node['conda']['user'] %>");
-REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_dir", "<%= node['conda']['base_dir'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_env", "<%= node['kagent']['user'] %>");
 REPLACE INTO variables(`id`, `value`) VALUES ("anaconda_enabled", "<%= node['hopsworks']['anaconda_enabled'] %>");
 
