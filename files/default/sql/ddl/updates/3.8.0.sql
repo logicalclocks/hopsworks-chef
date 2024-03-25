@@ -39,7 +39,9 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
 
 ALTER TABLE `hopsworks`.`feature_group_link`
     ADD COLUMN `parent_connector_id` int(11),
-    ADD COLUMN `parent_connector_name` varchar(63) NOT NULL,
+    ADD COLUMN `parent_connector_name` varchar(150),
+    MODIFY `parent_feature_group_name` varchar(63),
+    MODIFY `parent_feature_group_version` INT,
     DROP INDEX `link_unique`,
     ADD UNIQUE KEY `link_unique` (`feature_group_id`,`parent_feature_group_id`,`parent_connector_id`),
     ADD KEY `parent_connector_id_fkc` (`parent_connector_id`),
