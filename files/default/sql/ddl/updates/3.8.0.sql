@@ -36,3 +36,11 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
   CONSTRAINT `model_version_id_fkc` FOREIGN KEY (`model_version_id`) REFERENCES `hopsworks`.`model_version` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `training_dataset_parent_fkc` FOREIGN KEY (`parent_training_dataset_id`) REFERENCES `hopsworks`.`training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+ALTER TABLE `hopsworks`.`feature_group_link`
+    ADD COLUMN `parent_connector_id` int(11),
+    ADD COLUMN `parent_connector_name` varchar(63) NOT NULL,
+    DROP INDEX `link_unique`,
+    ADD UNIQUE KEY `link_unique` (`feature_group_id`,`parent_feature_group_id`,`parent_connector_id`),
+    ADD KEY `parent_connector_id_fkc` (`parent_connector_id`),
+    ADD CONSTRAINT `parent_connector_fkc` FOREIGN KEY (`parent_connector_id`) REFERENCES `feature_store_connector` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
