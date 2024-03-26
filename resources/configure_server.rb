@@ -1,4 +1,4 @@
-actions :glassfish_configure_network, :glassfish_configure_monitoring, :glassfish_configure, :glassfish_configure_realm, :glassfish_configure_http_logging, :glassfish_create_resource_ref
+actions :glassfish_configure_network, :glassfish_configure_monitoring, :glassfish_configure, :glassfish_configure_realm, :glassfish_configure_http_logging, :glassfish_create_resource_ref, :generate_internal_api_key
 
 attribute :domain_name, :kind_of => String, :default => nil
 attribute :domains_dir, :kind_of => String, :default => nil
