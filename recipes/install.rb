@@ -418,7 +418,7 @@ directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
 end
 
 directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
-  owner node['conda']['user']
+  owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "0770"
   action :create

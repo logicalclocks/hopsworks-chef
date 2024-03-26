@@ -3,8 +3,6 @@ dependencies:
     local:
       - hops::install
   - recipe: hopsworks::default
-    local:
-      - conda::default
     global:
       - hops::ndb
       - hive2::db
