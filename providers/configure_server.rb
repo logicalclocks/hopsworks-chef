@@ -310,3 +310,50 @@ action :glassfish_create_resource_ref do
     end
   end
 end
+
+action :generate_internal_api_key do
+  ruby_block "generate_api_key" do
+    block do
+      begin
+        execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT id FROM hopsworks.variables WHERE id='int_service_api_key' AND value != '';\" | grep 'int_service_api_key'"
+        Chef::Log.info "Internal service API key already exists"
+      rescue
+        api_key_params = {
+          :name => "hw_int_#{my_private_ip()}_#{SecureRandom.hex(6)}",
+          :scope => "AUTH"
+        }
+        attempts = 1
+        while true do
+          begin
+            api_key = create_api_key(node['kagent']['dashboard']['user'], node['kagent']['dashboard']['password'], api_key_params, hopsworks_ip="127.0.0.1")
+            execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, visibility, hide) VALUE ('int_service_api_key', '#{api_key}', 0, 1);\""
+            break
+          rescue => ex
+            attempts += 1
+            if attempts > 2
+              raise ex
+            end
+
+            # Sometimes Glassfish will return 404 although the applications are successfully deployed.
+            # It appears yet another restart is all it needs...
+            if ex.message.include?("login")
+              Chef::Log.warn "Failed to login to Hopsworks to generate internal API key. Restarting Glassfish and retry..."
+              if exists_local("hopsworks", "das_node") || exists_local("hopsworks", "config_node")
+                systemd_unit "glassfish-instance.service" do
+                  action [:restart]
+                end
+              else
+                systemd_unit "glassfish-domain1.service" do
+                  action [:restart]
+                end
+              end
+            else
+              raise ex
+            end
+
+          end
+        end
+      end
+    end
+  end
+end
