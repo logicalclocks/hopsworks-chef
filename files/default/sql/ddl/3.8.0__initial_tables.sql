@@ -1356,11 +1356,14 @@ CREATE TABLE `feature_view` (
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                  `creator` int(11) NOT NULL,
                                  `version` int(11) NOT NULL,
+                                 `transformation_function_id` int(11) NOT NULL,
                                  `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
                                  KEY `creator` (`creator`),
+                                 CONSTRAINT `fv_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON 
+                                     DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON
                                      DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_feature_store_id_fk` FOREIGN KEY (`feature_store_id`) REFERENCES
@@ -1426,7 +1429,6 @@ CREATE TABLE `training_dataset_feature` (
                                             `label` tinyint(1) NOT NULL DEFAULT '0',
                                             `inference_helper_column` tinyint(1) NOT NULL DEFAULT '0',
                                             `training_helper_column` tinyint(1) NOT NULL DEFAULT '0',
-                                            `transformation_function`  int(11) NULL,
                                             `feature_view_id` INT(11) NULL,
                                             PRIMARY KEY (`id`),
                                             KEY `td_key` (`training_dataset`),
@@ -1435,8 +1437,7 @@ CREATE TABLE `training_dataset_feature` (
                                                 REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                             CONSTRAINT `join_fk_tdf` FOREIGN KEY (`td_join`) REFERENCES `training_dataset_join` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                                             CONSTRAINT `td_fk_tdf` FOREIGN KEY (`training_dataset`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                            CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-                                            CONSTRAINT `tfn_fk_tdf` FOREIGN KEY (`transformation_function`) REFERENCES `transformation_function` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+                                            CONSTRAINT `fg_fk_tdf` FOREIGN KEY (`feature_group`) REFERENCES `feature_group` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2084,6 +2085,19 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          PRIMARY KEY (`id`),
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
+
+--
+-- Table structure for table `feature_view_transformation_functions`
+--
+
+CREATE TABLE IF NOT EXISTS `feature_view_transformation_function` ( -- mapping transformation functions in feature view with required features and actual transformation function.
+    `transformation_function_id` int(11) NOT NULL,
+    `feature_view_id` int(11) NOT NULL,
+    `connection_string` VARCHAR(5000) NOT NULL,
+    PRIMARY KEY (`transformation_function_id`, `feature_view_id`),
+    CONSTRAINT `fvtf_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `fvtf_fvi_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
