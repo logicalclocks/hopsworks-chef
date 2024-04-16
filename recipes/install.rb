@@ -744,6 +744,14 @@ kagent_sudoers "dockerImage" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+kagent_sudoers "condaSearch" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "condaSearch.sh"
+  template      "condaSearch.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -763,7 +771,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
-["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
+["tensorboard-launch.sh", "tensorboard-cleanup.sh", "list_environment.sh", "jupyter-kill.sh",
 "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
