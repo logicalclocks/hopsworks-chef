@@ -513,7 +513,7 @@ default['hopsworks']['loadbalancer_external_domain'] = ""
 
 # jupyter hopsfs mount
 default['hopsworks']['jupyter']['remote_fs_driver'] = "hopsfsmount"
-default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
+default['hopsworks']['jupyter']['hopsfs_dir']       = "/hopsfs"
 
 default['hopsworks']['commands']['search_fs']['history']['enable'] = "false"
 default['hopsworks']['commands']['search_fs']['history']['window_as_s'] = 3600
