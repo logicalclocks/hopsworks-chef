@@ -17,6 +17,8 @@ ALLOCATED_MEMORY=${13}
 ALLOCATED_CORES=${14}
 BASE_DIR=${15}
 REMOTE_FS_DRIVER=${16}
+JUPYTER_PATH=$JUPYTER_HOME
+JUPYTER_DATA_DIR=$JUPYTER_HOME
 NAMENODE_HOSTNAME=<%= @namenode_fdqn %>
 NAMENODE_PORT=<%= node['hops']['nn']['port'] %>
 CONTAINER_NAME=${PROJECT_USER_NAME}__jupyter
@@ -60,7 +62,7 @@ if [ -f "$PID_FILE" ] ; then
 fi
 
 DOCKER_FUSE_ARGS=""
-WORKING_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
+WORKING_DIR=$SECRET_DIR
 APPARMOR_ENABLED="false"
 APPARMOR_PROFILE_SECURITY_OPT=""
 if docker info | grep -q 'apparmor'; then
@@ -75,6 +77,9 @@ if [[ "${17}" == "hopsfsmount" ]] && [[ "$APPARMOR_PROFILE_LOADED" == "false" ]]
 fi
 
 if [[ "$REMOTE_FS_DRIVER" == "hopsfsmount" ]]; then
+  WORKING_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
+  JUPYTER_PATH=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
+  JUPYTER_DATA_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
   DOCKER_FUSE_ARGS="--device /dev/fuse ${APPARMOR_PROFILE_SECURITY_OPT} --security-opt seccomp=${SECCOMP_PROFILE}"
 fi
 
@@ -83,8 +88,9 @@ docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\
        --init \
        --memory="${ALLOCATED_MEMORY}m" \
        --cpus="${ALLOCATED_CORES}" \
-       -e "JUPYTER_PATH=$JUPYTER_HOME" \
-       -e "JUPYTER_DATA_DIR=$JUPYTER_HOME" \
+       -e "JUPYTER_CONFIG_HOME=$JUPYTER_HOME" \
+       -e "JUPYTER_PATH=$JUPYTER_PATH" \
+       -e "JUPYTER_DATA_DIR=$JUPYTER_DATA_DIR" \
        -e "PDIR=$SECRET_DIR" \
        -e "JUPYTER_CONFIG_DIR=${JUPYTER_HOME}/conf" \
        -e "JUPYTER_RUNTIME_DIR=${JUPYTER_HOME}/run" \
