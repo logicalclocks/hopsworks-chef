@@ -20,7 +20,6 @@ node.override['glassfish']['install_dir'] = "#{node['glassfish']['install_dir']}
 theDomain="#{domains_dir}/#{domain_name}"
 
 public_ip=my_public_ip()
-realmname = "kthfsrealm"
 deployment_group = "hopsworks-dg"
 
 exec = "#{node['ndb']['scripts_dir']}/mysql-client.sh"
@@ -283,14 +282,6 @@ for version in versions do
       #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks < #{theDomain}/flyway/dml/V#{version}__hopsworks.sql
     EOH
   end
-end
-
-# Create the users_groups view if it doesn't exists (see HWORKS-457 for explanation)
-bash "create users_groups view" do
-  user "root"
-  code <<-EOH
-    #{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e "CREATE OR REPLACE VIEW users_groups AS select u.username AS username, u.password AS password, u.secret AS secret, u.email AS email,g.group_name AS group_name from ((user_group ug join users u on((u.uid = ug.uid))) join bbc_group g on((g.gid = ug.gid)));"
-  EOH
 end
 
 
@@ -844,20 +835,9 @@ kagent_config "glassfish-domain1" do
 end
 
 # Generate service API key
-ruby_block "generate_api_key" do
-  block do
-    begin
-      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT id FROM hopsworks.variables WHERE id='int_service_api_key' AND value != '';\" | grep 'int_service_api_key'"
-      Chef::Log.warn "Internal service API key already exists"
-    rescue
-      api_key_params = {
-        :name => "hw_int_#{my_private_ip()}_#{SecureRandom.hex(6)}",
-        :scope => "AUTH"
-      }
-      api_key = create_api_key(node['kagent']['dashboard']['user'], node['kagent']['dashboard']['password'], api_key_params, hopsworks_ip="127.0.0.1")
-      execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, visibility, hide) VALUE ('int_service_api_key', '#{api_key}', 0, 1);\""
-    end
-  end
+# Even in HA configuration, Hopsworks has been deployed when we reach this point
+hopsworks_configure_server "generate-int-api-key" do
+  action :generate_internal_api_key
 end
 
 # Force variables reload

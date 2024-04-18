@@ -91,11 +91,12 @@ action :glassfish_configure do
   asadmin=new_resource.asadmin
   override=new_resource.override_props
   ignore_failure=new_resource.ignore_failure
+  realmname = new_resource.realmname
 
   asadmin_cmd="#{asadmin} --terse=false --echo=false --user #{username} --passwordfile #{password_file}"
   target_config = new_resource.target == "server" ? "server-config" : new_resource.target
   glassfish_conf = {
-    "#{target_config}.security-service.default-realm" => 'kthfsrealm',
+    "#{target_config}.security-service.default-realm" => realmname,
     # Jobs in Hopsworks use the Timer service
     "#{target_config}.ejb-container.ejb-timer-service.timer-datasource" => 'jdbc/hopsworksTimers',
     "#{target}.ejb-container.ejb-timer-service.property.reschedule-failed-timer" => node['glassfish']['reschedule_failed_timer'],
@@ -196,19 +197,13 @@ action :glassfish_configure_realm do
   admin_port=new_resource.admin_port
   target=new_resource.target
   asadmin=new_resource.asadmin
-  realmname = "kthfsrealm"
+  realmname = new_resource.realmname
   jndiDB = "jdbc/hopsworks"
 
   asadmin_cmd="#{asadmin} --user #{username} --passwordfile #{password_file}"
 
   props =  {
     'datasource-jndi' => jndiDB,
-    'password-column' => 'password',
-    'group-table' => 'hopsworks.users_groups',
-    'user-table' => 'hopsworks.users',
-    'group-name-column' => 'group_name',
-    'user-name-column' => 'email',
-    'group-table-user-name-column' => 'email',
     'encoding' => 'Hex',
     'digestrealm-password-enc-algorithm' => 'SHA-256',
     'digest-algorithm' => 'SHA-256'
@@ -217,14 +212,14 @@ action :glassfish_configure_realm do
   glassfish_auth_realm "#{realmname}" do
     target target
     realm_name "#{realmname}"
-    jaas_context "jdbcRealm"
+    jaas_context "hopsworksJdbcRealm"
     properties props
     domain_name domain_name
     password_file password_file
     username username
     admin_port admin_port
     secure false
-    classname "com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm"
+    classname "io.hops.hopsworks.realm.jdbc.HopsworksJDBCRealm"
     not_if "#{asadmin_cmd} list-auth-realms #{target} | grep #{realmname}"
   end
 end
@@ -307,6 +302,53 @@ action :glassfish_create_resource_ref do
       secure false
       only_if "#{asadmin_cmd} list-resource-refs server | grep #{val}"
       not_if "#{asadmin_cmd} list-resource-refs #{target} | grep #{val}"
+    end
+  end
+end
+
+action :generate_internal_api_key do
+  ruby_block "generate_api_key" do
+    block do
+      begin
+        execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"SELECT id FROM hopsworks.variables WHERE id='int_service_api_key' AND value != '';\" | grep 'int_service_api_key'"
+        Chef::Log.info "Internal service API key already exists"
+      rescue
+        api_key_params = {
+          :name => "hw_int_#{my_private_ip()}_#{SecureRandom.hex(6)}",
+          :scope => "AUTH"
+        }
+        attempts = 1
+        while true do
+          begin
+            api_key = create_api_key(node['kagent']['dashboard']['user'], node['kagent']['dashboard']['password'], api_key_params, hopsworks_ip="127.0.0.1")
+            execute_shell_command "#{node['ndb']['scripts_dir']}/mysql-client.sh -e \"REPLACE INTO hopsworks.variables(id, value, visibility, hide) VALUE ('int_service_api_key', '#{api_key}', 0, 1);\""
+            break
+          rescue => ex
+            attempts += 1
+            if attempts > 2
+              raise ex
+            end
+
+            # Sometimes Glassfish will return 404 although the applications are successfully deployed.
+            # It appears yet another restart is all it needs...
+            if ex.message.include?("login")
+              Chef::Log.warn "Failed to login to Hopsworks to generate internal API key. Restarting Glassfish and retry..."
+              if exists_local("hopsworks", "das_node") || exists_local("hopsworks", "config_node")
+                systemd_unit "glassfish-instance.service" do
+                  action [:restart]
+                end
+              else
+                systemd_unit "glassfish-domain1.service" do
+                  action [:restart]
+                end
+              end
+            else
+              raise ex
+            end
+
+          end
+        end
+      end
     end
   end
 end

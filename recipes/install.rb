@@ -431,7 +431,7 @@ directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
 end
 
 directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
-  owner node['conda']['user']
+  owner node['hopsworks']['user']
   group node['hopsworks']['group']
   mode "0770"
   action :create
@@ -552,6 +552,18 @@ remote_file "#{theDomain}/lib/#{mysql_connector}"  do
   user node['glassfish']['user']
   group node['glassfish']['group']
   source node['hopsworks']['mysql_connector_url']
+  mode 0755
+  action :create_if_missing
+end
+
+cauth = File.basename(node['hopsworks']['cauth_url'])
+
+remote_file "#{theDomain}/lib/#{cauth}" do
+  user node['glassfish']['user']
+  group node['glassfish']['group']
+  source node['hopsworks']['cauth_url']
+  headers get_ee_basic_auth_header()
+  sensitive true
   mode 0755
   action :create_if_missing
 end

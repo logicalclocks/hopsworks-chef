@@ -275,6 +275,7 @@ CREATE TABLE `executions` (
                               `execution_stop` bigint(20) DEFAULT NULL,
                               `stdout_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `stderr_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                              `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `args` varchar(10000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
                               `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL,
@@ -1275,6 +1276,7 @@ CREATE TABLE `serving` (
                            `revision` varchar(8) DEFAULT NULL,
                            `predictor_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                            `transformer_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
+                           `api_protocol` TINYINT(1) NOT NULL DEFAULT '0',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `Serving_Constraint` (`project_id`,`name`),
                            KEY `user_fk` (`creator`),
@@ -1624,20 +1626,6 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Temporary table structure for view `users_groups`
---
-
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE VIEW `users_groups` AS SELECT
-                                           1 AS `username`,
-                                           1 AS `password`,
-                                           1 AS `secret`,
-                                           1 AS `email`,
-                                           1 AS `group_name`*/;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `variables`
 --
 
@@ -1652,22 +1640,6 @@ CREATE TABLE `variables` (
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Final view structure for view `users_groups`
---
-
-/*!50001 DROP VIEW IF EXISTS `users_groups`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-    /*!50001 VIEW `users_groups` AS select `u`.`username` AS `username`,`u`.`password` AS `password`,`u`.`secret` AS `secret`,`u`.`email` AS `email`,`g`.`group_name` AS `group_name` from ((`user_group` `ug` join `users` `u` on((`u`.`uid` = `ug`.`uid`))) join `bbc_group` `g` on((`g`.`gid` = `ug`.`gid`))) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1723,7 +1695,8 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
                                                               `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
                                                               `connection_string`       VARCHAR(5000)    NOT NULL,
                                                               `arguments`               VARCHAR(2000)    NULL,
-                                                              `driver_path`             VARCHAR(2000)    NULl,
+                                                              `secret_uid` INT DEFAULT NULL,
+                                                              `secret_name` VARCHAR(200) DEFAULT NULL,
                                                               PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -2458,6 +2431,34 @@ CREATE TABLE `feature_store_keyword` (
   CONSTRAINT `fk_fs_keyword_td` FOREIGN KEY (`training_dataset_id`) REFERENCES `training_dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
+CREATE TABLE IF NOT EXISTS `model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  UNIQUE KEY `project_unique_name` (`name`, `project_id`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `model_project_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `model_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_id` int(11) NOT NULL,
+  `version` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` VARCHAR(1000) DEFAULT NULL,
+  `metrics` VARCHAR(3000) DEFAULT NULL,
+  `program` VARCHAR(1000) DEFAULT NULL,
+  `framework` VARCHAR(128) DEFAULT NULL,
+  `environment` VARCHAR(1000) DEFAULT NULL,
+  `experiment_id` VARCHAR(128) DEFAULT NULL,
+  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `model_version_key` (`model_id`, `version`),
+  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 -- FSTORE-1047
 CREATE TABLE IF NOT EXISTS `embedding` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2475,36 +2476,12 @@ CREATE TABLE IF NOT EXISTS `embedding_feature` (
     `name` varchar(255) NOT NULL,
     `dimension` int NOT NULL,
     `similarity_function_type` varchar(255) NOT NULL,
+    `model_version_id` INT(11) NULL,
     PRIMARY KEY (`id`),
     KEY `embedding_id` (`embedding_id`),
-    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    CONSTRAINT `embedding_feature_fk` FOREIGN KEY (`embedding_id`) REFERENCES `embedding` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `embedding_feature_model_version_fk` FOREIGN KEY (`model_version_id`) REFERENCES `model_version` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
     ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `model` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `project_id` int(11) NOT NULL,
-  UNIQUE KEY `project_unique_name` (`name`, `project_id`),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `model_project_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-
-CREATE TABLE IF NOT EXISTS `model_version` (
-  `model_id` int(11) NOT NULL,
-  `version` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `description` VARCHAR(1000) DEFAULT NULL,
-  `metrics` VARCHAR(3000) DEFAULT NULL,
-  `program` VARCHAR(1000) DEFAULT NULL,
-  `framework` VARCHAR(128) DEFAULT NULL,
-  `environment` VARCHAR(1000) DEFAULT NULL,
-  `experiment_id` VARCHAR(128) DEFAULT NULL,
-  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
-  PRIMARY KEY (`model_id`, `version`),
-  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `model_fk` FOREIGN KEY (`model_id`) REFERENCES `model` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 -- FSTORE-612: Feature monitoring
 CREATE TABLE IF NOT EXISTS `monitoring_window_config` (
@@ -2584,4 +2561,20 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
     CONSTRAINT `unique_feature_view_status` UNIQUE (`feature_view_id`, `status`),
     CONSTRAINT `fk_fv_alert_1` FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_fv_alert_2` FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `model_version_id` int(11) NOT NULL,
+  `parent_training_dataset_id` int(11),
+  `parent_feature_store` varchar(100) NOT NULL,
+  `parent_feature_view_name` varchar(63) NOT NULL,
+  `parent_feature_view_version` int(11) NOT NULL,
+  `parent_training_dataset_version` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_unique` (`model_version_id`, `parent_training_dataset_id`),
+  KEY `model_version_id_fkc` (`model_version_id`),
+  KEY `parent_training_dataset_id_fkc` (`parent_training_dataset_id`),
+  CONSTRAINT `model_version_id_fkc` FOREIGN KEY (`model_version_id`) REFERENCES `hopsworks`.`model_version` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `training_dataset_parent_fkc` FOREIGN KEY (`parent_training_dataset_id`) REFERENCES `hopsworks`.`training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

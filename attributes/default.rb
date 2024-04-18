@@ -103,6 +103,8 @@ default['hopsworks']['war_url']                  = "#{node['hopsworks']['downloa
 default['hopsworks']['ca_url']                   = "#{node['hopsworks']['download_url']}/hopsworks-ca.war"
 default['hopsworks']['ear_url']                  = "#{node['hopsworks']['download_url']}/hopsworks-ear#{node['install']['kubernetes'].casecmp?("true") ? "-kube" : ""}.ear"
 
+default['hopsworks']['cauth_url']                = "#{node['hopsworks']['download_url']}/hopsworks-realm.jar"
+
 # Currently we don't have an enterprise version of the new frontend. So the download url is the same for both community and enterprise 
 default['hopsworks']['frontend_url']             = "#{node['download_url']}/hopsworks/frontend/#{node['hopsworks']['version']}/frontend.tgz"
 
@@ -510,7 +512,7 @@ default['hopsworks']['enable_flyingduck'] = "false"
 default['hopsworks']['loadbalancer_external_domain'] = ""
 
 # jupyter hopsfs mount
-default['hopsworks']['jupyter']['remote_fs_driver'] = "hdfscontentsmanager"
+default['hopsworks']['jupyter']['remote_fs_driver'] = "hopsfsmount"
 default['hopsworks']['jupyter']['hopsfs_dir']       = "/home/#{node['hops']['yarnapp']['user']}/hopsfs"
 
 default['hopsworks']['commands']['search_fs']['history']['enable'] = "false"
@@ -519,15 +521,33 @@ default['hopsworks']['commands']['search_fs']['history']['clean_period_as_ms'] =
 default['hopsworks']['commands']['search_fs']['history']['retry'] = 5
 default['hopsworks']['commands']['search_fs']['process']['period_as_ms'] = 1000
 
+##
+## Judge
+##
 default['judge']['image_url'] = "#{node['download_url']}/nginx-stable-bullseye.tar"
 default['judge']['port']      = "1111"
 default['judge']['home']      = "#{node['install']['dir']}/judge"
 default['judge']['etc']       = "#{node['judge']['home']}/etc"
 default['judge']['logs']      = "#{node['judge']['home']}/logs"
 
-# Opensearch embedding db
+##
+## Opensearch embedding db
+##
 default['hopsworks']['opensearch']['default_embedding_index']     = node['hopsworks']['opensearch']['default_embedding_index'].to_s.empty? ? "" : node['hopsworks']['opensearch']['default_embedding_index']
 default['hopsworks']['opensearch']['num_default_embedding_index'] = node['hopsworks']['opensearch']['num_default_embedding_index'].to_s.empty? ? 1 : node['hopsworks']['opensearch']['num_default_embedding_index']
+default['hopsworks']['opensearch']['index_mapping_limit'] = node['hopsworks']['opensearch']['index_mapping_limit'].to_s.empty? ? 1000 : node['hopsworks']['opensearch']['index_mapping_limit']
 
 # enable conda install HWORKS-302
 default['hopsworks']['enable_conda_install'] = "true"
+
+##
+## Statistics
+##
+default['hopsworks']['statistics']['statistics_cleaner_batch_size'] = "1000"
+default['hopsworks']['statistics']['statistics_cleaner_interval_ms'] = "900000"
+
+##
+## Feature Monitoring
+##
+default['hopsworks']['enable_feature_monitoring'] = "false"
+

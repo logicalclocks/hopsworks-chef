@@ -60,7 +60,7 @@ if [ -f "$PID_FILE" ] ; then
 fi
 
 DOCKER_FUSE_ARGS=""
-WORKING_DIR=$SECRET_DIR
+WORKING_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
 APPARMOR_ENABLED="false"
 APPARMOR_PROFILE_SECURITY_OPT=""
 if docker info | grep -q 'apparmor'; then
@@ -76,7 +76,6 @@ fi
 
 if [[ "$REMOTE_FS_DRIVER" == "hopsfsmount" ]]; then
   DOCKER_FUSE_ARGS="--device /dev/fuse ${APPARMOR_PROFILE_SECURITY_OPT} --security-opt seccomp=${SECCOMP_PROFILE}"
-  WORKING_DIR=<%= node['hopsworks']['jupyter']['hopsfs_dir'] %>
 fi
 
 docker run --rm -d $DOCKER_FUSE_ARGS --name $CONTAINER_NAME --cidfile=$PID_FILE\

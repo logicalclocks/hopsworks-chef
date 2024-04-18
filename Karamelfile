@@ -3,8 +3,6 @@ dependencies:
     local:
       - hops::install
   - recipe: hopsworks::default
-    local:
-      - conda::default
     global:
       - hops::ndb
       - hive2::db
@@ -23,6 +21,9 @@ dependencies:
     global:
       - hops::dn
       - hopslog::default
+      - hopsworks::default
+      - hopsworks::das_node
+      - hopsworks::config_node
   - recipe: hopsworks::das_node
     local:
       - hopsworks::default
