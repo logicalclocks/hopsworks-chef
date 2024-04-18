@@ -1723,7 +1723,6 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
                                                               `id`                      INT(11)          NOT NULL AUTO_INCREMENT,
                                                               `connection_string`       VARCHAR(5000)    NOT NULL,
                                                               `arguments`               VARCHAR(2000)    NULL,
-                                                              `driver_path`             VARCHAR(2000)    NULl,
                                                               PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 

@@ -1697,6 +1697,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
                                                               `arguments`               VARCHAR(2000)    NULL,
                                                               `secret_uid` INT DEFAULT NULL,
                                                               `secret_name` VARCHAR(200) DEFAULT NULL,
+                                                               `driver_path` VARCHAR(2000) DEFAULT NULl,
                                                               PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
