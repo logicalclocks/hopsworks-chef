@@ -118,7 +118,7 @@ DROP PROCEDURE IF EXISTS BatchUpdateFeatureStoreActivityForTrainingDatset;
 
 DELIMITER //
 
--- Generic batch procedure to run batch jobs calls on the input procedure name 
+-- Generic batch procedure to run batch jobs calls on the input procedure name
 CREATE PROCEDURE BatchProc(proc_name VARCHAR(255), batch_size INT, start_id INT, end_id INT)
 BEGIN
     DECLARE current_id INT;
@@ -169,7 +169,7 @@ BEGIN
     SELECT MIN(feature_group_id), MAX(feature_group_id) INTO start_id, end_id FROM `hopsworks`.`feature_store_statistic`;
 
     CALL BatchProc('PopulateFeatureGroupStatistics', 1000, start_id, end_id);
-    
+
 END //
 
 -- Procedure to populate feature_descriptive_statistics
@@ -195,7 +195,7 @@ BEGIN
     SELECT MIN(id), MAX(id) INTO start_id, end_id FROM `hopsworks`.`feature_store_statistic`;
 
     CALL BatchProc('PopulateFeatureDescriptiveStatistics', 1000, start_id, end_id);
-    
+
 END //
 
 -- Procedure to populate training_dataset_statistics
@@ -219,7 +219,7 @@ BEGIN
     SELECT MIN(training_dataset_id), MAX(training_dataset_id) INTO start_id, end_id FROM `hopsworks`.`feature_store_statistic`;
 
     CALL BatchProc('PopulateTrainingDatasetStatistics', 1000, start_id, end_id);
-    
+
 END //
 
 -- Procedure to populate feature_descriptive_statistics
@@ -245,7 +245,7 @@ BEGIN
     SELECT MIN(id), MAX(id) INTO start_id, end_id FROM `hopsworks`.`feature_store_statistic`;
 
     CALL BatchProc('PopulateFeatureDescriptiveStatisticsForTrainingDataset', 1000, start_id, end_id);
-    
+
 END //
 
 -- Procedure to update feature_store_activity
@@ -253,7 +253,7 @@ CREATE PROCEDURE UpdateFeatureStoreActivity(start_id INT, end_id INT)
 BEGIN
     UPDATE `hopsworks`.`feature_store_activity` SET feature_group_statistics_id = statistics_id
     WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND feature_group_id BETWEEN start_id AND end_id AND EXISTS(SELECT 1 FROM `hopsworks`.`feature_group_statistics` WHERE id = statistics_id LIMIT 1);
-    
+
     DELETE FROM `hopsworks`.`feature_store_activity` WHERE statistics_id IS NOT NULL AND feature_group_id IS NOT NULL AND feature_group_id BETWEEN start_id AND end_id AND feature_group_statistics_id IS NULL;
 END //
 
@@ -265,7 +265,7 @@ BEGIN
     SELECT MIN(feature_group_id), MAX(feature_group_id) INTO start_id, end_id FROM `hopsworks`.`feature_store_activity`;
 
     CALL BatchProc('UpdateFeatureStoreActivity', 1000, start_id, end_id);
-    
+
 END //
 
 -- Procedure to update feature_store_activity
@@ -273,7 +273,7 @@ CREATE PROCEDURE UpdateFeatureStoreActivityForTrainingDatset(start_id INT, end_i
 BEGIN
     UPDATE `hopsworks`.`feature_store_activity` SET training_dataset_statistics_id = statistics_id
         WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND training_dataset_id BETWEEN start_id AND end_id AND EXISTS(SELECT 1 FROM `hopsworks`.`training_dataset_statistics` WHERE id = statistics_id LIMIT 1);
-    
+
     DELETE FROM `hopsworks`.`feature_store_activity` WHERE statistics_id IS NOT NULL AND training_dataset_id IS NOT NULL AND training_dataset_id BETWEEN start_id AND end_id AND training_dataset_statistics_id IS NULL;
 END //
 
@@ -285,7 +285,7 @@ BEGIN
     SELECT MIN(training_dataset_id), MAX(training_dataset_id) INTO start_id, end_id FROM `hopsworks`.`feature_store_activity`;
 
     CALL BatchProc('UpdateFeatureStoreActivityForTrainingDatset', 1000, start_id, end_id);
-    
+
 END //
 
 DELIMITER ;
@@ -312,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_statistics` (
 SET SQL_SAFE_UPDATES = 0;
 CALL BatchPopulateTrainingDatasetStatistics();
 CALL BatchPopulateFeatureDescriptiveStatisticsForTrainingDataset();
-SET SQL_SAFE_UPDATES = 1;   
+SET SQL_SAFE_UPDATES = 1;
 
 -- -- Update feature_store_activity foreign keys
 ALTER TABLE `hopsworks`.`feature_store_activity`
