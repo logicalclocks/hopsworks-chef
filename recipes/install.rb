@@ -456,13 +456,6 @@ link node['hopsworks']['staging_dir'] do
   to node['hopsworks']['data_volume']['staging_dir']
 end
 
-directory node['hopsworks']['conda_cache'] do
-  owner node['hopsworks']['user']
-  group node['hopsworks']['group']
-  mode "0700"
-  action :create
-end
-
 directory node['hopsworks']['data_volume']['root_dir'] do
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -961,9 +954,6 @@ template "#{hopsworks_user_home}/.condarc" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0750
-  variables({
-    :pkgs_dirs => node['hopsworks']['conda_cache']
-  })
   action :create
 end
 
