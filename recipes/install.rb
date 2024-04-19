@@ -737,6 +737,13 @@ kagent_sudoers "dockerImage" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+# In 3.7 we removed Anaconda from host and use the Python docker image instead
+# which we need sudo privileges to execute
+file "#{theDomain}/bin/condasearch.sh" do
+  action :delete
+  only_if { ::File.exist?("#{theDomain}/bin/condasearch.sh") }
+end
+
 kagent_sudoers "condaSearch" do
   user          node['glassfish']['user']
   group         "root"
