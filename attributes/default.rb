@@ -73,7 +73,6 @@ default['hopsworks']['data_volume']['localhost-domain1'] = "#{node['hopsworks'][
 default['hopsworks']['data_volume']['node_logs']         = "#{node['hopsworks']['data_volume']['localhost-domain1']}/logs"
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
-default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
 
 # Directories in data volume
 default['hopsworks']['data_volume']['staging_dir'] = "#{node['data']['dir']}/staging"

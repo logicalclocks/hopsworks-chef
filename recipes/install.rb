@@ -456,13 +456,6 @@ link node['hopsworks']['staging_dir'] do
   to node['hopsworks']['data_volume']['staging_dir']
 end
 
-directory node['hopsworks']['conda_cache'] do
-  owner node['hopsworks']['user']
-  group node['hopsworks']['group']
-  mode "0700"
-  action :create
-end
-
 directory node['hopsworks']['data_volume']['root_dir'] do
   owner node['glassfish']['user']
   group node['glassfish']['group']
@@ -744,6 +737,21 @@ kagent_sudoers "dockerImage" do
   run_as        "ALL" # run this as root - inside we change to different users
 end
 
+# In 3.7 we removed Anaconda from host and use the Python docker image instead
+# which we need sudo privileges to execute
+file "#{theDomain}/bin/condasearch.sh" do
+  action :delete
+  only_if { ::File.exist?("#{theDomain}/bin/condasearch.sh") }
+end
+
+kagent_sudoers "condaSearch" do
+  user          node['glassfish']['user']
+  group         "root"
+  script_name   "condaSearch.sh"
+  template      "condaSearch.sh.erb"
+  run_as        "ALL" # run this as root - inside we change to different users
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
@@ -763,7 +771,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
-["tensorboard-launch.sh", "tensorboard-cleanup.sh", "condasearch.sh", "list_environment.sh", "jupyter-kill.sh",
+["tensorboard-launch.sh", "tensorboard-cleanup.sh", "list_environment.sh", "jupyter-kill.sh",
 "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"
@@ -953,9 +961,6 @@ template "#{hopsworks_user_home}/.condarc" do
   owner node['glassfish']['user']
   group node['glassfish']['group']
   mode 0750
-  variables({
-    :pkgs_dirs => node['hopsworks']['conda_cache']
-  })
   action :create
 end
 
