@@ -124,6 +124,10 @@ BEGIN
     DECLARE current_id INT;
     DECLARE done BOOLEAN DEFAULT FALSE;
 
+    IF start_id is NULL or end_id is NULL THEN
+        SET done = TRUE;
+    END IF;
+
     SET current_id = start_id;
 
     WHILE NOT done DO
