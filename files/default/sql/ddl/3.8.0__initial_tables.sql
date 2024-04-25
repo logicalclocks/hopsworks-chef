@@ -2092,12 +2092,13 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
 --
 
 CREATE TABLE IF NOT EXISTS `feature_view_transformation_function` ( -- mapping transformation functions in feature view with required features and actual transformation function.
+    `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
     `transformation_function_id` int(11) NOT NULL,
     `feature_view_id` int(11) NOT NULL,
-    `connection_string` VARCHAR(5000) NOT NULL,
-    PRIMARY KEY (`transformation_function_id`, `feature_view_id`),
-    CONSTRAINT `fvtf_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT `fvtf_fvi_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+    `features` VARCHAR(5000) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fvtf_fvi_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+    CONSTRAINT `fvtf_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`training_dataset_filter` (
