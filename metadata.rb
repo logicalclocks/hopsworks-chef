@@ -1054,5 +1054,5 @@ attribute "hopsworks/enable_feature_monitoring",
         :type => 'string'
 
 attribute "hopsworks/library_install_timeout_minutes",
-					:description => "Time in minutes before the library install operation times out.",
+					:description => "Time in minutes before the library install operation times out. Default 60.",
 					:type => 'string'
