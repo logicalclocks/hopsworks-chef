@@ -1,1 +1,8 @@
+DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_user';
+DELETE FROM `hopsworks`.`variables` WHERE `id`='anaconda_dir';
+
+-- FSTORE-1226
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("opensearch_index_mapping_limit", "<%= node['hopsworks']['opensearch']['index_mapping_limit'] %>", 1);
+
+-- HWORKS-1040
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("library_install_timeout_minutes", node['hopsworks']['library_install_timeout_minutes'], 1);

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+USER_HOME=${HW_USER_HOME:-/home/glassfish}
+if [ $# -ne 3  ]; then
+ echo "Usage: $(basename $0) CHANNEL LIBRARY BASE_IMAGE_NAME"
+ exit 2
+fi
+
+CHANNEL="${1//[^a-zA-Z0-9\.\-\_:\/\&~?]/}"
+if [ "$CHANNEL" != "defaults" ] ; then
+   CHANNEL="$CHANNEL --override-channels"
+fi
+
+LIB="${2//[^a-zA-Z0-9\.\-\_]/}"
+
+BASE_IMAGE_NAME="$3"
+docker run --rm -u root --mount=type=bind,source=$USER_HOME/.condarc,target=/root/.condarc $BASE_IMAGE_NAME conda search -c $CHANNEL "${LIB}" | grep -v Fetching | awk '{print $1","$2}' | grep -v "^\*"
+exit ${PIPESTATUS[0]}

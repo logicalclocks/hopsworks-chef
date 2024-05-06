@@ -73,7 +73,6 @@ default['hopsworks']['data_volume']['localhost-domain1'] = "#{node['hopsworks'][
 default['hopsworks']['data_volume']['node_logs']         = "#{node['hopsworks']['data_volume']['localhost-domain1']}/logs"
 
 default['hopsworks']['staging_dir']              = node['hopsworks']['dir'] + "/staging"
-default['hopsworks']['conda_cache']              = node['hopsworks']['staging_dir'] + "/glassfish_conda_cache"
 
 # Directories in data volume
 default['hopsworks']['data_volume']['staging_dir'] = "#{node['data']['dir']}/staging"
@@ -535,6 +534,7 @@ default['judge']['logs']      = "#{node['judge']['home']}/logs"
 ##
 default['hopsworks']['opensearch']['default_embedding_index']     = node['hopsworks']['opensearch']['default_embedding_index'].to_s.empty? ? "" : node['hopsworks']['opensearch']['default_embedding_index']
 default['hopsworks']['opensearch']['num_default_embedding_index'] = node['hopsworks']['opensearch']['num_default_embedding_index'].to_s.empty? ? 1 : node['hopsworks']['opensearch']['num_default_embedding_index']
+default['hopsworks']['opensearch']['index_mapping_limit'] = node['hopsworks']['opensearch']['index_mapping_limit'].to_s.empty? ? 1000 : node['hopsworks']['opensearch']['index_mapping_limit']
 
 # enable conda install HWORKS-302
 default['hopsworks']['enable_conda_install'] = "true"

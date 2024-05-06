@@ -275,6 +275,7 @@ CREATE TABLE `executions` (
                               `execution_stop` bigint(20) DEFAULT NULL,
                               `stdout_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `stderr_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
+                              `notebook_out_path` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `hdfs_user` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
                               `args` varchar(10000) COLLATE latin1_general_cs NOT NULL DEFAULT '',
                               `app_id` char(45) COLLATE latin1_general_cs DEFAULT NULL,
@@ -1696,6 +1697,7 @@ CREATE TABLE IF NOT EXISTS `feature_store_jdbc_connector` (
                                                               `arguments`               VARCHAR(2000)    NULL,
                                                               `secret_uid` INT DEFAULT NULL,
                                                               `secret_name` VARCHAR(200) DEFAULT NULL,
+                                                               `driver_path` VARCHAR(2000) DEFAULT NULl,
                                                               PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
@@ -2560,4 +2562,20 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_alert` (
     CONSTRAINT `unique_feature_view_status` UNIQUE (`feature_view_id`, `status`),
     CONSTRAINT `fk_fv_alert_1` FOREIGN KEY (`receiver`) REFERENCES `hopsworks`.`alert_receiver` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_fv_alert_2` FOREIGN KEY (`feature_view_id`) REFERENCES `hopsworks`.`feature_view` (`id`) ON DELETE CASCADE
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `model_version_id` int(11) NOT NULL,
+  `parent_training_dataset_id` int(11),
+  `parent_feature_store` varchar(100) NOT NULL,
+  `parent_feature_view_name` varchar(63) NOT NULL,
+  `parent_feature_view_version` int(11) NOT NULL,
+  `parent_training_dataset_version` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_unique` (`model_version_id`, `parent_training_dataset_id`),
+  KEY `model_version_id_fkc` (`model_version_id`),
+  KEY `parent_training_dataset_id_fkc` (`parent_training_dataset_id`),
+  CONSTRAINT `model_version_id_fkc` FOREIGN KEY (`model_version_id`) REFERENCES `hopsworks`.`model_version` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `training_dataset_parent_fkc` FOREIGN KEY (`parent_training_dataset_id`) REFERENCES `hopsworks`.`training_dataset` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
