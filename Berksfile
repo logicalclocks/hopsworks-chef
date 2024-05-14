@@ -22,7 +22,7 @@ cookbook 'hive2', github: "logicalclocks/hive-chef", tag: "v3.4.3"
 cookbook 'consul', github: "logicalclocks/consul-chef", tag: "v3.4.3"
 cookbook 'kube-hops', github: "logicalclocks/kube-hops-chef", tag: "v3.4.3"
 cookbook 'cloud', github: "logicalclocks/cloud-chef", tag: "v3.4.3"
-cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", tag: "v3.4.3"
+cookbook 'onlinefs', github: "logicalclocks/onlinefs-chef", branch: "3.4.3_cdc"
 cookbook 'flyingduck', github: "logicalclocks/flyingduck-chef", tag: "v3.4.3"
 
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", tag: "v3.4.3"
