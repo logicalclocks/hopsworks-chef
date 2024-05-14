@@ -1356,14 +1356,11 @@ CREATE TABLE `feature_view` (
                                  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                  `creator` int(11) NOT NULL,
                                  `version` int(11) NOT NULL,
-                                 `transformation_function_id` int(11) NOT NULL,
                                  `description` varchar(10000) COLLATE latin1_general_cs DEFAULT NULL,
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `name_version` (`feature_store_id`, `name`, `version`),
                                  KEY `feature_store_id` (`feature_store_id`),
                                  KEY `creator` (`creator`),
-                                 CONSTRAINT `fv_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON 
-                                     DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON
                                      DELETE NO ACTION ON UPDATE NO ACTION,
                                  CONSTRAINT `fv_feature_store_id_fk` FOREIGN KEY (`feature_store_id`) REFERENCES
