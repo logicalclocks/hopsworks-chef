@@ -288,8 +288,19 @@ action :glassfish_create_resource_ref do
         username username
         admin_port admin_port
         secure false
-        only_if "#{asadmin_cmd} list-resource-refs #{target} | grep #{val}"
+        ignore_failure true
+        only_if "#{asadmin_cmd} list-resource-refs #{target} | grep ^#{val}$"
       end
+
+      bash "resource #{val} deleted" do
+        user 'root'
+        group 'root'
+        returns 1
+        code <<-EOH
+          #{asadmin_cmd} list-resource-refs #{target} | grep ^#{val}$
+        EOH
+      end
+
     end
   end
 
@@ -300,8 +311,8 @@ action :glassfish_create_resource_ref do
       username username
       admin_port admin_port
       secure false
-      only_if "#{asadmin_cmd} list-resource-refs server | grep #{val}"
-      not_if "#{asadmin_cmd} list-resource-refs #{target} | grep #{val}"
+      only_if "#{asadmin_cmd} list-resource-refs server | grep ^#{val}$"
+      not_if "#{asadmin_cmd} list-resource-refs #{target} | grep ^#{val}$"
     end
   end
 end
