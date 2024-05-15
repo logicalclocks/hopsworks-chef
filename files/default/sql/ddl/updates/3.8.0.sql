@@ -45,4 +45,3 @@ ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
 ALTER TABLE `hopsworks`.`serving` ADD COLUMN `deployed_by` int(11) DEFAULT NULL;
 ALTER TABLE `hopsworks`.`serving` ADD KEY `deployed_by_fk` (`deployed_by`);
 ALTER TABLE `hopsworks`.`serving` ADD CONSTRAINT `deployed_by_fk_serving` FOREIGN KEY (`deployed_by`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
-
