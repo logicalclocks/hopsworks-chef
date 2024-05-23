@@ -430,13 +430,6 @@ directory node['hopsworks']['data_volume']['staging_dir'] + "/serving"  do
   action :create
 end
 
-directory node['hopsworks']['data_volume']['staging_dir'] + "/tensorboard"  do
-  owner node['hopsworks']['user']
-  group node['hopsworks']['group']
-  mode "0770"
-  action :create
-end
-
 bash 'Move staging to data volume' do
   user 'root'
   code <<-EOH
@@ -667,14 +660,6 @@ kagent_sudoers "convert-ipython-notebook" do
   run_as        "ALL" # run this as root - inside we change to different users 
 end
 
-kagent_sudoers "tensorboard" do 
-  user          node['glassfish']['user']
-  group         "root"
-  script_name   "tensorboard.sh"
-  template      "tensorboard.sh.erb"
-  run_as        "ALL" # run this as root - inside we change to different users 
-end
-
 kagent_sudoers "tfserving" do 
   user          node['glassfish']['user']
   group         "root"
@@ -771,7 +756,7 @@ template "#{theDomain}/bin/tfserving-launch.sh" do
   action :create
 end
 
-["tensorboard-launch.sh", "tensorboard-cleanup.sh", "list_environment.sh", "jupyter-kill.sh",
+["list_environment.sh", "jupyter-kill.sh",
 "tfserving-kill.sh", "sklearn_serving-launch.sh", "sklearn_serving-kill.sh", "git-container-kill.sh"].each do |script|
   template "#{theDomain}/bin/#{script}" do
     source "#{script}.erb"

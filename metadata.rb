@@ -717,12 +717,6 @@ attribute "hopsworks/python_library_updates_monitor_interval",
           :description => "Interval for monitoring new releases for libraries",
           :type => 'string'
 
-### TensorBoard
-
-attribute "hopsworks/tensorboard_max_last_accessed",
-          :description => "Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)",
-          :type => 'string'
-
 ### JWT
 
 attribute "hopsworks/jwt/signature_algorithm",
@@ -850,11 +844,6 @@ attribute "hopsworks/hdfs/storage_policy/log",
 attribute "hopsworks/expat_url",
           :description => "Url to download expat from",
           :type => 'string'
-
-#TensorBoard'
-attribute "tensorboard/max/reload/threads",
-          :description => "The max number of threads that TensorBoard can use to reload runs. Not relevant for db read-only mode. Each thread reloads one run at a time.",
-          :type => "string"
 
 #Azure CA cert download url
 attribute "hopsworks/azure-ca-cert/download-url",
