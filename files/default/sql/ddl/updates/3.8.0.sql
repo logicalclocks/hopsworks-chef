@@ -118,12 +118,11 @@ DELIMITER ;
 
 -- welcome to the jungle.
 
-CALL REPLACE_EMAIL_FK('jobs', 'creator', 'uid', 'users', 'creator', 'user_fk_executions');
+CALL REPLACE_EMAIL_FK('jobs', 'creator', 'uid', 'users', 'creator', 'user_fk_jobs');
 -- add the index back, but with the UID column 
 ALTER TABLE `hopsworks`.`jobs` ADD KEY `uid_project_idx`(`uid`, `project_id`);
 
 CALL REPLACE_EMAIL_FK('executions', 'user', 'uid', 'users', 'user', 'user_fk_executions');
-
 
 -- dataset_request table has a FK to the project_team table that references project_id and email
 -- we need to clean up the email from the dataset_request first then migrate the project_team

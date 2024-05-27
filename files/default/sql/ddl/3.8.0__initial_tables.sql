@@ -251,7 +251,6 @@ CREATE TABLE `dataset_request` (
                                    `message_id` int(11) DEFAULT NULL,
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `index2` (`dataset`,`projectId`),
-                                   KEY `projectId` (`projectId`,`uid`),
                                    KEY `message_id` (`message_id`),
                                    CONSTRAINT `FK_429_449` FOREIGN KEY (`dataset`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                    CONSTRAINT `FK_438_452` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -285,7 +284,6 @@ CREATE TABLE `executions` (
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `app_id` (`app_id`),
                               KEY `job_id` (`job_id`),
-                              KEY `user` (`uid`),
                               KEY `submission_time_idx` (`submission_time`,`job_id`),
                               KEY `state_idx` (`state`,`job_id`),
                               KEY `finalStatus_idx` (`finalStatus`,`job_id`),
@@ -651,8 +649,7 @@ CREATE TABLE `jobs` (
                         PRIMARY KEY (`id`),
                         UNIQUE KEY `name_project_idx` (`name`,`project_id`),
                         KEY `project_id` (`project_id`),
-                        KEY `creator` (`uid`),
-                        KEY `creator_project_idx` (`creator`,`uid`),
+                        KEY `uid_project_idx` (`uid`, `project_id`),
                         KEY `creation_time_project_idx` (`creation_time`,`project_id`),
                         KEY `type_project_id_idx` (`type`,`project_id`),
                         CONSTRAINT `user_fk_jobs` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -1601,7 +1598,6 @@ CREATE TABLE `users` (
                          `salt` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT '',
                          PRIMARY KEY (`uid`),
                          UNIQUE KEY `username` (`username`),
-                         UNIQUE KEY `email` (`email`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=10178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
