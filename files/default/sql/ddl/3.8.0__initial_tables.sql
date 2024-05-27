@@ -245,17 +245,17 @@ CREATE TABLE `dataset_request` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `dataset` int(11) NOT NULL,
                                    `projectId` int(11) NOT NULL,
-                                   `user_email` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                   `uid` INT(11) NOT NULL,
                                    `requested` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                    `message` varchar(3000) COLLATE latin1_general_cs DEFAULT NULL,
                                    `message_id` int(11) DEFAULT NULL,
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `index2` (`dataset`,`projectId`),
-                                   KEY `projectId` (`projectId`,`user_email`),
+                                   KEY `projectId` (`projectId`,`uid`),
                                    KEY `message_id` (`message_id`),
                                    CONSTRAINT `FK_429_449` FOREIGN KEY (`dataset`) REFERENCES `dataset` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                    CONSTRAINT `FK_438_452` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-                                   CONSTRAINT `FK_302_451` FOREIGN KEY (`projectId`,`user_email`) REFERENCES `project_team` (`project_id`,`team_member`) ON DELETE CASCADE ON UPDATE NO ACTION
+                                   CONSTRAINT `project_team_fk_ds` FOREIGN KEY (`projectId`,`uid`) REFERENCES `project_team` (`project_id`,`uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -269,7 +269,7 @@ CREATE TABLE `dataset_request` (
 CREATE TABLE `executions` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `submission_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                              `user` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                              `uid` INT(11) NOT NULL,
                               `state` varchar(128) COLLATE latin1_general_cs NOT NULL,
                               `execution_start` bigint(20) DEFAULT NULL,
                               `execution_stop` bigint(20) DEFAULT NULL,
@@ -285,12 +285,12 @@ CREATE TABLE `executions` (
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `app_id` (`app_id`),
                               KEY `job_id` (`job_id`),
-                              KEY `user` (`user`),
+                              KEY `user` (`uid`),
                               KEY `submission_time_idx` (`submission_time`,`job_id`),
                               KEY `state_idx` (`state`,`job_id`),
                               KEY `finalStatus_idx` (`finalStatus`,`job_id`),
                               KEY `progress_idx` (`progress`,`job_id`),
-                              CONSTRAINT `FK_262_366` FOREIGN KEY (`user`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+                              CONSTRAINT `user_fk_executions` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=23 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -645,17 +645,17 @@ CREATE TABLE `jobs` (
                         `name` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
                         `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         `project_id` int(11) NOT NULL,
-                        `creator` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                        `uid` INT(11) NOT NULL,
                         `type` varchar(128) COLLATE latin1_general_cs NOT NULL,
                         `json_config` varchar(12500) COLLATE latin1_general_cs NOT NULL,
                         PRIMARY KEY (`id`),
                         UNIQUE KEY `name_project_idx` (`name`,`project_id`),
                         KEY `project_id` (`project_id`),
-                        KEY `creator` (`creator`),
-                        KEY `creator_project_idx` (`creator`,`project_id`),
+                        KEY `creator` (`uid`),
+                        KEY `creator_project_idx` (`creator`,`uid`),
                         KEY `creation_time_project_idx` (`creation_time`,`project_id`),
                         KEY `type_project_id_idx` (`type`,`project_id`),
-                        CONSTRAINT `FK_262_353` FOREIGN KEY (`creator`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+                        CONSTRAINT `user_fk_jobs` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
                         CONSTRAINT `FK_284_352` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=37 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -692,7 +692,7 @@ CREATE TABLE `jupyter_project` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `jupyter_settings` (
                                     `project_id` int(11) NOT NULL,
-                                    `team_member` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                    `uid` INT(11) COLLATE latin1_general_cs NOT NULL,
                                     `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
                                     `advanced` tinyint(1) DEFAULT '0',
                                     `shutdown_level` int(11) NOT NULL DEFAULT '6',
@@ -702,9 +702,8 @@ CREATE TABLE `jupyter_settings` (
                                     `docker_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                                     `python_kernel` TINYINT(1) DEFAULT 1,
                                     PRIMARY KEY (`project_id`,`team_member`),
-                                    KEY `team_member` (`team_member`),
                                     KEY `secret_idx` (`secret`),
-                                    CONSTRAINT `FK_262_309` FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                    CONSTRAINT `user_fk_jp_settings` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `FK_284_308` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -768,8 +767,8 @@ CREATE TABLE `materialized_jwt` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `message` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
-                           `user_from` varchar(150) COLLATE latin1_general_cs DEFAULT NULL,
-                           `user_to` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                           `uid_from` INT(11) DEFAULT NULL,
+                           `uid_to` INT(11) NOT NULL,
                            `date_sent` datetime NOT NULL,
                            `subject` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
                            `preview` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
@@ -779,29 +778,13 @@ CREATE TABLE `message` (
                            `path` varchar(600) COLLATE latin1_general_cs DEFAULT NULL,
                            `reply_to_msg` int(11) DEFAULT NULL,
                            PRIMARY KEY (`id`),
-                           KEY `user_from` (`user_from`),
-                           KEY `user_to` (`user_to`),
+                           KEY `user_from` (`uid_from`),
+                           KEY `user_to` (`uid_to`),
                            KEY `reply_to_msg` (`reply_to_msg`),
-                           CONSTRAINT `FK_262_441` FOREIGN KEY (`user_from`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE NO ACTION,
-                           CONSTRAINT `FK_262_442` FOREIGN KEY (`user_to`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                           CONSTRAINT `user_fk_msg_from` FOREIGN KEY (`uid_from`) REFERENCES `users` (`uid`) ON DELETE SET NULL ON UPDATE NO ACTION,
+                           CONSTRAINT `user_fk_msg_to` FOREIGN KEY (`uid_to`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                            CONSTRAINT `FK_438_443` FOREIGN KEY (`reply_to_msg`) REFERENCES `message` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `message_to_user`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `message_to_user` (
-                                   `message` int(11) NOT NULL,
-                                   `user_email` varchar(150) COLLATE latin1_general_cs NOT NULL,
-                                   PRIMARY KEY (`message`,`user_email`),
-                                   KEY `user_email` (`user_email`),
-                                   CONSTRAINT `FK_262_458` FOREIGN KEY (`user_email`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                                   CONSTRAINT `FK_438_457` FOREIGN KEY (`message`) REFERENCES `message` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -912,7 +895,7 @@ CREATE TABLE `ops_log` (
 CREATE TABLE `project` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `projectname` varchar(100) COLLATE latin1_general_cs NOT NULL,
-                           `username` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                           `uid` varchar(150) COLLATE latin1_general_cs NOT NULL,
                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
                            `payment_type` varchar(255) COLLATE latin1_general_cs NOT NULL DEFAULT 'PREPAID',
@@ -925,8 +908,7 @@ CREATE TABLE `project` (
                            `online_feature_store_available` tinyint(1) NOT NULL DEFAULT '1',
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `projectname` (`projectname`),
-                           KEY `user_idx` (`username`),
-                           CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+                           CONSTRAINT `user_fk_project` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1002,12 +984,11 @@ CREATE TABLE `project_services` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project_team` (
                                 `project_id` int(11) NOT NULL,
-                                `team_member` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                `uid` varchar(150) COLLATE latin1_general_cs NOT NULL,
                                 `team_role` varchar(32) COLLATE latin1_general_cs NOT NULL,
                                 `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                PRIMARY KEY (`project_id`,`team_member`),
-                                KEY `team_member` (`team_member`),
-                                CONSTRAINT `FK_262_304` FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                PRIMARY KEY (`project_id`,`uid`),
+                                CONSTRAINT `user_fk_team` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                 CONSTRAINT `FK_284_303` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1205,7 +1186,7 @@ CREATE TABLE `rstudio_project` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rstudio_settings` (
                                     `project_id` int(11) NOT NULL,
-                                    `team_member` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                    `uid` INT(11) NOT NULL,
                                     `num_tf_ps` int(11) DEFAULT '1',
                                     `num_tf_gpus` int(11) DEFAULT '0',
                                     `num_mpi_np` int(11) DEFAULT '1',
@@ -1229,9 +1210,8 @@ CREATE TABLE `rstudio_settings` (
                                     `spark_params` varchar(6500) COLLATE latin1_general_cs DEFAULT '',
                                     `shutdown_level` int(11) NOT NULL DEFAULT '6',
                                     PRIMARY KEY (`project_id`,`team_member`),
-                                    KEY `team_member` (`team_member`),
                                     KEY `secret_idx` (`secret`),
-                                    CONSTRAINT `RS_FK_USERS` FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                                    CONSTRAINT `user_fk_rstudio` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `RS_FK_PROJS` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
