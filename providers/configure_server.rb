@@ -150,10 +150,12 @@ action :glassfish_configure do
     "resources.jdbc-connection-pool.hopsworksPool.property.Password" => node['hopsworks']['mysql']['password'],
     "resources.jdbc-connection-pool.hopsworksPool.property.useSSL" => 'false',
     "resources.jdbc-connection-pool.hopsworksPool.property.allowPublicKeyRetrieval" => 'true',
+    "resources.jdbc-connection-pool.hopsworksPool.fail-all-connections" => 'true',
     "resources.jdbc-connection-pool.ejbTimerPool.property.User" => node['hopsworks']['mysql']['user'],
     "resources.jdbc-connection-pool.ejbTimerPool.property.Password" => node['hopsworks']['mysql']['password'],
     "resources.jdbc-connection-pool.ejbTimerPool.property.useSSL" => 'false',
     "resources.jdbc-connection-pool.ejbTimerPool.property.allowPublicKeyRetrieval" => 'true',
+    "resources.jdbc-connection-pool.ejbTimerPool.fail-all-connections" => 'true',
     "#{target}.network-config.protocols.protocol.https-internal.ssl.cert-nickname" => 'internal',
     # The timeout, in seconds, for requests. A value of -1 will disable it.
     "#{target}.network-config.protocols.protocol.http-listener-2.http.request-timeout-seconds" => node['glassfish']['http']['request-timeout-seconds'],
