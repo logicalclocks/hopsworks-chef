@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   PRIMARY KEY (`id`),
   CONSTRAINT `parent_action_id_fkc` FOREIGN KEY (`parent_action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `project_id_fkc` FOREIGN KEY (`project_id`) REFERENCES `hopsworks`.`project` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `user_id_fkc` FOREIGN KEY (`user_id`) REFERENCES `hopsworks`.`users` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+  CONSTRAINT `user_id_fkc` FOREIGN KEY (`user_id`) REFERENCES `hopsworks`.`users` (`uid`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action_attempt` (
