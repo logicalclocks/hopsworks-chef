@@ -2589,7 +2589,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   `action` varchar(100) NOT NULL,
   `status` varchar(10) NOT NULL,
   `arguments` BLOB NOT NULL,
-  `start_time` TIMESTAMP NOT NULL,
+  `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `parent_action_id_fkc` FOREIGN KEY (`parent_action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -2601,7 +2601,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action_attempt` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `action_id` INT NOT NULL,
   `message` varchar(1000) NOT NULL,
-  `start_time` TIMESTAMP NOT NULL,
+  `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `action_id_fkc` FOREIGN KEY (`action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
