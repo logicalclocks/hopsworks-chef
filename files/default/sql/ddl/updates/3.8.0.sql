@@ -40,3 +40,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
 -- FSTORE-920
 ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD `driver_path` VARCHAR(2000) DEFAULT NULL;
+
+DROP TABLE `hopsworks`.`tensorboard`;
+ALTER TABLE `hopsworks`.`model_version` DROP COLUMN `experiment_id`;
+ALTER TABLE `hopsworks`.`model_version` DROP COLUMN `experiment_project_name`;

@@ -1323,28 +1323,6 @@ CREATE TABLE `system_commands_args` (
 ) ENGINE=ndbcluster AUTO_INCREMENT=3816 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tensorboard`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tensorboard` (
-                               `project_id` int(11) NOT NULL,
-                               `user_id` int(11) NOT NULL,
-                               `endpoint` varchar(100) COLLATE latin1_general_cs NOT NULL,
-                               `ml_id` varchar(100) COLLATE latin1_general_cs NOT NULL,
-                               `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                               `last_accessed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                               `hdfs_logdir` varchar(10000) COLLATE latin1_general_cs NOT NULL,
-                               `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
-                               PRIMARY KEY (`project_id`,`user_id`),
-                               KEY `user_id_fk` (`user_id`),
-                               CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-                               CONSTRAINT `project_id_fk` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 
 CREATE TABLE `feature_view` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2452,8 +2430,6 @@ CREATE TABLE IF NOT EXISTS `model_version` (
   `program` VARCHAR(1000) DEFAULT NULL,
   `framework` VARCHAR(128) DEFAULT NULL,
   `environment` VARCHAR(1000) DEFAULT NULL,
-  `experiment_id` VARCHAR(128) DEFAULT NULL,
-  `experiment_project_name` VARCHAR(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `model_version_key` (`model_id`, `version`),
   CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
