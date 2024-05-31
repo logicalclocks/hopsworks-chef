@@ -40,3 +40,30 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
 -- FSTORE-920
 ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD `driver_path` VARCHAR(2000) DEFAULT NULL;
+
+-- FSTORE-1420
+CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `parent_action_id` INT,
+  `project_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `action` varchar(100) NOT NULL,
+  `status` varchar(100) NOT NULL,
+  `arguments` BLOB NOT NULL,
+  `start_time` TIMESTAMP NOT NULL,
+  `end_time` TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `parent_action_id_fkc` FOREIGN KEY (`parent_action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `project_id_fkc` FOREIGN KEY (`project_id`) REFERENCES `hopsworks`.`project` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `user_id_fkc` FOREIGN KEY (`user_id`) REFERENCES `hopsworks`.`users` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action_attempt` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `action_id` INT NOT NULL,
+  `message` varchar(1000) NOT NULL,
+  `start_time` TIMESTAMP NOT NULL,
+  `end_time` TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `action_id_fkc` FOREIGN KEY (`action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
