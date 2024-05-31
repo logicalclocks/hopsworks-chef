@@ -2587,7 +2587,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   `project_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `action` varchar(100) NOT NULL,
-  `status` varchar(100) NOT NULL,
+  `status` varchar(10) NOT NULL,
   `arguments` BLOB NOT NULL,
   `start_time` TIMESTAMP NOT NULL,
   `end_time` TIMESTAMP,
