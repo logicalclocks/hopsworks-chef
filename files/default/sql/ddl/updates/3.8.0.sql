@@ -130,6 +130,9 @@ CALL REPLACE_EMAIL_FK('executions', 'user', 'uid', 'users', 'user', 'user_fk_exe
 CALL REPLACE_EMAIL_FK('dataset_request', 'user_email', 'uid', 'project_team', 'projectId', 'project_team_fk');
 
 -- the primary key for the project team table should be re-created to use uid instead of email
+-- before being able to drop the primary key for the project_team, we need to add an index for the project_id
+-- otherwise the drop primary key won't work as the project_id fk needs an index
+ALTER TABLE `hopsworks`.`project_team` ADD INDEX `pid`(`project_id`);
 ALTER TABLE `hopsworks`.`project_team` DROP PRIMARY KEY;
 -- migrate the column
 CALL REPLACE_EMAIL_FK('project_team', 'team_member', 'uid', 'users', 'team_member', 'user_fk_team');
@@ -139,8 +142,8 @@ ALTER TABLE `hopsworks`.`project_team` ADD PRIMARY KEY(`project_id`, `uid`);
 -- drop the foreign key created by the procedure above for dataset_request
 -- and the proper one. This is done here to avoid having too much complexity 
 -- on the stored procedure
-ALTER TABLE `hopsworks`.`dataset_request` DROP FOREIGN KEY project_team_fk;
-ALTER TABLE `hopsworks`.`dataset_request` DROP KEY project_team_fk;
+ALTER TABLE `hopsworks`.`dataset_request` DROP FOREIGN KEY `project_team_fk`;
+ALTER TABLE `hopsworks`.`dataset_request` DROP KEY `project_team_fk`;
 ALTER TABLE `hopsworks`.`dataset_request`
     ADD CONSTRAINT `project_team_fk_ds` FOREIGN KEY (`projectId`,`uid`) 
     REFERENCES `project_team` (`project_id`,`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;

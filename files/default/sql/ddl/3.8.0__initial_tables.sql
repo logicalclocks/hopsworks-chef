@@ -985,6 +985,7 @@ CREATE TABLE `project_team` (
                                 `team_role` varchar(32) COLLATE latin1_general_cs NOT NULL,
                                 `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                 PRIMARY KEY (`project_id`,`uid`),
+                                KEY `pid` (`project_id`),
                                 CONSTRAINT `user_fk_team` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                 CONSTRAINT `FK_284_303` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
