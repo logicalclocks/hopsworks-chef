@@ -698,8 +698,9 @@ CREATE TABLE `jupyter_settings` (
                                     `job_config` varchar(11000) COLLATE latin1_general_cs DEFAULT NULL,
                                     `docker_config` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                                     `python_kernel` TINYINT(1) DEFAULT 1,
-                                    PRIMARY KEY (`project_id`,`team_member`),
+                                    PRIMARY KEY (`project_id`, `uid`),
                                     KEY `secret_idx` (`secret`),
+                                    KEY `pid` (`project_id`),
                                     CONSTRAINT `user_fk_jp_settings` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `FK_284_308` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
@@ -1207,7 +1208,8 @@ CREATE TABLE `rstudio_settings` (
                                     `py_files` varchar(1500) COLLATE latin1_general_cs DEFAULT '',
                                     `spark_params` varchar(6500) COLLATE latin1_general_cs DEFAULT '',
                                     `shutdown_level` int(11) NOT NULL DEFAULT '6',
-                                    PRIMARY KEY (`project_id`,`team_member`),
+                                    PRIMARY KEY (`project_id`, `uid`),
+                                    KEY `pid` (`project_id`),
                                     KEY `secret_idx` (`secret`),
                                     CONSTRAINT `user_fk_rstudio` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                     CONSTRAINT `RS_FK_PROJS` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION

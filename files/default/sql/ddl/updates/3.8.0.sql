@@ -148,10 +148,21 @@ ALTER TABLE `hopsworks`.`dataset_request`
     ADD CONSTRAINT `project_team_fk_ds` FOREIGN KEY (`projectId`,`uid`) 
     REFERENCES `project_team` (`project_id`,`uid`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
--- These are the easy ones that should not get tangled 
-CALL REPLACE_EMAIL_FK('project', 'username', 'uid', 'users', 'user_idx', 'user_fk_project');
+-- team member is part of the primary key for both the jupyter_settings and rstudio_settings.
+-- we need to add an index on the project id to be able to drop the primary key and re-create it
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD INDEX `pid`(`project_id`);
+ALTER TABLE `hopsworks`.`jupyter_settings` DROP PRIMARY KEY;
 CALL REPLACE_EMAIL_FK('jupyter_settings', 'team_member', 'uid', 'users', 'team_member', 'user_fk_jp_settings');
+-- readd the primary key
+ALTER TABLE `hopsworks`.`jupyter_settings` ADD PRIMARY KEY(`project_id`, `uid`);
+
+ALTER TABLE `hopsworks`.`rstudio_settings` ADD INDEX `pid`(`project_id`);
+ALTER TABLE `hopsworks`.`rstudio_settings` DROP PRIMARY KEY;
 CALL REPLACE_EMAIL_FK('rstudio_settings', 'team_member', 'uid', 'users', 'team_member', 'user_fk_rstudio');
+ALTER TABLE `hopsworks`.`rstudio_settings` ADD PRIMARY KEY(`project_id`, `uid`);
+
+-- These are the easy ones that should not get tangled
+CALL REPLACE_EMAIL_FK('project', 'username', 'uid', 'users', 'user_idx', 'user_fk_project');
 CALL REPLACE_EMAIL_FK('message', 'user_from', 'uid_from', 'users', 'user_from', 'user_fk_msg_from');
 CALL REPLACE_EMAIL_FK('message', 'user_to', 'uid_to', 'users', 'user_to', 'user_fk_msg_to');
 
