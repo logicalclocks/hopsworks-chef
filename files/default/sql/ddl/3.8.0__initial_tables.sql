@@ -689,7 +689,7 @@ CREATE TABLE `jupyter_project` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `jupyter_settings` (
                                     `project_id` int(11) NOT NULL,
-                                    `uid` INT(11) COLLATE latin1_general_cs NOT NULL,
+                                    `uid` INT(11) NOT NULL,
                                     `secret` varchar(255) COLLATE latin1_general_cs NOT NULL,
                                     `advanced` tinyint(1) DEFAULT '0',
                                     `shutdown_level` int(11) NOT NULL DEFAULT '6',
@@ -893,7 +893,7 @@ CREATE TABLE `ops_log` (
 CREATE TABLE `project` (
                            `id` int(11) NOT NULL AUTO_INCREMENT,
                            `projectname` varchar(100) COLLATE latin1_general_cs NOT NULL,
-                           `uid` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                           `uid` INT(11) NOT NULL,
                            `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
                            `payment_type` varchar(255) COLLATE latin1_general_cs NOT NULL DEFAULT 'PREPAID',
@@ -982,7 +982,7 @@ CREATE TABLE `project_services` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project_team` (
                                 `project_id` int(11) NOT NULL,
-                                `uid` varchar(150) COLLATE latin1_general_cs NOT NULL,
+                                `uid` INT(11) NOT NULL,
                                 `team_role` varchar(32) COLLATE latin1_general_cs NOT NULL,
                                 `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                 PRIMARY KEY (`project_id`,`uid`),
