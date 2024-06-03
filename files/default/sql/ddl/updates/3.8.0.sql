@@ -166,4 +166,8 @@ CALL REPLACE_EMAIL_FK('project', 'username', 'uid', 'users', 'user_idx', 'user_f
 CALL REPLACE_EMAIL_FK('message', 'user_from', 'uid_from', 'users', 'user_from', 'user_fk_msg_from');
 CALL REPLACE_EMAIL_FK('message', 'user_to', 'uid_to', 'users', 'user_to', 'user_fk_msg_to');
 
+-- Recreate the index without unique requirement
+ALTER TABLE `hopsworks`.`users` DROP KEY `email`;
+ALTER TABLE `hopsworks`.`users` ADD INDEX `email`(`email`);
+
 -- END CHANGES HWORKS-262

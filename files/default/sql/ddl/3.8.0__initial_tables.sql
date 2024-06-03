@@ -1601,6 +1601,7 @@ CREATE TABLE `users` (
                          `salt` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT '',
                          PRIMARY KEY (`uid`),
                          UNIQUE KEY `username` (`username`),
+                         KEY `email` (`email`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=10178 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
