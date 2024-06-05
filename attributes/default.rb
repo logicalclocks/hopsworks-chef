@@ -552,3 +552,4 @@ default['hopsworks']['enable_feature_monitoring'] = "false"
 
 default['hopsworks']['library_install_timeout_minutes'] = 60
 
+default['hopsworks']['alerts']['enable_fix_receivers_timer'] = "true"
