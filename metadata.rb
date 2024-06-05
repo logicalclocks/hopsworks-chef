@@ -1060,3 +1060,7 @@ attribute "hopsworks/enable_feature_monitoring",
 attribute "hopsworks/library_install_timeout_minutes",
 					:description => "Time in minutes before the library install operation times out. Default 60.",
 					:type => 'string'
+
+attribute "hopsworks/alerts/enable_fix_receivers_timer",
+        :description => "Flag to enable FixReceiversTimer fixing AlertManager Receivers and Routes. Default: true.",
+        :type => 'string'

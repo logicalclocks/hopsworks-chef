@@ -6,3 +6,6 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("opens
 
 -- HWORKS-1040
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("library_install_timeout_minutes", "<%= node['hopsworks']['library_install_timeout_minutes'] %>", 1);
+
+-- HWORKS-1284
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_fix_receivers_timer", "<%= node['hopsworks']['alerts']['enable_fix_receivers_timer'] %>", 1);
