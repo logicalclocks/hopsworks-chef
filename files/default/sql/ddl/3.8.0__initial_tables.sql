@@ -2588,7 +2588,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   `user_id` INT NOT NULL,
   `action` VARCHAR(100) NOT NULL,
   `status` VARCHAR(10) NOT NULL,
-  `arguments` BLOB NOT NULL,
+  `task` BLOB NOT NULL,
   `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
   PRIMARY KEY (`id`),
