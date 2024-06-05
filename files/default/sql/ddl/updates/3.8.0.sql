@@ -44,18 +44,21 @@ ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
 -- FSTORE-1420
 CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `parent_action_id` INT,
+  `parent_action_id` INT NULL,
   `project_id` INT NOT NULL,
   `user_id` INT NOT NULL,
-  `action` varchar(100) NOT NULL,
-  `status` varchar(10) NOT NULL,
+  `action` VARCHAR(100) NOT NULL,
+  `status` VARCHAR(10) NOT NULL,
   `arguments` BLOB NOT NULL,
   `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
   PRIMARY KEY (`id`),
-  CONSTRAINT `parent_action_id_fkc` FOREIGN KEY (`parent_action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `project_id_fkc` FOREIGN KEY (`project_id`) REFERENCES `hopsworks`.`project` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `user_id_fkc` FOREIGN KEY (`user_id`) REFERENCES `hopsworks`.`users` (`uid`) ON DELETE SET NULL ON UPDATE NO ACTION
+  KEY `hopsworks_action_parent_action_id_idx` (`parent_action_id`),
+  KEY `hopsworks_action_project_id_idx` (`project_id`),
+  KEY `hopsworks_action_user_fkc` (`user_id`),
+  CONSTRAINT `hopsworks_action_parent_action_fkc` FOREIGN KEY (`parent_action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `hopsworks_action_project_fkc` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `hopsworks_action_user_fkc` FOREIGN KEY (`user_id`) REFERENCES `hopsworks`.`users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action_attempt` (
@@ -65,5 +68,5 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action_attempt` (
   `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
   PRIMARY KEY (`id`),
-  CONSTRAINT `action_id_fkc` FOREIGN KEY (`action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `hopsworks_action_attempt_action_id_fkc` FOREIGN KEY (`action_id`) REFERENCES `hopsworks`.`hopsworks_action` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
