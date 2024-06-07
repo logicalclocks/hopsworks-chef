@@ -2,6 +2,7 @@
 ALTER TABLE `hopsworks`.`training_dataset_feature` DROP FOREIGN KEY `tfn_fk_tdf`;
 ALTER TABLE `hopsworks`.`training_dataset_feature` DROP `transformation_function`;
 ALTER TABLE `hopsworks`.`transformation_function` ADD COLUMN `save_type` VARCHAR(255)    NOT NULL; 
+ALTER TABLE `hopsworks`.`transformation_function` ADD COLUMN `statistics_argument_names` VARCHAR(5000); 
 
 CREATE TABLE IF NOT EXISTS `hopsworks`.`feature_view_transformation_function` (
     `id`                                INT(11)         NOT NULL AUTO_INCREMENT,

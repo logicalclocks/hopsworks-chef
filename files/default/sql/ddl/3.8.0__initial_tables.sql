@@ -2080,6 +2080,7 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                                          `creator` int(11) NOT NULL,
                                                          `save_type`                         VARCHAR(255)    NOT NULL, 
+                                                         `statistics_argument_names`         VARCHAR(5000),
                                                          PRIMARY KEY (`id`),
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
