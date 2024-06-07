@@ -225,9 +225,14 @@ default['jupyter']['origin_scheme']                    =  "https"
 #
 # Serving
 #
-default['serving']['base_dir']                       = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
-default['serving']['pool_size']                      = "40"
-default['serving']['max_route_connections']          = "10"
+default['serving']['base_dir']                         = node['install']['dir'].empty? ? node['hopsworks']['dir'] + "/staging" : node['install']['dir'] + "/staging"
+default['serving']['pool_size']                        = "40"
+default['serving']['max_route_connections']            = "10"
+default['serving']['redeploy_not_found_after_seconds'] = "120"
+default['serving']['allow_stop_after_seconds']         = "30"
+default['serving']['state_manager_enabled']            = "true"
+default['serving']['state_manager_batch_size']         = "25"
+default['serving']['state_manager_interval_ms']        = "300000" # 5 min
 
 #
 # TensorBoard

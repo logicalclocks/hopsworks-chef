@@ -1273,6 +1273,7 @@ CREATE TABLE `serving` (
                            `model_server` int(11) NOT NULL DEFAULT '0',
                            `serving_tool` int(11) NOT NULL DEFAULT '0',
                            `deployed` timestamp DEFAULT NULL,
+                           `deployed_by` int(11) DEFAULT NULL,
                            `revision` varchar(8) DEFAULT NULL,
                            `predictor_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
                            `transformer_resources` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
@@ -1280,9 +1281,11 @@ CREATE TABLE `serving` (
                            PRIMARY KEY (`id`),
                            UNIQUE KEY `Serving_Constraint` (`project_id`,`name`),
                            KEY `user_fk` (`creator`),
+                           KEY `deployed_by_fk` (`deployed_by`),
                            KEY `kafka_fk` (`kafka_topic_id`),
                            KEY `name_k` (`name`),
                            CONSTRAINT `user_fk_serving` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+                           CONSTRAINT `deployed_by_fk_serving` FOREIGN KEY (`deployed_by`) REFERENCES `users` (`uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
                            CONSTRAINT `kafka_fk` FOREIGN KEY (`kafka_topic_id`) REFERENCES `project_topics` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
                            CONSTRAINT `FK_284_315` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;

@@ -9,3 +9,10 @@ REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("libra
 
 -- HWORKS-1284
 REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("enable_fix_receivers_timer", "<%= node['hopsworks']['alerts']['enable_fix_receivers_timer'] %>", 1);
+
+-- HWORKS-1235
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("serving_redeploy_not_found_after_seconds", "<%= node['serving']['redeploy_not_found_after_seconds'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("serving_allow_stop_after_seconds", "<%= node['serving']['allow_stop_after_seconds'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("serving_state_manager_enabled", "<%= node['serving']['state_manager_enabled'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("serving_state_manager_batch_size", "<%= node['serving']['state_manager_batch_size'] %>", 1);
+REPLACE INTO `hopsworks`.`variables`(`id`, `value`, `visibility`) VALUES ("serving_state_manager_interval_ms", "<%= node['serving']['state_manager_interval_ms'] %>", 1);
