@@ -40,3 +40,8 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`model_link` (
 -- FSTORE-920
 ALTER TABLE `hopsworks`.`feature_store_jdbc_connector`
     ADD `driver_path` VARCHAR(2000) DEFAULT NULL;
+
+-- FSTORE-1105
+ALTER TABLE `hopsworks`.`training_dataset_join`
+    ADD COLUMN `left_feature_group` INT(11) DEFAULT NULL,
+    ADD COLUMN `parent_idx` INT(11) NOT NULL DEFAULT 0;
