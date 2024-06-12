@@ -444,6 +444,26 @@ attribute "serving/max_route_connections",
           :description => "max number of connections to serve requests to a unique route for model serving servers",
           :type => 'string'
 
+attribute "serving/serving_redeploy_not_found_after_seconds",
+          :description => "nº of seconds after which starting/started deployments will be redeployed by Hopsworks if they are not found in the corresponding model serving platform (e.g., Kubernetes)",
+          :type => 'string'
+
+attribute "serving/serving_allow_stop_after_seconds",
+          :description => "nº of seconds after which starting/started deployments can be stopped",
+          :type => 'string'
+
+attribute "serving/state_manager_enabled",
+          :description => "whether to enable the serving state manager timer or not.",
+          :type => 'string'
+
+attribute "serving/state_manager_batch_size",
+          :description => "the maximum number of servings to be checked every time the serving state manager is triggered.",
+          :type => 'string'
+
+attribute "serving/state_manager_interval_ms",
+          :description => "how often the serving state manager is triggered.",
+          :type => 'string'
+
 ##
 ##
 ## Jupyter
@@ -1060,3 +1080,7 @@ attribute "hopsworks/enable_feature_monitoring",
 attribute "hopsworks/library_install_timeout_minutes",
 					:description => "Time in minutes before the library install operation times out. Default 60.",
 					:type => 'string'
+
+attribute "hopsworks/alerts/enable_fix_receivers_timer",
+        :description => "Flag to enable FixReceiversTimer fixing AlertManager Receivers and Routes. Default: true.",
+        :type => 'string'
