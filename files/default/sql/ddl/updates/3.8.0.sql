@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `hopsworks`.`hopsworks_action` (
   `project_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `description` VARCHAR(100) NOT NULL,
-  `status` VARCHAR(10) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
   `task` BLOB,
   `start_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `end_time` TIMESTAMP,
