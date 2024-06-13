@@ -2080,7 +2080,7 @@ CREATE TABLE IF NOT EXISTS `transformation_function` (
                                                          `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                                          `creator` int(11) NOT NULL,
                                                          `save_type`                         VARCHAR(255)    NOT NULL, 
-                                                         `statistics_argument_names`         VARCHAR(5000),
+                                                         `statistics_argument_names`         VARCHAR(5004),
                                                          PRIMARY KEY (`id`),
                                                          CONSTRAINT `feature_store_fn_fk` FOREIGN KEY (`feature_store_id`) REFERENCES `feature_store` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
                                                          CONSTRAINT `creator_fn_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`uid`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -2094,7 +2094,7 @@ CREATE TABLE IF NOT EXISTS `feature_view_transformation_function` ( -- mapping t
     `id`                                INT(11)         NOT NULL AUTO_INCREMENT,
     `transformation_function_id` int(11) NOT NULL,
     `feature_view_id` int(11) NOT NULL,
-    `features` VARCHAR(5000) NOT NULL,
+    `features` VARCHAR(5004) NOT NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fvtf_fvi_fk` FOREIGN KEY (`feature_view_id`) REFERENCES `feature_view` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
     CONSTRAINT `fvtf_tfi_fk` FOREIGN KEY (`transformation_function_id`) REFERENCES `transformation_function` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
