@@ -4,7 +4,7 @@ maintainer_email "jdowling@kth.se"
 license          "Apache v2.0"
 description      "Installs/Configures HopsWorks, the UI for Hops Hadoop."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.8.0"
+version          "4.0.0"
 source_url       "https://github.com/logicalclocks/hopsworks-chef"
 
 
@@ -442,6 +442,26 @@ attribute "serving/pool_size",
 
 attribute "serving/max_route_connections",
           :description => "max number of connections to serve requests to a unique route for model serving servers",
+          :type => 'string'
+
+attribute "serving/serving_redeploy_not_found_after_seconds",
+          :description => "nº of seconds after which starting/started deployments will be redeployed by Hopsworks if they are not found in the corresponding model serving platform (e.g., Kubernetes)",
+          :type => 'string'
+
+attribute "serving/serving_allow_stop_after_seconds",
+          :description => "nº of seconds after which starting/started deployments can be stopped",
+          :type => 'string'
+
+attribute "serving/state_manager_enabled",
+          :description => "whether to enable the serving state manager timer or not.",
+          :type => 'string'
+
+attribute "serving/state_manager_batch_size",
+          :description => "the maximum number of servings to be checked every time the serving state manager is triggered.",
+          :type => 'string'
+
+attribute "serving/state_manager_interval_ms",
+          :description => "how often the serving state manager is triggered.",
           :type => 'string'
 
 ##
@@ -1060,3 +1080,7 @@ attribute "hopsworks/enable_feature_monitoring",
 attribute "hopsworks/library_install_timeout_minutes",
 					:description => "Time in minutes before the library install operation times out. Default 60.",
 					:type => 'string'
+
+attribute "hopsworks/alerts/enable_fix_receivers_timer",
+        :description => "Flag to enable FixReceiversTimer fixing AlertManager Receivers and Routes. Default: true.",
+        :type => 'string'
