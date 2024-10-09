@@ -1867,7 +1867,7 @@ CREATE TABLE IF NOT EXISTS `on_demand_feature_group` (
                                                          `query`                   VARCHAR(26000),
                                                          `data_format`             VARCHAR(10),
                                                          `spine`                  TINYINT(1) NOT NULL DEFAULT 0,
-                                                         PRIMARY KEY (`id`),
+                                                         PRIMARY KEY (`id`)
 ) ENGINE = ndbcluster DEFAULT CHARSET = latin1 COLLATE = latin1_general_cs;
 
 
