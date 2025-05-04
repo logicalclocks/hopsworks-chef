@@ -2383,7 +2383,7 @@ CREATE TABLE IF NOT EXISTS `job_schedule` (
 
 CREATE TABLE `command_search_fs` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `inode_id` bigint NOT NULL,
+  `inode_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `project_id` int,
   `op` VARCHAR(20) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
@@ -2401,7 +2401,7 @@ CREATE TABLE `command_search_fs_history` (
   `h_id` bigint NOT NULL AUTO_INCREMENT,
   `executed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id` bigint NOT NULL,
-  `inode_id` bigint NOT NULL,
+  `inode_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `project_id` int,
   `op` VARCHAR(20) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
