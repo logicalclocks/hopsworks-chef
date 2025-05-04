@@ -27,3 +27,6 @@ ALTER TABLE `hopsworks`.`cached_feature`
 
 ALTER TABLE `hopsworks`.`schemas` DROP FOREIGN KEY project_idx_schemas;
 ALTER TABLE `hopsworks`.`schemas` MODIFY COLUMN `schema` TEXT CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL;
+
+ALTER TABLE `hopsworks`.`command_search_fs` MODIFY COLUMN inode_id varchar(100) COLLATE latin1_general_cs NOT NULL;
+ALTER TABLE `hopsworks`.`command_search_fs_history` MODIFY COLUMN inode_id varchar(100) COLLATE latin1_general_cs NOT NULL;
